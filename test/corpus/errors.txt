@@ -334,8 +334,7 @@ UPDATE t TABLESAMPLE (10 PERCENT) SET a = 1;
         (invocation
           (object_reference
             name: (identifier))
-          (ERROR
-            (keyword_tablesample))
+          (ERROR)
           parameter: (term
             value: (literal)
             alias: (identifier)))
