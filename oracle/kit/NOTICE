@@ -1,0 +1,31 @@
+cases.jsonl and edits.jsonl are derived from tree-sitter-grammar-kit
+(commit b75bfbdcbd88813b18982e81b014a24764e73562), files
+  src/testdata/tsql-context/cases.json  sha256 347d8ddd3b5e807d50b6aa44c9f1274e138a3247d4dda82b944f197d31979880
+  src/testdata/native/gaps/tsql.json    sha256 7ba3b02edb80bd900fa34b32ecd709971299fb21ccf311547699b2d933cd5fe5
+Only case IDs, sources (with their sha256) and edit steps were kept. grammar-kit's stored trees,
+syntax_error flags, diagnostics, engine errors and edit expectations were not imported; the engine
+verdicts in ../verdicts were produced by this repository's runner.
+
+grammar-kit is licensed under the MIT License:
+
+MIT License
+
+Copyright (c) 2026 tree-sitter-grammar-kit contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

@@ -3,7 +3,7 @@ name = "tree-check"
 description = "Checks T-SQL parse trees through the tree-sitter API: errors, missing nodes, zero-width nodes, coverage"
 version = "0.0.0"
 edition = "2024"
-rust-version = "1.85"
+rust-version = "1.90"
 license = "MIT"
 publish = false
 
@@ -11,3 +11,4 @@ publish = false
 # Exact: the checker must run the same runtime as the pinned CLI (0.27.2) and go-treesitter.
 tree-sitter = "=0.27.2"
 tree-sitter-mssql = { path = "../.." }
+serde_json = "1"

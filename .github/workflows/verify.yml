@@ -201,6 +201,13 @@ jobs:
           CARGO_TARGET_DIR: target
         run: cargo run --quiet --locked --manifest-path tools/tree-check/Cargo.toml -- test/fixtures/*.sql
 
+      - name: Replay the SQL Server oracle against the committed baseline
+        # Judges oracle/kit cases with tree-check, compares incremental and fresh parses over the
+        # edit histories, and fails on any change from oracle/expected.json (see oracle/README.md).
+        env:
+          CARGO_TARGET_DIR: target
+        run: node tools/oracle-replay.mjs --tree-check target/debug/tree-check
+
       - name: Report fixture parse performance
         run: |
           set -euo pipefail

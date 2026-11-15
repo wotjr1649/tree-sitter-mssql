@@ -185,6 +185,7 @@ dependencies = [
 name = "tree-check"
 version = "0.0.0"
 dependencies = [
+ "serde_json",
  "tree-sitter",
  "tree-sitter-mssql",
 ]

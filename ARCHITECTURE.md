@@ -70,6 +70,7 @@ Nothing is published to a registry. Consumers pin a commit of this repository an
 | `bindings/rust`, `bindings/node` | Rust crate and Node.js addon |
 | `test/` | Corpus, fixtures, highlight tests, node-kind snapshot |
 | `tools/` | Version-check and package-check scripts |
+| `oracle/` | SQL Server oracle: cases, engine verdicts, the verdict runner, and the grammar baseline (see `oracle/README.md`) |
 | `fuzz/` | Fuzz target |
 | `docs/` | Project documentation |
 | `.github/workflows/` | CI and scheduled cache-cleanup workflows |
