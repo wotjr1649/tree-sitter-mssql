@@ -38,7 +38,7 @@
       }
     ],
     "links": {
-      "repository": "git+https://github.com/alfpricot/tree-sitter-mssql.git"
+      "repository": "git+https://github.com/wotjr1649/tree-sitter-mssql.git"
     }
   },
   "bindings": {
