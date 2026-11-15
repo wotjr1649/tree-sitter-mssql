@@ -155,10 +155,16 @@ function main(argv) {
       .map((l) => JSON.parse(l));
     assert.equal(rows.length, cases.length, 'tree-check returned a different number of results');
     current = Object.fromEntries(cases.map((c, i) => [c.id, rows[i].ok ? 'clean' : 'error']));
-    const edits = runTreeCheck(exe, ['--edits', 'oracle/kit/edits.jsonl'])
-      .stdout.trim()
-      .split('\n')
-      .map((l) => JSON.parse(l));
+    // Every edit-history file in oracle/kit (grammar-kit's gap histories and its route histories).
+    const edits = readdirSync('oracle/kit')
+      .filter((f) => f.endsWith('edits.jsonl'))
+      .sort()
+      .flatMap((f) =>
+        runTreeCheck(exe, ['--edits', join('oracle/kit', f)])
+          .stdout.trim()
+          .split('\n')
+          .map((l) => JSON.parse(l)),
+      );
     incremental = Object.fromEntries(
       edits
         .filter((e) => e.incremental_differences.length)

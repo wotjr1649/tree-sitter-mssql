@@ -108,15 +108,34 @@ static class Program
         if (Convert.ToInt32(Scalar(conn, "SELECT compatibility_level FROM sys.databases WHERE name = DB_NAME()")) != level)
             throw new InfraException($"compatibility level of {database} is not {level}");
         Control(conn, "SET PARSEONLY ON;");
-        using var cmd = new SqlCommand(source, conn) { CommandTimeout = CommandTimeoutSeconds };
         var errors = new JsonArray();
-        try { cmd.ExecuteNonQuery(); }
-        catch (SqlException e) when (!IsInfrastructure(e))
+        // A client splits a script at GO lines and sends each batch on its own; so does the runner.
+        // Text without a GO line is sent unchanged, as one batch.
+        foreach (var batch in Batches(source))
         {
-            foreach (SqlError err in e.Errors) errors.Add(err.Number);
+            using var cmd = new SqlCommand(batch, conn) { CommandTimeout = CommandTimeoutSeconds };
+            try { cmd.ExecuteNonQuery(); }
+            catch (SqlException e) when (!IsInfrastructure(e))
+            {
+                foreach (SqlError err in e.Errors) errors.Add(err.Number);
+            }
+            catch (SqlException e) { throw new InfraException($"infrastructure failure while judging a case: {e.Message}"); }
         }
-        catch (SqlException e) { throw new InfraException($"infrastructure failure while judging a case: {e.Message}"); }
         return errors;
+    }
+
+    // A GO line: GO alone on its line, with an optional repeat count and an optional -- comment.
+    // shortcut: line-based, so a GO line inside a multi-line string or block comment would also split;
+    // the oracle's case sets have none (checked when a set is imported).
+    static readonly System.Text.RegularExpressions.Regex GoLine = new(
+        @"^[ \t]*GO[ \t]*(?:\d+)?[ \t]*(?:--[^\r\n]*)?\r?$",
+        System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Multiline);
+
+    /// <summary>The batches of a script: the text between GO lines, skipping whitespace-only ones.</summary>
+    static IEnumerable<string> Batches(string source)
+    {
+        if (!GoLine.IsMatch(source)) return [source];
+        return GoLine.Split(source).Where(part => !string.IsNullOrWhiteSpace(part));
     }
 
     static string RunnerSha256()
@@ -236,6 +255,8 @@ static class Program
             Expect("rejects a syntax error with 102", "SELECT 1 FROM;", v => v is JsonArray a && a.Any(n => (int)n! == 102));
             Expect("keeps the batch-first rule for CREATE PROCEDURE", "CREATE PROCEDURE dbo.oracle_p AS SELECT 1;", Accepted);
             Expect("rejects CREATE PROCEDURE after another statement", "SELECT 1;\nCREATE PROCEDURE dbo.oracle_p AS SELECT 1;", Rejected);
+            Expect("splits a script at GO lines like a client", "SELECT 1\nGO\nCREATE PROCEDURE dbo.oracle_go AS SELECT 1;", Accepted);
+            Expect("keeps a GO-less script as one batch", "SELECT 1\nCREATE PROCEDURE dbo.oracle_go AS SELECT 1;", Rejected);
             Expect("accepts Unicode text", "SELECT N'한글' AS [열];", Accepted);
             Expect("parses without executing", "CREATE TABLE dbo.oracle_probe (a int);", Accepted);
             if (ObjectId("dbo.oracle_probe") is not null) { Console.WriteLine("FAIL a parsed CREATE TABLE was executed"); failures.Add("no execution"); }
