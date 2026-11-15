@@ -12,7 +12,7 @@ export default {
       $.keyword_insert,
       optional($.top_clause),
       optional($.keyword_into),
-      write_target($, { allowBareHint: false }),
+      choice(write_target($, { allowBareHint: false }), $.insert_rowset),
       optional(alias($._column_list, $.list)),
       optional($.output_clause),
       $._insert_source,
@@ -29,6 +29,8 @@ export default {
   // SELECT/set-operation branch already carries its own trailing OPTION
   // clause, and adding a second one after it would let a single statement
   // carry two sibling OPTION clauses where SQL Server permits only one.
+  insert_rowset: ($) => seq($.keyword_openquery, '(', $.identifier, ',', $.literal, ')'),
+
   _insert_source: ($) =>
     choice(
       seq($.keyword_values, comma_list($.list, true), optional($.option_clause)),

@@ -776,7 +776,21 @@ CREATE DATABASE ProbeNew WITH LEDGER = ON WITH TRUSTWORTHY OFF;
 
 ---
 
-(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_with) (option name: (identifier) value: (keyword_on)))) (ERROR (keyword_with) (identifier))))
+(program
+  (batch
+    (statement
+      (create_database
+        (keyword_create)
+        (keyword_database)
+        name: (identifier)
+        (keyword_with)
+        (option
+          name: (identifier)
+          value: (keyword_on))))
+    (ERROR
+      (keyword_with)
+      (identifier)
+      (keyword_off))))
 
 ================================================================================
 ddl-database/create/negative-suspected-005 — LocalDB 17.0.1000.7 levels 100-170: accepted

@@ -25,6 +25,7 @@ export default {
         $.table_var_declaration,
       ),
       optional($.function_options),
+      optional(seq($.keyword_order, paren_list($.order_target, true))),
       field('body', $.function_body),
     ),
 
@@ -34,7 +35,8 @@ export default {
     seq(
       $.identifier,
       optional($.keyword_as),
-      $._type,
+      choice($._type, seq($.keyword_cursor, optional($.keyword_varying))),
+      optional(choice($.keyword_null, seq($.keyword_not, $.keyword_null))),
       optional(seq('=', $._expression)),
       optional(choice($.keyword_out, $.keyword_output)),
       optional($.keyword_readonly),
@@ -52,6 +54,7 @@ export default {
     choice(
       $.keyword_encryption,
       $.keyword_schemabinding,
+      $.keyword_native_compilation,
       seq($.keyword_returns, $.keyword_null, $.keyword_on, $.keyword_null, $.keyword_input),
       seq($.keyword_called, $.keyword_on, $.keyword_null, $.keyword_input),
       $.execute_as_clause,
@@ -63,7 +66,13 @@ export default {
     choice(
       // Scalar and multi-statement table-valued: a BEGIN ... END block whose
       // RETURN is an ordinary return_statement among the body items.
-      seq(optional($.keyword_as), $.keyword_begin, repeat($._body_item), $.keyword_end),
+      seq(
+        optional($.keyword_as),
+        $.keyword_begin,
+        optional($.atomic_clause),
+        repeat($._body_item),
+        $.keyword_end,
+      ),
       // Inline table-valued: RETURN followed directly by the query, with or
       // without parentheses.
       seq(optional($.keyword_as), $.keyword_return, $._dml_read),

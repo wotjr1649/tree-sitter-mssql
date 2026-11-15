@@ -46,6 +46,8 @@ apply_join{alias}
 assignment{left,right}
 assignment_operator
 at_time_zone
+atomic_clause
+atomic_option
 audit_action
 availability_listener
 availability_replica
@@ -64,6 +66,7 @@ cast{name,parameter}
 catch_block
 changetable
 char{size}
+checkpoint_statement
 close_cursor_statement
 close_key_statement{name}
 column{name}
@@ -74,6 +77,7 @@ commit_statement{name}
 constraint{column,name}
 continue_statement
 contract_message
+conversation_timer_statement
 covering_columns
 create_assembly{name}
 create_asymmetric_key{name}
@@ -186,6 +190,8 @@ endpoint_transport
 event_session_event{name}
 event_session_target{name}
 exec_argument{name,value}
+exec_result_column{name,type}
+exec_result_sets
 execute_as_clause
 execute_as_statement
 execute_statement{procedure,return_status}
@@ -223,6 +229,7 @@ having
 identifier
 if_statement{alternative,condition,consequence}
 insert
+insert_rowset
 invocation{parameter}
 is_not
 join{alias,predicate}
@@ -256,6 +263,7 @@ keyword_asc
 keyword_assembly
 keyword_asymmetric
 keyword_at
+keyword_atomic
 keyword_attach
 keyword_attach_rebuild_log
 keyword_audit
@@ -272,6 +280,7 @@ keyword_bit
 keyword_block
 keyword_both
 keyword_break
+keyword_browse
 keyword_buffer
 keyword_bulk
 keyword_by
@@ -289,6 +298,7 @@ keyword_changes
 keyword_changetable
 keyword_char
 keyword_check
+keyword_checkpoint
 keyword_clear
 keyword_close
 keyword_cluster
@@ -314,10 +324,12 @@ keyword_conversation
 keyword_cpu
 keyword_create
 keyword_cross
+keyword_cube
 keyword_current
 keyword_cursor
 keyword_cycle
 keyword_data
+keyword_data_source
 keyword_database
 keyword_date
 keyword_datetime
@@ -408,6 +420,7 @@ keyword_index
 keyword_initiator
 keyword_inner
 keyword_input
+keyword_insensitive
 keyword_insert
 keyword_instead
 keyword_int
@@ -455,6 +468,8 @@ keyword_modify
 keyword_money
 keyword_move
 keyword_name
+keyword_national
+keyword_native_compilation
 keyword_nchar
 keyword_next
 keyword_no
@@ -462,11 +477,13 @@ keyword_nocheck
 keyword_nonclustered
 keyword_none
 keyword_not
+keyword_nowait
 keyword_ntext
 keyword_null
 keyword_numanode
 keyword_numeric
 keyword_nvarchar
+keyword_object
 keyword_of
 keyword_off
 keyword_offline
@@ -475,6 +492,7 @@ keyword_on
 keyword_only
 keyword_open
 keyword_opendatasource
+keyword_openquery
 keyword_optimize
 keyword_option
 keyword_or
@@ -486,6 +504,7 @@ keyword_over
 keyword_override
 keyword_owner
 keyword_parameters
+keyword_parse
 keyword_partial
 keyword_partition
 keyword_partitions
@@ -523,6 +542,7 @@ keyword_rebuild
 keyword_receive
 keyword_recompile
 keyword_reconfigure
+keyword_reduce
 keyword_references
 keyword_regenerate
 keyword_relative
@@ -531,9 +551,11 @@ keyword_remove
 keyword_reorganize
 keyword_repeatable
 keyword_replica
+keyword_replicate
 keyword_replication
 keyword_resource
 keyword_restart
+keyword_result
 keyword_resume
 keyword_return
 keyword_returning
@@ -543,6 +565,7 @@ keyword_revoke
 keyword_right
 keyword_role
 keyword_rollback
+keyword_rollup
 keyword_route
 keyword_row
 keyword_rows
@@ -553,6 +576,7 @@ keyword_schema
 keyword_schemabinding
 keyword_scheme
 keyword_scoped
+keyword_scroll
 keyword_search
 keyword_secondary
 keyword_seconds
@@ -571,6 +595,7 @@ keyword_set
 keyword_sets
 keyword_setuser
 keyword_shortest_path
+keyword_shutdown
 keyword_singleton
 keyword_smalldatetime
 keyword_smallint
@@ -604,6 +629,7 @@ keyword_throw
 keyword_ties
 keyword_time
 keyword_timeout
+keyword_timer
 keyword_timestamp
 keyword_tinyint
 keyword_to
@@ -618,9 +644,11 @@ keyword_trim
 keyword_truncate
 keyword_try
 keyword_try_cast
+keyword_try_parse
 keyword_type
 keyword_unbounded
 keyword_uncommitted
+keyword_undefined
 keyword_union
 keyword_unique
 keyword_uniqueidentifier
@@ -684,6 +712,7 @@ open_key_statement{name}
 opendatasource_reference{database,name,schema}
 openjson_column{name,path,type}
 openjson_schema
+openxml_table_schema
 optimize_for_item{name}
 option{algorithm,certificate,name,protocol,value}
 option_clause
@@ -726,6 +755,7 @@ server_cpu_range
 set_operation{operation}
 set_statement
 setuser_statement
+shutdown_statement
 sqlcmd_connect{arguments}
 sqlcmd_ed
 sqlcmd_exit{query}

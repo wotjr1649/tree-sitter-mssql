@@ -33,11 +33,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Parse EXTERNAL object, FULLTEXT and TCP ENDPOINT DDL sub-forms; enforce engine-verified option sets in tree-check without changing existing clean trees.
-
+- Parse oracle-verified query/DML/cursor/EXEC and native-module sub-forms while preserving existing clean trees; keep parser-cost growth below 10%.
 - Parse table/column/constraint and partitioned index DDL verified by the SQL Server oracle; preserve existing clean trees.
 
 ### Added
 
+- Add 174 query-form probes/corpus cases, local statement constraints and incremental edit coverage; existing node kinds and fields remain.
 - Add `generated_always`, `selective_xml_path` and 20 keyword node kinds; no existing node kinds or fields are removed.
 - Database file/filegroup, nested database SET, mirroring/HADR, database encryption-key and audit-specification DDL; availability-group replica/listener and server-configuration forms.
 - 56 named kinds (17 structural and 39 keyword kinds) with no existing kind, field or child-type removed. Existing clean oracle and fixture trees retain their fields and ranges.

@@ -205,12 +205,22 @@ export default {
       field('result', $._expression),
     ),
 
-  // CAST(x AS type) and TRY_CAST(x AS type). CONVERT, TRY_CONVERT and PARSE
-  // are ordinary invocations — their type argument reads as an identifier.
+  // CAST/TRY_CAST and PARSE/TRY_PARSE share the AS-type shape. Only PARSE accepts USING;
+  // the constraint layer checks that boundary without duplicating the type grammar.
   cast: ($) =>
     seq(
-      field('name', choice($.keyword_cast, $.keyword_try_cast)),
-      wrapped_in_parenthesis(seq(field('parameter', $._expression), $.keyword_as, $._type)),
+      field(
+        'name',
+        choice($.keyword_cast, $.keyword_try_cast, $.keyword_parse, $.keyword_try_parse),
+      ),
+      wrapped_in_parenthesis(
+        seq(
+          field('parameter', $._expression),
+          $.keyword_as,
+          $._type,
+          optional(seq($.keyword_using, $.literal)),
+        ),
+      ),
     ),
 
   exists: ($) => seq($.keyword_exists, $.subquery),
@@ -289,6 +299,9 @@ export default {
         ['/', 'binary_times'],
         ['%', 'binary_times'],
         ['^', 'binary_plus'],
+        ['<<', 'binary_plus'],
+        ['>>', 'binary_plus'],
+        ['||', 'binary_plus'],
         ['=', 'binary_relation'],
         ['<', 'binary_relation'],
         ['<=', 'binary_relation'],
@@ -402,8 +415,24 @@ export default {
   list: ($) => paren_list($._expression),
 
   literal: ($) =>
-    prec(2, choice($._integer, $._decimal_number, $._literal_string, $._money, $.keyword_null)),
+    prec(
+      2,
+      choice(
+        $._integer,
+        $._decimal_number,
+        $._literal_string,
+        $._money,
+        $.keyword_null,
+        seq(
+          '{',
+          alias($._odbc_date_kind, $.identifier),
+          alias($._single_quote_string, $.literal),
+          '}',
+        ),
+      ),
+    ),
   // Money literal: $5, $1,234.56. `$action` is an identifier, not money.
+  _odbc_date_kind: (_) => /[dD]|[tT]|[tT][sS]/,
   _money: (_) => /\$\d+(,\d{3})*(\.\d+)?/,
   // Character string, optionally with the N prefix for nvarchar. A quote
   // inside the string is doubled; there is no backslash escaping.

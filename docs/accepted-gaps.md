@@ -159,3 +159,31 @@ AG SET/MODIFY single-change rules, nested database option duplicates, QUERY_CAPT
 BPE option order and values, audit clause duplicates and encryption ALGORITHM. It does not claim every
 unmeasured database/AG option or value is validated. Distributed-group required options, other option
 value bounds, and the wider remaining oracle failures are open inventory work.
+
+## Query forms (R13): budget-stopped and preserved gaps
+
+These positive cases are pinned in oracle/probes/query-forms.jsonl and test/corpus/query-forms.txt,
+with LocalDB 17.0.1000.7 PARSEONLY verdicts at levels 100–170. They intentionally remain tree errors.
+The R13 patch stays within every +10% parser-cost limit. This list does not imply that a scanner
+change is needed or that every shape has had a full alternate implementation attempted.
+
+| Positive probe IDs (query-forms/ prefix omitted) | Remaining surface |
+| --- | --- |
+| open-like-escape | LIKE ... ESCAPE |
+| open-static | hierarchyid/spatial static method reference |
+| open-json-arrayagg, open-json-objectagg | JSON aggregates with ORDER BY, NULL handling and key:value |
+| open-nested-set | A set operation used as another set operation's parenthesized operand |
+| open-rowset-semicolon | OPENROWSET provider connection with semicolon-separated credentials |
+| open-fulltext-language | CONTAINS/FREETEXT LANGUAGE argument |
+| open-graph-columns, open-graph-path | Graph pseudo-columns, FOR PATH and recursive MATCH patterns |
+| open-kill-query | KILL QUERY NOTIFICATION/SUBSCRIPTION (also KILL STATS JOB in kit routes) |
+| open-stats-partitions | UPDATE STATISTICS ... RESAMPLE ON PARTITIONS |
+| open-implicit-exec | Implicit procedure invocation at the start of a batch |
+| open-signature | ADD [COUNTER] SIGNATURE |
+| open-spaced-comparison | Spaced comparison operators: < >, ! >, ! < |
+| select-all-top | Explicit ALL before TOP (plain SELECT ALL keeps the existing quantified-expression tree) |
+| select-into-later-branch | Existing later-UNION-branch INTO restriction; PARSEONLY accepts it |
+
+BACKUP/RESTORE, R11 server/database DDL and R12 EXTERNAL/FULLTEXT/ENDPOINT statement bodies are outside
+this patch. The shared column-default precedence changes only the scalar/NOT NULL boundary; table DDL
+corpus, existing tree shapes and its constraint rules remain gates.

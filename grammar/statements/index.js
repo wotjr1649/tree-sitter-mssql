@@ -27,7 +27,8 @@ import fulltext_rules from './fulltext.js';
 export default {
   // A bare BEGIN ... END grouping block. Body items are `;`-optional, as
   // everywhere else in T-SQL.
-  block: ($) => seq($.keyword_begin, repeat($._body_item), $.keyword_end),
+  block: ($) =>
+    seq($.keyword_begin, optional($.atomic_clause), repeat($._body_item), $.keyword_end),
 
   statement: ($) =>
     choice(
@@ -63,6 +64,9 @@ export default {
       $.grant_statement,
       $.update_statistics_statement,
       $.kill_statement,
+      $.checkpoint_statement,
+      $.shutdown_statement,
+      $.conversation_timer_statement,
       $.backup_statement,
       $.setuser_statement,
       $.readtext_statement,
@@ -154,19 +158,32 @@ export default {
   // a single table variable (@t TABLE (...)). The two forms are mutually
   // exclusive in one DECLARE statement — T-SQL does not allow mixing them.
   var_declarations: ($) =>
-    seq($.keyword_declare, choice(comma_list($.var_declaration, true), $.table_var_declaration)),
+    seq(
+      $.keyword_declare,
+      choice(
+        comma_list($.var_declaration, true),
+        $.table_var_declaration,
+        alias($._table_var_declaration_as, $.table_var_declaration),
+      ),
+    ),
 
   // DECLARE @x [AS] type [= expression] — unlike a parameter default, the
   // initializer may be any expression (a function call is the common case).
   var_declaration: ($) =>
-    seq($.identifier, optional($.keyword_as), $._type, optional(seq('=', $._expression))),
+    choice(
+      seq($.identifier, optional($.keyword_as), $._type, optional(seq('=', $._expression))),
+      seq(alias($._tsql_parameter, $.identifier), optional($.keyword_as), $.keyword_cursor),
+    ),
 
   // DECLARE @t TABLE (col1 type1, col2 type2, ...)
   // Used for table variables and multi-statement function return tables. The
   // column list is the same shape as CREATE TABLE's column_definitions. The
-  // optional AS T-SQL allows before TABLE is not accepted: after RETURNS, a
-  // user-defined scalar type followed by the body's AS reads the same way.
+  // DECLARE's AS spelling is separate: after RETURNS, a scalar type followed
+  // by the body's AS has the same prefix and must retain its existing parse.
   table_var_declaration: ($) => seq($.identifier, $.keyword_table, $.column_definitions),
+
+  _table_var_declaration_as: ($) =>
+    seq($.identifier, $.keyword_as, $.keyword_table, $.column_definitions),
 
   // DECLARE name CURSOR [LOCAL | GLOBAL] [FORWARD_ONLY | SCROLL] [STATIC | ...] FOR select
   // The cursor options are identifiers: there are a dozen and nothing
@@ -176,8 +193,15 @@ export default {
     seq(
       $.keyword_declare,
       field('name', $.identifier),
+      repeat(choice($.keyword_insensitive, $.keyword_scroll)),
       $.keyword_cursor,
-      repeat($.identifier),
+      repeat(
+        choice(
+          $.identifier,
+          alias($.keyword_global, $.identifier),
+          alias($.keyword_scroll, $.identifier),
+        ),
+      ),
       $.keyword_for,
       $._dml_read,
     ),
@@ -224,6 +248,25 @@ export default {
   // constant: SQL Server does not accept a variable there.
   kill_statement: ($) =>
     prec.right(seq($.keyword_kill, $.literal, optional(seq($.keyword_with, $.identifier)))),
+
+  checkpoint_statement: ($) =>
+    prec.right(seq($.keyword_checkpoint, optional(alias($._natural_number, $.literal)))),
+
+  shutdown_statement: ($) =>
+    prec.right(seq($.keyword_shutdown, optional(seq($.keyword_with, $.keyword_nowait)))),
+
+  conversation_timer_statement: ($) =>
+    seq(
+      $.keyword_begin,
+      $.keyword_conversation,
+      $.keyword_timer,
+      '(',
+      $.identifier,
+      ')',
+      $.keyword_timeout,
+      '=',
+      $._expression,
+    ),
 
   // BULK INSERT target FROM 'data_file' [WITH (options)]
   // Option names (BATCHSIZE, CODEPAGE, FIELDTERMINATOR, FIRE_TRIGGERS,
@@ -345,8 +388,9 @@ export default {
           seq(
             optional(seq(field('return_status', $.identifier), '=')),
             field('procedure', $.object_reference),
+            optional(alias($._exec_procedure_number, $.literal)),
             optional($._exec_arguments),
-            optional(seq($.keyword_with, $.keyword_recompile)),
+            optional(seq($.keyword_with, comma_list($._exec_option, true))),
           ),
           seq(
             // A parameter passed to a linked server may be marked OUTPUT; SQL Server allows that
@@ -358,14 +402,49 @@ export default {
               ),
             ),
             optional(
-              choice(
-                seq($.keyword_at, $.identifier),
-                seq($.keyword_as, choice($.keyword_user, $.keyword_login), '=', $._expression),
-              ),
+              seq($.keyword_as, choice($.keyword_user, $.keyword_login), '=', $._expression),
             ),
+            optional(seq($.keyword_at, optional($.keyword_data_source), $.identifier)),
           ),
         ),
       ),
+    ),
+
+  // Match the whole suffix so an ordinary terminating semicolon is never shifted alone.
+  _exec_procedure_number: (_) => /;\s*\d+/,
+
+  _exec_option: ($) => choice($.keyword_recompile, $.exec_result_sets),
+
+  exec_result_sets: ($) =>
+    seq(
+      $.keyword_result,
+      $.keyword_sets,
+      choice(
+        $.keyword_none,
+        $.keyword_undefined,
+        paren_list(
+          choice(
+            paren_list($.exec_result_column, true),
+            seq(
+              $.keyword_as,
+              choice(
+                seq($.keyword_object, $.object_reference),
+                seq($.keyword_type, $.object_reference),
+                seq($.keyword_for, $.keyword_xml),
+              ),
+            ),
+          ),
+          true,
+        ),
+      ),
+    ),
+
+  exec_result_column: ($) =>
+    seq(
+      field('name', $.identifier),
+      field('type', $._type),
+      optional(seq($.keyword_collate, $.identifier)),
+      optional(choice($.keyword_null, seq($.keyword_not, $.keyword_null))),
     ),
 
   _exec_arguments: ($) =>

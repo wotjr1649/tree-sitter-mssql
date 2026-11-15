@@ -607,26 +607,7 @@ IF 1=1 ; ELSE SELECT 2;
 
 --------------------------------------------------------------------------------
 
-(program
-  (batch
-    (statement
-      (if_statement
-        (keyword_if)
-        (binary_expression
-          (literal)
-          (literal))
-        (statement
-          (break_statement
-            (MISSING keyword_break)))
-        (else_clause
-          (keyword_else)
-          (statement
-            (query_specification
-              (select
-                (keyword_select)
-                (select_expression
-                  (term
-                    (literal)))))))))))
+(program (batch (statement (if_statement (keyword_if) (binary_expression (literal) (literal)) (statement (checkpoint_statement (MISSING keyword_checkpoint))) (else_clause (keyword_else) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))))))))
 
 ================================================================================
 Rejected: semicolon/if-else-empty (LocalDB 17.0.1000.7, 100-170, Msg 102)
@@ -670,22 +651,7 @@ IF 1=1 ; ELSE;
 
 --------------------------------------------------------------------------------
 
-(program
-  (batch
-    (statement
-      (if_statement
-        (keyword_if)
-        (binary_expression
-          (literal)
-          (literal))
-        (statement
-          (break_statement
-            (MISSING keyword_break)))
-        (else_clause
-          (keyword_else)
-          (statement
-            (break_statement
-              (MISSING keyword_break))))))))
+(program (batch (statement (if_statement (keyword_if) (binary_expression (literal) (literal)) (statement (checkpoint_statement (MISSING keyword_checkpoint))) (else_clause (keyword_else) (statement (checkpoint_statement (MISSING keyword_checkpoint))))))))
 
 ================================================================================
 Rejected: semicolon/if-else-leading-cte (LocalDB 17.0.1000.7, 100-170, Msg 102)
@@ -1952,30 +1918,7 @@ IF 1=1 IF 2=2 ; ELSE; ELSE;
 
 --------------------------------------------------------------------------------
 
-(program
-  (batch
-    (statement
-      (if_statement
-        (keyword_if)
-        (binary_expression
-          (literal)
-          (literal))
-        (statement
-          (if_statement
-            (keyword_if)
-            (binary_expression
-              (literal)
-              (literal))
-            (statement
-              (break_statement
-                (MISSING keyword_break)))
-            (else_clause
-              (ERROR
-                (keyword_else))
-              (keyword_else)
-              (statement
-                (break_statement
-                  (MISSING keyword_break))))))))))
+(program (batch (statement (if_statement (keyword_if) (binary_expression (literal) (literal)) (statement (if_statement (keyword_if) (binary_expression (literal) (literal)) (statement (checkpoint_statement (MISSING keyword_checkpoint))) (else_clause (ERROR (keyword_else)) (keyword_else) (statement (checkpoint_statement (MISSING keyword_checkpoint))))))))))
 
 ================================================================================
 Accepted: semicolon/function-block (LocalDB 17.0.1000.7, 100-170)

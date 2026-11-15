@@ -556,7 +556,13 @@ CREATE EXTERNAL STREAM s WITH (LOCATION = N'input', DATA_SOURCE = ds, FILE_FORMA
 
 --------------------------------------------------------------------------------
 
-(program (ERROR (keyword_create) (keyword_external) (keyword_with)) (batch))
+(program
+  (ERROR
+    (keyword_create)
+    (keyword_external)
+    (keyword_with)
+    (keyword_data_source))
+  (batch))
 
 ================================================================================
 ddl-external/external-stream-drop (engine 102; LocalDB 17.0.1000.7 levels 100-170)

@@ -70,6 +70,8 @@ export default grammar({
     [$._relation_with_hint],
     // `SELECT a b` — `b` may be an alias or continue the expression.
     [$.term],
+    // A cursor variable starts with a parameter token, like table variables and named cursors.
+    [$.identifier, $.var_declaration],
     // `IF cond stmt ;` — the `;` may start a `; ELSE` clause or end the IF;
     // see else_clause.
     [$.if_statement],
@@ -84,6 +86,7 @@ export default grammar({
       'unary_sign',
       'binary_times',
       'binary_plus',
+      'default_value',
       'binary_in',
       'binary_relation',
       // IS [NOT] NULL and IS [NOT] DISTINCT FROM are comparison predicates, so

@@ -1,5 +1,26 @@
+import { comma_list } from '../helpers.js';
+
 // Rules shared by more than one module kind (procedure, function, trigger).
 export default {
+  atomic_clause: ($) =>
+    seq($.keyword_atomic, $.keyword_with, '(', comma_list($.atomic_option, true), ')'),
+
+  atomic_option: ($) =>
+    choice(
+      seq(
+        $.keyword_transaction,
+        $.keyword_isolation,
+        $.keyword_level,
+        '=',
+        choice(
+          $.keyword_snapshot,
+          $.keyword_serializable,
+          seq($.keyword_repeatable, $.keyword_read),
+        ),
+      ),
+      $.option,
+    ),
+
   // A CLR module's body: the method in a registered assembly that implements
   // the procedure, function, or trigger.
   //   EXTERNAL NAME assembly_name.[Namespace.Class].method_name

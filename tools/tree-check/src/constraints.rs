@@ -22,6 +22,34 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
             queue_activation(node, source, &mut out);
         }
         match node.kind() {
+            "declare_cursor_statement" => query_cursor(node, source, &mut out),
+            "set_statement" => {
+                query_cursor(node, source, &mut out);
+                query_offsets(node, source, &mut out);
+            }
+            "atomic_clause" => query_atomic(node, source, &mut out),
+            "select" => query_select(node, &mut out),
+            "function_argument" => query_parameter(node, &mut out),
+            "cast" => query_cast(node, &mut out),
+            "openjson_schema" | "openxml_table_schema" => {
+                query_rowset_schema(node, source, &mut out)
+            }
+            "delete" | "update" | "insert" => query_dml_source(node, &mut out),
+            "assignment" => query_assignment(node, source, &mut out),
+            _ => {}
+        }
+        if matches!(
+            node.kind(),
+            "create_procedure"
+                | "alter_procedure"
+                | "create_function"
+                | "alter_function"
+                | "create_trigger"
+                | "alter_trigger"
+        ) {
+            query_module(node, &mut out);
+        }
+        match node.kind() {
             "create_endpoint" | "alter_endpoint" => endpoint_options(node, source, &mut out),
             "create_fulltext_catalog" | "create_fulltext_index" => {
                 fulltext_options(node, source, &mut out)
@@ -60,6 +88,7 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
             _ => {}
         }
         if node.kind() == "execute_statement" {
+            query_exec(node, &mut out);
             exec_output_requires_at(node, &mut out);
             exec_output_variable(node, source, &mut out);
         }
@@ -1114,6 +1143,437 @@ fn endpoint_options(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
                 clause,
             ));
         }
+    }
+}
+
+// Local statement constraints measured by query-forms on LocalDB 17.0.1000.7, levels 100-170.
+// Keep the engine's surprising acceptances: repeated identical cursor flags, DATEFIRST=8 and
+// DATEFORMAT=zzz pass PARSEONLY, so none is rejected here.
+// offsets-bogus: Msg 195; offsets-valid/repeat: accepted (same engine and levels as above).
+fn query_offsets(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let mut c = node.walk();
+    let parts: Vec<Node> = node
+        .named_children(&mut c)
+        .filter(|n| !n.is_extra())
+        .collect();
+    if !parts
+        .get(1)
+        .is_some_and(|n| n.kind() == "object_reference" && upper_text(*n, source) == "OFFSETS")
+    {
+        return;
+    }
+    for part in parts.iter().skip(2) {
+        if matches!(part.kind(), "keyword_on" | "keyword_off") {
+            continue;
+        }
+        if ![
+            "SELECT",
+            "FROM",
+            "ORDER",
+            "COMPUTE",
+            "TABLE",
+            "PROCEDURE",
+            "EXECUTE",
+            "STATEMENT",
+            "PARAM",
+        ]
+        .contains(&upper_text(*part, source).as_str())
+        {
+            out.push(violation(
+                "query-offsets-options",
+                "unknown OFFSETS statement type".into(),
+                *part,
+            ));
+        }
+    }
+}
+
+fn query_cursor(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let mut c = node.walk();
+    let children: Vec<Node> = node
+        .named_children(&mut c)
+        .filter(|n| !n.is_extra())
+        .collect();
+    let Some(at) = children.iter().position(|n| n.kind() == "keyword_cursor") else {
+        return;
+    };
+    let before: Vec<String> = children[..at]
+        .iter()
+        .map(|n| upper_text(*n, source))
+        .collect();
+    let mut flags = before
+        .iter()
+        .filter(|s| matches!(s.as_str(), "INSENSITIVE" | "SCROLL"))
+        .cloned()
+        .collect::<Vec<_>>();
+    for n in &children[at + 1..] {
+        if n.kind() == "keyword_for" {
+            break;
+        }
+        flags.push(upper_text(*n, source));
+    }
+    let groups = [
+        &["LOCAL", "GLOBAL"][..],
+        &["FORWARD_ONLY", "SCROLL"][..],
+        &["STATIC", "KEYSET", "DYNAMIC", "FAST_FORWARD"][..],
+        &["READ_ONLY", "SCROLL_LOCKS", "OPTIMISTIC"][..],
+    ];
+    let known = [
+        "LOCAL",
+        "GLOBAL",
+        "FORWARD_ONLY",
+        "SCROLL",
+        "STATIC",
+        "KEYSET",
+        "DYNAMIC",
+        "FAST_FORWARD",
+        "READ_ONLY",
+        "SCROLL_LOCKS",
+        "OPTIMISTIC",
+        "TYPE_WARNING",
+    ];
+    let mut for_update = false;
+    let mut scan = node.walk();
+    loop {
+        if scan.node().kind() == "for_clause" {
+            let mut fc = scan.node().walk();
+            for_update |= scan
+                .node()
+                .named_children(&mut fc)
+                .any(|n| n.kind() == "keyword_update");
+        }
+        if scan.goto_first_child() {
+            continue;
+        }
+        while !scan.goto_next_sibling() {
+            if !scan.goto_parent() {
+                break;
+            }
+        }
+        if scan.node() == node {
+            break;
+        }
+    }
+    let invalid = flags
+        .iter()
+        .any(|f| !known.contains(&f.as_str()) && f != "INSENSITIVE")
+        || children[at + 1..]
+            .iter()
+            .take_while(|n| n.kind() != "keyword_for")
+            .any(|n| upper_text(*n, source) == "INSENSITIVE")
+        || groups
+            .iter()
+            .any(|g| g.iter().filter(|v| flags.iter().any(|f| f == **v)).count() > 1)
+        || flags.iter().any(|f| f == "FAST_FORWARD") && flags.iter().any(|f| f == "SCROLL")
+        || flags.iter().any(|f| f == "INSENSITIVE") && for_update;
+    // cursor-bogus/iso-after: 155/153; conflicting flags and ISO FOR UPDATE: 1048.
+    if invalid {
+        out.push(violation(
+            "query-cursor-options",
+            "unsupported or conflicting cursor options".into(),
+            node,
+        ));
+    }
+}
+
+fn query_atomic(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let mut c = node.walk();
+    let options: Vec<Node> = node
+        .named_children(&mut c)
+        .filter(|n| n.kind() == "atomic_option")
+        .collect();
+    let mut seen = Vec::new();
+    let mut invalid = false;
+    for option in options {
+        let mut oc = option.walk();
+        let parts: Vec<Node> = option.children(&mut oc).filter(|n| !n.is_extra()).collect();
+        let isolation = parts
+            .first()
+            .is_some_and(|n| n.kind() == "keyword_transaction");
+        let item = if isolation {
+            option
+        } else {
+            option.named_child(0).unwrap_or(option)
+        };
+        let key = if isolation {
+            "ISOLATION".into()
+        } else {
+            item.child_by_field_name("name")
+                .map(|n| upper_text(n, source))
+                .unwrap_or_default()
+        };
+        invalid |= seen.contains(&key);
+        seen.push(key.clone());
+        if isolation {
+            continue;
+        }
+        let Some(value) = item.child_by_field_name("value") else {
+            invalid = true;
+            continue;
+        };
+        let mut ic = item.walk();
+        invalid |= !item.children(&mut ic).any(|n| n.kind() == "=");
+        invalid |= match key.as_str() {
+            "LANGUAGE" => {
+                value.kind() != "literal"
+                    || !upper_text(value, source)
+                        .trim_start_matches('N')
+                        .starts_with('\'')
+            }
+            "DATEFIRST" => {
+                value.kind() != "literal"
+                    || !upper_text(value, source)
+                        .bytes()
+                        .all(|b| b.is_ascii_digit())
+            }
+            "DATEFORMAT" => !matches!(value.kind(), "identifier" | "literal"),
+            "DELAYED_DURABILITY" => !matches!(value.kind(), "keyword_on" | "keyword_off"),
+            _ => true,
+        };
+    }
+    invalid |= !seen.iter().any(|k| k == "ISOLATION") || !seen.iter().any(|k| k == "LANGUAGE");
+    let mut parent = node.parent();
+    let mut module = false;
+    while let Some(p) = parent {
+        if matches!(
+            p.kind(),
+            "create_procedure"
+                | "alter_procedure"
+                | "create_function"
+                | "alter_function"
+                | "create_trigger"
+                | "alter_trigger"
+        ) {
+            module = true;
+            break;
+        }
+        parent = p.parent();
+    }
+    // atomic-no-*, repeat-*, unknown and malformed values: 10784/1039/195/102; plain-atomic: 102.
+    if invalid || !module {
+        out.push(violation(
+            "query-atomic-options",
+            "ATOMIC needs a module and unique, complete supported options".into(),
+            node,
+        ));
+    }
+}
+
+fn query_module(node: Node, out: &mut Vec<Violation>) {
+    let mut native = false;
+    let mut atomic = false;
+    let mut returns_null = false;
+    let mut c = node.walk();
+    loop {
+        native |= c.node().kind() == "keyword_native_compilation";
+        atomic |= c.node().kind() == "atomic_clause";
+        returns_null |= c.node().kind() == "function_option"
+            && c.node()
+                .named_child(0)
+                .is_some_and(|n| n.kind() == "keyword_returns");
+        if c.goto_first_child() {
+            continue;
+        }
+        while !c.goto_next_sibling() {
+            if !c.goto_parent() {
+                // function-native-returns-null and kit B04-r052/r089: 10794.
+                if native && returns_null {
+                    out.push(violation(
+                        "query-native-null-input",
+                        "native functions require CALLED ON NULL INPUT".into(),
+                        node,
+                    ));
+                }
+                // function-native-missing-atomic: 10783.
+                if native && !atomic {
+                    out.push(violation(
+                        "query-native-atomic",
+                        "NATIVE_COMPILATION needs BEGIN ATOMIC".into(),
+                        node,
+                    ));
+                }
+                return;
+            }
+        }
+    }
+}
+
+// select-distinct-all: 156. Preserve quantified comparisons elsewhere in expressions.
+fn query_select(node: Node, out: &mut Vec<Violation>) {
+    let mut c = node.walk();
+    if !node
+        .named_children(&mut c)
+        .any(|n| n.kind() == "keyword_distinct")
+    {
+        return;
+    }
+    let mut c = node.walk();
+    let first = node
+        .named_children(&mut c)
+        .find(|n| n.kind() == "select_expression")
+        .and_then(|n| n.named_child(0))
+        .and_then(|n| n.child_by_field_name("value"));
+    if first
+        .and_then(|n| n.child_by_field_name("operator"))
+        .is_some_and(|n| n.kind() == "keyword_all")
+    {
+        out.push(violation(
+            "query-select-quantifier",
+            "DISTINCT and ALL are mutually exclusive".into(),
+            node,
+        ));
+    }
+}
+
+// function-cursor-param: 10725/178; procedure-cursor-param is accepted.
+fn query_parameter(node: Node, out: &mut Vec<Violation>) {
+    let mut c = node.walk();
+    if !node
+        .named_children(&mut c)
+        .any(|n| n.kind() == "keyword_cursor")
+    {
+        return;
+    }
+    let mut parent = node.parent();
+    while let Some(p) = parent {
+        match p.kind() {
+            "create_function" | "alter_function" => {
+                out.push(violation(
+                    "query-cursor-parameter",
+                    "CURSOR parameters belong to procedures".into(),
+                    node,
+                ));
+                return;
+            }
+            "create_procedure" | "alter_procedure" => return,
+            _ => parent = p.parent(),
+        }
+    }
+}
+
+fn query_cast(node: Node, out: &mut Vec<Violation>) {
+    let mut c = node.walk();
+    let parts: Vec<Node> = node.named_children(&mut c).collect();
+    // cast-using/try-cast-using: 102. PARSE and TRY_PARSE accept USING.
+    if parts.iter().any(|n| n.kind() == "keyword_using")
+        && !parts
+            .iter()
+            .any(|n| matches!(n.kind(), "keyword_parse" | "keyword_try_parse"))
+    {
+        out.push(violation(
+            "query-cast-using",
+            "USING belongs to PARSE or TRY_PARSE".into(),
+            node,
+        ));
+    }
+}
+
+fn query_exec(node: Node, out: &mut Vec<Violation>) {
+    let mut c = node.walk();
+    let mut recompile = false;
+    let mut results = false;
+    for part in node.named_children(&mut c) {
+        let repeated = match part.kind() {
+            "keyword_recompile" => std::mem::replace(&mut recompile, true),
+            "exec_result_sets" => std::mem::replace(&mut results, true),
+            _ => false,
+        };
+        // exec-repeat-recompile/results: 102.
+        if repeated {
+            out.push(violation(
+                "query-exec-options",
+                "EXEC options occur at most once".into(),
+                part,
+            ));
+        }
+    }
+}
+
+fn query_rowset_schema(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let relation = node.prev_named_sibling();
+    let call = relation.and_then(|r| r.named_child(0));
+    let name = call
+        .filter(|n| n.kind() == "invocation")
+        .and_then(|n| n.named_child(0))
+        .map(|n| upper_text(n, source))
+        .unwrap_or_default();
+    if node.kind() == "openxml_table_schema" {
+        if name != "OPENXML" {
+            out.push(violation(
+                "query-rowset-schema",
+                "a table schema reference belongs to OPENXML".into(),
+                node,
+            ));
+        }
+        return;
+    }
+    let mut c = node.walk();
+    for column in node
+        .named_children(&mut c)
+        .filter(|n| n.kind() == "openjson_column")
+    {
+        let mut cc = column.walk();
+        // predict-schema accepted; OPENJSON/OPENXML nullability: 156/319.
+        if name != "PREDICT"
+            && column
+                .named_children(&mut cc)
+                .any(|n| matches!(n.kind(), "keyword_null" | "keyword_not" | "keyword_collate"))
+        {
+            out.push(violation(
+                "query-rowset-schema",
+                "typed nullability/collation belongs to PREDICT".into(),
+                column,
+            ));
+            break;
+        }
+    }
+}
+
+fn query_dml_source(node: Node, out: &mut Vec<Violation>) {
+    if node.parent().is_none_or(|n| n.kind() != "relation") {
+        return;
+    }
+    let mut c = node.walk();
+    let output = node
+        .named_children(&mut c)
+        .any(|n| n.kind() == "output_clause");
+    let mut parent = node.parent();
+    let mut insert = false;
+    while let Some(p) = parent {
+        if p.kind() == "insert" {
+            insert = true;
+            break;
+        }
+        parent = p.parent();
+    }
+    // insert-delete-no-output: 10716; select-delete-source: 156.
+    if !output || !insert {
+        out.push(violation(
+            "query-dml-source",
+            "a DML row source needs OUTPUT and an enclosing INSERT".into(),
+            node,
+        ));
+    }
+}
+
+fn query_assignment(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let Some(left) = node.child_by_field_name("left") else {
+        return;
+    };
+    let Some(right) = node.child_by_field_name("right") else {
+        return;
+    };
+    let comparison = right.kind() == "binary_expression"
+        && right
+            .child_by_field_name("operator")
+            .is_some_and(|n| n.kind() == "=");
+    // update-column-chain: 102; update-variable-chain/compound-chain accepted.
+    if (right.kind() == "assignment" || comparison) && !upper_text(left, source).starts_with('@') {
+        out.push(violation(
+            "query-assignment-chain",
+            "only a variable can capture a column assignment".into(),
+            node,
+        ));
     }
 }
 
@@ -2401,6 +2861,93 @@ mod tests {
             ),
         ] {
             assert_eq!(rules(bad), [rule], "{bad}");
+        }
+    }
+
+    #[test]
+    fn query_forms_constraints_match_engine_boundaries() {
+        let cases: Vec<serde_json::Value> =
+            include_str!("../../../oracle/probes/query-forms.jsonl")
+                .lines()
+                .map(|line| serde_json::from_str(line).unwrap())
+                .collect();
+        let source = |id: &str| {
+            cases
+                .iter()
+                .find(|c| c["id"] == format!("query-forms/{id}"))
+                .unwrap()["source"]
+                .as_str()
+                .unwrap()
+        };
+        for (id, expected) in [
+            ("select-distinct-all", "query-select-quantifier"),
+            ("function-cursor-param", "query-cursor-parameter"),
+            ("function-native-returns-null", "query-native-null-input"),
+            ("offsets-bogus", "query-offsets-options"),
+            ("cast-using", "query-cast-using"),
+            ("try-cast-using", "query-cast-using"),
+            ("cursor-iso", "query-cursor-options"),
+            ("cursor-iso-after", "query-cursor-options"),
+            ("cursor-bogus", "query-cursor-options"),
+            ("cursor-two-scope", "query-cursor-options"),
+            ("cursor-fast-scroll", "query-cursor-options"),
+            ("cursor-read-optimistic", "query-cursor-options"),
+            ("cursor-static-keyset", "query-cursor-options"),
+            ("update-column-chain", "query-assignment-chain"),
+            ("select-delete-source", "query-dml-source"),
+            ("insert-delete-no-output", "query-dml-source"),
+            ("openjson-not-null", "query-rowset-schema"),
+            ("openxml-not-null", "query-rowset-schema"),
+            ("openjson-table-schema", "query-rowset-schema"),
+            ("exec-repeat-recompile", "query-exec-options"),
+            ("exec-repeat-results", "query-exec-options"),
+            ("plain-atomic", "query-atomic-options"),
+            ("function-native-missing-atomic", "query-native-atomic"),
+            ("atomic-no-language", "query-atomic-options"),
+            ("atomic-no-isolation", "query-atomic-options"),
+            ("atomic-repeat-language", "query-atomic-options"),
+            ("atomic-repeat-isolation", "query-atomic-options"),
+            ("atomic-unknown", "query-atomic-options"),
+            ("atomic-datefirst-var", "query-atomic-options"),
+            ("atomic-language-var", "query-atomic-options"),
+            ("atomic-durability-bad", "query-atomic-options"),
+            ("atomic-language-no-equals", "query-atomic-options"),
+        ] {
+            let sql = source(id);
+            let mut p = Parser::new();
+            p.set_language(&tree_sitter_mssql::LANGUAGE.into()).unwrap();
+            assert!(
+                !p.parse(sql, None).unwrap().root_node().has_error(),
+                "{id}: this boundary is enforced by constraints"
+            );
+            assert_eq!(rules(sql), [expected], "{id}");
+        }
+        for id in [
+            "offsets-valid",
+            "offsets-repeat",
+            "cursor-iso-reverse",
+            "cursor-iso-repeat",
+            "cursor-set-repeat",
+            "cursor-duplicate-local",
+            "cursor-global-comment",
+            "cursor-comment-literal",
+            "exec-repeat-comment",
+            "predict-schema",
+            "predict-collate",
+            "atomic-all",
+            "atomic-datefirst-eight",
+            "atomic-format-bad",
+            "atomic-language-literal-keyword",
+            "parse-using",
+            "try-parse",
+            "update-variable-chain",
+            "update-compound-chain",
+            "insert-delete-output",
+            "insert-update-output",
+            "insert-insert-output",
+            "procedure-native",
+        ] {
+            assert!(rules(source(id)).is_empty(), "{id}");
         }
     }
 }
