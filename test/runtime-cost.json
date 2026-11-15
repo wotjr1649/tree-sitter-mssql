@@ -1,0 +1,5 @@
+{
+  "label": "M2 end (before the table-hint and DDL growth)",
+  "commit": "e8a398e5619b69ab78635cd26e775c0b1878d6b7",
+  "max_ratio": 1.5
+}
