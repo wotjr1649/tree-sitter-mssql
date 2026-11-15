@@ -1,0 +1,162 @@
+==================
+Hangul names: alias, table, column, variable and temporary table (SQL Server 2025 17.0.1000.7, levels 100 and 170: accepted)
+==================
+
+SELECT 1 AS 이름;
+SELECT 이름 FROM dbo.고객 WHERE 나이 > 1;
+DECLARE @변수 int;
+CREATE TABLE #가 (열 int);
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal)
+              (keyword_as)
+              (identifier))))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier)
+              (identifier))))
+        (where
+          (keyword_where)
+          (binary_expression
+            (field
+              (identifier))
+            (literal)))))
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (keyword_int))))
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        (object_reference
+          (identifier))
+        (column_definitions
+          (column_definition
+            (identifier)
+            (keyword_int)))))))
+
+==================
+Georgian and CJK aliases (SQL Server 2025 17.0.1000.7, levels 100 and 170: accepted)
+==================
+
+SELECT 1 AS ა;
+SELECT 1 AS 名前;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal)
+              (keyword_as)
+              (identifier))))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal)
+              (keyword_as)
+              (identifier))))))))
+
+==================
+Combining mark and Unicode digit in an identifier's continuation (SQL Server 2025 17.0.1000.7, levels 100 and 170: accepted)
+==================
+
+SELECT 1 AS état;
+SELECT 1 AS a١;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal)
+              (keyword_as)
+              (identifier))))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal)
+              (keyword_as)
+              (identifier))))))))
+
+==================
+A letter added after Unicode 3.2 cannot start an identifier (U+0221; SQL Server 2025 17.0.1000.7, levels 100 and 170: Msg 102)
+:error
+==================
+
+SELECT 1 AS ȡ;
+
+---
+
+
+
+==================
+A letter added after Unicode 3.2 cannot continue an identifier (U+0221; SQL Server 2025 17.0.1000.7, levels 100 and 170: Msg 102)
+:error
+==================
+
+SELECT 1 AS aȡ;
+
+---
+
+
+
+==================
+A character outside the BMP cannot appear in a regular identifier (U+20000; SQL Server 2025 17.0.1000.7, levels 100 and 170: Msg 102)
+:error
+==================
+
+SELECT 1 AS a𠀀;
+
+---
+
+
+
+==================
+A math symbol cannot start an identifier (U+00D7; SQL Server 2025 17.0.1000.7, levels 100 and 170: Msg 102)
+:error
+==================
+
+SELECT 1 AS ×;
+
+---
+
+

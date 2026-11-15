@@ -222,7 +222,7 @@
     "issue151-remote-local": "error",
     "issue151-signed": "clean",
     "issue151-string": "clean",
-    "issue151-unicode-local": "error",
+    "issue151-unicode-local": "clean",
     "merge-arith": "clean",
     "merge-bare": "clean",
     "merge-good": "clean",

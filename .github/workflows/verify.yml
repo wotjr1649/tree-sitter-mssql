@@ -157,6 +157,9 @@ jobs:
           node test/generate-node-kinds.mjs
           git diff --exit-code -- test/node-kinds.txt
 
+      - name: Fail if the identifier character classes drift from the engine-measured sets
+        run: node tools/identifier-charclass.mjs --check
+
       - name: Fail if a create/alter/drop rule is unregistered or versions.json cites a missing kind or case
         run: node test/check-registries.mjs
 
