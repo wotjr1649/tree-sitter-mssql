@@ -208,6 +208,10 @@ jobs:
           CARGO_TARGET_DIR: target
         run: node tools/oracle-replay.mjs --tree-check target/debug/tree-check
 
+      - name: Check the generated parser cost against test/parser-cost.json
+        # Fails on any change from the baseline; growth above 10 % needs an approved budget (ADR-0002).
+        run: node tools/parser-cost.mjs
+
       - name: Report fixture parse performance
         run: |
           set -euo pipefail
