@@ -420,7 +420,6 @@ export default {
       $._bracketed_identifier,
       $._double_quote_string,
       $._tsql_parameter,
-      $._tsql_system_variable,
       $._temporary_table,
       // $action: T-SQL's pseudo-column for the action taken by a MERGE's
       // OUTPUT clause (INSERT/UPDATE/DELETE). Not a valid _identifier on its
@@ -447,9 +446,11 @@ export default {
   // A regular identifier: letters, digits, `_`, `#` and `$` after the first
   // character, per SQL Server's identifier rules (`addr##1` is legal).
   _identifier: (_) => new RegExp(`[${IDENTIFIER_START}][${IDENTIFIER_CONTINUE}]*`),
-  _tsql_parameter: (_) => new RegExp(`@[${IDENTIFIER_START}][${IDENTIFIER_CONTINUE}]*`),
-  _tsql_system_variable: (_) => /@@[A-Za-z_][0-9A-Za-z_]*/,
-  _temporary_table: (_) => new RegExp(`#{1,2}[${IDENTIFIER_START}][${IDENTIFIER_CONTINUE}]*`),
+  // `@` then continuation characters: variables (`@a`, `@1`, a bare `@`) and system
+  // variables (`@@ROWCOUNT`) alike, since `@` is itself a continuation character.
+  _tsql_parameter: (_) => new RegExp(`@[${IDENTIFIER_CONTINUE}]*`),
+  // `#` then continuation characters: `#t`, `##t`, `#1`, a bare `#`.
+  _temporary_table: (_) => new RegExp(`#[${IDENTIFIER_CONTINUE}]*`),
   _bracketed_identifier: (_) => /\[([^\]]|\]\])+\]/,
   // "quoted identifier" — a string only when QUOTED_IDENTIFIER is OFF,
   // which the grammar does not track. A double quote inside is doubled to

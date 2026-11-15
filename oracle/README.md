@@ -6,7 +6,7 @@ The reference for valid T-SQL is SQL Server's own parser under `SET PARSEONLY ON
 | --- | --- |
 | `kit/cases.jsonl` | 726 cases from tree-sitter-grammar-kit: `id`, `sha256`, `source` ([NOTICE](kit/NOTICE)) |
 | `kit/edits.jsonl` | 353 edit histories (939 edits) for comparing incremental and fresh parses |
-| `probes/*.jsonl` | Cases written and engine-checked while fixing defects. They gate those fixes like the kit cases do. IDs are prefixed with the set name. Current sets: `queue-activation` (86, the QUEUE fix and constraint rules) and `identifiers` (23: Unicode names, and bare `#`/`@` sigil names, which the engine accepts and the grammar does not yet) |
+| `probes/*.jsonl` | Cases written and engine-checked while fixing defects. They gate those fixes like the kit cases do. IDs are prefixed with the set name. Current sets: `queue-activation` (86, the QUEUE fix and constraint rules) and `identifiers` (26: Unicode names, bare `#`/`@` sigil names, and variables used as column aliases, which the engine rejects) |
 | `verdicts/*.json` | Engine verdicts per case and compatibility level: the error numbers, `[]` for accepted. `meta` records the engine build, edition, platform, session `SET` state, levels, and the hashes of the cases and of the runner |
 | `runner/ParseOnly/` | The runner that produces the verdicts (C#, .NET 10, Microsoft.Data.SqlClient pinned by `packages.lock.json`) |
 | `expected.json` | The grammar's current result per case (`clean` or `error`) and the edit histories whose incremental parse differs from a fresh one |

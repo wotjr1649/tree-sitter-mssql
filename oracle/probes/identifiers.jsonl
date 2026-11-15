@@ -21,3 +21,6 @@
 {"id":"identifiers/var-atat","sha256":"6c6d2c78797034072fa7239d052a7733c030bd5e4f8bd787554b42afdc08e886","source":"DECLARE @@ int;"}
 {"id":"identifiers/var-at-digit","sha256":"9e1b3db215be611054e9b74d5999832a7f15859f0761487a43d11d907dd772da","source":"DECLARE @1 int;"}
 {"id":"identifiers/temp-digit","sha256":"8a845fee4f878a2b0f1ffc205ecf2cdfa190949b09ab6fe164f4213a86dd3b29","source":"CREATE TABLE #1 (a int);"}
+{"id":"identifiers/alias-var","sha256":"dd338323aca35dbe66cb9248d83f119f98929598e91b01c169c376c071652162","source":"SELECT 1 AS @a;"}
+{"id":"identifiers/alias-sysvar","sha256":"dc73417101e932f1a24995017be6f393ba826c5b33e0817838a09c0a8bb2bb7b","source":"SELECT 1 AS @@x;"}
+{"id":"identifiers/alias-var-noas","sha256":"6978d2cfb9c378bf241c943e7df306eb3cdae6f46552b8f71cd288e4684e77b4","source":"SELECT 1 @a;"}

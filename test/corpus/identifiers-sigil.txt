@@ -1,0 +1,94 @@
+==================
+Temporary names: a bare #, ##, and # followed by a digit (SQL Server 2025 17.0.1000.7, levels 100 and 170: accepted)
+==================
+
+SELECT 1 AS #;
+SELECT * FROM ##;
+CREATE TABLE # (a int);
+CREATE TABLE #1 (a int);
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal)
+              (keyword_as)
+              (identifier))))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        (object_reference
+          (identifier))
+        (column_definitions
+          (column_definition
+            (identifier)
+            (keyword_int)))))
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        (object_reference
+          (identifier))
+        (column_definitions
+          (column_definition
+            (identifier)
+            (keyword_int)))))))
+
+==================
+Variables: a bare @, @@, and @ followed by a digit (SQL Server 2025 17.0.1000.7, levels 100 and 170: accepted)
+==================
+
+DECLARE @ int;
+DECLARE @@ int;
+DECLARE @1 int;
+SELECT @@ROWCOUNT;
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (keyword_int))))
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (keyword_int))))
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (keyword_int))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))))))
