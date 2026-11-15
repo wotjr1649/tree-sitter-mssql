@@ -41,7 +41,8 @@ The goal is complete T-SQL support with zero defects (ADR-0001: SQL Server's par
 
    A known exception that remains is reported as "no new regressions, N known exceptions", not as zero.
    Context-dependent rejections (conflicting hints, boolean versus scalar, names, permissions) are not grammar
-   defects. grammar-kit's `CheckTSQLContext` diagnoses them, and this repository classifies them as `contextual`.
+   defects. The check layer in `tools/tree-check` rejects those the parse tree alone decides (ADR-0003, ADR-0004);
+   the rest, which need names, types or the catalog, are classified `contextual`.
 3. **Verified engine profile.** SQL Server 2025 (17.x) at every compatibility level it supports: 100, 110, 120,
    130, 140, 150, 160 and 170 (owner decision, 2026-11-15; first measured the same day on LocalDB 17.0.1000.7: levels
    100 to 120 gave identical verdicts on the 726 cases, and 15 cases change verdict between levels).

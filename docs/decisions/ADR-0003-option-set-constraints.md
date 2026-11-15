@@ -33,7 +33,7 @@ A context-free grammar can express "each of n options at most once, in any order
    - The SQL Server oracle (ADR-0002) judges the grammar plus the constraint layer.
    - "Zero defects" includes the layer.
    - Consumers that need the same guarantees apply the same rules.
-3. **Context errors stay outside the grammar.** These are errors that need names, types or permissions (ADR-0002 §2). They are not option-set rules and stay with grammar-kit's `CheckTSQLContext`.
+3. **Context errors stay outside the grammar.** Since ADR-0004 the same layer also takes every rejection the parse tree alone decides (hint conflicts, permission and trigger-scope combinations, arity, window frames and more). Only errors that need names, types or the catalog remain `contextual`.
 4. **Until a rule exists, the gap is recorded.** Each over-acceptance left by a structure-only change is listed in `docs/accepted-gaps.md`, with its oracle cases, until its rule lands.
 
 ## Rules in force
