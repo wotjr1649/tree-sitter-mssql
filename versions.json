@@ -61,6 +61,16 @@
     "openjson_schema": {
       "minVersion": "2016",
       "corpusCase": "test/corpus/json.txt — \"OPENJSON with an explicit schema\""
+    },
+    "generated_always": {
+      "minVersion": "2016",
+      "note": "ROW START/END are temporal columns (2016); TRANSACTION_ID and SEQUENCE_NUMBER are ledger columns (2022). Engine verification here is SQL Server 2025, not an older-engine claim.",
+      "corpusCase": "test/corpus/ddl-table.txt — \"ddl-table/create-temporal — LocalDB 17.0.1000.7 levels 100-170: accepted\""
+    },
+    "selective_xml_path": {
+      "minVersion": "2012",
+      "note": "Available since SQL Server 2012 SP1; the local syntax oracle is SQL Server 2025.",
+      "corpusCase": "test/corpus/ddl-table.txt — \"ddl-table/index-xml-add — LocalDB 17.0.1000.7 levels 100-170: accepted\""
     }
   },
   "deprecated": {

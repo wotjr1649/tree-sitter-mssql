@@ -41,7 +41,7 @@ export default {
         $.keyword_rowversion,
 
         $.keyword_uniqueidentifier,
-        $.keyword_xml,
+        $._xml_type,
         $.keyword_json,
         $.keyword_sql_variant,
         $.keyword_hierarchyid,
@@ -49,6 +49,22 @@ export default {
         $.keyword_geography,
 
         $.custom_type,
+      ),
+    ),
+
+  // Typed XML keeps the bare XML token's tree; SQL Server also accepts xml(12).
+  _xml_type: ($) =>
+    prec.right(
+      seq(
+        $.keyword_xml,
+        optional(
+          wrapped_in_parenthesis(
+            choice(
+              seq(optional(choice($.keyword_content, $.keyword_document)), $.object_reference),
+              alias($._natural_number, $.literal),
+            ),
+          ),
+        ),
       ),
     ),
 

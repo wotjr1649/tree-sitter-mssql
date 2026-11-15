@@ -452,24 +452,9 @@ export default {
   // carry. Making the whole phrase one terminal moves the decision to the
   // lexer's own longest-match rule instead.
   //
-  // `keyword_period_for_system_time` (PERIOD FOR SYSTEM_TIME) exists for a
-  // different reason: PERIOD is not otherwise a keyword anywhere, so a
-  // standalone `keyword_period` would be a valid symbol at the very start
-  // of every `column_definitions` list item — the same position an
-  // ordinary column named `period` occupies — and keyword extraction
-  // always prefers a valid keyword over an identifier for the same text,
-  // with no later token able to change that (unlike the join-hint or
-  // `keyword_bulk` collisions this grammar accepts elsewhere, there is no
-  // `AS <word>` position here to fall back to: a column name is never
-  // preceded by AS). Requiring the whole three-word phrase up front is
-  // what lets a bare `period int` column keep parsing normally.
-  //
-  // Both tokens tolerate only plain whitespace between their words, not a
-  // comment — a comment is lexed as an `extras`-level token that can sit
-  // between two ordinary tokens, but not inside the middle of one atomic
-  // token's own match. `FOR /* c */ SYSTEM_TIME` and
-  // `PERIOD /* c */ FOR SYSTEM_TIME` are accepted trade-offs of the same
-  // shape, not oversights.
+  // Keep PERIOD's atomic token for existing trees; column-lists.js also accepts
+  // separated words for comments and preserves an ordinary column named period.
+  // The separate FOR SYSTEM_TIME token still accepts whitespace only.
   keyword_for_system_time: (_) =>
     token(seq(make_keyword('for'), /\s+/, make_keyword('system_time'))),
   keyword_period_for_system_time: (_) =>
@@ -487,6 +472,38 @@ export default {
   keyword_switch: (_) => make_keyword('switch'),
   keyword_match: (_) => make_keyword('match'),
   keyword_shortest_path: (_) => make_keyword('shortest_path'),
+
+  keyword_change_tracking: (_) => make_keyword('change_tracking'),
+  keyword_filetable_namespace: (_) => make_keyword('filetable_namespace'),
+
+  keyword_generated: (_) => make_keyword('generated'),
+  keyword_always: (_) => make_keyword('always'),
+  keyword_transaction_id: (_) => make_keyword('transaction_id'),
+  keyword_sequence_number: (_) => make_keyword('sequence_number'),
+  keyword_hidden: (_) => make_keyword('hidden'),
+  keyword_column_set: (_) => make_keyword('column_set'),
+  keyword_all_sparse_columns: (_) => make_keyword('all_sparse_columns'),
+  keyword_fillfactor: (_) => make_keyword('fillfactor'),
+  keyword_filestream_on: (_) => make_keyword('filestream_on'),
+  keyword_content: (_) => make_keyword('content'),
+  keyword_document: (_) => make_keyword('document'),
+
+  keyword_filestream: (_) => make_keyword('filestream'),
+  keyword_sparse: (_) => make_keyword('sparse'),
+  keyword_rowguidcol: (_) => make_keyword('rowguidcol'),
+  keyword_connection: (_) => make_keyword('connection'),
+  keyword_node: (_) => make_keyword('node'),
+  keyword_edge: (_) => make_keyword('edge'),
+  keyword_filetable: (_) => make_keyword('filetable'),
+  keyword_xquery: (_) => make_keyword('xquery'),
+  keyword_sql: (_) => make_keyword('sql'),
+  keyword_maxlength: (_) => make_keyword('maxlength'),
+  keyword_singleton: (_) => make_keyword('singleton'),
+
+  keyword_period: (_) => make_keyword('period'),
+  keyword_system_time: (_) => make_keyword('system_time'),
+
+  keyword_filter_predicate: (_) => make_keyword('filter_predicate'),
 
   // Operators
   is_not: ($) => prec.left(seq($.keyword_is, $.keyword_not)),

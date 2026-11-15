@@ -1,0 +1,146 @@
+{"id":"ddl-table/column-online-on","sha256":"23733db6dab10255a9722fb74c16c58c324d6ac29438009d944a5e74a624ed47","source":"ALTER TABLE dbo.t ALTER COLUMN c int NOT NULL WITH (ONLINE = ON);\n"}
+{"id":"ddl-table/column-online-off","sha256":"0d752c03238a6a397273809f5a2db548c5ec2e469b31fc574ae93f198aaae5d3","source":"ALTER TABLE dbo.t ALTER COLUMN c varchar(max) NULL WITH (ONLINE = OFF);\n"}
+{"id":"ddl-table/column-online-empty","sha256":"08e07e93cd1d5ef39b5c7e5a4ad13a8ca9f3c1bb601195e5ece97f0157db528f","source":"ALTER TABLE dbo.t ALTER COLUMN c int WITH ();\n"}
+{"id":"ddl-table/column-online-no-value","sha256":"6adb482a1e3eba88fee22f426efe146858069054fe37234a4d01409f65b3b14d","source":"ALTER TABLE dbo.t ALTER COLUMN c int WITH (ONLINE =);\n"}
+{"id":"ddl-table/column-add-replication","sha256":"f7ec37a3d12f8a1cbcfa61d20152906643d9189c82cefb2435a2965f53e9a052","source":"ALTER TABLE dbo.t ALTER COLUMN c ADD NOT FOR REPLICATION;\n"}
+{"id":"ddl-table/column-drop-replication","sha256":"4e7b0e5f119f2f3ea91572cbdbed303898da8a8f8ae987ca20ada983043b24be","source":"ALTER TABLE dbo.t ALTER COLUMN c DROP NOT FOR REPLICATION;\n"}
+{"id":"ddl-table/column-incomplete-replication","sha256":"7808f7726edf9d84509702c8a1ec24a4bb24bb05d62369d0cb7e2c3c134e1dc3","source":"ALTER TABLE dbo.t ALTER COLUMN c ADD NOT FOR;\n"}
+{"id":"ddl-table/column-add-persisted","sha256":"36178715ed22e93b70bd3870a42c60085b1ff62e28596dc6db26ce7ee608d4a4","source":"ALTER TABLE dbo.t ALTER COLUMN c ADD PERSISTED;\n"}
+{"id":"ddl-table/column-drop-persisted","sha256":"2d06cb647b1b1c5ec9ee44068922e7f279dc76ed08cb03e0e63218f299953c95","source":"ALTER TABLE dbo.t ALTER COLUMN c DROP PERSISTED;\n"}
+{"id":"ddl-table/column-add-masked","sha256":"b84ad2012c8571dabeff4d72e51d99be5c43a6073accdbdd8fdcdc59c2b66e7c","source":"ALTER TABLE dbo.t ALTER COLUMN c ADD MASKED WITH (FUNCTION = 'default()');\n"}
+{"id":"ddl-table/column-drop-masked","sha256":"be3a38486ad4e40222a709a6b4d6f799dbda733241dd4be39867cb780afe8040","source":"ALTER TABLE dbo.t ALTER COLUMN c DROP MASKED;\n"}
+{"id":"ddl-table/column-xml-schema","sha256":"00ddb3c825b1b5274a36af92e51bc1626bd27d5cf8f77b32e7bd92b582344760","source":"ALTER TABLE dbo.t ALTER COLUMN c xml(dbo.schemas);\n"}
+{"id":"ddl-table/column-xml-content","sha256":"c30a55f81f9e7acc37891896437e35e73b8b810846acf998808566c6535411b1","source":"ALTER TABLE dbo.t ALTER COLUMN c xml(CONTENT dbo.schemas);\n"}
+{"id":"ddl-table/column-xml-document","sha256":"dada37784ce7542e674ecc86b7ca5a81c612beaa12064ffcacc02593c0d47815","source":"ALTER TABLE dbo.t ALTER COLUMN c xml(DOCUMENT dbo.schemas);\n"}
+{"id":"ddl-table/column-xml-empty","sha256":"e0b63283f2acddc1dc843abb99bfd20dcffee5614eaf1536e9ec2f05c61bb084","source":"ALTER TABLE dbo.t ALTER COLUMN c xml();\n"}
+{"id":"ddl-table/column-xml-missing-schema","sha256":"526a127bc69a10767a633882590ee107322b17f2573025f9e8a1910baa10dfbb","source":"ALTER TABLE dbo.t ALTER COLUMN c xml(CONTENT);\n"}
+{"id":"ddl-table/column-xml-number","sha256":"b4e3a33513f124c439da39ec14a51dabf148c7d821c98b480bc13f46dfd9e053","source":"ALTER TABLE dbo.t ALTER COLUMN c xml(12);\n"}
+{"id":"ddl-table/drop-mixed","sha256":"7251328ed9a359ccfe2d2f33312a40019652e9a66185b6df9635766e684b0e1c","source":"ALTER TABLE dbo.t DROP CONSTRAINT IF EXISTS ck, COLUMN IF EXISTS c;\n"}
+{"id":"ddl-table/drop-columns","sha256":"9e9048ae3d3e84b8506bde3a0c7ee67298a5a97b9e10429d8a3c76fa68a5ec94","source":"ALTER TABLE dbo.t DROP COLUMN a,b;\n"}
+{"id":"ddl-table/drop-separate-columns","sha256":"4a49f00e922a999b4731596f3f6543436e7a7010bee16eccf2725756dab788fe","source":"ALTER TABLE dbo.t DROP COLUMN a, COLUMN b;\n"}
+{"id":"ddl-table/drop-constraints","sha256":"1a3667c9c48947f739475db32e54741e257cf12537616574b739f17e6defd67d","source":"ALTER TABLE dbo.t DROP CONSTRAINT a,b;\n"}
+{"id":"ddl-table/drop-constraint-options","sha256":"e1711835b2cd3b69e2febdc9c5aeb86da900961ec5e29a77e7d2e1175619f531","source":"ALTER TABLE dbo.t DROP CONSTRAINT a WITH (MOVE TO fg), b WITH (MOVE TO \"default\");\n"}
+{"id":"ddl-table/drop-constraint-partition","sha256":"5a995db29d67cf826d6069c4854f7dcacedb7cf2364c042602bb5f1a661dcbd0","source":"ALTER TABLE dbo.t DROP CONSTRAINT a WITH (MOVE TO ps(c));\n"}
+{"id":"ddl-table/drop-constraint-online","sha256":"ab1c7bac8bf588e20158e800936dd196f32653b031634a122eef7e0c49a818fd","source":"ALTER TABLE dbo.t DROP CONSTRAINT a WITH (ONLINE = ON, MAXDOP = 2);\n"}
+{"id":"ddl-table/drop-constraint-empty","sha256":"a70e323eaad807ab1c3b319158c020a26357027ed12600e39c155f864b21cfd7","source":"ALTER TABLE dbo.t DROP CONSTRAINT;\n"}
+{"id":"ddl-table/drop-trailing-comma","sha256":"252b3209c461064b45d26c570bf88945c098c9533d3b19b7cb10472604b4c688","source":"ALTER TABLE dbo.t DROP COLUMN a,;\n"}
+{"id":"ddl-table/drop-index","sha256":"ee8f88386e62d0604d5fe79488b15c668bd7dca4d4001c04240280d1c9581c03","source":"ALTER TABLE dbo.t DROP INDEX a,b;\n"}
+{"id":"ddl-table/period-add","sha256":"b01cf1f5f6d2233c12d8c507cd01251b94246731d7e7837d0e87e0fc1a63ab65","source":"ALTER TABLE dbo.t ADD PERIOD FOR SYSTEM_TIME (vf,vt);\n"}
+{"id":"ddl-table/period-drop","sha256":"3b05db574cb906f48e95724011b7f368b8500ae98d9381c63e8a950d75d075c2","source":"ALTER TABLE dbo.t DROP PERIOD FOR SYSTEM_TIME;\n"}
+{"id":"ddl-table/period-one-column","sha256":"e89311a95e7637fe21e63b6fe9923882bb2d47f6ba82802223e8d61dbc893d58","source":"ALTER TABLE dbo.t ADD PERIOD FOR SYSTEM_TIME (vf);\n"}
+{"id":"ddl-table/period-three-columns","sha256":"953806722e734055ff1560d22a9e9fa602deff74ac2089e5177b70131764742c","source":"ALTER TABLE dbo.t ADD PERIOD FOR SYSTEM_TIME (vf,vt,extra);\n"}
+{"id":"ddl-table/period-drop-columns","sha256":"b6a628dcb31722ee2b8be454db6356ac851045ad97451621c4bec5936a97093c","source":"ALTER TABLE dbo.t DROP PERIOD FOR SYSTEM_TIME (vf,vt);\n"}
+{"id":"ddl-table/period-comment","sha256":"3ed916369c21df9532b756dcc5a0e938063fb00bcc36829d9e7811bd889e4df5","source":"ALTER TABLE dbo.t ADD PERIOD /*x*/ FOR SYSTEM_TIME (vf,vt);\n"}
+{"id":"ddl-table/switch-wait","sha256":"393565e78e5ceac553c25058dc3dbf285682092862703a50cf9078de4f040bb1","source":"ALTER TABLE dbo.t SWITCH PARTITION 1 TO dbo.archive PARTITION 2 WITH (WAIT_AT_LOW_PRIORITY (MAX_DURATION = 5 MINUTES, ABORT_AFTER_WAIT = SELF));\n"}
+{"id":"ddl-table/switch-no-partition","sha256":"56e08e799f769fde4d3687fad0c13f284ca886116cc16d6043999267a143826b","source":"ALTER TABLE dbo.t SWITCH TO dbo.archive WITH (WAIT_AT_LOW_PRIORITY (MAX_DURATION = 0 MINUTES, ABORT_AFTER_WAIT = BLOCKERS));\n"}
+{"id":"ddl-table/switch-missing-target","sha256":"9bcae3f22ad83bb20c5b012e16934d0145e2cefbd083c70a8dcd3a819b35da73","source":"ALTER TABLE dbo.t SWITCH TO WITH (WAIT_AT_LOW_PRIORITY (MAX_DURATION = 1 MINUTES, ABORT_AFTER_WAIT = SELF));\n"}
+{"id":"ddl-table/switch-empty-options","sha256":"73f56df45a1ffa5f7ae62f346c763b0afa287bf593f94274bb85b32759723342","source":"ALTER TABLE dbo.t SWITCH TO dbo.archive WITH ();\n"}
+{"id":"ddl-table/system-versioning","sha256":"8c4b5e8577b64efebcc546cfe5e9a5067770023279690ccfd2a7a8752c78ff98","source":"ALTER TABLE dbo.t SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.hist, DATA_CONSISTENCY_CHECK = ON, HISTORY_RETENTION_PERIOD = 3 DAYS));\n"}
+{"id":"ddl-table/system-versioning-year","sha256":"62bfc2e7428104b2cc9867be68568842004002e56bd23c7ead6e70716caad64e","source":"ALTER TABLE dbo.t SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = db.dbo.hist, HISTORY_RETENTION_PERIOD = 1 YEAR));\n"}
+{"id":"ddl-table/system-versioning-off","sha256":"7764c4a54cdeba882ee0f3e2183dc0d03fa3223444eed1e4a80347de9aa380a3","source":"ALTER TABLE dbo.t SET (SYSTEM_VERSIONING = OFF);\n"}
+{"id":"ddl-table/system-versioning-infinite","sha256":"d1af78b2d696599021e5d72b98b368ddb96c51b680ce201363ade2e585a3d7e2","source":"ALTER TABLE dbo.t SET (SYSTEM_VERSIONING = ON (HISTORY_RETENTION_PERIOD = INFINITE));\n"}
+{"id":"ddl-table/system-versioning-broken-name","sha256":"f51083912894e86b17786e172457864cff49450c891f6973f6bca449a598f1b4","source":"ALTER TABLE dbo.t SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.));\n"}
+{"id":"ddl-table/ledger-view","sha256":"91b8b1902bd695ab819c6b2fbe282f9f702e0d2f464cdc23b11a72dce7932bf1","source":"ALTER TABLE dbo.t SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.hist));\n"}
+{"id":"ddl-table/stretch-filter","sha256":"a05d02307894ead9e9fe2f6b5edb9427811121084b0db24a2aea8974a284e71c","source":"ALTER TABLE dbo.t SET (REMOTE_DATA_ARCHIVE = ON (FILTER_PREDICATE = dbo.predicate(c), MIGRATION_STATE = OUTBOUND));\n"}
+{"id":"ddl-table/stretch-filter-two-args","sha256":"e1af9f8bde9186ad9c84993f129a51823072ce9f9fe07c853e98e19675175439","source":"ALTER TABLE dbo.t SET (REMOTE_DATA_ARCHIVE = ON (FILTER_PREDICATE = dbo.predicate(c,d), MIGRATION_STATE = INBOUND));\n"}
+{"id":"ddl-table/change-enable","sha256":"a48718f3ba50b37d804c2acd59f1622e995e0eb7d459a58361ae1165f1c51f66","source":"ALTER TABLE dbo.t ENABLE CHANGE_TRACKING WITH (TRACK_COLUMNS_UPDATED = ON);\n"}
+{"id":"ddl-table/change-disable","sha256":"98b348002700576a23eefc64000776c1f7de5c45b338c70f5962b3b7273fdde9","source":"ALTER TABLE dbo.t DISABLE CHANGE_TRACKING;\n"}
+{"id":"ddl-table/change-disable-with","sha256":"1e0da1b93bb2a95e3aa362244535c0ebd5cc0bf1c7889270db4c58d188c43d84","source":"ALTER TABLE dbo.t DISABLE CHANGE_TRACKING WITH (TRACK_COLUMNS_UPDATED = ON);\n"}
+{"id":"ddl-table/namespace-enable","sha256":"aaa601d0b16aa3b12726693715af5a3c2186ccdeb27e3040002f3190dc404d44","source":"ALTER TABLE dbo.t ENABLE FILETABLE_NAMESPACE;\n"}
+{"id":"ddl-table/namespace-disable","sha256":"39e7101c81822df86857000841c7449b99087e55b7a9c8065ba7aaa06303d51f","source":"ALTER TABLE dbo.t DISABLE FILETABLE_NAMESPACE;\n"}
+{"id":"ddl-table/namespace-with","sha256":"8b33297b4e4629dd24a7210120290b822bd6005d6cf14efc7312ff39752c5eb9","source":"ALTER TABLE dbo.t ENABLE FILETABLE_NAMESPACE WITH (TRACK_COLUMNS_UPDATED = ON);\n"}
+{"id":"ddl-table/rebuild-all","sha256":"75c509e154940b4c106c7a52b76b8b230c42661d5c1d95409adc3832d7e92cb9","source":"ALTER TABLE dbo.t REBUILD PARTITION = ALL WITH (DATA_COMPRESSION = PAGE);\n"}
+{"id":"ddl-table/rebuild-one","sha256":"413408f2a53a81bbe0058f3360896a7582d037bdfce0e6f0994f52c23dab6826","source":"ALTER TABLE dbo.t REBUILD PARTITION = 1 WITH (DATA_COMPRESSION = ROW);\n"}
+{"id":"ddl-table/rebuild-no-value","sha256":"e7b8027698555b9818d0589b389a9a9c37ab12c48991a62bc2e19ecd73d49d34","source":"ALTER TABLE dbo.t REBUILD PARTITION = WITH (DATA_COMPRESSION = PAGE);\n"}
+{"id":"ddl-table/memory-alter-index","sha256":"b247c99c8df96dde9c8c806802f8f7b543fc549cf469d8ddbf98bbc42cb803ee","source":"ALTER TABLE dbo.t ALTER INDEX ix REBUILD WITH (BUCKET_COUNT = 512);\n"}
+{"id":"ddl-table/memory-add-hash","sha256":"d2fa80f76885b68a0829069b8381038e14835c145195892a65a845664c9e91fe","source":"ALTER TABLE dbo.t ADD INDEX ix NONCLUSTERED HASH (c) WITH (BUCKET_COUNT = 256);\n"}
+{"id":"ddl-table/memory-add-inline-hash","sha256":"4fc53a36bf63b2a80324e90005491656e5b5aa6675ce03669fbb8027428e17a1","source":"ALTER TABLE dbo.t ADD INDEX ix NONCLUSTERED HASH WITH (BUCKET_COUNT = 256);\n"}
+{"id":"ddl-table/memory-add-inline-range","sha256":"b641cf7363e915ee38c84f1376186bb1a9f69e3a2e2afd0a2e51a0258ea48d0e","source":"ALTER TABLE dbo.t ADD INDEX ix NONCLUSTERED;\n"}
+{"id":"ddl-table/memory-add-cci","sha256":"933533454ffc9140372adfd2bc89707e180f129216da3b3f073b5655b8df7d8f","source":"ALTER TABLE dbo.t ADD INDEX ix CLUSTERED COLUMNSTORE WITH (COMPRESSION_DELAY = 1 MINUTES);\n"}
+{"id":"ddl-table/column-default-values","sha256":"961196a14496cdb183c60b920036572a856eb67c8848eba6fb0993ba12223a0e","source":"ALTER TABLE dbo.t ADD c int CONSTRAINT df DEFAULT 1 WITH VALUES;\n"}
+{"id":"ddl-table/column-default-values-after-null","sha256":"56258115f3477a926ff93970a593ebdf6f335b1ee57f272407f9a77100b3bd75","source":"ALTER TABLE dbo.t ADD c int NULL CONSTRAINT df DEFAULT 1 WITH VALUES;\n"}
+{"id":"ddl-table/column-default-values-missing-with","sha256":"a0f7309793402b05537bb4c035632a21c677afb9da5cac733d8106ede42f2700","source":"ALTER TABLE dbo.t ADD c int DEFAULT 1 VALUES;\n"}
+{"id":"ddl-table/column-xml-set","sha256":"050db4b516f7a3c657b9a5fc310ee957ee33d80930846a7d28865c1b2c153dd3","source":"ALTER TABLE dbo.t ADD c xml COLUMN_SET FOR ALL_SPARSE_COLUMNS;\n"}
+{"id":"ddl-table/column-set-incomplete","sha256":"954e2d78d026d2dcfa407b2c80ba42833d93132fc8aba5b012d1ad553bc7e6ee","source":"ALTER TABLE dbo.t ADD c xml COLUMN_SET FOR;\n"}
+{"id":"ddl-table/column-filestream","sha256":"5e1a0fc83c8e99210f2892601cf8cdff713db74e89030457e30983662ca5e45b","source":"ALTER TABLE dbo.t ADD c varbinary(max) FILESTREAM NULL;\n"}
+{"id":"ddl-table/column-fillfactor","sha256":"df5597988bb69d3931e3fed483f4c295fdc33254f4d80d34ec5353bf228feb1b","source":"ALTER TABLE dbo.t ADD c int PRIMARY KEY WITH FILLFACTOR = 80 ON fg;\n"}
+{"id":"ddl-table/constraint-fillfactor","sha256":"36307b48e38215226c0bc226be72401f613b034ad46eff041385c21f6a8d15ad","source":"ALTER TABLE dbo.t ADD CONSTRAINT pk PRIMARY KEY(c) WITH FILLFACTOR = 90;\n"}
+{"id":"ddl-table/constraint-fillfactor-empty","sha256":"b7864f74081dc544b683dbce40c5e23ed8038bf31f6107e420548ade027b8b73","source":"ALTER TABLE dbo.t ADD PRIMARY KEY(c) WITH FILLFACTOR =;\n"}
+{"id":"ddl-table/computed-primary","sha256":"1ad9b78dfc20b43d91e63a091f5a134190fe171b37f5cf94ab4abdd1a1632329","source":"ALTER TABLE dbo.t ADD c AS a+1 PERSISTED NOT NULL CONSTRAINT pk PRIMARY KEY CLUSTERED WITH FILLFACTOR = 80 ON fg;\n"}
+{"id":"ddl-table/computed-foreign","sha256":"a647790b35b61a15c951cd819f5c761d9f05dcf371773946d5d568bf6ed61d87","source":"ALTER TABLE dbo.t ADD c AS a PERSISTED REFERENCES dbo.p(id) NOT FOR REPLICATION;\n"}
+{"id":"ddl-table/computed-check","sha256":"7772ca2b876c3efadfbecd97d94a9f012fb1c0f97852ecf8c59df51cfc11137c","source":"ALTER TABLE dbo.t ADD c AS a+1 PERSISTED CHECK (c>0);\n"}
+{"id":"ddl-table/computed-default","sha256":"97d78fccc7e075189fb2acc2b9030f32e61c2c29819600fc77a9544b663af36b","source":"ALTER TABLE dbo.t ADD c AS a+1 DEFAULT 0;\n"}
+{"id":"ddl-table/connection","sha256":"ab8cb0a389e1ffc44005de6e8e9beece8c366c04cd1d3191c34e3b2420fad01d","source":"ALTER TABLE dbo.t ADD CONSTRAINT ec CONNECTION(dbo.p TO dbo.q) ON DELETE CASCADE;\n"}
+{"id":"ddl-table/connection-no-target","sha256":"9e87cb18c8f801b75bd39f3e97ca544c5f4b3e4433c44cfc91830546a0510075","source":"ALTER TABLE dbo.t ADD CONSTRAINT ec CONNECTION(dbo.p TO);\n"}
+{"id":"ddl-table/index-rebuild-all","sha256":"0fd61801a3dedb94204cd1ac881809d094631ea7da888f327653376ddb0a44e5","source":"ALTER INDEX ix ON dbo.t REBUILD PARTITION = ALL WITH (DATA_COMPRESSION = PAGE ON PARTITIONS (1, 3 TO 5), XML_COMPRESSION = ON ON PARTITIONS (2));\n"}
+{"id":"ddl-table/index-rebuild-one","sha256":"b82a2540b49117bfcbc17c3622cfcb8aa6129290cb5ed15ca62515fa29fcbe6a","source":"ALTER INDEX ix ON dbo.t REBUILD PARTITION = 2 WITH (DATA_COMPRESSION = ROW);\n"}
+{"id":"ddl-table/index-reorganize-one","sha256":"725e12754786f050fb396f66aab59a573559924228c565f2adda33e153530d4d","source":"ALTER INDEX ix ON dbo.t REORGANIZE PARTITION = 2 WITH (LOB_COMPACTION = ON);\n"}
+{"id":"ddl-table/index-reorganize-all","sha256":"2af33494da697f1462ca1691204ec857153cbd80fc6f71a3049a78613f31f81c","source":"ALTER INDEX ix ON dbo.t REORGANIZE PARTITION = ALL;\n"}
+{"id":"ddl-table/index-partition-negative","sha256":"40f8d31fe5a0ada2a746da1dd3be3f632c9886322764a16091bc4527d984fdf8","source":"ALTER INDEX ix ON dbo.t REBUILD PARTITION = -1;\n"}
+{"id":"ddl-table/index-partition-missing","sha256":"4668e471cdfa1328c0661bbe69605c3590b8a520c7f11a6e632fe8930b446a6f","source":"ALTER INDEX ix ON dbo.t REBUILD PARTITION =;\n"}
+{"id":"ddl-table/index-partition-empty-list","sha256":"ad3bae0d5f8a0474589edcdf4f3644b3bc250ec97bcc105b8a331817e79a9ee1","source":"ALTER INDEX ix ON dbo.t REBUILD WITH (DATA_COMPRESSION = PAGE ON PARTITIONS ());\n"}
+{"id":"ddl-table/index-partition-range","sha256":"e4128adcf4c61a25fe7dacb6d080642007a8a987c6e7e9d44f798e74c86183e9","source":"ALTER INDEX ix ON dbo.t REBUILD WITH (DATA_COMPRESSION = PAGE ON PARTITIONS (1 TO 3, 5));\n"}
+{"id":"ddl-table/index-partition-reverse","sha256":"6c64706581fae20088533dfa633035920a35029d935d292151204be9358e4e34","source":"ALTER INDEX ix ON dbo.t REBUILD WITH (DATA_COMPRESSION = PAGE ON PARTITIONS (3 TO 1));\n"}
+{"id":"ddl-table/index-wrong-partition-option","sha256":"716085721a9e2da7471fac9dc17e25a2ae328719420ad1c49ef01552948693d6","source":"ALTER INDEX ix ON dbo.t REBUILD WITH (MAXDOP = 2 ON PARTITIONS (1));\n"}
+{"id":"ddl-table/index-xml-add","sha256":"64d1020092bd465751e18662d34b747994d77d5c38129c167c1711012514dfac","source":"ALTER INDEX ix ON dbo.t FOR (ADD path1 = '/x/y' AS XQUERY 'xs:string' MAXLENGTH (20) SINGLETON);\n"}
+{"id":"ddl-table/index-xml-remove","sha256":"5692612e5a72cd1a0e4c82b5f981cf542e71adfb44258b743bd78f33ab64e6de","source":"ALTER INDEX ix ON dbo.t FOR (REMOVE path1);\n"}
+{"id":"ddl-table/index-xml-namespace","sha256":"cb752da3f2e484a0e85c57559490ec7599ae0285ce1139d74a37a90e29a5b336","source":"ALTER INDEX ix ON dbo.t WITH XMLNAMESPACES ('urn:x' AS x) FOR (ADD path1 = '/x:root' AS SQL int SINGLETON, REMOVE old);\n"}
+{"id":"ddl-table/index-xml-empty","sha256":"ffb0f72b6e0004225de568d85e6683e598c493b83b227904453b28eb9a5f6c5c","source":"ALTER INDEX ix ON dbo.t FOR ();\n"}
+{"id":"ddl-table/index-xml-add-missing-path","sha256":"f88485e8c57e6cadd80c7e85c2da26b92222d895e43faf616f36b381e27f057f","source":"ALTER INDEX ix ON dbo.t FOR (ADD path1 =);\n"}
+{"id":"ddl-table/index-xml-remove-missing-name","sha256":"46ee5deb160c737a63989c071a1180814f8603a207c094e2a34608a6dca7b6ef","source":"ALTER INDEX ix ON dbo.t FOR (REMOVE);\n"}
+{"id":"ddl-table/index-resume","sha256":"ac23ba44c3a3f1fc3c3c62430591a98a479c3d2c387965f4aa5b017f28df3a23","source":"ALTER INDEX ix ON dbo.t RESUME WITH (MAX_DURATION = 10 MINUTES, MAXDOP = 2);\n"}
+{"id":"ddl-table/index-pause","sha256":"385e7a1ad436924fcfe3a47cd918409416238a19921b02e25f6ce6df5a7e165b","source":"ALTER INDEX ix ON dbo.t PAUSE;\n"}
+{"id":"ddl-table/index-abort","sha256":"f9d52802b34755009bfd3f8058507db2a5ea1420865ad8f8879d76bd844f2085","source":"ALTER INDEX ix ON dbo.t ABORT;\n"}
+{"id":"ddl-table/create-xml-content","sha256":"f45f6885402d7d171d22d8eec8a884cac5ea1b4ec86f32fe0e28b5c27ba66913","source":"CREATE TABLE dbo.t (c xml(CONTENT dbo.schemas));\n"}
+{"id":"ddl-table/create-xml-document","sha256":"b2755b3b13f600b35215a79478a544088dd9e1109debb8b7a91e1d4812b3b739","source":"CREATE TABLE dbo.t (c xml(DOCUMENT dbo.schemas));\n"}
+{"id":"ddl-table/create-column-set","sha256":"7d871b906d01945e47deaf1f2fc1381628eaf6cd40fc642033237c4e7aeb05a9","source":"CREATE TABLE dbo.t (c xml COLUMN_SET FOR ALL_SPARSE_COLUMNS);\n"}
+{"id":"ddl-table/create-column-index","sha256":"27135eb802e5002327804b60ec8f8beb0e7ec2f53011aa4077b9812acae6fec7","source":"CREATE TABLE dbo.t (c int INDEX ix NONCLUSTERED WITH (PAD_INDEX = ON) ON fg FILESTREAM_ON \"NULL\");\n"}
+{"id":"ddl-table/create-hash","sha256":"32c810aa7f34cc7a82170d5c4591998d8eeab6e91298bc59a032fce08b50bd2d","source":"CREATE TABLE dbo.t (c int PRIMARY KEY NONCLUSTERED HASH WITH (BUCKET_COUNT = 512)) WITH (MEMORY_OPTIMIZED = ON);\n"}
+{"id":"ddl-table/create-index-include","sha256":"f5f5f7eeda7287d4dce05415eee40166fbb2df9083a00701c9a661db5dcf8f19","source":"CREATE TABLE dbo.t (c int,d int,INDEX ix NONCLUSTERED(c) INCLUDE(d) WHERE c>0 WITH (PAD_INDEX = ON) ON fg FILESTREAM_ON fs);\n"}
+{"id":"ddl-table/create-index-cci","sha256":"cb04c08f496bef419a3c6a5f08fd6ed7c6188f2eccb7d1c80092a775d0bb48bd","source":"CREATE TABLE dbo.t (c int,INDEX ix CLUSTERED COLUMNSTORE ORDER(c) WITH (COMPRESSION_DELAY = 0));\n"}
+{"id":"ddl-table/create-index-ncci","sha256":"9f00dcff99f91ece5f2a01577ecd93fb3061bfd5a1b3cd7ce7898e8d127eadab","source":"CREATE TABLE dbo.t (c int,INDEX ix NONCLUSTERED COLUMNSTORE(c));\n"}
+{"id":"ddl-table/create-index-nocci-columns","sha256":"8cd137f1dc8bce26cede92422c8e5bb467d3e7ab1b7a71b7aceaf332641c5e5d","source":"CREATE TABLE dbo.t (c int,INDEX ix NONCLUSTERED COLUMNSTORE);\n"}
+{"id":"ddl-table/create-filetable","sha256":"ea9503a18c4f7551b3e9ce4953a3fbe45b18f8da086c0df91edc1f8c40db7ab4","source":"CREATE TABLE dbo.t AS FileTable WITH (FILETABLE_DIRECTORY = 'docs');\n"}
+{"id":"ddl-table/create-node","sha256":"a8f00341fefd25361e941b30baeec0d2c97182368f5a3d052c68804435bb6ffe","source":"CREATE TABLE dbo.t (c int PRIMARY KEY) AS NODE ON fg;\n"}
+{"id":"ddl-table/create-edge","sha256":"fb1e86ff0b512b79735fb0f791f4b46079432df7eb51f2c0c037dc8c979121e7","source":"CREATE TABLE dbo.t AS EDGE;\n"}
+{"id":"ddl-table/create-node-empty","sha256":"10099f12855e5961e3380a1a818d80838e73e12a115e6631caa63415b1b2c4cb","source":"CREATE TABLE dbo.t AS NODE;\n"}
+{"id":"ddl-table/create-connection","sha256":"5df78fe9c696c11bd8c6097e9d2a1fda61169e2d4ec17d25a41101f2a8c7e1e6","source":"CREATE TABLE dbo.t (c int,CONSTRAINT ec CONNECTION(dbo.p TO dbo.q) ON DELETE NO ACTION) AS EDGE;\n"}
+{"id":"ddl-table/create-connection-missing-to","sha256":"3351e0164aa1c69f1897ddfc0e3e2fe27fb319d987fe25ce450e127d2c4b60a9","source":"CREATE TABLE dbo.t (c int,CONSTRAINT ec CONNECTION(dbo.p dbo.q)) AS EDGE;\n"}
+{"id":"ddl-table/create-ledger","sha256":"1a82505a2304f541b0c932f31d2e36413c11915c9a63386013b2aaeec2f01988","source":"CREATE TABLE dbo.t (id int,tx bigint GENERATED ALWAYS AS TRANSACTION_ID START HIDDEN NOT NULL,seq bigint GENERATED ALWAYS AS SEQUENCE_NUMBER START HIDDEN NOT NULL) WITH (SYSTEM_VERSIONING = ON, LEDGER = ON (LEDGER_VIEW = dbo.lv (TRANSACTION_ID_COLUMN_NAME = tx_id)));\n"}
+{"id":"ddl-table/create-temporal","sha256":"bb364f990962a227b42127e769ce7e097798fa0603dfb7aa090d841996fa05a8","source":"CREATE TABLE dbo.t (id int,vf datetime2 GENERATED ALWAYS AS ROW START NOT NULL,vt datetime2 GENERATED ALWAYS AS ROW END NOT NULL,PERIOD FOR SYSTEM_TIME(vf,vt)) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.hist));\n"}
+{"id":"ddl-table/generated-missing-as","sha256":"5e0cc46bb6035ddd1e4a77be51b543f1784ef259c92c4475d7d36b80a307c75e","source":"CREATE TABLE dbo.t (vf datetime2 GENERATED ALWAYS ROW START);\n"}
+{"id":"ddl-table/generated-missing-boundary","sha256":"c9d274a8ea68ff9da8d5513c229f5661d9f7614ce6d4cba70798ad325e82fd2b","source":"CREATE TABLE dbo.t (vf datetime2 GENERATED ALWAYS AS ROW);\n"}
+{"id":"ddl-table/generated-invalid-kind","sha256":"600b1e9b43f38bb97f3c85d6eaf7a086db986267501d7883365343394d5f3458","source":"CREATE TABLE dbo.t (vf datetime2 GENERATED ALWAYS AS UNKNOWN START);\n"}
+{"id":"ddl-table/plain-keyword-names","sha256":"bed92a3e61fa1979c0a0361ed318fa4de8b5eaeca3fed8fdb02769a20298b508","source":"CREATE TABLE dbo.t (generated int,hidden int,period int,content int,document int,fillfactor int);\n"}
+{"id":"ddl-table/create-duplicate-online","sha256":"0a05cd905253c96fe629be0987eeb0b19f062ae3428a31530c59641cede93e47","source":"CREATE TABLE dbo.t (id int) WITH (SYSTEM_VERSIONING = OFF, SYSTEM_VERSIONING = OFF);\n"}
+{"id":"ddl-table/xml-number-content","source":"ALTER TABLE dbo.t ALTER COLUMN c xml(CONTENT 12);\n","sha256":"921003528507c2f48f7818692445ad73d460cf021a7d737156b44e191ce6a7d6"}
+{"id":"ddl-table/xml-string-schema","source":"ALTER TABLE dbo.t ALTER COLUMN c xml('schemas');\n","sha256":"d07035564a7d8ea14d2ad0e82f2b657abe458b9d9bd2a0cdc6f4c8421334ffbe"}
+{"id":"ddl-table/xml-negative-schema","source":"ALTER TABLE dbo.t ALTER COLUMN c xml(-1);\n","sha256":"d4064799ee788099f0f19f021ed6096405a8acd5fd3d7345f97d0b417334e06c"}
+{"id":"ddl-table/xml-decimal-schema","source":"ALTER TABLE dbo.t ALTER COLUMN c xml(1.5);\n","sha256":"7975fc91c1d572bfc55b1935fdf6255aeda54ea9c166b130d4c5092656717dff"}
+{"id":"ddl-table/xml-null-schema","source":"ALTER TABLE dbo.t ALTER COLUMN c xml(NULL);\n","sha256":"2fb4dfc127fb9eb49a93839fc45bb038759445160493deb26139166011d1b7a4"}
+{"id":"ddl-table/period-nested-comment","source":"ALTER TABLE dbo.t ADD PERIOD /*a /*b*/ c*/ FOR SYSTEM_TIME (vf,vt);\n","sha256":"56bc0c83fa062ddea7125f90fc073f975db1ea7777077fa54a14c2d738b84600"}
+{"id":"ddl-table/period-line-comment","source":"ALTER TABLE dbo.t ADD PERIOD --comment\n FOR SYSTEM_TIME (vf,vt);\n","sha256":"80b66ed04f8775a1ecd0858401dfe10bbb820c14a841bdbbc84f4e7afbfd3ed4"}
+{"id":"ddl-table/period-drop-comment","source":"ALTER TABLE dbo.t DROP PERIOD FOR /*comment*/ SYSTEM_TIME;\n","sha256":"b5fc050f61e5b250d871d31ca00bd6cebc90e3e1fb3662f1c760fe2fc0c3dd87"}
+{"id":"ddl-table/index-partition-variable","source":"ALTER INDEX ix ON dbo.t REBUILD PARTITION = @p;\n","sha256":"11978d87e93194684be4124bd65add80e7f4867ec1894408a3a26d5cdca0a96b"}
+{"id":"ddl-table/index-partition-plus","source":"ALTER INDEX ix ON dbo.t REBUILD PARTITION = +1;\n","sha256":"19391ac6cd0ecccf2bfb9cfc69b8abaa10f4c9f9046f30da7c237373a4a1cd79"}
+{"id":"ddl-table/graph-name-node","source":"CREATE TABLE node (node int, edge int, connection int);\n","sha256":"38fce3697ea5b115f837f8e4ed5fafd7004adcabee90673048090ae22c277ca1"}
+{"id":"ddl-table/ordinary-period","source":"CREATE TABLE dbo.t (period int);\n","sha256":"9077f31af78ab90d2c17aa5ea573597e4b292c5aa2d402568c82e81bea2e0f94"}
+{"id":"ddl-table/ordinary-hidden","source":"CREATE TABLE dbo.t (hidden int);\n","sha256":"fe01490046e5ada6aff9d55d8eef37320af13c11dafa21c09dd21a32346d1c9c"}
+{"id":"ddl-table/ordinary-generated","source":"CREATE TABLE dbo.t (generated int);\n","sha256":"f17b5b35d8f8f5a0be4cd646951a3c454cb256fad7e50ddef868f0d77a110322"}
+{"id":"ddl-table/ordinary-content","source":"CREATE TABLE dbo.t (content int,document int);\n","sha256":"72483d929ff8c9ba856c7cb04e1a95a468c15adefeb638029c06bc0db6208a1f"}
+{"id":"ddl-table/generated-comment","source":"CREATE TABLE dbo.t (vf datetime2 GENERATED /*a*/ ALWAYS AS ROW START NOT NULL,vt datetime2 GENERATED ALWAYS AS ROW END NOT NULL,PERIOD /*a*/ FOR SYSTEM_TIME(vf,vt)) WITH (SYSTEM_VERSIONING = ON);\n","sha256":"dadb730048e4fb4fefa4c99ca2c07a659f00794ef3b45265946b39686a732aa2"}
+{"id":"ddl-table/filetable-empty","source":"CREATE TABLE dbo.t AS FileTable;\n","sha256":"535d5078b27390b38fe67140668c459f25c460e9889ab0b15b67367e4e6aeca6"}
+{"id":"ddl-table/graph-empty-node","source":"CREATE TABLE dbo.t AS NODE;\n","sha256":"10099f12855e5961e3380a1a818d80838e73e12a115e6631caa63415b1b2c4cb"}
+{"id":"ddl-table/xml-path-sql-maxlength","source":"ALTER INDEX ix ON dbo.t FOR (ADD p='/x' AS SQL int MAXLENGTH(20));\n","sha256":"1733a51aa32a7abaf61bbf2b437b456d5a53b41bdd9053dcf6b5d4b0cb680f42"}
+{"id":"ddl-table/xml-path-xquery-no-type","source":"ALTER INDEX ix ON dbo.t FOR (ADD p='/x' AS XQUERY);\n","sha256":"db192ccd5c6b7f75e1d825e78296a23bfe4950cba15103efb239e183185978ea"}
+{"id":"ddl-table/xml-path-negative-length","source":"ALTER INDEX ix ON dbo.t FOR (ADD p='/x' AS XQUERY 'xs:string' MAXLENGTH(-1));\n","sha256":"bf4d1c0a275535781c84646da07eff87e012bcc8621913a92f7814276558352d"}
+{"id":"ddl-table/xml-path-namespace-remove","source":"ALTER INDEX ix ON dbo.t WITH XMLNAMESPACES(DEFAULT 'urn:x') FOR (REMOVE p);\n","sha256":"e664c1d447b18f9826efa0833b1e2da409fae6f0838b33baf5239a72ba14ec7b"}
+{"id":"ddl-table/xml-path-with-pad","source":"ALTER INDEX ix ON dbo.t FOR (ADD p='/x') WITH (PAD_INDEX = ON);\n","sha256":"1b1422c7c7d23343dee16cc70416f3f3aff5dff6ff1b8fef00bc959333ca7f32"}
+{"id":"ddl-table/xml-path-with-maxdop","source":"ALTER INDEX ix ON dbo.t FOR (REMOVE p) WITH (MAXDOP = 2);\n","sha256":"1cd193b151035277db5e06540fbb48f34194d2fb6e8a98337aa69f0a7428c031"}
+{"id":"ddl-table/xml-path-with-drop-existing","source":"ALTER INDEX ix ON dbo.t FOR (REMOVE p) WITH (DROP_EXISTING = ON);\n","sha256":"e400804a4d94c0102f532950f3e6beb7a4ddc0eca74a16af45c55bf5d09630c1"}
+{"id":"ddl-table/xml-path-singleton","source":"ALTER INDEX ix ON dbo.t FOR (ADD p='/x' SINGLETON);\n","sha256":"72a2461e390d9a8d354d7087cacb13b2742d2502f93b8b2d09a783b93da49463"}
+{"id":"ddl-table/xml-path-maxlength-no-type","source":"ALTER INDEX ix ON dbo.t FOR (ADD p='/x' AS XQUERY MAXLENGTH(20));\n","sha256":"e2faf058a9451918faef765806cca186e5eda1fe80605bcfe1184c4aee933cc2"}
+{"id":"ddl-table/xml-path-xquery-singleton-no-type","source":"ALTER INDEX ix ON dbo.t FOR (ADD p='/x' AS XQUERY SINGLETON);\n","sha256":"f9705d09f34f98234f81807f571383eb8c837c5cb538fdc26bf485c597e5d34d"}
+{"id":"ddl-table/filter-null","source":"ALTER TABLE dbo.t SET (REMOTE_DATA_ARCHIVE = ON (FILTER_PREDICATE = NULL, MIGRATION_STATE = OUTBOUND));\n","sha256":"0a9839dc65b949f8a45e7126d8a66ecfe10392e3efbedd4e755edaa88400934a"}
+{"id":"ddl-table/create-cci-columns","source":"CREATE TABLE dbo.t(c int, INDEX ix CLUSTERED COLUMNSTORE(c));\n","sha256":"b3d553ebe8dee9c02970f6c2700a7f3e8a026d24524070b42a743206435134a9"}
+{"id":"ddl-table/create-ncci-valid","source":"CREATE TABLE dbo.t(c int, INDEX ix NONCLUSTERED COLUMNSTORE(c));\n","sha256":"643e30b1e79a84de370ed631c1097708d0fcafd4c37ff636fbddae7e2b27cdbc"}

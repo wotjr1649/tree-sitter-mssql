@@ -913,7 +913,8 @@ SELECT 1;
 ---
 
 (program
-  (ERROR)
+  (ERROR
+    (keyword_sql))
   (batch
     (statement
       (query_specification

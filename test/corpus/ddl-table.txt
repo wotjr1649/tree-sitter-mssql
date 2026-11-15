@@ -1,0 +1,1460 @@
+================================================================================
+ddl-table/column-online-on — LocalDB 17.0.1000.7 levels 100-170: rejected 1712
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c int NOT NULL WITH (ONLINE = ON);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) type: (keyword_int) (keyword_not) (keyword_null) (with_options (keyword_with) (option name: (identifier) value: (keyword_on)))))))
+
+================================================================================
+ddl-table/column-online-off — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c varchar(max) NULL WITH (ONLINE = OFF);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) type: (varchar (keyword_varchar) size: (keyword_max)) (keyword_null) (with_options (keyword_with) (option name: (identifier) value: (keyword_off)))))))
+
+================================================================================
+ddl-table/column-online-empty — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c int WITH ();
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) type: (keyword_int) (with_options (keyword_with) (option name: (identifier (MISSING _identifier))))))))
+
+================================================================================
+ddl-table/column-online-no-value — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c int WITH (ONLINE =);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) type: (keyword_int) (with_options (keyword_with) (option name: (identifier)) (ERROR))))))
+
+================================================================================
+ddl-table/column-add-replication — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c ADD NOT FOR REPLICATION;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) (keyword_add) (keyword_not) (keyword_for) (keyword_replication)))))
+
+================================================================================
+ddl-table/column-drop-replication — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c DROP NOT FOR REPLICATION;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) (keyword_drop) (keyword_not) (keyword_for) (keyword_replication)))))
+
+================================================================================
+ddl-table/column-incomplete-replication — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c ADD NOT FOR;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) (keyword_add) (keyword_not) (keyword_for) (MISSING keyword_replication)))))
+
+================================================================================
+ddl-table/column-add-persisted — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c ADD PERSISTED;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) (keyword_add) (keyword_persisted)))))
+
+================================================================================
+ddl-table/column-drop-persisted — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c DROP PERSISTED;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) (keyword_drop) (keyword_persisted)))))
+
+================================================================================
+ddl-table/column-add-masked — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c ADD MASKED WITH (FUNCTION = 'default()');
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) (keyword_add) (masked_with (keyword_masked) (with_options (keyword_with) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+ddl-table/column-drop-masked — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c DROP MASKED;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) (keyword_drop) (keyword_masked)))))
+
+================================================================================
+ddl-table/column-xml-schema — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c xml(dbo.schemas);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) type: (keyword_xml) type: (object_reference schema: (identifier) name: (identifier))))))
+
+================================================================================
+ddl-table/column-xml-content — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c xml(CONTENT dbo.schemas);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) type: (keyword_xml) type: (keyword_content) type: (object_reference schema: (identifier) name: (identifier))))))
+
+================================================================================
+ddl-table/column-xml-document — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c xml(DOCUMENT dbo.schemas);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) type: (keyword_xml) type: (keyword_document) type: (object_reference schema: (identifier) name: (identifier))))))
+
+================================================================================
+ddl-table/column-xml-empty — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c xml();
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) type: (keyword_xml) type: (object_reference name: (identifier (MISSING _identifier)))))))
+
+================================================================================
+ddl-table/column-xml-missing-schema — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c xml(CONTENT);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) type: (keyword_xml) type: (keyword_content) type: (object_reference name: (identifier (MISSING _identifier)))))))
+
+================================================================================
+ddl-table/column-xml-number — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c xml(12);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) type: (keyword_xml) type: (literal)))))
+
+================================================================================
+ddl-table/drop-mixed — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t DROP CONSTRAINT IF EXISTS ck, COLUMN IF EXISTS c;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_drop) (keyword_constraint) (keyword_if) (keyword_exists) (identifier) (keyword_column) (keyword_if) (keyword_exists) (identifier)))))
+
+================================================================================
+ddl-table/drop-columns — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t DROP COLUMN a,b;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_drop) (keyword_column) (identifier) (identifier)))))
+
+================================================================================
+ddl-table/drop-separate-columns — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t DROP COLUMN a, COLUMN b;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_drop) (keyword_column) (identifier) (keyword_column) (identifier)))))
+
+================================================================================
+ddl-table/drop-constraints — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t DROP CONSTRAINT a,b;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_drop) (keyword_constraint) (identifier) (identifier)))))
+
+================================================================================
+ddl-table/drop-constraint-options — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t DROP CONSTRAINT a WITH (MOVE TO fg), b WITH (MOVE TO "default");
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_drop) (keyword_constraint) (identifier) (with_options (keyword_with) (option name: (identifier) (keyword_to) value: (identifier))) (identifier) (with_options (keyword_with) (option name: (identifier) (keyword_to) value: (identifier)))))))
+
+================================================================================
+ddl-table/drop-constraint-partition — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t DROP CONSTRAINT a WITH (MOVE TO ps(c));
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_drop) (keyword_constraint) (identifier) (with_options (keyword_with) (option name: (identifier) (keyword_to) value: (identifier) (identifier)))))))
+
+================================================================================
+ddl-table/drop-constraint-online — LocalDB 17.0.1000.7 levels 100-170: rejected 1712
+================================================================================
+
+ALTER TABLE dbo.t DROP CONSTRAINT a WITH (ONLINE = ON, MAXDOP = 2);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_drop) (keyword_constraint) (identifier) (with_options (keyword_with) (option name: (identifier) value: (keyword_on)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-table/drop-constraint-empty — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER TABLE dbo.t DROP CONSTRAINT;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_drop) (keyword_constraint) (identifier (MISSING _identifier))))))
+
+================================================================================
+ddl-table/drop-trailing-comma — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER TABLE dbo.t DROP COLUMN a,;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_drop) (keyword_column) (identifier))) (ERROR)))
+
+================================================================================
+ddl-table/drop-index — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t DROP INDEX a,b;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_drop) (keyword_index) (identifier) (identifier)))))
+
+================================================================================
+ddl-table/period-add — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ADD PERIOD FOR SYSTEM_TIME (vf,vt);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (period_for_system_time (keyword_period_for_system_time) (identifier) (identifier))))))
+
+================================================================================
+ddl-table/period-drop — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t DROP PERIOD FOR SYSTEM_TIME;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_drop) (keyword_period_for_system_time)))))
+
+================================================================================
+ddl-table/period-one-column — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER TABLE dbo.t ADD PERIOD FOR SYSTEM_TIME (vf);
+
+---
+
+(program (ERROR (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (keyword_period_for_system_time) (identifier)) (batch))
+
+================================================================================
+ddl-table/period-three-columns — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER TABLE dbo.t ADD PERIOD FOR SYSTEM_TIME (vf,vt,extra);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (period_for_system_time (keyword_period_for_system_time) (identifier) (identifier) (ERROR))))))
+
+================================================================================
+ddl-table/period-drop-columns — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER TABLE dbo.t DROP PERIOD FOR SYSTEM_TIME (vf,vt);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_drop) (keyword_period_for_system_time))) (ERROR)))
+
+================================================================================
+ddl-table/period-comment — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ADD PERIOD /*x*/ FOR SYSTEM_TIME (vf,vt);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (period_for_system_time (keyword_period_for_system_time (keyword_period) (marginalia) (keyword_for) (keyword_system_time)) (identifier) (identifier))))))
+
+================================================================================
+ddl-table/switch-wait — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t SWITCH PARTITION 1 TO dbo.archive PARTITION 2 WITH (WAIT_AT_LOW_PRIORITY (MAX_DURATION = 5 MINUTES, ABORT_AFTER_WAIT = SELF));
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_switch) (keyword_partition) from_partition: (literal) (keyword_to) target: (object_reference schema: (identifier) name: (identifier)) (keyword_partition) to_partition: (literal) (with_options (keyword_with) (option name: (identifier) (option name: (identifier) value: (literal) value: (identifier)) (option name: (identifier) value: (identifier))))))))
+
+================================================================================
+ddl-table/switch-no-partition — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t SWITCH TO dbo.archive WITH (WAIT_AT_LOW_PRIORITY (MAX_DURATION = 0 MINUTES, ABORT_AFTER_WAIT = BLOCKERS));
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_switch) (keyword_to) target: (object_reference schema: (identifier) name: (identifier)) (with_options (keyword_with) (option name: (identifier) (option name: (identifier) value: (literal) value: (identifier)) (option name: (identifier) value: (identifier))))))))
+
+================================================================================
+ddl-table/switch-missing-target — LocalDB 17.0.1000.7 levels 100-170: rejected 156,319
+================================================================================
+
+ALTER TABLE dbo.t SWITCH TO WITH (WAIT_AT_LOW_PRIORITY (MAX_DURATION = 1 MINUTES, ABORT_AFTER_WAIT = SELF));
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_switch) (keyword_to) target: (object_reference name: (identifier)))) (ERROR (ERROR) (literal) (keyword_self))))
+
+================================================================================
+ddl-table/switch-empty-options — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER TABLE dbo.t SWITCH TO dbo.archive WITH ();
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_switch) (keyword_to) target: (object_reference schema: (identifier) name: (identifier)) (with_options (keyword_with) (option name: (identifier (MISSING _identifier))))))))
+
+================================================================================
+ddl-table/system-versioning — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.hist, DATA_CONSISTENCY_CHECK = ON, HISTORY_RETENTION_PERIOD = 3 DAYS));
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) value: (object_reference schema: (identifier) name: (identifier))) value: (option name: (identifier) value: (keyword_on)) value: (option name: (identifier) value: (literal) value: (identifier)))))))
+
+================================================================================
+ddl-table/system-versioning-year — LocalDB 17.0.1000.7 levels 100-170: rejected 13539
+================================================================================
+
+ALTER TABLE dbo.t SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = db.dbo.hist, HISTORY_RETENTION_PERIOD = 1 YEAR));
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) value: (object_reference database: (identifier) schema: (identifier) name: (identifier))) value: (option name: (identifier) value: (literal) value: (identifier)))))))
+
+================================================================================
+ddl-table/system-versioning-off — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t SET (SYSTEM_VERSIONING = OFF);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_set) (option name: (identifier) value: (keyword_off))))))
+
+================================================================================
+ddl-table/system-versioning-infinite — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t SET (SYSTEM_VERSIONING = ON (HISTORY_RETENTION_PERIOD = INFINITE));
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-table/system-versioning-broken-name — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER TABLE dbo.t SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.));
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) value: (identifier)) (ERROR))))))
+
+================================================================================
+ddl-table/ledger-view — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.hist));
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) value: (object_reference schema: (identifier) name: (identifier))))))))
+
+================================================================================
+ddl-table/stretch-filter — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t SET (REMOTE_DATA_ARCHIVE = ON (FILTER_PREDICATE = dbo.predicate(c), MIGRATION_STATE = OUTBOUND));
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) value: (invocation (object_reference schema: (identifier) name: (identifier)) parameter: (term value: (field name: (identifier))))) value: (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-table/stretch-filter-two-args — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t SET (REMOTE_DATA_ARCHIVE = ON (FILTER_PREDICATE = dbo.predicate(c,d), MIGRATION_STATE = INBOUND));
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) value: (invocation (object_reference schema: (identifier) name: (identifier)) parameter: (term value: (field name: (identifier))) parameter: (term value: (field name: (identifier))))) value: (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-table/change-enable — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ENABLE CHANGE_TRACKING WITH (TRACK_COLUMNS_UPDATED = ON);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_enable) (keyword_change_tracking) (with_options (keyword_with) (option name: (identifier) value: (keyword_on)))))))
+
+================================================================================
+ddl-table/change-disable — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t DISABLE CHANGE_TRACKING;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_disable) (keyword_change_tracking)))))
+
+================================================================================
+ddl-table/change-disable-with — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER TABLE dbo.t DISABLE CHANGE_TRACKING WITH (TRACK_COLUMNS_UPDATED = ON);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_disable) (keyword_change_tracking))) (ERROR (keyword_with) (ERROR) (identifier) (keyword_on))))
+
+================================================================================
+ddl-table/namespace-enable — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ENABLE FILETABLE_NAMESPACE;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_enable) (keyword_filetable_namespace)))))
+
+================================================================================
+ddl-table/namespace-disable — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t DISABLE FILETABLE_NAMESPACE;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_disable) (keyword_filetable_namespace)))))
+
+================================================================================
+ddl-table/namespace-with — LocalDB 17.0.1000.7 levels 100-170: rejected 319
+================================================================================
+
+ALTER TABLE dbo.t ENABLE FILETABLE_NAMESPACE WITH (TRACK_COLUMNS_UPDATED = ON);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_enable) (keyword_filetable_namespace))) (ERROR (keyword_with) (ERROR) (identifier) (keyword_on))))
+
+================================================================================
+ddl-table/rebuild-all — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t REBUILD PARTITION = ALL WITH (DATA_COMPRESSION = PAGE);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_rebuild) (keyword_partition) (keyword_all) (with_options (keyword_with) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-table/rebuild-one — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t REBUILD PARTITION = 1 WITH (DATA_COMPRESSION = ROW);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_rebuild) (keyword_partition) (literal) (with_options (keyword_with) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-table/rebuild-no-value — LocalDB 17.0.1000.7 levels 100-170: rejected 156,319
+================================================================================
+
+ALTER TABLE dbo.t REBUILD PARTITION = WITH (DATA_COMPRESSION = PAGE);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_rebuild) (ERROR (keyword_partition)) (with_options (keyword_with) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-table/memory-alter-index — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ALTER INDEX ix REBUILD WITH (BUCKET_COUNT = 512);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_index) (identifier) (keyword_rebuild) (with_options (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-table/memory-add-hash — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ADD INDEX ix NONCLUSTERED HASH (c) WITH (BUCKET_COUNT = 256);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (constraint (keyword_index) name: (identifier) (keyword_nonclustered) (keyword_hash) (ordered_columns (column name: (identifier))) (with_options (keyword_with) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+ddl-table/memory-add-inline-hash — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ADD INDEX ix NONCLUSTERED HASH WITH (BUCKET_COUNT = 256);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (constraint (keyword_index) name: (identifier) (keyword_nonclustered) (keyword_hash) (with_options (keyword_with) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+ddl-table/memory-add-inline-range — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ADD INDEX ix NONCLUSTERED;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (constraint (keyword_index) name: (identifier) (keyword_nonclustered))))))
+
+================================================================================
+ddl-table/memory-add-cci — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ADD INDEX ix CLUSTERED COLUMNSTORE WITH (COMPRESSION_DELAY = 1 MINUTES);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (constraint (keyword_index) name: (identifier) (keyword_clustered) (keyword_columnstore) (with_options (keyword_with) (option name: (identifier) value: (literal) value: (identifier))))))))
+
+================================================================================
+ddl-table/column-default-values — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ADD c int CONSTRAINT df DEFAULT 1 WITH VALUES;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (column_definition name: (identifier) type: (keyword_int) (keyword_constraint) name: (identifier) (keyword_default) (literal) (keyword_with) (keyword_values))))))
+
+================================================================================
+ddl-table/column-default-values-after-null — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ADD c int NULL CONSTRAINT df DEFAULT 1 WITH VALUES;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (column_definition name: (identifier) type: (keyword_int) (keyword_null) (keyword_constraint) name: (identifier) (keyword_default) (literal) (keyword_with) (keyword_values))))))
+
+================================================================================
+ddl-table/column-default-values-missing-with — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+ALTER TABLE dbo.t ADD c int DEFAULT 1 VALUES;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (column_definition name: (identifier) type: (keyword_int) (keyword_default) (literal)))) (statement (label_statement (identifier) (MISSING ":")))))
+
+================================================================================
+ddl-table/column-xml-set — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ADD c xml COLUMN_SET FOR ALL_SPARSE_COLUMNS;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (column_definition name: (identifier) type: (keyword_xml) (keyword_column_set) (keyword_for) (keyword_all_sparse_columns))))))
+
+================================================================================
+ddl-table/column-set-incomplete — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER TABLE dbo.t ADD c xml COLUMN_SET FOR;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (column_definition name: (identifier) type: (keyword_xml) (keyword_column_set) (keyword_for) (MISSING keyword_all_sparse_columns))))))
+
+================================================================================
+ddl-table/column-filestream — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ADD c varbinary(max) FILESTREAM NULL;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (column_definition name: (identifier) type: (varbinary (keyword_varbinary) size: (keyword_max)) (identifier) (keyword_null))))))
+
+================================================================================
+ddl-table/column-fillfactor — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ADD c int PRIMARY KEY WITH FILLFACTOR = 80 ON fg;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (column_definition name: (identifier) type: (keyword_int) (keyword_primary) (keyword_key) (keyword_with) (option name: (identifier) value: (literal)) (on_filegroup (keyword_on) (identifier)))))))
+
+================================================================================
+ddl-table/constraint-fillfactor — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ADD CONSTRAINT pk PRIMARY KEY(c) WITH FILLFACTOR = 90;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (constraint (keyword_constraint) name: (identifier) (keyword_primary) (keyword_key) (ordered_columns (column name: (identifier))) (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-table/constraint-fillfactor-empty — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER TABLE dbo.t ADD PRIMARY KEY(c) WITH FILLFACTOR =;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (constraint (keyword_primary) (keyword_key) (ordered_columns (column name: (identifier))) (keyword_with) (option name: (identifier) value: (literal (MISSING keyword_null))))))))
+
+================================================================================
+ddl-table/computed-primary — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ADD c AS a+1 PERSISTED NOT NULL CONSTRAINT pk PRIMARY KEY CLUSTERED WITH FILLFACTOR = 80 ON fg;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (column_definition name: (identifier) (keyword_as) expression: (binary_expression left: (field name: (identifier)) right: (literal)) (keyword_persisted) (keyword_not) (keyword_null) (keyword_constraint) name: (identifier) (keyword_primary) (keyword_key) (keyword_clustered) (keyword_with) (option name: (identifier) value: (literal)) (on_filegroup (keyword_on) (identifier)))))))
+
+================================================================================
+ddl-table/computed-foreign — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ADD c AS a PERSISTED REFERENCES dbo.p(id) NOT FOR REPLICATION;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (column_definition name: (identifier) (keyword_as) expression: (field name: (identifier)) (keyword_persisted) (keyword_references) (object_reference schema: (identifier) name: (identifier)) (identifier) (keyword_not) (keyword_for) (keyword_replication))))))
+
+================================================================================
+ddl-table/computed-check — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ADD c AS a+1 PERSISTED CHECK (c>0);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (column_definition name: (identifier) (keyword_as) expression: (binary_expression left: (field name: (identifier)) right: (literal)) (keyword_persisted) (keyword_check) (binary_expression left: (field name: (identifier)) right: (literal)))))))
+
+================================================================================
+ddl-table/computed-default — LocalDB 17.0.1000.7 levels 100-170: rejected 8183
+================================================================================
+
+ALTER TABLE dbo.t ADD c AS a+1 DEFAULT 0;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (column_definition name: (identifier) (keyword_as) expression: (binary_expression left: (field name: (identifier)) right: (literal))))) (ERROR (identifier))))
+
+================================================================================
+ddl-table/connection — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ADD CONSTRAINT ec CONNECTION(dbo.p TO dbo.q) ON DELETE CASCADE;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (constraint (keyword_constraint) name: (identifier) (keyword_connection) (object_reference schema: (identifier) name: (identifier)) (keyword_to) (object_reference schema: (identifier) name: (identifier)) (keyword_on) (keyword_delete) (keyword_cascade))))))
+
+================================================================================
+ddl-table/connection-no-target — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER TABLE dbo.t ADD CONSTRAINT ec CONNECTION(dbo.p TO);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (constraint (keyword_constraint) name: (identifier) (keyword_connection) (object_reference schema: (identifier) name: (identifier)) (keyword_to) (object_reference name: (identifier (MISSING _identifier))))))))
+
+================================================================================
+ddl-table/index-rebuild-all — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER INDEX ix ON dbo.t REBUILD PARTITION = ALL WITH (DATA_COMPRESSION = PAGE ON PARTITIONS (1, 3 TO 5), XML_COMPRESSION = ON ON PARTITIONS (2));
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_rebuild) (keyword_partition) (keyword_all) (with_options (keyword_with) (option name: (identifier) value: (identifier) (keyword_on) (keyword_partitions) (truncate_partition_range low: (literal)) (truncate_partition_range low: (literal) (keyword_to) high: (literal))) (option name: (identifier) value: (keyword_on) (keyword_on) (keyword_partitions) (truncate_partition_range low: (literal))))))))
+
+================================================================================
+ddl-table/index-rebuild-one — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER INDEX ix ON dbo.t REBUILD PARTITION = 2 WITH (DATA_COMPRESSION = ROW);
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_rebuild) (keyword_partition) (literal) (with_options (keyword_with) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-table/index-reorganize-one — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER INDEX ix ON dbo.t REORGANIZE PARTITION = 2 WITH (LOB_COMPACTION = ON);
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_reorganize) (keyword_partition) (literal) (with_options (keyword_with) (option name: (identifier) value: (keyword_on)))))))
+
+================================================================================
+ddl-table/index-reorganize-all — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER INDEX ix ON dbo.t REORGANIZE PARTITION = ALL;
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_reorganize) (keyword_partition) (keyword_all)))))
+
+================================================================================
+ddl-table/index-partition-negative — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER INDEX ix ON dbo.t REBUILD PARTITION = -1;
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_rebuild) (keyword_partition) (unary_expression operand: (literal))))))
+
+================================================================================
+ddl-table/index-partition-missing — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER INDEX ix ON dbo.t REBUILD PARTITION =;
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_rebuild) (keyword_partition) (MISSING keyword_all)))))
+
+================================================================================
+ddl-table/index-partition-empty-list — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER INDEX ix ON dbo.t REBUILD WITH (DATA_COMPRESSION = PAGE ON PARTITIONS ());
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_rebuild) (with_options (keyword_with) (option name: (identifier) value: (identifier) (keyword_on) (keyword_partitions) (truncate_partition_range low: (literal (MISSING keyword_null)))))))))
+
+================================================================================
+ddl-table/index-partition-range — LocalDB 17.0.1000.7 levels 100-170: rejected 10737
+================================================================================
+
+ALTER INDEX ix ON dbo.t REBUILD WITH (DATA_COMPRESSION = PAGE ON PARTITIONS (1 TO 3, 5));
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_rebuild) (with_options (keyword_with) (option name: (identifier) value: (identifier) (keyword_on) (keyword_partitions) (truncate_partition_range low: (literal) (keyword_to) high: (literal)) (truncate_partition_range low: (literal))))))))
+
+================================================================================
+ddl-table/index-partition-reverse — LocalDB 17.0.1000.7 levels 100-170: rejected 10737
+================================================================================
+
+ALTER INDEX ix ON dbo.t REBUILD WITH (DATA_COMPRESSION = PAGE ON PARTITIONS (3 TO 1));
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_rebuild) (with_options (keyword_with) (option name: (identifier) value: (identifier) (keyword_on) (keyword_partitions) (truncate_partition_range low: (literal) (keyword_to) high: (literal))))))))
+
+================================================================================
+ddl-table/index-wrong-partition-option — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+ALTER INDEX ix ON dbo.t REBUILD WITH (MAXDOP = 2 ON PARTITIONS (1));
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_rebuild) (with_options (keyword_with) (option name: (identifier) value: (literal) (keyword_on) (keyword_partitions) (truncate_partition_range low: (literal))))))))
+
+================================================================================
+ddl-table/index-xml-add — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER INDEX ix ON dbo.t FOR (ADD path1 = '/x/y' AS XQUERY 'xs:string' MAXLENGTH (20) SINGLETON);
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_for) (keyword_add) (selective_xml_path name: (identifier) (literal) (keyword_as) (keyword_xquery) (literal) (keyword_maxlength) (literal) (keyword_singleton))))))
+
+================================================================================
+ddl-table/index-xml-remove — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER INDEX ix ON dbo.t FOR (REMOVE path1);
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_for) (keyword_remove) (identifier)))))
+
+================================================================================
+ddl-table/index-xml-namespace — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER INDEX ix ON dbo.t WITH XMLNAMESPACES ('urn:x' AS x) FOR (ADD path1 = '/x:root' AS SQL int SINGLETON, REMOVE old);
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_with) (xmlnamespaces (keyword_xmlnamespaces) (xmlnamespace uri: (literal) (keyword_as) prefix: (identifier))) (keyword_for) (keyword_add) (selective_xml_path name: (identifier) (literal) (keyword_as) (keyword_sql) (keyword_int) (keyword_singleton)) (keyword_remove) (identifier)))))
+
+================================================================================
+ddl-table/index-xml-empty — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER INDEX ix ON dbo.t FOR ();
+
+---
+
+(program (ERROR (keyword_alter) (keyword_index) (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_for)) (batch))
+
+================================================================================
+ddl-table/index-xml-add-missing-path — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER INDEX ix ON dbo.t FOR (ADD path1 =);
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_for) (keyword_add) (selective_xml_path name: (identifier) (literal (MISSING keyword_null)))))))
+
+================================================================================
+ddl-table/index-xml-remove-missing-name — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER INDEX ix ON dbo.t FOR (REMOVE);
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_for) (keyword_remove) (identifier (MISSING _identifier))))))
+
+================================================================================
+ddl-table/index-resume — LocalDB 17.0.1000.7 levels 100-170: rejected 11905
+================================================================================
+
+ALTER INDEX ix ON dbo.t RESUME WITH (MAX_DURATION = 10 MINUTES, MAXDOP = 2);
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_resume) (with_options (keyword_with) (option name: (identifier) value: (literal) value: (identifier)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-table/index-pause — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER INDEX ix ON dbo.t PAUSE;
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_pause)))))
+
+================================================================================
+ddl-table/index-abort — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER INDEX ix ON dbo.t ABORT;
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_abort)))))
+
+================================================================================
+ddl-table/create-xml-content — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t (c xml(CONTENT dbo.schemas));
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_xml) type: (keyword_content) type: (object_reference schema: (identifier) name: (identifier))))))))
+
+================================================================================
+ddl-table/create-xml-document — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t (c xml(DOCUMENT dbo.schemas));
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_xml) type: (keyword_document) type: (object_reference schema: (identifier) name: (identifier))))))))
+
+================================================================================
+ddl-table/create-column-set — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t (c xml COLUMN_SET FOR ALL_SPARSE_COLUMNS);
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_xml) (keyword_column_set) (keyword_for) (keyword_all_sparse_columns)))))))
+
+================================================================================
+ddl-table/create-column-index — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t (c int INDEX ix NONCLUSTERED WITH (PAD_INDEX = ON) ON fg FILESTREAM_ON "NULL");
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int) (keyword_index) name: (identifier) (keyword_nonclustered) (with_options (keyword_with) (option name: (identifier) value: (keyword_on))) (on_filegroup (keyword_on) (identifier)) (identifier) (identifier)))))))
+
+================================================================================
+ddl-table/create-hash — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t (c int PRIMARY KEY NONCLUSTERED HASH WITH (BUCKET_COUNT = 512)) WITH (MEMORY_OPTIMIZED = ON);
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int) (keyword_primary) (keyword_key) (keyword_nonclustered) (keyword_hash) (with_options (keyword_with) (option name: (identifier) value: (literal))))) (with_options (keyword_with) (option name: (identifier) value: (keyword_on)))))))
+
+================================================================================
+ddl-table/create-index-include — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t (c int,d int,INDEX ix NONCLUSTERED(c) INCLUDE(d) WHERE c>0 WITH (PAD_INDEX = ON) ON fg FILESTREAM_ON fs);
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int)) (column_definition name: (identifier) type: (keyword_int)) (constraint (keyword_index) name: (identifier) (keyword_nonclustered) (ordered_columns (column name: (identifier))) (covering_columns (keyword_include) (identifier)) (where (keyword_where) predicate: (binary_expression left: (field name: (identifier)) right: (literal))) (with_options (keyword_with) (option name: (identifier) value: (keyword_on))) (on_filegroup (keyword_on) (identifier)) (identifier) (identifier)))))))
+
+================================================================================
+ddl-table/create-index-cci — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t (c int,INDEX ix CLUSTERED COLUMNSTORE ORDER(c) WITH (COMPRESSION_DELAY = 0));
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int)) (constraint (keyword_index) name: (identifier) (keyword_clustered) (keyword_columnstore) (keyword_order) (identifier) (with_options (keyword_with) (option name: (identifier) value: (literal)))))))))
+
+================================================================================
+ddl-table/create-index-ncci — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t (c int,INDEX ix NONCLUSTERED COLUMNSTORE(c));
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int)) (constraint (keyword_index) name: (identifier) (keyword_nonclustered) (keyword_columnstore) (ordered_columns (column name: (identifier)))))))))
+
+================================================================================
+ddl-table/create-index-nocci-columns — LocalDB 17.0.1000.7 levels 100-170: rejected 35336
+================================================================================
+
+CREATE TABLE dbo.t (c int,INDEX ix NONCLUSTERED COLUMNSTORE);
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int)) (ERROR (keyword_index) (identifier) (keyword_nonclustered) (keyword_columnstore)))))))
+
+================================================================================
+ddl-table/create-filetable — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t AS FileTable WITH (FILETABLE_DIRECTORY = 'docs');
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (keyword_as) (keyword_filetable) (with_options (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-table/create-node — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t (c int PRIMARY KEY) AS NODE ON fg;
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int) (keyword_primary) (keyword_key))) (table_data_placement option: (identifier) filegroup: (identifier)) (on_filegroup (keyword_on) (identifier))))))
+
+================================================================================
+ddl-table/create-edge — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t AS EDGE;
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (keyword_as) (keyword_edge)))))
+
+================================================================================
+ddl-table/create-node-empty — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+CREATE TABLE dbo.t AS NODE;
+
+---
+
+(program (ERROR (keyword_create) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_as)) (batch))
+
+================================================================================
+ddl-table/create-connection — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t (c int,CONSTRAINT ec CONNECTION(dbo.p TO dbo.q) ON DELETE NO ACTION) AS EDGE;
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int)) (constraint (keyword_constraint) name: (identifier) (keyword_connection) (object_reference schema: (identifier) name: (identifier)) (keyword_to) (object_reference schema: (identifier) name: (identifier)) (keyword_on) (keyword_delete) (keyword_no) (keyword_action))) (table_data_placement option: (identifier) filegroup: (identifier))))))
+
+================================================================================
+ddl-table/create-connection-missing-to — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+CREATE TABLE dbo.t (c int,CONSTRAINT ec CONNECTION(dbo.p dbo.q)) AS EDGE;
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int)) (ERROR (keyword_constraint) (identifier) (keyword_connection) (object_reference database: (identifier) schema: (identifier) (ERROR) name: (identifier)))) (table_data_placement option: (identifier) filegroup: (identifier))))))
+
+================================================================================
+ddl-table/create-ledger — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t (id int,tx bigint GENERATED ALWAYS AS TRANSACTION_ID START HIDDEN NOT NULL,seq bigint GENERATED ALWAYS AS SEQUENCE_NUMBER START HIDDEN NOT NULL) WITH (SYSTEM_VERSIONING = ON, LEDGER = ON (LEDGER_VIEW = dbo.lv (TRANSACTION_ID_COLUMN_NAME = tx_id)));
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int)) (column_definition name: (identifier) type: (keyword_bigint) (generated_always (keyword_generated) (keyword_always) (keyword_as) (keyword_transaction_id) (keyword_start) (keyword_hidden)) (keyword_not) (keyword_null)) (column_definition name: (identifier) type: (keyword_bigint) (generated_always (keyword_generated) (keyword_always) (keyword_as) (keyword_sequence_number) (keyword_start) (keyword_hidden)) (keyword_not) (keyword_null))) (with_options (keyword_with) (option name: (identifier) value: (keyword_on)) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) value: (object_reference schema: (identifier) name: (identifier)) value: (option name: (identifier) value: (identifier)))))))))
+
+================================================================================
+ddl-table/create-temporal — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t (id int,vf datetime2 GENERATED ALWAYS AS ROW START NOT NULL,vt datetime2 GENERATED ALWAYS AS ROW END NOT NULL,PERIOD FOR SYSTEM_TIME(vf,vt)) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.hist));
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int)) (column_definition name: (identifier) type: (datetime2 (keyword_datetime2)) (generated_always (keyword_generated) (keyword_always) (keyword_as) (keyword_row) (keyword_start)) (keyword_not) (keyword_null)) (column_definition name: (identifier) type: (datetime2 (keyword_datetime2)) (generated_always (keyword_generated) (keyword_always) (keyword_as) (keyword_row) (keyword_end)) (keyword_not) (keyword_null)) (period_for_system_time (keyword_period_for_system_time) (identifier) (identifier))) (with_options (keyword_with) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) value: (object_reference schema: (identifier) name: (identifier)))))))))
+
+================================================================================
+ddl-table/generated-missing-as — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+CREATE TABLE dbo.t (vf datetime2 GENERATED ALWAYS ROW START);
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (datetime2 (keyword_datetime2)) (ERROR (keyword_generated) (keyword_always)) (identifier) (identifier)))))))
+
+================================================================================
+ddl-table/generated-missing-boundary — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+CREATE TABLE dbo.t (vf datetime2 GENERATED ALWAYS AS ROW);
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (datetime2 (keyword_datetime2)) (generated_always (keyword_generated) (keyword_always) (keyword_as) (keyword_row) (MISSING keyword_end))))))))
+
+================================================================================
+ddl-table/generated-invalid-kind — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+CREATE TABLE dbo.t (vf datetime2 GENERATED ALWAYS AS UNKNOWN START);
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (datetime2 (keyword_datetime2)) (ERROR (keyword_generated) (keyword_always) (keyword_as)) (identifier) (identifier)))))))
+
+================================================================================
+ddl-table/plain-keyword-names — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+CREATE TABLE dbo.t (generated int,hidden int,period int,content int,document int,fillfactor int);
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int)) (column_definition name: (identifier) type: (keyword_int)) (column_definition name: (identifier) type: (keyword_int)) (column_definition name: (identifier) type: (keyword_int)) (column_definition name: (identifier) type: (keyword_int)) (column_definition name: (identifier) type: (keyword_int)))))))
+
+================================================================================
+ddl-table/create-duplicate-online — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+CREATE TABLE dbo.t (id int) WITH (SYSTEM_VERSIONING = OFF, SYSTEM_VERSIONING = OFF);
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int))) (with_options (keyword_with) (option name: (identifier) value: (keyword_off)) (option name: (identifier) value: (keyword_off)))))))
+
+================================================================================
+ddl-table/xml-number-content — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c xml(CONTENT 12);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) type: (keyword_xml) (ERROR (keyword_content)) type: (literal)))))
+
+================================================================================
+ddl-table/xml-string-schema — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c xml('schemas');
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) type: (keyword_xml))) (ERROR)))
+
+================================================================================
+ddl-table/xml-negative-schema — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c xml(-1);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) type: (keyword_xml) (ERROR) type: (literal)))))
+
+================================================================================
+ddl-table/xml-decimal-schema — LocalDB 17.0.1000.7 levels 100-170: rejected 1080
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c xml(1.5);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) type: (keyword_xml) type: (literal) (ERROR (literal))))))
+
+================================================================================
+ddl-table/xml-null-schema — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+ALTER TABLE dbo.t ALTER COLUMN c xml(NULL);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) name: (identifier) type: (keyword_xml) type: (object_reference name: (identifier))))))
+
+================================================================================
+ddl-table/period-nested-comment — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ADD PERIOD /*a /*b*/ c*/ FOR SYSTEM_TIME (vf,vt);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (period_for_system_time (keyword_period_for_system_time (keyword_period) (marginalia) (keyword_for) (keyword_system_time)) (identifier) (identifier))))))
+
+================================================================================
+ddl-table/period-line-comment — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t ADD PERIOD --comment
+ FOR SYSTEM_TIME (vf,vt);
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_add) (period_for_system_time (keyword_period_for_system_time (keyword_period) (comment) (keyword_for) (keyword_system_time)) (identifier) (identifier))))))
+
+================================================================================
+ddl-table/period-drop-comment — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t DROP PERIOD FOR /*comment*/ SYSTEM_TIME;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_drop) (keyword_period_for_system_time (keyword_period) (keyword_for) (marginalia) (keyword_system_time))))))
+
+================================================================================
+ddl-table/index-partition-variable — LocalDB 17.0.1000.7 levels 100-170: rejected 137
+================================================================================
+
+ALTER INDEX ix ON dbo.t REBUILD PARTITION = @p;
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_rebuild))) (ERROR (keyword_partition))))
+
+================================================================================
+ddl-table/index-partition-plus — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER INDEX ix ON dbo.t REBUILD PARTITION = +1;
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_rebuild) (keyword_partition) (unary_expression operand: (literal))))))
+
+================================================================================
+ddl-table/graph-name-node — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE node (node int, edge int, connection int);
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int)) (column_definition name: (identifier) type: (keyword_int)) (column_definition name: (identifier) type: (keyword_int)))))))
+
+================================================================================
+ddl-table/ordinary-period — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t (period int);
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int)))))))
+
+================================================================================
+ddl-table/ordinary-hidden — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t (hidden int);
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int)))))))
+
+================================================================================
+ddl-table/ordinary-generated — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t (generated int);
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int)))))))
+
+================================================================================
+ddl-table/ordinary-content — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t (content int,document int);
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int)) (column_definition name: (identifier) type: (keyword_int)))))))
+
+================================================================================
+ddl-table/generated-comment — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t (vf datetime2 GENERATED /*a*/ ALWAYS AS ROW START NOT NULL,vt datetime2 GENERATED ALWAYS AS ROW END NOT NULL,PERIOD /*a*/ FOR SYSTEM_TIME(vf,vt)) WITH (SYSTEM_VERSIONING = ON);
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (datetime2 (keyword_datetime2)) (generated_always (keyword_generated) (marginalia) (keyword_always) (keyword_as) (keyword_row) (keyword_start)) (keyword_not) (keyword_null)) (column_definition name: (identifier) type: (datetime2 (keyword_datetime2)) (generated_always (keyword_generated) (keyword_always) (keyword_as) (keyword_row) (keyword_end)) (keyword_not) (keyword_null)) (period_for_system_time (keyword_period_for_system_time (keyword_period) (marginalia) (keyword_for) (keyword_system_time)) (identifier) (identifier))) (with_options (keyword_with) (option name: (identifier) value: (keyword_on)))))))
+
+================================================================================
+ddl-table/filetable-empty — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t AS FileTable;
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (keyword_as) (keyword_filetable)))))
+
+================================================================================
+ddl-table/graph-empty-node — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+CREATE TABLE dbo.t AS NODE;
+
+---
+
+(program (ERROR (keyword_create) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_as)) (batch))
+
+================================================================================
+ddl-table/xml-path-sql-maxlength — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER INDEX ix ON dbo.t FOR (ADD p='/x' AS SQL int MAXLENGTH(20));
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_for) (keyword_add) (selective_xml_path name: (identifier) (literal) (keyword_as) (keyword_sql) (ERROR (keyword_int)) (custom_type (object_reference name: (identifier)) size: (literal)))))))
+
+================================================================================
+ddl-table/xml-path-xquery-no-type — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER INDEX ix ON dbo.t FOR (ADD p='/x' AS XQUERY);
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_for) (keyword_add) (selective_xml_path name: (identifier) (literal) (keyword_as) (keyword_xquery) (literal (MISSING keyword_null)))))))
+
+================================================================================
+ddl-table/xml-path-negative-length — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER INDEX ix ON dbo.t FOR (ADD p='/x' AS XQUERY 'xs:string' MAXLENGTH(-1));
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_for) (keyword_add) (selective_xml_path name: (identifier) (literal) (keyword_as) (keyword_xquery) (literal)) (ERROR (keyword_maxlength) (literal))))))
+
+================================================================================
+ddl-table/xml-path-namespace-remove — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER INDEX ix ON dbo.t WITH XMLNAMESPACES(DEFAULT 'urn:x') FOR (REMOVE p);
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_with) (xmlnamespaces (keyword_xmlnamespaces) (xmlnamespace (keyword_default) uri: (literal))) (keyword_for) (keyword_remove) (identifier)))))
+
+================================================================================
+ddl-table/xml-path-with-pad — LocalDB 17.0.1000.7 levels 100-170: rejected 319
+================================================================================
+
+ALTER INDEX ix ON dbo.t FOR (ADD p='/x') WITH (PAD_INDEX = ON);
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_for) (keyword_add) (selective_xml_path name: (identifier) (literal)))) (ERROR (keyword_with) (ERROR) (identifier) (keyword_on))))
+
+================================================================================
+ddl-table/xml-path-with-maxdop — LocalDB 17.0.1000.7 levels 100-170: rejected 319
+================================================================================
+
+ALTER INDEX ix ON dbo.t FOR (REMOVE p) WITH (MAXDOP = 2);
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_for) (keyword_remove) (identifier))) (ERROR (keyword_with) (ERROR) (identifier) (literal))))
+
+================================================================================
+ddl-table/xml-path-with-drop-existing — LocalDB 17.0.1000.7 levels 100-170: rejected 319
+================================================================================
+
+ALTER INDEX ix ON dbo.t FOR (REMOVE p) WITH (DROP_EXISTING = ON);
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_for) (keyword_remove) (identifier))) (ERROR (keyword_with) (ERROR) (identifier) (keyword_on))))
+
+================================================================================
+ddl-table/xml-path-singleton — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER INDEX ix ON dbo.t FOR (ADD p='/x' SINGLETON);
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_for) (keyword_add) (selective_xml_path name: (identifier) (literal)) (ERROR (keyword_singleton))))))
+
+================================================================================
+ddl-table/xml-path-maxlength-no-type — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER INDEX ix ON dbo.t FOR (ADD p='/x' AS XQUERY MAXLENGTH(20));
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_for) (keyword_add) (selective_xml_path name: (identifier) (literal) (keyword_as) (keyword_xquery) (keyword_maxlength) (literal))))))
+
+================================================================================
+ddl-table/xml-path-xquery-singleton-no-type — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER INDEX ix ON dbo.t FOR (ADD p='/x' AS XQUERY SINGLETON);
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) name: (identifier) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_for) (keyword_add) (selective_xml_path name: (identifier) (literal) (keyword_as) (keyword_xquery) (keyword_singleton))))))
+
+================================================================================
+ddl-table/filter-null — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER TABLE dbo.t SET (REMOTE_DATA_ARCHIVE = ON (FILTER_PREDICATE = NULL, MIGRATION_STATE = OUTBOUND));
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference schema: (identifier) name: (identifier)) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) value: (literal (keyword_null))) value: (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-table/create-cci-columns — LocalDB 17.0.1000.7 levels 100-170: rejected 35335
+================================================================================
+
+CREATE TABLE dbo.t(c int, INDEX ix CLUSTERED COLUMNSTORE(c));
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int)) (constraint (keyword_index) name: (identifier) (keyword_clustered) (ERROR (keyword_columnstore)) (ordered_columns (column name: (identifier)))))))))
+
+================================================================================
+ddl-table/create-ncci-valid — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE dbo.t(c int, INDEX ix NONCLUSTERED COLUMNSTORE(c));
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int)) (constraint (keyword_index) name: (identifier) (keyword_nonclustered) (keyword_columnstore) (ordered_columns (column name: (identifier)))))))))
