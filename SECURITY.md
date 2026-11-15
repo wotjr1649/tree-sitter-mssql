@@ -10,7 +10,7 @@ This policy covers the grammar, the generated parser, the scanner, and the Rust 
 
 ## Supported versions
 
-Fixes land on the latest published release.
+Nothing is published to a registry. Fixes land on `main`; consumers pick them up by moving their pinned commit.
 
 ## Practices
 

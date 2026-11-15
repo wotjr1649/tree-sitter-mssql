@@ -12,7 +12,7 @@ Both bindings expose every query file — `HIGHLIGHTS_QUERY`, `INDENTS_QUERY`, `
 
 ## Node-kind stability
 
-`test/node-kinds.txt` is the public API surface. It is generated from `src/node-types.json`, checked for drift on every pull request in `.github/workflows/verify.yml`, and attached to every GitHub Release so two versions can be diffed mechanically. Before 1.0, treat node-kind additions as compatible and removals or renames as breaking; call out either in the pull request or commit that makes the change so it is visible in `CHANGELOG.md`.
+`test/node-kinds.txt` is the public API surface. It is generated from `src/node-types.json`, and checked for drift on every pull request in `.github/workflows/verify.yml`, so two commits can be diffed mechanically. Node-kind and field-name additions are compatible; removals or renames are breaking; call out either in the pull request or commit that makes the change so it is visible in `CHANGELOG.md`.
 
 ## Version-specific and deprecated constructs
 
@@ -20,4 +20,4 @@ Both bindings expose every query file — `HIGHLIGHTS_QUERY`, `INDENTS_QUERY`, `
 
 ## Packaging
 
-The npm package ships prebuilt native addons for `linux-x64` and `win32-x64`; on any other platform `node-gyp-build` falls back to compiling the committed generated parser. `src/scanner.c` must be compiled alongside `src/parser.c` — vendoring one without the other produces a link error, or a parser that can lex neither a block comment nor any sqlcmd command (`:setvar`, `:r`, `:on error` and the rest).
+Nothing is published to a registry: pin a commit of this repository. The Node binding compiles the committed generated parser through `node-gyp-build`. `src/scanner.c` must be compiled alongside `src/parser.c` — vendoring one without the other produces a link error, or a parser that can lex neither a block comment nor any sqlcmd command (`:setvar`, `:r`, `:on error` and the rest).

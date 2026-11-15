@@ -34,7 +34,7 @@ Tree-sitter query files for editors: `highlights.scm`, `indents.scm`, `injection
 
 ### [tools/](tools)
 
-Release-support scripts: `release-policy.mjs` validates a tag against the manifests before anything is published, and `package-check.mjs` verifies that the publishable package contents are complete.
+Verification scripts: `release-policy.mjs versions` checks that `Cargo.toml`, `package.json`, and `tree-sitter.json` carry the same version (the generated parser embeds it), and `package-check.mjs` verifies that the crate and npm package file lists are complete and tracked, so a consumer vendoring the sources gets every file.
 
 ### [fuzz/](fuzz)
 
@@ -52,14 +52,13 @@ The repository talks to no database or service at run time. A consumer passes T-
 T-SQL text -> binding (Rust crate or Node addon) -> src/parser.c + src/scanner.c -> syntax tree
 ```
 
-At publish time the project pushes to three registries: crates.io (the crate), npm (the package), and GitHub Packages (a copy scoped to the repository owner). Each GitHub Release also carries a WebAssembly build, `test/node-kinds.txt`, and `versions.json`.
+Nothing is published to a registry. Consumers pin a commit of this repository and build the committed generated parser; see [docs/consuming.md](docs/consuming.md).
 
-## Build, test, release, and deploy
+## Build and test
 
-- **Pull requests and pushes to `dev` and `main`** run `Verify` (`.github/workflows/verify.yml`): PR-title validation, secret scanning, regeneration of the parser with a drift check, the node-kind and registry checks, lint and format checks, corpus, highlight, and fixture tests, `cargo fmt`, `clippy`, and `cargo test`, the Node binding build and tests, and workflow linting.
-- **Pushes to `main`** run `Gala release` (`gala-release.yml`), which uses gala (`.gala.toml`) to compute the version from Conventional Commits, bump it in `Cargo.toml`, `package.json`, and `tree-sitter.json`, refresh `package-lock.json`, regenerate the parser (whose metadata embeds the `tree-sitter.json` version), write `CHANGELOG.md`, commit and tag the release, push over a deploy key, and fast-forward `dev` to the release commit. It then dispatches `Release` (`release.yml`) with the new tag to publish to crates.io, npm, and GitHub Packages and create the GitHub Release.
+- **Pull requests and pushes to `main`** run `Verify` (`.github/workflows/verify.yml`): PR-title validation, secret scanning, regeneration of the parser with a drift check, the node-kind and registry checks, lint and format checks, corpus, highlight, and fixture tests, `cargo fmt`, `clippy`, and `cargo test`, the Node binding build and tests, and workflow linting.
 - **On a schedule**, `Cleanup stale caches` runs daily.
-- Nothing is deployed: the repository publishes libraries only.
+- Nothing is deployed or published: consumers pin commits.
 
 ## Where things live
 
@@ -70,7 +69,7 @@ At publish time the project pushes to three registries: crates.io (the crate), n
 | `queries/` | Tree-sitter query files |
 | `bindings/rust`, `bindings/node` | Rust crate and Node.js addon |
 | `test/` | Corpus, fixtures, highlight tests, node-kind snapshot |
-| `tools/` | Release-policy and package-check scripts |
+| `tools/` | Version-check and package-check scripts |
 | `fuzz/` | Fuzz target |
 | `docs/` | Project documentation |
-| `.github/workflows/` | CI, release, sync, and scheduled workflows |
+| `.github/workflows/` | CI and scheduled cache-cleanup workflows |

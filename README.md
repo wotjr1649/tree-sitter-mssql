@@ -8,7 +8,7 @@ An owner-maintained [tree-sitter](https://tree-sitter.github.io/tree-sitter/) gr
 
 **Upstream relation.** This repository starts from upstream v1.0.0, commit [`852cbd2`](https://github.com/alfpricot/tree-sitter-mssql/commit/852cbd20d7dc8078bdea0ebbcbb621e78c86f0cf), merged with its full history on 2026-11-15. Upstream started as a fork of [`tree-sitter-sql`](https://github.com/DerekStride/tree-sitter-sql) by Derek Stride. Upstream changes are merged when useful; see [docs/decisions/ADR-0001-continue-from-upstream-v1.md](docs/decisions/ADR-0001-continue-from-upstream-v1.md) and [NOTICE](NOTICE).
 
-**Consumer.** The first consumer is `go-treesitter`, a CGO-free Go tree-sitter library, which pins a commit of this repository and regenerates `src/parser.c` with tree-sitter CLI 0.27.2.
+**Consumer.** The intended first consumer is `go-treesitter`, a CGO-free Go tree-sitter library, which is to pin a commit of this repository and regenerate `src/parser.c` with tree-sitter CLI 0.27.2.
 
 **Correctness reference.** Valid T-SQL means what SQL Server's own parser accepts under `SET PARSEONLY ON` at a stated compatibility level. Where upstream tests or [docs/accepted-gaps.md](docs/accepted-gaps.md) disagree with SQL Server, SQL Server wins. [docs/roadmap.md](docs/roadmap.md) lists the planned work, starting with a SQL Server oracle.
 

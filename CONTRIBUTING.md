@@ -4,7 +4,7 @@ A tree-sitter grammar for Microsoft SQL Server T-SQL, with Rust and Node.js bind
 
 ## Before you start
 
-1. Branch from **`dev`**; `main` is the production branch, updated by promotion pull requests from `dev`, with each release cut automatically from `main`.
+1. Branch from the latest **`main`** into a short-lived topic branch; `main` is the only long-lived branch and must stay green. Nothing is released automatically.
 2. Read [ARCHITECTURE.md](ARCHITECTURE.md), [docs/scope.md](docs/scope.md), and [docs/development.md](docs/development.md).
 
 ## Local setup
@@ -34,7 +34,7 @@ cargo test
 
 ## Pull requests
 
-- Open pull requests against **`dev`**.
+- Open pull requests against **`main`** and merge with a merge commit (no squash or rebase: the imported upstream history must stay intact).
 - Use a Conventional Commit title (`feat:`, `fix:`, `docs:`, `chore:`, `test:`, ...).
 - Keep each pull request to one change; link the issue it resolves in the body.
 - Regenerate and commit `src/parser.c` and `test/node-kinds.txt` alongside any `grammar.js` change; CI diffs both against a fresh regenerate and fails on drift.
