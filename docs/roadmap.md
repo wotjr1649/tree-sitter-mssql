@@ -1,44 +1,58 @@
 # Roadmap
 
-Phases in order. Each phase ends when its "done when" holds. The reasons are in
-[ADR-0001](decisions/ADR-0001-continue-from-upstream-v1.md).
+Phases in order. Each phase ends when its "done when" holds. The definitions, gates and budgets are in
+[ADR-0002](decisions/ADR-0002-verification-and-workflow.md). The reasons for continuing from upstream are in
+[ADR-0001](decisions/ADR-0001-continue-from-upstream-v1.md). All work lands on `main` through short topic branches.
 
-## M1: SQL Server oracle
+## M0.5: Foundation on `main`
 
-- A runner that sends each case to SQL Server LocalDB under `SET PARSEONLY ON` and records the verdict: accepted, or
-  the error numbers. Optionally the SQL Server Linux container in CI.
-- Verdict files per compatibility level, each recording the engine version.
-- Import of the 726 PARSEONLY cases from tree-sitter-grammar-kit (MIT), with attribution.
-- A report with the confusion matrix (engine accepts or rejects against tree clean or `ERROR`), split into syntax and
-  context errors.
-- CI fails when agreement drops below the committed baseline.
+Remove upstream's release automation, point every policy at `main`, merge the foundation with upstream history
+preserved.
 
-Done when the runner, the verdict files and the report are committed, the 726 cases are imported with attribution,
-and CI fails on an agreement drop.
+Done when the foundation is merged into `main` by merge commit and the full `Verify` run passes on it.
 
-## M2: Small fixes
+## M1: Surface inventory and SQL Server oracle
 
-One issue per defect class, in this order (counts from the v1.0.0 evaluation):
+- Surface inventory v0: statements and sub-forms from the Microsoft T-SQL reference, cross-checked against
+  SqlScriptDOM's grammar productions.
+- Oracle data: the 726 grammar-kit cases (source and engine errors only, MIT notice, original IDs and hashes) and its
+  353 edit histories. grammar-kit's stored trees and its own `syntax_error` flags are not imported as expectations.
+- A tree checker that uses the tree-sitter API (`has_error`, `is_missing`, full range), tested against inputs that the
+  CLI summary misreports.
+- A parse-only runner (LocalDB locally, a SQL Server 2025 container pinned by digest in CI), with infrastructure
+  failures reported as failures.
+- Gates: offline verdict replay on every pull request, per-case regression gates, and the cost report.
 
-1. `CREATE/ALTER QUEUE … WITH ACTIVATION (…, EXECUTE AS …)` (51 cases).
-2. Clauses without FROM: `WHERE`, `GROUP BY`, `HAVING`.
-3. Table-hint forms: space-separated hints, `INDEX(0)`, `INDEX = 0`, `FORCESEEK(ix(a))`, `SPATIAL_WINDOW_MAX_CELLS`.
-4. Unicode identifiers and variables (`@변수`, `#가`).
-5. Leading and empty `;` (`;WITH …`, `SELECT 1;;`).
+Done when the counts 726 / 681 judged / 45 unknown and 708 / 665 distinct sources are reproduced, the levels 110
+and 170 are both recorded, and an injected regression makes CI fail.
+
+## M2: Defect classes
+
+First, re-run grammar-kit's patch chain as a measured experiment (per-case transitions, corpus and fixture breakage,
+node-type diff, cost). Then fix one class per pull request, re-implemented here:
+
+1. `CREATE/ALTER QUEUE … WITH ACTIVATION (…, EXECUTE AS …)`.
+2. Clauses without FROM: `WHERE`, `GROUP BY`, `HAVING`, rewriting the two upstream error cases.
+3. Unicode identifiers and variables (Unicode 3.2 BMP letters and digits, per engine verdicts).
+4. Leading and empty `;`, and CTE boundaries.
+5. Table-hint forms and their numeric bounds.
 6. Trailing comma in `CREATE TABLE`.
 
-Done when each class has an issue, a failing case that now passes, and no drop in oracle agreement.
+Done for each class when it has a failing case before the change, engine evidence, adjacent negatives, and passes
+every gate within the cost budget.
 
-## M3: DDL coverage
+## M3: Remaining surface
 
-Statement families that do not parse yet, chosen by oracle evidence: `ALTER AVAILABILITY GROUP`, `ALTER SECURITY
-POLICY`, `ALTER ASSEMBLY`, `CREATE/ALTER QUEUE` sub-forms, `BACKUP/RESTORE MASTER KEY` and others.
+The remaining inventory cells: DDL families, `QUOTED_IDENTIFIER OFF` (stateful scanner), `GO`/sqlcmd as a client
+suite, the syntax false positives that are syntactic.
 
-Done when every DDL family found in the oracle cases has corpus coverage or an issue explaining why not.
+Done when every declared cell is verified; cells with only an issue count as open.
 
-## M4: Upstream sync cadence
+## M4: Upstream sync and consumers
 
-A recurring check of `alfpricot/tree-sitter-mssql` for new commits, merged through `upstream-sync` issues, with
-conflicts against our fixes resolved in favour of SQL Server's verdict.
+- Check `alfpricot/tree-sitter-mssql` every two to four weeks and bundle useful changes in one `upstream-sync` pull
+  request.
+- Consumers (go-treesitter) move their pins in separate, reviewed changes. Each move records the node-type diff, the
+  native tree diff, the cost and the memory.
 
-Done when the cadence is written down and one sync (or a recorded "nothing to merge") has followed it.
+Done when the cadence has run once and each consumer move has its record.

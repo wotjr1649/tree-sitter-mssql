@@ -46,16 +46,10 @@ T-SQL is the owner's main SQL dialect, and no well-maintained tree-sitter gramma
   conflict there.
 - Context-dependent errors stay outside the grammar and are tracked as `contextual` issues.
 - One maintainer still owns the grammar; the dependency moves from upstream's maintainer to this repository's owner.
-- `.gala.toml`, `tools/release-policy.mjs` and `CHANGELOG.md` remain from upstream's release process; only their
-  version-consistency checks run in `Verify`.
+- Upstream's release automation is gone; `tools/release-policy.mjs versions` keeps only the check that the three
+  manifests agree, and `CHANGELOG.md` keeps upstream's history.
 
-## Open points for the owner
+## Open points
 
-- **Version and tag scheme for our own releases.** The manifests say `1.0.0`, and upstream may publish `v1.1.0` and
-  later tags with the same names. Options include a separate tag prefix, a suffix such as `1.0.0-ws.1`, or no tags
-  and commit pins only.
-- **Upstream's deliberate error tests.** `test/corpus/errors.txt` pins WHERE and GROUP BY without FROM as illegal, but
-  SQL Server accepts them. Decide whether to rewrite those cases when the grammar is fixed, and how to record the
-  divergence for upstream merges.
-- **Fate of `docs/accepted-gaps.md`.** Keep it as upstream's ledger, replace it with oracle verdict reports, or rewrite
-  it against SQL Server verdicts.
+The owner settled the open points on 2026-11-15; see
+[ADR-0002](ADR-0002-verification-and-workflow.md).
