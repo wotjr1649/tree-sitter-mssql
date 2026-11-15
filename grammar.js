@@ -37,6 +37,8 @@ export default grammar({
   conflicts: ($) => [
     // Space-separated hints and a rowset schema share the identifier prefix.
     [$.table_hint_item, $.openjson_column],
+    // A comma may continue this filegroup or start the next FILEGROUP.
+    [$.database_filegroup],
     // `a.b` — the prefix of a qualified column vs. an object reference.
     [$.object_reference, $._qualified_field],
     // `a.b.c.d` — how many parts belong to the reference.

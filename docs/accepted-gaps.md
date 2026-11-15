@@ -123,3 +123,26 @@ are outside this defect family.
 When a review or a probe finds a new gap, add a row here in the same pass as the corpus case (or
 fixture) that pins it, rather than leaving the behavior undocumented until the next audit finds it
 again.
+
+## Database and server DDL (R11)
+
+Measured with SQL Server 2025 LocalDB 17.0.1000.7, PARSEONLY at levels 100–170.
+The 259 cases in `oracle/probes/ddl-database.jsonl` are pinned in `test/corpus/ddl-database.txt`;
+148 engine-accepted cases are clean. The remaining four engine-rejected clean probes are contextual:
+
+| Cases | Verdict | Disposition |
+| --- | --- | --- |
+| `ddl-database/security-ddl/positive-009` | 15151 | The audit target object is absent or inaccessible; catalog/permissions are outside the grammar. |
+| `ddl-database/server/positive-014/015/016` | 534 | MEMORY_OPTIMIZED options are unavailable in this Express edition. The union grammar retains their syntax. |
+| `kit-routes/alt-tsql-B03-r031/r034` | 35246 | SQL Server cannot validate the named instance because an engine DLL is unavailable. The replica syntax is retained. |
+| `kit-routes/alt-tsql-B03-r160` | 534 | The same MEMORY_OPTIMIZED edition restriction. |
+
+No syntax-negative probe in this set becomes clean. `kit-routes/alt-tsql-B03-r040` remains an error:
+LISTENER is not a distributed-group option; its LISTENER_URL neighbour is accepted.
+HARDWARE_OFFLOAD ON/OFF and = ON/OFF are rejected by this LocalDB and remain errors despite the syntax reference.
+
+The constraint layer covers the measured file-specification requirements/duplicates, replica requirements,
+AG SET/MODIFY single-change rules, nested database option duplicates, QUERY_CAPTURE_POLICY keys/units,
+BPE option order and values, audit clause duplicates and encryption ALGORITHM. It does not claim every
+unmeasured database/AG option or value is validated. Distributed-group required options, other option
+value bounds, and the wider remaining oracle failures are open inventory work.

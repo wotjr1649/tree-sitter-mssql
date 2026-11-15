@@ -60,3 +60,23 @@ A context-free grammar can express "each of n options at most once, in any order
 - Grammar changes for option lists stay within the cost budget (ADR-0002 §6), and public node shapes stay stable.
 - The constraint layer needs node kinds or field names that identify each option. A grammar change that adds an option list should expose them; aliasing to the existing `option` and `identifier` kinds is enough.
 - The grammar alone accepts a little more than SQL Server does. The documented guarantee is "grammar plus constraint layer".
+
+## Database DDL evidence (R11)
+
+`oracle/probes/ddl-database.jsonl` and its LocalDB 17.0.1000.7 verdicts at levels 100–170
+add small per-node checks rather than enumerating permutations in the grammar:
+
+| Check | Evidence (ddl-database/) |
+| --- | --- |
+| File FILENAME required for normal CREATE/ALTER ADD; measured attributes unique | files/negative-suspected-003..007, create/negative-suspected-001, extra-file-duplicates/case-001..006 |
+| Replica endpoint/mode/failover required; measured duplicates; MODIFY one outer/role setting | ag/negative-suspected-003..005, extra-ag-option-sets/case-003..010, edge/3..8 |
+| ALTER AG SET one option, including distinct settings | extra-ag-option-sets/case-001/002 |
+| Nested QUERY_STORE/FILESTREAM/CHANGE_TRACKING duplicates; capture policy keys and units | extra-query-store/case-001..007, extra-database-set/case-003/004, edge/13 |
+| BPE FILENAME/SIZE required, ordered, assigned, typed and unique | server/negative-suspected-001/002, extra-buffer-pool/case-001..006, edge/9..11 |
+| Audit TO/WITH clauses unique; repeated STATE in one WITH allowed | extra-audit-clauses/case-002/003/006 |
+| Encryption one assigned supported ALGORITHM | extra-encryption-options/case-001..004/006..009 |
+| Distributed option names (LISTENER_URL, not LISTENER) | distributed/listener, distributed/listener_url; route B03-r040 |
+
+Each check has a unit test in constraints.rs. Accepted top-level database SET repeats are preserved
+(extra-database-set/case-001/002); ALTER ADD file NAME and MODIFY file NAME are not required by PARSEONLY
+(files/negative-suspected-002/006). Engine evidence takes precedence over assumed restrictions.

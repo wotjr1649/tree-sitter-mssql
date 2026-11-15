@@ -32,7 +32,10 @@ export function event_session_body($) {
 // as a fixed sequence) and ALTER SERVER AUDIT (as one alternative of its
 // own repeated, any-order clause choice).
 export function server_audit_target_clause($) {
-  return seq($.keyword_to, $.identifier, optional(paren_list($.option, true)));
+  return seq(
+    $.keyword_to,
+    choice(seq(alias($.keyword_file, $.identifier), paren_list($.option, true)), $.identifier),
+  );
 }
 
 export default {
@@ -47,6 +50,10 @@ export default {
       $.create_type,
       $.create_schema,
       $.create_database,
+      $.create_database_encryption_key,
+      $.create_database_audit_specification,
+      $.create_server_audit_specification,
+      $.create_availability_group,
       $.create_role,
       $.create_user,
       $.create_login,
@@ -253,15 +260,28 @@ export default {
       ),
     ),
 
-  // CREATE DATABASE name [COLLATE name]. File and option specifications are
-  // not modeled.
+  // File specifications are shared with ALTER DATABASE; table/index options stay separate.
   create_database: ($) =>
     prec.right(
       seq(
         $.keyword_create,
         $.keyword_database,
-        field('name', $.identifier),
+        field('name', $._database_name),
+        optional(seq($.keyword_containment, '=', choice($.keyword_none, $.keyword_partial))),
+        optional($._database_files),
+        optional(seq($.keyword_log, $.keyword_on, comma_list($.database_file, true))),
         optional(seq($.keyword_collate, $.identifier)),
+        optional(
+          choice(
+            seq(
+              $.keyword_for,
+              choice($.keyword_attach, $.keyword_attach_rebuild_log),
+              optional(seq($.keyword_with, comma_list(alias($.database_option, $.option), true))),
+            ),
+            seq($.keyword_as, $.keyword_snapshot, $.keyword_of, $.identifier),
+            seq($.keyword_with, comma_list(alias($.database_option, $.option), true)),
+          ),
+        ),
       ),
     ),
 
@@ -411,12 +431,15 @@ export default {
         $.keyword_server,
         $.keyword_audit,
         field('name', $.identifier),
-        repeat1(
-          choice(
-            server_audit_target_clause($),
-            $.with_options,
-            $.where,
-            seq($.keyword_modify, $.option),
+        choice(
+          seq($.keyword_remove, $.keyword_where),
+          repeat1(
+            choice(
+              server_audit_target_clause($),
+              $.with_options,
+              $.where,
+              seq($.keyword_modify, $.option),
+            ),
           ),
         ),
       ),

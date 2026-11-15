@@ -33,6 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `generated_always`, `selective_xml_path` and 20 keyword node kinds; no existing node kinds or fields are removed.
+- Database file/filegroup, nested database SET, mirroring/HADR, database encryption-key and audit-specification DDL; availability-group replica/listener and server-configuration forms.
+- 56 named kinds (17 structural and 39 keyword kinds) with no existing kind, field or child-type removed. Existing clean oracle and fixture trees retain their fields and ranges.
+- Engine-backed database DDL probes and option-set constraints for required, repeated and single-change settings.
 
 ## [0.2.2](https://github.com/meloncholera/tree-sitter-mssql/compare/v0.2.1...v0.2.2) - 2026-10-04
 

@@ -8,6 +8,11 @@ export default {
       $.alter_view,
       $.alter_index,
       $.alter_database,
+      $.alter_database_encryption_key,
+      $.alter_database_audit_specification,
+      $.alter_server_audit_specification,
+      $.alter_server_configuration,
+      $.alter_availability_group,
       $.alter_schema,
       $.alter_role,
       $.alter_user,
@@ -233,22 +238,25 @@ export default {
   // shape previously mis-captured SCOPED as the name and CONFIGURATION as
   // an unexplained second identifier.
   //
-  // `keyword_scoped` is valid right in the database-name slot, so a
-  // database literally named `scoped` collides the same way `bulk`/
-  // `tablesample`/`window` do elsewhere in this grammar: `ALTER DATABASE
-  // scoped SET ...` commits to this branch and errors; `ALTER DATABASE
-  // [scoped] SET ...` is the workaround.
+  // _database_name keeps keyword-shaped names distinct from SCOPED CONFIGURATION.
   alter_database: ($) =>
     prec.right(
       choice(
         seq(
           $.keyword_alter,
           $.keyword_database,
-          field('name', $.identifier),
+          field('name', $._database_name),
           choice(
             seq(
               $.keyword_set,
-              comma_list($.option, true),
+              comma_list(
+                choice(
+                  alias($.database_mirroring_option, $.option),
+                  alias($.database_clear_option, $.option),
+                  alias($.database_option, $.option),
+                ),
+                true,
+              ),
               // ROLLBACK IMMEDIATE | ROLLBACK AFTER <n> [SECONDS] — IMMEDIATE is
               // a bare identifier here (not a reserved word elsewhere in this
               // position), matching how it was already handled before AFTER
@@ -279,6 +287,7 @@ export default {
                 ),
               ),
             ),
+            $._alter_database_file,
             seq($.keyword_modify, $.option),
             seq($.keyword_collate, $.identifier),
           ),
@@ -361,7 +370,7 @@ export default {
       $.keyword_alter,
       $.keyword_authorization,
       $.keyword_on,
-      optional(seq($.identifier, '::')),
+      optional(seq(choice($.identifier, seq($.keyword_availability, $.keyword_group)), '::')),
       $.object_reference,
       $.keyword_to,
       choice(seq($.keyword_schema, $.keyword_owner), $.identifier),

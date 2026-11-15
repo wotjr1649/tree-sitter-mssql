@@ -1004,6 +1004,7 @@ SELECT 1 HAVING 1=1 GROUP BY 1;
             right: (literal)))))
     (ERROR
       (identifier)
+      (keyword_by)
       (literal))))
 
 ================================================================================

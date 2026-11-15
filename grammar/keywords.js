@@ -504,6 +504,91 @@ export default {
   keyword_system_time: (_) => make_keyword('system_time'),
 
   keyword_filter_predicate: (_) => make_keyword('filter_predicate'),
+  keyword_filegroup: (_) => make_keyword('filegroup'),
+
+  keyword_contains: (_) => make_keyword('contains'),
+
+  keyword_memory_optimized_data: (_) => make_keyword('memory_optimized_data'),
+
+  keyword_containment: (_) => make_keyword('containment'),
+
+  keyword_none: (_) => make_keyword('none'),
+
+  keyword_partial: (_) => make_keyword('partial'),
+
+  keyword_attach: (_) => make_keyword('attach'),
+
+  keyword_attach_rebuild_log: (_) => make_keyword('attach_rebuild_log'),
+
+  keyword_hadr: (_) => make_keyword('hadr'),
+
+  keyword_suspend: (_) => make_keyword('suspend'),
+
+  keyword_partner: (_) => make_keyword('partner'),
+
+  keyword_witness: (_) => make_keyword('witness'),
+
+  keyword_force_service_allow_data_loss: (_) => make_keyword('force_service_allow_data_loss'),
+
+  keyword_safety: (_) => make_keyword('safety'),
+
+  keyword_availability: (_) => make_keyword('availability'),
+
+  keyword_replica: (_) => make_keyword('replica'),
+
+  keyword_specification: (_) => make_keyword('specification'),
+
+  keyword_listener: (_) => make_keyword('listener'),
+
+  keyword_offline: (_) => make_keyword('offline'),
+
+  keyword_failover: (_) => make_keyword('failover'),
+
+  keyword_force_failover_allow_data_loss: (_) => make_keyword('force_failover_allow_data_loss'),
+
+  keyword_ip: (_) => make_keyword('ip'),
+
+  keyword_port: (_) => make_keyword('port'),
+
+  keyword_dhcp: (_) => make_keyword('dhcp'),
+
+  keyword_process: (_) => make_keyword('process'),
+
+  keyword_affinity: (_) => make_keyword('affinity'),
+
+  keyword_cpu: (_) => make_keyword('cpu'),
+
+  keyword_auto: (_) => make_keyword('auto'),
+
+  keyword_numanode: (_) => make_keyword('numanode'),
+
+  keyword_diagnostics: (_) => make_keyword('diagnostics'),
+
+  keyword_cluster: (_) => make_keyword('cluster'),
+
+  keyword_property: (_) => make_keyword('property'),
+
+  keyword_context: (_) => make_keyword('context'),
+
+  keyword_local: (_) => make_keyword('local'),
+
+  keyword_buffer: (_) => make_keyword('buffer'),
+
+  keyword_pool: (_) => make_keyword('pool'),
+
+  keyword_extension: (_) => make_keyword('extension'),
+
+  keyword_softnuma: (_) => make_keyword('softnuma'),
+
+  keyword_memory_optimized: (_) => make_keyword('memory_optimized'),
+
+  keyword_tempdb_metadata: (_) => make_keyword('tempdb_metadata'),
+
+  keyword_hybrid_buffer_pool: (_) => make_keyword('hybrid_buffer_pool'),
+
+  keyword_suspend_for_snapshot_backup: (_) => make_keyword('suspend_for_snapshot_backup'),
+
+  keyword_query_store: (_) => make_keyword('query_store'),
 
   // Operators
   is_not: ($) => prec.left(seq($.keyword_is, $.keyword_not)),
