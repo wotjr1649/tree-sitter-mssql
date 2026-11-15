@@ -6,6 +6,11 @@
 //!
 //! Usage: `tree-check [--paths LIST] [FILE...]`. Exit code 0: every tree passes; 1: some tree has a
 //! problem; 2: a file could not be read or parsed, so nothing is judged.
+//!
+//! `tree-check --edits HISTORIES.jsonl` instead replays edit histories and compares every
+//! incremental reparse with a fresh parse (see `edits.rs`). Exit code 1: some step differs.
+
+mod edits;
 
 use std::fmt::Write as _;
 use std::process::ExitCode;
@@ -118,7 +123,37 @@ fn json_line(path: &str, r: &Report) -> String {
     )
 }
 
+fn grammar_parser() -> Result<Parser, String> {
+    let mut parser = Parser::new();
+    parser
+        .set_language(&tree_sitter_mssql::LANGUAGE.into())
+        .map_err(|e| format!("cannot load the T-SQL grammar: {e}"))?;
+    Ok(parser)
+}
+
+fn run_edits(file: &str) -> Result<bool, String> {
+    let text = fs::read_to_string(file).map_err(|e| format!("{file}: {e}"))?;
+    let histories = edits::read_histories(&text).map_err(|e| format!("{file}: {e}"))?;
+    let mut parser = grammar_parser()?;
+    let mut all_equal = true;
+    for h in &histories {
+        let differing = edits::check_history(&mut parser, h)?;
+        all_equal &= differing.is_empty();
+        let steps: Vec<String> = differing.iter().map(usize::to_string).collect();
+        println!(
+            r#"{{"id":{},"steps":{},"incremental_differences":[{}]}}"#,
+            json_string(&h.id),
+            h.edits.len(),
+            steps.join(",")
+        );
+    }
+    Ok(all_equal)
+}
+
 fn run(args: &[String]) -> Result<bool, String> {
+    if args.len() == 2 && args[0] == "--edits" {
+        return run_edits(&args[1]);
+    }
     let mut paths = Vec::new();
     let mut it = args.iter();
     while let Some(arg) = it.next() {
@@ -136,12 +171,11 @@ fn run(args: &[String]) -> Result<bool, String> {
         }
     }
     if paths.is_empty() {
-        return Err("usage: tree-check [--paths LIST] [FILE...]".into());
+        return Err(
+            "usage: tree-check [--paths LIST] [FILE...] | tree-check --edits HISTORIES".into(),
+        );
     }
-    let mut parser = Parser::new();
-    parser
-        .set_language(&tree_sitter_mssql::LANGUAGE.into())
-        .map_err(|e| format!("cannot load the T-SQL grammar: {e}"))?;
+    let mut parser = grammar_parser()?;
     let mut all_ok = true;
     for path in &paths {
         let source = fs::read(path).map_err(|e| format!("{path}: {e}"))?;

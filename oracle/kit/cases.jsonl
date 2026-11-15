@@ -1,0 +1,726 @@
+{"id":"cte-normal","sha256":"360f4d98a3875d7c0a1c34cc0c73aaf4e9f57ffc8a7a174cbd6b398b52189e50","source":"WITH c AS (SELECT 1 AS a) SELECT a FROM c;"}
+{"id":"cte-none","sha256":"e5a694d885fec983537fae57ee234ec4b8c79b27aecb06befecb4c3972f98bb5","source":"WITH c AS (SELECT 1 AS a) SELECT a c;"}
+{"id":"cte-extra-unused","sha256":"b7bc3daa2225516f9f6749f0ca5c82fcf44d8a3c604f32216bcc56716914aed5","source":"WITH c AS (SELECT 1 AS a), d AS (SELECT 2 AS a) SELECT a FROM c;"}
+{"id":"cte-last-used","sha256":"4ef8053785575db8052531fa0f9895f478faa3fb6874d01848a003e79916ecce","source":"WITH c AS (SELECT 1 AS a), d AS (SELECT 2 AS a) SELECT a FROM d;"}
+{"id":"cte-dependent","sha256":"7d653e1e11c4a3d14b94f3862490935041c0181afd607341b5097dec7ba3a737","source":"WITH c AS (SELECT 1 AS a), d AS (SELECT a FROM c) SELECT a FROM d;"}
+{"id":"cte-qualified","sha256":"ecf0c70868b30753571ec07dd0c6dff6ebb6395e0598abf917dc419d32fc7a57","source":"WITH c AS (SELECT 1 AS a) SELECT a FROM dbo.c;"}
+{"id":"cte-column-only","sha256":"079d8c42d96ff3ccb987fa67e7487026077a14bb4f41cbc1b7ee977086150af9","source":"WITH c AS (SELECT 1 AS a) SELECT c.a FROM dbo.t AS c;"}
+{"id":"cte-case","sha256":"a9a9a120cde3913cbd4a790cff15664501dda19b712477b992f610d63ac19d5c","source":"WITH c AS (SELECT 1 AS a) SELECT a FROM C;"}
+{"id":"cte-quoted","sha256":"c161f1939871c3e84f3999f357f7851e8a8d0e369476d17983cd0f5b72730e8c","source":"WITH [c]]x] AS (SELECT 1 AS a) SELECT a FROM [c]]x];"}
+{"id":"merge-good","sha256":"d32e4676a2eb33a5f750fb5a4076490279dabed596a1ade88b5e9534cd266c39","source":"MERGE dbo.t AS t USING dbo.s AS s ON t.id=s.id WHEN MATCHED THEN DELETE;"}
+{"id":"merge-scalar","sha256":"42976938b85507250b5a1f4b5be94041bb37d4c54bed4aeff29ab93e9ee9439a","source":"MERGE dbo.t AS t USING dbo.s AS s ON t.ids.id WHEN MATCHED THEN DELETE;"}
+{"id":"merge-paren-scalar","sha256":"06ce3ac6ec528b7b58db7ac1b315e34e6a105f72b520384f0f2c26b4a170b112","source":"MERGE dbo.t AS t USING dbo.s AS s ON (t.id) WHEN MATCHED THEN DELETE;"}
+{"id":"merge-arith","sha256":"d51607760e63b533fe3e4195450ffa640ca718b32ed2715322579cc3da85ada3","source":"MERGE dbo.t AS t USING dbo.s AS s ON t.id+1 WHEN MATCHED THEN DELETE;"}
+{"id":"if-bit","sha256":"8efd64485fd27d7af8a0446e58c3db8f4ce267a427a5417a0a833632e66c3061","source":"DECLARE @b bit=1; IF @b SELECT 1;"}
+{"id":"if-comparison","sha256":"1237050e3578fa1013b7edf646b862fa39109fbb2266ebf310665138ec41e2de","source":"DECLARE @b bit=1; IF @b=1 SELECT 1;"}
+{"id":"if-not-scalar","sha256":"4a97ec600819475a6e8678b48e9968532036738539b203af4d8d9aaec8962b1a","source":"IF NOT 1 SELECT 1;"}
+{"id":"case-simple","sha256":"d8658db7428a3cc4029c60139e0841a7c3b228d8c4b7c0060d13d85cc807c525","source":"SELECT CASE a WHEN 1 THEN 2 ELSE 3 END FROM dbo.t;"}
+{"id":"case-searched","sha256":"51c5fa94e42c3cd9454fd0ef3968f623745f54baabff34ca616170bf4b9734a9","source":"SELECT CASE WHEN a=1 THEN 2 ELSE 3 END FROM dbo.t;"}
+{"id":"iif-valid","sha256":"c4543a214fb97acde2f43ad1f3ba7d171f75f26b145ebed39cc5f39123e369a2","source":"SELECT IIF(a=1,2,3) FROM dbo.t;"}
+{"id":"iif-scalar","sha256":"8db2838cdf62fdba3c48c59cff683418568ea2f5fb018d3ece43591da7d0bf8c","source":"SELECT IIF(a,2,3) FROM dbo.t;"}
+{"id":"hint-comma-good","sha256":"cad56a2c81f514f9901cf31ae720b879b162b86c69a0d5c11c016fea4f635748","source":"SELECT * FROM dbo.t WITH (NOLOCK, NOWAIT);"}
+{"id":"hint-space-good","sha256":"045d6bd12ee21c4913caff87d0bf0ff270ca6456c53806781a268a13d9e733f0","source":"SELECT * FROM dbo.t WITH (NOLOCK NOWAIT);"}
+{"id":"hint-space-three","sha256":"6a2947f7fc8be16407863f492b851e6f47156ceb5dfdb35d25bcbeb3902377f9","source":"SELECT * FROM dbo.t WITH (UPDLOCK ROWLOCK READPAST);"}
+{"id":"hint-space-conflict","sha256":"b8356696b3d24e91db3e797d17a3054de5151213413a5c0870ab09b09208a3d3","source":"SELECT * FROM dbo.t WITH (NOLOCK HOLDLOCK);"}
+{"id":"hint-comma-conflict","sha256":"a99be75ab6d19760490649cae35aa327288249451d1b0d99f2130e419736ed56","source":"SELECT * FROM dbo.t WITH (NOLOCK, HOLDLOCK);"}
+{"id":"hint-dupe","sha256":"e21343b7e9c3e250eb7e469c932d46c63edca61b43df2f02e423f3a7b5f1f734","source":"SELECT * FROM dbo.t WITH (NOLOCK, NOLOCK);"}
+{"id":"hint-synonyms","sha256":"92fa224b7d626e4a36b169772c6c97c9d124a45fcdbbed9e07ae41f8a66ffd1d","source":"SELECT * FROM dbo.t WITH (NOLOCK, READUNCOMMITTED);"}
+{"id":"hint-granularity","sha256":"5b9d025b2e096920ce2047a5ad1d3037497db97a6426c0e134a017b4c473e4e7","source":"SELECT * FROM dbo.t WITH (ROWLOCK, PAGLOCK);"}
+{"id":"hint-unknown-space","sha256":"e788f51e6b29ddda3b213ebb26df142419f4d33ef3c4d5eeebee21dc8b9088e1","source":"SELECT * FROM dbo.t WITH (NOLOCKDEFAULT HOLDLOCK);"}
+{"id":"hint-unknown-comma","sha256":"d839877f71f2980efa0347b45f735dfaaaadc2054e4a81bd7e366fc9bfffb385","source":"SELECT * FROM dbo.t WITH (NOLOCKNOT, HOLDLOCK);"}
+{"id":"hint-quoted","sha256":"a9f47937f545c0b671b230997f68cf35e9e85694fcd81fa3ceef4bac11b69cdc","source":"SELECT * FROM dbo.t WITH ([NOLOCK]);"}
+{"id":"hint-index","sha256":"c67bb64d93055cb699a83b5d142d52e29d38520113ea4fad145d41b90366840f","source":"SELECT * FROM dbo.t WITH (INDEX(ix), NOWAIT);"}
+{"id":"hint-force-seek","sha256":"c768a31f6cb3c82f73886530743031e1ca1bc32a3aa91eb9f83a924331ca7aaf","source":"SELECT * FROM dbo.t WITH (FORCESEEK(ix(a)), NOWAIT);"}
+{"id":"hint-schema-on-table","sha256":"d845dd45cb2f32bf4c65cf3e8bfd560cea1d581d9fa3acb524c1db056090ac77","source":"SELECT * FROM dbo.t WITH (a int);"}
+{"id":"hint-schema-on-udf","sha256":"ac557e0072649d3dbf1133b9d42d5b0a03b783d451fdba5928d1ccd263c22387","source":"SELECT * FROM dbo.f() WITH (a int);"}
+{"id":"apply-schema-on-udf","sha256":"389a8310b9536c26b0bdedf3180de14c2d52a53bf4c6f6c9033f6ed72d5314d7","source":"SELECT * FROM dbo.t CROSS APPLY dbo.f() WITH (a int) AS f;"}
+{"id":"openjson-from","sha256":"8e7abbdfe5ea075983292b55c7a47aec5a94b2d15db77ac72d9b5d9a94f414ef","source":"SELECT * FROM OPENJSON(N'[{\"a\":1}]') WITH (a int) AS j;"}
+{"id":"openjson-apply","sha256":"bac0e431ea6f43923113b7ebc30640bcce62f445f1d300eace82e114e9259ccd","source":"SELECT * FROM dbo.t CROSS APPLY OPENJSON(t.js) WITH (a int) AS j;"}
+{"id":"openrowset-from","sha256":"0ad4c8c030a3e75b87a665a90d685b597eede2616193a79a8e170d46f6402adf","source":"SELECT * FROM OPENROWSET(BULK 'x', SINGLE_CLOB) AS d;"}
+{"id":"count-normal","sha256":"cd074ea0c5367958343dd7db80e6fc52bbf64bc4196843cbcc63051199361dc1","source":"SELECT COUNT(*) HAVING COUNT(*)>0;"}
+{"id":"count-empty","sha256":"fc7e8ae3702cfe544f568d8071fac33dbfb49df8e4a70a4da94809b50842e385","source":"SELECT COUNT() HAVING COUNT(*)>0;"}
+{"id":"count-distinct","sha256":"6642b9c75f1c5fefb532d72af13be5fc12af873e706ecffde5472a345171e460","source":"SELECT COUNT(DISTINCT a) FROM dbo.t;"}
+{"id":"count-big-empty","sha256":"eadace1b919e1a3efeaec4f4c1fb60d90d72367810b7a95937d3c3509be10240","source":"SELECT COUNT_BIG();"}
+{"id":"count-two","sha256":"5ca6d6947ed039a273d2e622aff9cadb46ac22ba89e2a07600a35d5dbf5c0a36","source":"SELECT COUNT(a,b) FROM dbo.t;"}
+{"id":"count-udf","sha256":"bb280001b6237dc3c5c1c7c00d7b578f82c12dfddc9e0d8b7e45c2ca09ddbe50","source":"SELECT dbo.COUNT();"}
+{"id":"scalar-return-good","sha256":"a9b634f585a1afc5b8e71e825772092af0c32a8a29c03a8688935d7c1db9dbaa","source":"CREATE FUNCTION dbo.f() RETURNS int AS BEGIN RETURN 1; END;"}
+{"id":"scalar-return-empty","sha256":"b0de4ec1c7c07055ccd85ba1732763337567a38584f8cb23c085cf91f2c23133","source":"CREATE FUNCTION dbo.f() RETURNS int AS BEGIN RETURN; END;"}
+{"id":"scalar-return-branch","sha256":"6a9712252bacb8b77603fb56717c0cac4e703a66e60a625d73387dbe556308dd","source":"CREATE FUNCTION dbo.f() RETURNS int AS BEGIN IF 1=1 RETURN; RETURN 1; END;"}
+{"id":"tvf-return","sha256":"529cc66bfe65c394fc49eda9c09a69722acfa4fc9db77d869cd9a21cee697011","source":"CREATE FUNCTION dbo.f() RETURNS @t TABLE(a int) AS BEGIN RETURN; END;"}
+{"id":"tvf-inline","sha256":"f4171ec2dbed1880f4c83e0b4a7c57a669d66893e297f771bc0b18a28003e8ef","source":"CREATE FUNCTION dbo.f() RETURNS TABLE AS RETURN SELECT 1 AS a;"}
+{"id":"proc-return","sha256":"04769a3c56bc60b87f3029719f84a0010726dbabed78dfdac5bb2b7e0702177f","source":"CREATE PROCEDURE dbo.p AS BEGIN RETURN; END;"}
+{"id":"batch-return","sha256":"e592d0804fc617c0b78bb5592ade9ff10aef9addda7a146e7c83ce09b55646d9","source":"RETURN;"}
+{"id":"mut-00044","sha256":"c427a1a994c09e8fca6385dccb0c52cb003be00513a75833476291f4d8d6fba2","source":"WITH c AS (SELECT 1 AS a) SELECT a  c;"}
+{"id":"mut-00154","sha256":"6f75dcb637fa4558dbc008801b294fc8421d918b0ca5c9ba540fe0eb7b2baa19","source":"SELECT 1; WITH c AS (SELECT 2 AS a) SELECT a  c;"}
+{"id":"mut-00283","sha256":"42976938b85507250b5a1f4b5be94041bb37d4c54bed4aeff29ab93e9ee9439a","source":"MERGE dbo.t AS t USING dbo.s AS s ON t.ids.id WHEN MATCHED THEN DELETE;"}
+{"id":"mut-00284","sha256":"b47cf8a4fbcdde1c12418c09a4d756f58b5aed078196c3e2d4ee9c2e18ae1307","source":"MERGE dbo.t AS t USING dbo.s AS s ON t.idDEFAULTs.id WHEN MATCHED THEN DELETE;"}
+{"id":"mut-00285","sha256":"3ae3160954f0a900e6da40909b6a6681a5d13d2054089f899e81503493e6fb36","source":"MERGE dbo.t AS t USING dbo.s AS s ON t.id1s.id WHEN MATCHED THEN DELETE;"}
+{"id":"mut-00946","sha256":"a99be75ab6d19760490649cae35aa327288249451d1b0d99f2130e419736ed56","source":"SELECT * FROM dbo.t WITH (NOLOCK, HOLDLOCK);"}
+{"id":"mut-00953","sha256":"8504317eea1a3feaea60504d6472bdd5aaea231415ba015465cb68cb9421410c","source":"SELECT 1 FROM dbo.t WITH (NOLOCK, HOLDLOCK);"}
+{"id":"mut-00959","sha256":"52a467d23232601d97165b5e7c3e00075d2000663555a8d787e6822d03817e2f","source":"SELECT * FROM .t WITH (NOLOCK, HOLDLOCK);"}
+{"id":"mut-00963","sha256":"e9648a225a497134c7b6d1d99be2a631987a4882163c7278dc8a860b7d770264","source":"SELECT * FROM dbot WITH (NOLOCK, HOLDLOCK);"}
+{"id":"mut-00964","sha256":"5abbcd093188de3cb20748963f4aeea7df18747f8721943853368ff143321c54","source":"SELECT * FROM dboDEFAULTt WITH (NOLOCK, HOLDLOCK);"}
+{"id":"mut-00965","sha256":"fdad8787316932f9db581ad1e6ef6fe83aaa980611846d42713061d9155297ef","source":"SELECT * FROM dbo1t WITH (NOLOCK, HOLDLOCK);"}
+{"id":"mut-00983","sha256":"b8356696b3d24e91db3e797d17a3054de5151213413a5c0870ab09b09208a3d3","source":"SELECT * FROM dbo.t WITH (NOLOCK HOLDLOCK);"}
+{"id":"mut-00984","sha256":"e788f51e6b29ddda3b213ebb26df142419f4d33ef3c4d5eeebee21dc8b9088e1","source":"SELECT * FROM dbo.t WITH (NOLOCKDEFAULT HOLDLOCK);"}
+{"id":"mut-00985","sha256":"59482b81a7b098aa50aeb2f536c2a8a96b1063e1503dae1866d01aaff784af83","source":"SELECT * FROM dbo.t WITH (NOLOCK1 HOLDLOCK);"}
+{"id":"mut-00995","sha256":"d042fab8e4f00422319af5df71b4bb65afb9b17fba80360d01a901c956583628","source":"SELECT * FROM dbo.t WITH (NOLOCK, HOLDLOCK)"}
+{"id":"mut-01010","sha256":"175259cac5c9e8dcc1f0e4136c54fc1ed8092e1ea34349d2c255ccd89a3e638f","source":"SELECT * FROM dbo, .t WITH (NOLOCK, HOLDLOCK);"}
+{"id":"mut-01012","sha256":"fb6cf89a02ffd8adbd15f04c04ff10a9a97fc0a8c274b865252b6298d8912bc6","source":"SELECT * FROM dboNOT .t WITH (NOLOCK, HOLDLOCK);"}
+{"id":"mut-01027","sha256":"373ec24ee9fe824bbe73a4c8df911aeb6a53e4daad77157494e3fb31c6c0dd55","source":"SELECT * FROM dbo.t WITH (NOLOCKNOT , HOLDLOCK);"}
+{"id":"mut-01032","sha256":"a31758a28bc5d3e5758fc7bbf0d055a30d4b9ed97a63189368d65d6998e41d79","source":"SELECT * FROM dbo.t WITH (NOLOCK, HOLDLOCKNOT );"}
+{"id":"mut-02235","sha256":"352c6508f4617182ea2dd73bbe37461e991d7676b6c33437018057b9b427b23a","source":"SELECT COUNT() HAVING COUNT(*) > 0;"}
+{"id":"mut-02255","sha256":"8580d4bc3eeb3346679ff72dceca369a6ea2a6b49dcf61c07941e043acf39121","source":"SELECT COUNT(*) HAVING COUNT() > 0;"}
+{"id":"mut-02697","sha256":"05d04e8f73915dc22aefb97085e6a3720314b0d7dc21dae7b7053ccb5b734e83","source":"CREATE FUNCTION dbo.f() RETURNS int AS BEGIN RETURN ; END;"}
+{"id":"mut-02699","sha256":"1dbc04b493f3684da9d89d067e9bce79d76989368e8300400f91fd85b08121f0","source":"CREATE FUNCTION dbo.f() RETURNS int AS BEGIN RETURN ;; END;"}
+{"id":"pair-nolock-holdlock","sha256":"a99be75ab6d19760490649cae35aa327288249451d1b0d99f2130e419736ed56","source":"SELECT * FROM dbo.t WITH (NOLOCK, HOLDLOCK);"}
+{"id":"pair-nolock-readuncommitted","sha256":"92fa224b7d626e4a36b169772c6c97c9d124a45fcdbbed9e07ae41f8a66ffd1d","source":"SELECT * FROM dbo.t WITH (NOLOCK, READUNCOMMITTED);"}
+{"id":"pair-nolock-readcommitted","sha256":"764de35c7630b398996c7b86693cb3191fbee17d7a8e65e7f3ab24a2c27c98aa","source":"SELECT * FROM dbo.t WITH (NOLOCK, READCOMMITTED);"}
+{"id":"pair-nolock-readcommittedlock","sha256":"b05a3692b73c84598530a9af9d9d87fefab30e81ebbd44921c4504eec730c7fc","source":"SELECT * FROM dbo.t WITH (NOLOCK, READCOMMITTEDLOCK);"}
+{"id":"pair-nolock-paglock","sha256":"dbd48ea8470eb6956b02ca7d1879419e7b9e22473b2daee6d40601df3402f0fe","source":"SELECT * FROM dbo.t WITH (NOLOCK, PAGLOCK);"}
+{"id":"pair-nolock-rowlock","sha256":"1cba39cd74bc52a132023fddd52cc907ee736dd0b554ee212be86a8dece213f7","source":"SELECT * FROM dbo.t WITH (NOLOCK, ROWLOCK);"}
+{"id":"pair-nolock-tablock","sha256":"86aa05dea6c921df1bf71470f259b67ab7d0599e70ccecf76786175cbe443e91","source":"SELECT * FROM dbo.t WITH (NOLOCK, TABLOCK);"}
+{"id":"pair-nolock-tablockx","sha256":"84cb2af99a20ad3cff7be63916e0ebabc891358eb934ab97c19db1702b56984d","source":"SELECT * FROM dbo.t WITH (NOLOCK, TABLOCKX);"}
+{"id":"pair-nolock-repeatableread","sha256":"0c0f82a455a763aa24f9dfcda187d309c483537e57cf1910c93616d6822a2ab8","source":"SELECT * FROM dbo.t WITH (NOLOCK, REPEATABLEREAD);"}
+{"id":"pair-nolock-serializable","sha256":"1cf9c864d2c17cd3ac193965daf5cff533b073deac4428e29d5639e2c0c04357","source":"SELECT * FROM dbo.t WITH (NOLOCK, SERIALIZABLE);"}
+{"id":"pair-nolock-updlock","sha256":"7c949defd1a1227a4260abfdc88cff350b40ff05557a99a5504da633e5c4786e","source":"SELECT * FROM dbo.t WITH (NOLOCK, UPDLOCK);"}
+{"id":"pair-nolock-xlock","sha256":"236b74550f026a16f3f3ec356caa9cfe2ee7239589986bc7322176025a3c0756","source":"SELECT * FROM dbo.t WITH (NOLOCK, XLOCK);"}
+{"id":"pair-nolock-nowait","sha256":"cad56a2c81f514f9901cf31ae720b879b162b86c69a0d5c11c016fea4f635748","source":"SELECT * FROM dbo.t WITH (NOLOCK, NOWAIT);"}
+{"id":"pair-nolock-readpast","sha256":"f75289df6ed0d3c2b07b76116db805420fa0081305f0d71e1bdb58cd5fa19620","source":"SELECT * FROM dbo.t WITH (NOLOCK, READPAST);"}
+{"id":"pair-nolock-forceseek","sha256":"2c24174cc5b09db0a14985a302dbf6584bd37a8f80aef22e31f59acd595e23e3","source":"SELECT * FROM dbo.t WITH (NOLOCK, FORCESEEK);"}
+{"id":"pair-nolock-forcescan","sha256":"58ac173049a090b691109f5bd63f02a676467c038e0a53778089ff72491e3b53","source":"SELECT * FROM dbo.t WITH (NOLOCK, FORCESCAN);"}
+{"id":"pair-nolock-noexpand","sha256":"16ad91877f710a02f50126ffe7133f195084ea82775c69d6f3e35d37c35ce314","source":"SELECT * FROM dbo.t WITH (NOLOCK, NOEXPAND);"}
+{"id":"pair-nolock-snapshot","sha256":"6abb2eed7ff12729d1ebf53ef328f414372e4e85b5d835f803b555e7b3dbce81","source":"SELECT * FROM dbo.t WITH (NOLOCK, SNAPSHOT);"}
+{"id":"pair-holdlock-readuncommitted","sha256":"03e2b6aa60caf3bc5189b58334c43d25b5578bd457053b83620f13fc587e0d7f","source":"SELECT * FROM dbo.t WITH (HOLDLOCK, READUNCOMMITTED);"}
+{"id":"pair-holdlock-readcommitted","sha256":"fc1ba4fd491e8d326cb36b2d689e4b053d827f77e02222759fec3ec9fc42d442","source":"SELECT * FROM dbo.t WITH (HOLDLOCK, READCOMMITTED);"}
+{"id":"pair-holdlock-readcommittedlock","sha256":"ae25caaa68738176b61e70405bbd163170dbfe67fab9146c7ecb28c1c986465f","source":"SELECT * FROM dbo.t WITH (HOLDLOCK, READCOMMITTEDLOCK);"}
+{"id":"pair-holdlock-paglock","sha256":"ae8e59dcdf2eb1d426dd46f088bf791190aee4291c0276376d2996a3bfd86795","source":"SELECT * FROM dbo.t WITH (HOLDLOCK, PAGLOCK);"}
+{"id":"pair-holdlock-rowlock","sha256":"e0eb9835828fa801fea526c8e86890376114a7aebfc5c50714435a53b04334bf","source":"SELECT * FROM dbo.t WITH (HOLDLOCK, ROWLOCK);"}
+{"id":"pair-holdlock-tablock","sha256":"7e237742898ede47d979a5cd62186f514681f65404cce72c8b2c3f5d17de3062","source":"SELECT * FROM dbo.t WITH (HOLDLOCK, TABLOCK);"}
+{"id":"pair-holdlock-tablockx","sha256":"b5955e53ff1e864cd09daa3dc210ebacc932fb13040b11e4dbe77fd5a5159f9c","source":"SELECT * FROM dbo.t WITH (HOLDLOCK, TABLOCKX);"}
+{"id":"pair-holdlock-repeatableread","sha256":"98c03445b239055e841a8d8bc6a60efa58f243873baf0b08b6f5ef2197b81da7","source":"SELECT * FROM dbo.t WITH (HOLDLOCK, REPEATABLEREAD);"}
+{"id":"pair-holdlock-serializable","sha256":"9626cca53c350bb63fe3876178e3c1a9f5ac29b0c783045fbac2637b9f1ab8bb","source":"SELECT * FROM dbo.t WITH (HOLDLOCK, SERIALIZABLE);"}
+{"id":"pair-holdlock-updlock","sha256":"1fa17023cc72d89d08b62b8efc5bc90b7f1a52bf3979c7df4425f4118f61ac57","source":"SELECT * FROM dbo.t WITH (HOLDLOCK, UPDLOCK);"}
+{"id":"pair-holdlock-xlock","sha256":"dd38d369ff1cafcfb1fac6605778fdeef7c68e77baf27caeeade5eda38ac146e","source":"SELECT * FROM dbo.t WITH (HOLDLOCK, XLOCK);"}
+{"id":"pair-holdlock-nowait","sha256":"a3783d2df2a4eb7c95a55940f4a37f3be3d6cc17d58a385a4d24a2f5dfb1f4ae","source":"SELECT * FROM dbo.t WITH (HOLDLOCK, NOWAIT);"}
+{"id":"pair-holdlock-readpast","sha256":"e01ff4622cdb42f085c8966d67de4af6ec22cadb9f3cd7262c2f24b5d8ac4c34","source":"SELECT * FROM dbo.t WITH (HOLDLOCK, READPAST);"}
+{"id":"pair-holdlock-forceseek","sha256":"bbd623ead97734d75df680bdce8be02ec61ff6da362725fb9e7198e7e493f0ff","source":"SELECT * FROM dbo.t WITH (HOLDLOCK, FORCESEEK);"}
+{"id":"pair-holdlock-forcescan","sha256":"a1c0298f271dcb27841d90f20a232e01b55537719269b8debc87faf5d6bd19d4","source":"SELECT * FROM dbo.t WITH (HOLDLOCK, FORCESCAN);"}
+{"id":"pair-holdlock-noexpand","sha256":"6aa31cba1e0939fc65f0af64632ec835b54d9ee1e6d6550c590d6c0d4e6cfac6","source":"SELECT * FROM dbo.t WITH (HOLDLOCK, NOEXPAND);"}
+{"id":"pair-holdlock-snapshot","sha256":"af8eabf4308251ca533fd4ddeff0de7047a38487bc99dff861052f3c4161424c","source":"SELECT * FROM dbo.t WITH (HOLDLOCK, SNAPSHOT);"}
+{"id":"pair-readuncommitted-readcommitted","sha256":"5c5d0c0b37f1b40b309de91b86326a0d22da075c19afb20254115021c80e811a","source":"SELECT * FROM dbo.t WITH (READUNCOMMITTED, READCOMMITTED);"}
+{"id":"pair-readuncommitted-readcommittedlock","sha256":"b54d7a48b150a92c8289859f0f89b7b9e9942429d3f0d620e89c9a1fabb09d9b","source":"SELECT * FROM dbo.t WITH (READUNCOMMITTED, READCOMMITTEDLOCK);"}
+{"id":"pair-readuncommitted-paglock","sha256":"5a5a2958e021e1c6854289fbe48e800ed591dce21e08b166b4854ee351c53106","source":"SELECT * FROM dbo.t WITH (READUNCOMMITTED, PAGLOCK);"}
+{"id":"pair-readuncommitted-rowlock","sha256":"ab04ac1ded724cd338c7838f67c01b9fbc4b5914c2a1afcb01720f76bea6d529","source":"SELECT * FROM dbo.t WITH (READUNCOMMITTED, ROWLOCK);"}
+{"id":"pair-readuncommitted-tablock","sha256":"9339242e840fd2eaeb24039aa28dffc48e8e03191bfd740fde0168dbf0040c88","source":"SELECT * FROM dbo.t WITH (READUNCOMMITTED, TABLOCK);"}
+{"id":"pair-readuncommitted-tablockx","sha256":"17c7fbcefd0f2009406d56b0bad935979ee20c77d94c0f378df955f7adfe1772","source":"SELECT * FROM dbo.t WITH (READUNCOMMITTED, TABLOCKX);"}
+{"id":"pair-readuncommitted-repeatableread","sha256":"cd3111f3a919ac69c93e4363e078499545edba67a4b2107247bd895e14ea7c3a","source":"SELECT * FROM dbo.t WITH (READUNCOMMITTED, REPEATABLEREAD);"}
+{"id":"pair-readuncommitted-serializable","sha256":"3f3c15429a7b0f8883e554583dc0fe392ffc00e3c1703b60ceab4230bc60adf6","source":"SELECT * FROM dbo.t WITH (READUNCOMMITTED, SERIALIZABLE);"}
+{"id":"pair-readuncommitted-updlock","sha256":"c36bc14addc3d87077a0035dbed514e34de793e71cc5513d46fe2052aaa8ad75","source":"SELECT * FROM dbo.t WITH (READUNCOMMITTED, UPDLOCK);"}
+{"id":"pair-readuncommitted-xlock","sha256":"10b12e9aa5128923939409b9f1348b624173751a5db1d7568c097fa28a04c4a2","source":"SELECT * FROM dbo.t WITH (READUNCOMMITTED, XLOCK);"}
+{"id":"pair-readuncommitted-nowait","sha256":"103640498b3b2b1fbeaed2b07daf51149ac461820b219bd73203e26d3b0fab8d","source":"SELECT * FROM dbo.t WITH (READUNCOMMITTED, NOWAIT);"}
+{"id":"pair-readuncommitted-readpast","sha256":"0d59438e1bb38cdd6e39d958782f3cdf540cfb4f7675e41c7242c4155063c8e7","source":"SELECT * FROM dbo.t WITH (READUNCOMMITTED, READPAST);"}
+{"id":"pair-readuncommitted-forceseek","sha256":"82b1502d62ac1cfccac701846cacdc390ebd448230bd3cb7f4b34030c50cc0c1","source":"SELECT * FROM dbo.t WITH (READUNCOMMITTED, FORCESEEK);"}
+{"id":"pair-readuncommitted-forcescan","sha256":"40c55a83f686a1b9dd13b65d5dd9b8af00b9dc3e44760f61a752a360082e0d3b","source":"SELECT * FROM dbo.t WITH (READUNCOMMITTED, FORCESCAN);"}
+{"id":"pair-readuncommitted-noexpand","sha256":"b5d31e683d66dc00d653cf2b558e7404eacbb457c54b9ccfefd23e7409d4f62a","source":"SELECT * FROM dbo.t WITH (READUNCOMMITTED, NOEXPAND);"}
+{"id":"pair-readuncommitted-snapshot","sha256":"dacd7476f6b2be5c91feec9b3626fc73ddf18155ad3d49434963fc961cd0f1f2","source":"SELECT * FROM dbo.t WITH (READUNCOMMITTED, SNAPSHOT);"}
+{"id":"pair-readcommitted-readcommittedlock","sha256":"f2af8396d8d7953e4ea23ea50d27f59f7441776b285bed7156b4d41291afa1c2","source":"SELECT * FROM dbo.t WITH (READCOMMITTED, READCOMMITTEDLOCK);"}
+{"id":"pair-readcommitted-paglock","sha256":"caa9e65b6b6a61761b8bfebf1f9ddf589b37f33f8ab60e42e3ebc5b476065a8e","source":"SELECT * FROM dbo.t WITH (READCOMMITTED, PAGLOCK);"}
+{"id":"pair-readcommitted-rowlock","sha256":"9a97004b38368cc325b133792082bca434d0eec2881092bc7931ce06ac63ac63","source":"SELECT * FROM dbo.t WITH (READCOMMITTED, ROWLOCK);"}
+{"id":"pair-readcommitted-tablock","sha256":"4fbd43477daee3e890bb73a49fba6a085f385a9606d769f6ffb4aaf96514594f","source":"SELECT * FROM dbo.t WITH (READCOMMITTED, TABLOCK);"}
+{"id":"pair-readcommitted-tablockx","sha256":"d90db0acf3467b73905007bd88fae8040d8c96d6d01999f7b17b78699cdd64de","source":"SELECT * FROM dbo.t WITH (READCOMMITTED, TABLOCKX);"}
+{"id":"pair-readcommitted-repeatableread","sha256":"0c2eb7fefe3bd6d015704f4364e5ee8f0382e54d955a00228b25fc162f263ed0","source":"SELECT * FROM dbo.t WITH (READCOMMITTED, REPEATABLEREAD);"}
+{"id":"pair-readcommitted-serializable","sha256":"6d42ac23dc7227a8698bba94ee8f1117c795aa5c4fb00b6d6d93bc543a90fe97","source":"SELECT * FROM dbo.t WITH (READCOMMITTED, SERIALIZABLE);"}
+{"id":"pair-readcommitted-updlock","sha256":"0442b964415e8eaedc8bf048581f190ea2051e8eb208e95eaf05b17955d8a262","source":"SELECT * FROM dbo.t WITH (READCOMMITTED, UPDLOCK);"}
+{"id":"pair-readcommitted-xlock","sha256":"8590fb8dc09917f1143769b7a0063fa0d73533cfc05342666444c15cb2ce2c6b","source":"SELECT * FROM dbo.t WITH (READCOMMITTED, XLOCK);"}
+{"id":"pair-readcommitted-nowait","sha256":"fd8dc82ac593953808422ae512acb212d0a422ee62828c3e5ffa3298e5500999","source":"SELECT * FROM dbo.t WITH (READCOMMITTED, NOWAIT);"}
+{"id":"pair-readcommitted-readpast","sha256":"0ad2cc3daa617f12965ad2a796eeff3e5a3f2ee0fedafa7fed78adcbaf86261e","source":"SELECT * FROM dbo.t WITH (READCOMMITTED, READPAST);"}
+{"id":"pair-readcommitted-forceseek","sha256":"380df7e2b8b529e7ef89bc3182a960fdcebc74dd1b3cd0c0f41107b1dcefb909","source":"SELECT * FROM dbo.t WITH (READCOMMITTED, FORCESEEK);"}
+{"id":"pair-readcommitted-forcescan","sha256":"e784810223cd9f03583602019f490bc1c56d6faef5e037a81779c1860082e409","source":"SELECT * FROM dbo.t WITH (READCOMMITTED, FORCESCAN);"}
+{"id":"pair-readcommitted-noexpand","sha256":"a5702f33b6638904e3994b7194acca9ac252e10e1bf7050ae3302b7a1ebbcd69","source":"SELECT * FROM dbo.t WITH (READCOMMITTED, NOEXPAND);"}
+{"id":"pair-readcommitted-snapshot","sha256":"9033438b71a3e658d5c76fc405fa82ade7f92cc9e5dd20bb952ccabaf9602c74","source":"SELECT * FROM dbo.t WITH (READCOMMITTED, SNAPSHOT);"}
+{"id":"pair-readcommittedlock-paglock","sha256":"8a2d96309688771512488fb40f8fb12317495b1373ab20eb75d7a4ee5329d190","source":"SELECT * FROM dbo.t WITH (READCOMMITTEDLOCK, PAGLOCK);"}
+{"id":"pair-readcommittedlock-rowlock","sha256":"b6a97394a60f7b653b7f669fa3e17349a84959d3802eb8dc380456e7298ed89e","source":"SELECT * FROM dbo.t WITH (READCOMMITTEDLOCK, ROWLOCK);"}
+{"id":"pair-readcommittedlock-tablock","sha256":"b588eb7972e5472179ebe601d43ac76cd7a0b6501ce30f9d37d457ebf8c414ad","source":"SELECT * FROM dbo.t WITH (READCOMMITTEDLOCK, TABLOCK);"}
+{"id":"pair-readcommittedlock-tablockx","sha256":"1d0781a95c7dfa38d45b2bced189047bbc408634eb4bf023baf8bd04e8adaa09","source":"SELECT * FROM dbo.t WITH (READCOMMITTEDLOCK, TABLOCKX);"}
+{"id":"pair-readcommittedlock-repeatableread","sha256":"89ff5427d248e0eb1502e43755e0ca7f6feff19ede80aa5d4405c115f91ddc1c","source":"SELECT * FROM dbo.t WITH (READCOMMITTEDLOCK, REPEATABLEREAD);"}
+{"id":"pair-readcommittedlock-serializable","sha256":"928b00a542a42ce56f9dafc331c980d1b605931ee8fd6010a2172c376ffde4e9","source":"SELECT * FROM dbo.t WITH (READCOMMITTEDLOCK, SERIALIZABLE);"}
+{"id":"pair-readcommittedlock-updlock","sha256":"f1117e7e4c7c73a92e2e9b9534d2188618d8600ac97e8ea36b14eb02a5065c0e","source":"SELECT * FROM dbo.t WITH (READCOMMITTEDLOCK, UPDLOCK);"}
+{"id":"pair-readcommittedlock-xlock","sha256":"34843b0d7bb168e9e641153664f069a6d797b0846b3a9e9fe46d80d9f778d0dc","source":"SELECT * FROM dbo.t WITH (READCOMMITTEDLOCK, XLOCK);"}
+{"id":"pair-readcommittedlock-nowait","sha256":"96f595380e2fed38856330cd035b5305a44f8bb49106ed4e93360abe0d60d51b","source":"SELECT * FROM dbo.t WITH (READCOMMITTEDLOCK, NOWAIT);"}
+{"id":"pair-readcommittedlock-readpast","sha256":"5ad80a993845c59fe45ee38b3df1d52462742dd19960d83ba5adeb6cdc673df0","source":"SELECT * FROM dbo.t WITH (READCOMMITTEDLOCK, READPAST);"}
+{"id":"pair-readcommittedlock-forceseek","sha256":"27838b6d4be81c1c05cff6e764c80fef6ff4694dbc5eda34fb7527096e439055","source":"SELECT * FROM dbo.t WITH (READCOMMITTEDLOCK, FORCESEEK);"}
+{"id":"pair-readcommittedlock-forcescan","sha256":"be0e749648a10d4da26994d0069398e7bb9d6f1fee73042f24f444df3c9be1c8","source":"SELECT * FROM dbo.t WITH (READCOMMITTEDLOCK, FORCESCAN);"}
+{"id":"pair-readcommittedlock-noexpand","sha256":"1471287c4a7611c2a53a3082ff18479cf95c5d7c993932a5e8a0343711d430db","source":"SELECT * FROM dbo.t WITH (READCOMMITTEDLOCK, NOEXPAND);"}
+{"id":"pair-readcommittedlock-snapshot","sha256":"8aba14aad3cdcdf3aa24147d8b5dadfd2bd6f13946243eec1e5ff661d505c2d0","source":"SELECT * FROM dbo.t WITH (READCOMMITTEDLOCK, SNAPSHOT);"}
+{"id":"pair-paglock-rowlock","sha256":"50e3cf5776e2864abea0fff7e19e4d892851b19ce76c0433d111a8a2f564f98a","source":"SELECT * FROM dbo.t WITH (PAGLOCK, ROWLOCK);"}
+{"id":"pair-paglock-tablock","sha256":"a9b902e4689610b563c6d8033032a2d7d6c8e8e3e2721a10a97f467955c7e2c6","source":"SELECT * FROM dbo.t WITH (PAGLOCK, TABLOCK);"}
+{"id":"pair-paglock-tablockx","sha256":"eb758e57b4f2887a5a90734ab3ed05ef54ee4bef5f87b0854b527ea022c65006","source":"SELECT * FROM dbo.t WITH (PAGLOCK, TABLOCKX);"}
+{"id":"pair-paglock-repeatableread","sha256":"8d014b40643f299f0b01f7ee70ae4b37b3fbcbff7c097e1096e45fdfcbdcae9f","source":"SELECT * FROM dbo.t WITH (PAGLOCK, REPEATABLEREAD);"}
+{"id":"pair-paglock-serializable","sha256":"bdf6fd8b5e1002c89b880b3f3fa40a79133c033db4e3997249249a7cd0316869","source":"SELECT * FROM dbo.t WITH (PAGLOCK, SERIALIZABLE);"}
+{"id":"pair-paglock-updlock","sha256":"64b4ec8a383973640f1ec429fbeec63787c8cdf2649d4f3fbc40ccc5b9b43ee0","source":"SELECT * FROM dbo.t WITH (PAGLOCK, UPDLOCK);"}
+{"id":"pair-paglock-xlock","sha256":"b3bb424f56ed2b1dcb29e1d97eb669d639ef022928a039f9faa695476a96cc41","source":"SELECT * FROM dbo.t WITH (PAGLOCK, XLOCK);"}
+{"id":"pair-paglock-nowait","sha256":"c0a372389b448fe98c403f55e4c2f4f0ee2238534e2dbca0670e6d8eaa6db069","source":"SELECT * FROM dbo.t WITH (PAGLOCK, NOWAIT);"}
+{"id":"pair-paglock-readpast","sha256":"6081939997db6ab10dd519c7963cad619d050bd8247bae4c8e5f34cb9062dbb9","source":"SELECT * FROM dbo.t WITH (PAGLOCK, READPAST);"}
+{"id":"pair-paglock-forceseek","sha256":"e80cd5143098195945a2400412e72ca281bd3e28764ae4ec60e4e4073189ab02","source":"SELECT * FROM dbo.t WITH (PAGLOCK, FORCESEEK);"}
+{"id":"pair-paglock-forcescan","sha256":"0098117388ff102e8905f3e0c4ee5c5aeb52c04693012a4146fd27a9a6e575d4","source":"SELECT * FROM dbo.t WITH (PAGLOCK, FORCESCAN);"}
+{"id":"pair-paglock-noexpand","sha256":"4425de6da0bf11305d76dbcd8dc888244a3968397354ff05c49217d5d8dda870","source":"SELECT * FROM dbo.t WITH (PAGLOCK, NOEXPAND);"}
+{"id":"pair-paglock-snapshot","sha256":"bb14cfe65afbe28c41364b260c4a7753df7a4030fb1d4f1aec1a213dc5d28822","source":"SELECT * FROM dbo.t WITH (PAGLOCK, SNAPSHOT);"}
+{"id":"pair-rowlock-tablock","sha256":"ac660a34e40888f6b66963611a5de569a69ca1d0d3438bc22749fecbb4a28feb","source":"SELECT * FROM dbo.t WITH (ROWLOCK, TABLOCK);"}
+{"id":"pair-rowlock-tablockx","sha256":"bd606a3f30dd073073d3497a5087b097ace0744ab9cf536c3324abf577edf8ea","source":"SELECT * FROM dbo.t WITH (ROWLOCK, TABLOCKX);"}
+{"id":"pair-rowlock-repeatableread","sha256":"0355f35ee61c94ffdd14b7efebe13a84afc43934465c101b663788e40da736f3","source":"SELECT * FROM dbo.t WITH (ROWLOCK, REPEATABLEREAD);"}
+{"id":"pair-rowlock-serializable","sha256":"c038f41423a94e1a0dd0ae39977a6de6fd2888e9fa617efe67bcc7143a38cf0d","source":"SELECT * FROM dbo.t WITH (ROWLOCK, SERIALIZABLE);"}
+{"id":"pair-rowlock-updlock","sha256":"69fbc6cc4f598c3dc6d3170a1d3ce52277ea7206d748a217a8c5769bcd80bcc0","source":"SELECT * FROM dbo.t WITH (ROWLOCK, UPDLOCK);"}
+{"id":"pair-rowlock-xlock","sha256":"4305e13ff48c60db2fcd1c3551f0934ce61ec3f8ebac33d4ecac07339475d35e","source":"SELECT * FROM dbo.t WITH (ROWLOCK, XLOCK);"}
+{"id":"pair-rowlock-nowait","sha256":"56edac47a473ef69d29947dd53e73136093bc85aba0f89526de5e3fa3c4389e9","source":"SELECT * FROM dbo.t WITH (ROWLOCK, NOWAIT);"}
+{"id":"pair-rowlock-readpast","sha256":"54f4d5c748548a68771e4da5ecbd6ce25f7bf807acec5aced41bd5e453c47ac4","source":"SELECT * FROM dbo.t WITH (ROWLOCK, READPAST);"}
+{"id":"pair-rowlock-forceseek","sha256":"fb5efd3d9704f35be688b4cb6b404710a6c9f4c859d52e256274cab6b32c24c6","source":"SELECT * FROM dbo.t WITH (ROWLOCK, FORCESEEK);"}
+{"id":"pair-rowlock-forcescan","sha256":"7d2617061211623961d09e4144f66b3637f3677ca5d91b04ff4bcce26fd53f8e","source":"SELECT * FROM dbo.t WITH (ROWLOCK, FORCESCAN);"}
+{"id":"pair-rowlock-noexpand","sha256":"0aed1e831e930ef4c9e31e6a2e2e3f8e715492c3b51fff1d17e4ee70ff6364d5","source":"SELECT * FROM dbo.t WITH (ROWLOCK, NOEXPAND);"}
+{"id":"pair-rowlock-snapshot","sha256":"d1d1c148bdae8f3218f1b82ccb901320a1c56bacd3cdf5ad54b52c0b4e96b3f6","source":"SELECT * FROM dbo.t WITH (ROWLOCK, SNAPSHOT);"}
+{"id":"pair-tablock-tablockx","sha256":"b5c415e279e0c6c1791e63ae184ba4f3099f322b65ccecc1a68cfff8a3f1b89d","source":"SELECT * FROM dbo.t WITH (TABLOCK, TABLOCKX);"}
+{"id":"pair-tablock-repeatableread","sha256":"71a987bf407d04e66b66abd724efb650fe10d76b184a4b03640893faa7384cf7","source":"SELECT * FROM dbo.t WITH (TABLOCK, REPEATABLEREAD);"}
+{"id":"pair-tablock-serializable","sha256":"3e6105fff5b8e6ead91506e1b324a803fabb1dda9a683aadea64e155741511df","source":"SELECT * FROM dbo.t WITH (TABLOCK, SERIALIZABLE);"}
+{"id":"pair-tablock-updlock","sha256":"707c51734f909d19d6fed15cbc4a1bcae7d4dcbf4cf0a8ec3913fc60800eae06","source":"SELECT * FROM dbo.t WITH (TABLOCK, UPDLOCK);"}
+{"id":"pair-tablock-xlock","sha256":"73b237da4062f272fa178d9d5e4883789548130ac676ca2b955b0aec0b790614","source":"SELECT * FROM dbo.t WITH (TABLOCK, XLOCK);"}
+{"id":"pair-tablock-nowait","sha256":"9e16bcf476c06981bd089b578244b279bb85deba280f21bd66fb4dff570403bc","source":"SELECT * FROM dbo.t WITH (TABLOCK, NOWAIT);"}
+{"id":"pair-tablock-readpast","sha256":"e77304afa236ae9ea6bf5a61c587489373207753b0bceac17bcec52ac51af097","source":"SELECT * FROM dbo.t WITH (TABLOCK, READPAST);"}
+{"id":"pair-tablock-forceseek","sha256":"38eec9a98b0302bdb27446e0582d1abc647b62e4f50120f4b12863a5055569e7","source":"SELECT * FROM dbo.t WITH (TABLOCK, FORCESEEK);"}
+{"id":"pair-tablock-forcescan","sha256":"a4ae8d4f402b91236c328b0d28fbf6af4880775be0b73fba038de2742345648a","source":"SELECT * FROM dbo.t WITH (TABLOCK, FORCESCAN);"}
+{"id":"pair-tablock-noexpand","sha256":"cded54c08fb9c497f7f4790adcdb29e0768fae3dc99d0a422de9a5fb86668c78","source":"SELECT * FROM dbo.t WITH (TABLOCK, NOEXPAND);"}
+{"id":"pair-tablock-snapshot","sha256":"4cf5f29bb543e607b24ab1e0117855498a1d088be6c041e74859e06de92cf25b","source":"SELECT * FROM dbo.t WITH (TABLOCK, SNAPSHOT);"}
+{"id":"pair-tablockx-repeatableread","sha256":"47a735756c900fc5bed8c9fa4daa67f420ceec65a540c2a3bf29847939776427","source":"SELECT * FROM dbo.t WITH (TABLOCKX, REPEATABLEREAD);"}
+{"id":"pair-tablockx-serializable","sha256":"f404f7deac544b5c7f84dd06d4d46cf3c1b339cab091b3752bddf086aea3ef3a","source":"SELECT * FROM dbo.t WITH (TABLOCKX, SERIALIZABLE);"}
+{"id":"pair-tablockx-updlock","sha256":"830d2703dde68b31c2d65c0135154d8f1b2e96c11c01cf0d1bb0b96056166e6b","source":"SELECT * FROM dbo.t WITH (TABLOCKX, UPDLOCK);"}
+{"id":"pair-tablockx-xlock","sha256":"0cbc5cad910cb566c3c96a1861311304e983a9fa6449f3649f244f91239ce5df","source":"SELECT * FROM dbo.t WITH (TABLOCKX, XLOCK);"}
+{"id":"pair-tablockx-nowait","sha256":"882e979ad10e510e1e90684392b51157cb2d2ae06ebf807cffd1fce5bf1119ee","source":"SELECT * FROM dbo.t WITH (TABLOCKX, NOWAIT);"}
+{"id":"pair-tablockx-readpast","sha256":"7c4626247281075c706bc9cab7852c410e9faa2a5874cc1cf7c61c946394e6f8","source":"SELECT * FROM dbo.t WITH (TABLOCKX, READPAST);"}
+{"id":"pair-tablockx-forceseek","sha256":"63b4099e5501503648a77bf2b00f41f5be721ed3caa568cb06a6c8eb1c6c2ca2","source":"SELECT * FROM dbo.t WITH (TABLOCKX, FORCESEEK);"}
+{"id":"pair-tablockx-forcescan","sha256":"350b962013efc885650ba664d9246ca098bd5c5831e52ffec14bfc5e616d92a3","source":"SELECT * FROM dbo.t WITH (TABLOCKX, FORCESCAN);"}
+{"id":"pair-tablockx-noexpand","sha256":"c8b5a3dc7ef4a4bd17ca098f4bc8d3325d0da2ef2081d91e3dc87be958663e21","source":"SELECT * FROM dbo.t WITH (TABLOCKX, NOEXPAND);"}
+{"id":"pair-tablockx-snapshot","sha256":"789bb76900aab7c7036c32f36630d24f3a8fd5cef787982570beffa15bb803e1","source":"SELECT * FROM dbo.t WITH (TABLOCKX, SNAPSHOT);"}
+{"id":"pair-repeatableread-serializable","sha256":"12365fb1f21cc6440edb4d24e3851fb0270bfe1e6990ddd0a7efb17ce6215e99","source":"SELECT * FROM dbo.t WITH (REPEATABLEREAD, SERIALIZABLE);"}
+{"id":"pair-repeatableread-updlock","sha256":"bfec664bf2481e3b6193b70ee76d100367a9c0338ffae43e0be61311b9aaa493","source":"SELECT * FROM dbo.t WITH (REPEATABLEREAD, UPDLOCK);"}
+{"id":"pair-repeatableread-xlock","sha256":"7db66867dcf30922f6421d77c6a5bdf04376760e4fb5440fdc17bf1a96f8615e","source":"SELECT * FROM dbo.t WITH (REPEATABLEREAD, XLOCK);"}
+{"id":"pair-repeatableread-nowait","sha256":"8e7bad69dae0a3e706a110a133c53862ba4f50d6e2fa52efb5a4b9a3583410af","source":"SELECT * FROM dbo.t WITH (REPEATABLEREAD, NOWAIT);"}
+{"id":"pair-repeatableread-readpast","sha256":"b92ffb6e2f09908e05206bf751416428101daa3288905c41e313f002f5f5ff0d","source":"SELECT * FROM dbo.t WITH (REPEATABLEREAD, READPAST);"}
+{"id":"pair-repeatableread-forceseek","sha256":"6c1d29e02126f7b70c44c3c3e1929dcd2cf890def437897a54fe485235547c07","source":"SELECT * FROM dbo.t WITH (REPEATABLEREAD, FORCESEEK);"}
+{"id":"pair-repeatableread-forcescan","sha256":"667561492174048f784199c92462ef3e193aa9f931a2168b6425b64ba6625299","source":"SELECT * FROM dbo.t WITH (REPEATABLEREAD, FORCESCAN);"}
+{"id":"pair-repeatableread-noexpand","sha256":"89489e1826adc85e789b2852218942e44d2ea08353b95731811242d611950b34","source":"SELECT * FROM dbo.t WITH (REPEATABLEREAD, NOEXPAND);"}
+{"id":"pair-repeatableread-snapshot","sha256":"eaeb56e802139ebbf10278339d6c04715d410b7263344b8be7400e4041fcb27a","source":"SELECT * FROM dbo.t WITH (REPEATABLEREAD, SNAPSHOT);"}
+{"id":"pair-serializable-updlock","sha256":"58de2f941c29aae51e27e871fe8d63f5940a3f0e877584e4a7e3926e8771f8c7","source":"SELECT * FROM dbo.t WITH (SERIALIZABLE, UPDLOCK);"}
+{"id":"pair-serializable-xlock","sha256":"9cb2617e7f131478a0b27aca0679c9c75b0ae4b8e209858ff6abc98e3711426e","source":"SELECT * FROM dbo.t WITH (SERIALIZABLE, XLOCK);"}
+{"id":"pair-serializable-nowait","sha256":"f29e5e38ddbdc9b5fa37690cde30bad1f1c9d8d60748b8880afd907796b0b216","source":"SELECT * FROM dbo.t WITH (SERIALIZABLE, NOWAIT);"}
+{"id":"pair-serializable-readpast","sha256":"83f3903f9bdaf4325f0a34fee28951b7d64333b3c03babe0c9fd2d49d332ee52","source":"SELECT * FROM dbo.t WITH (SERIALIZABLE, READPAST);"}
+{"id":"pair-serializable-forceseek","sha256":"a6111122f99123451713fad449aa2851b4a8c8a798c65540bf9f976e114172c1","source":"SELECT * FROM dbo.t WITH (SERIALIZABLE, FORCESEEK);"}
+{"id":"pair-serializable-forcescan","sha256":"09d38789d85486c90ab252f7007236dd835765e11813c5e0e59e0010517f7b6a","source":"SELECT * FROM dbo.t WITH (SERIALIZABLE, FORCESCAN);"}
+{"id":"pair-serializable-noexpand","sha256":"0ab7519f62d6dd8f257722508735a52161c5c98fbdc2a5e00dcce2b0d98c552f","source":"SELECT * FROM dbo.t WITH (SERIALIZABLE, NOEXPAND);"}
+{"id":"pair-serializable-snapshot","sha256":"adecb0695513152f0a48be0ba33dcbb063c2853ff9ecd583e3a91c2f4ea83114","source":"SELECT * FROM dbo.t WITH (SERIALIZABLE, SNAPSHOT);"}
+{"id":"pair-updlock-xlock","sha256":"4265f7423981961a8d4b69c7ce66d1a6b6a2eedc4187528c8283076714b89d55","source":"SELECT * FROM dbo.t WITH (UPDLOCK, XLOCK);"}
+{"id":"pair-updlock-nowait","sha256":"640c820580d69ed56dc8c56f35a367176873f95ef1219dab6cec305d5749ef25","source":"SELECT * FROM dbo.t WITH (UPDLOCK, NOWAIT);"}
+{"id":"pair-updlock-readpast","sha256":"3b5aa98aa4fb5b4b46d9d3a2d1cd0fb852b04d83f8d177ad1ff1c47d0ee07be8","source":"SELECT * FROM dbo.t WITH (UPDLOCK, READPAST);"}
+{"id":"pair-updlock-forceseek","sha256":"a3dac085f65e0a9219087be2b401876ced34c0bd241e561ce849d1acd41fc1b1","source":"SELECT * FROM dbo.t WITH (UPDLOCK, FORCESEEK);"}
+{"id":"pair-updlock-forcescan","sha256":"f6b115fc7c83f17453c555ae576512590a64df20d9e68c60cb5f57ee73aeea90","source":"SELECT * FROM dbo.t WITH (UPDLOCK, FORCESCAN);"}
+{"id":"pair-updlock-noexpand","sha256":"68541e389cd3cbeaf81cc96365b9009cf8303976cec0b450a87945355b80f52d","source":"SELECT * FROM dbo.t WITH (UPDLOCK, NOEXPAND);"}
+{"id":"pair-updlock-snapshot","sha256":"92e7bed1dd7b673835cbb3d3e15137651b74232819fea5309662537f3c871730","source":"SELECT * FROM dbo.t WITH (UPDLOCK, SNAPSHOT);"}
+{"id":"pair-xlock-nowait","sha256":"29a670c42d1ae54e95cd847b170044905dc6adc0b2a4534cb7683c0781aaa73e","source":"SELECT * FROM dbo.t WITH (XLOCK, NOWAIT);"}
+{"id":"pair-xlock-readpast","sha256":"025d531da3440bf99d74f53df64b6544f80f4cfdb9128aa6e51a93264f35a988","source":"SELECT * FROM dbo.t WITH (XLOCK, READPAST);"}
+{"id":"pair-xlock-forceseek","sha256":"cef01309ae4de947214f5ca55130bb8512480b9f3908dd1564df372e26a483d9","source":"SELECT * FROM dbo.t WITH (XLOCK, FORCESEEK);"}
+{"id":"pair-xlock-forcescan","sha256":"0ee75bd93caa1847fdb5d7176e3d501f4da7bba3211d897ad805ce2c42a36c5d","source":"SELECT * FROM dbo.t WITH (XLOCK, FORCESCAN);"}
+{"id":"pair-xlock-noexpand","sha256":"a449732b052e83283eed1afd6158e7344320c0f41bb1ac5db7c9f79f5e892607","source":"SELECT * FROM dbo.t WITH (XLOCK, NOEXPAND);"}
+{"id":"pair-xlock-snapshot","sha256":"0aea075320efa5e97103337485dfa41796ba4a4a8636189148ce731fb6469956","source":"SELECT * FROM dbo.t WITH (XLOCK, SNAPSHOT);"}
+{"id":"pair-nowait-readpast","sha256":"50c4e42c6210f011a1921ca1a5d304c1d6862f5664c9d39d134ad28a4d764457","source":"SELECT * FROM dbo.t WITH (NOWAIT, READPAST);"}
+{"id":"pair-nowait-forceseek","sha256":"22cc6c04abb72b656d43edd667186b2919769a277d0c355a48cc664dbb1bd1dd","source":"SELECT * FROM dbo.t WITH (NOWAIT, FORCESEEK);"}
+{"id":"pair-nowait-forcescan","sha256":"18ab53bef23d884ed072e227efcd370675a1f9bed20d906b5aad9dfc077ff502","source":"SELECT * FROM dbo.t WITH (NOWAIT, FORCESCAN);"}
+{"id":"pair-nowait-noexpand","sha256":"8daba29195c1dbcefb6eac16bc650c923b4cd9bea6d7c907c7d8c89572561ce7","source":"SELECT * FROM dbo.t WITH (NOWAIT, NOEXPAND);"}
+{"id":"pair-nowait-snapshot","sha256":"58e8359ea7def8c0c0a8fd19f51bbabd8067c019f805750ce45ce7bc41243fbf","source":"SELECT * FROM dbo.t WITH (NOWAIT, SNAPSHOT);"}
+{"id":"pair-readpast-forceseek","sha256":"b71182f8b8234fcd5fd66595a71dc9b740ad1b1eb406126e9e427fa48bae0b32","source":"SELECT * FROM dbo.t WITH (READPAST, FORCESEEK);"}
+{"id":"pair-readpast-forcescan","sha256":"6eaff4689fb37b60c7fe9f68e87ed613b5906d08cb006671ba14e0e1cdb1c01a","source":"SELECT * FROM dbo.t WITH (READPAST, FORCESCAN);"}
+{"id":"pair-readpast-noexpand","sha256":"ea7852b31ae79f1109d80d698b4839855675d28093c70828d405c9179d9f9c7d","source":"SELECT * FROM dbo.t WITH (READPAST, NOEXPAND);"}
+{"id":"pair-readpast-snapshot","sha256":"5d935771ee82c19a17b028f47b010cfee7ca10031a0049146e38bd7ce13c5ab8","source":"SELECT * FROM dbo.t WITH (READPAST, SNAPSHOT);"}
+{"id":"pair-forceseek-forcescan","sha256":"1a02f50836237bc1bf60396ac453928c06ea3093832c9a609eb555d17643cefe","source":"SELECT * FROM dbo.t WITH (FORCESEEK, FORCESCAN);"}
+{"id":"pair-forceseek-noexpand","sha256":"a92d867150879c9bb8e5268d2e755df3e54456f863b5a979326e903f748748c2","source":"SELECT * FROM dbo.t WITH (FORCESEEK, NOEXPAND);"}
+{"id":"pair-forceseek-snapshot","sha256":"a7998520d21aa553c0e32ba019fe86c521a6e126098f674770528da5b3027b8f","source":"SELECT * FROM dbo.t WITH (FORCESEEK, SNAPSHOT);"}
+{"id":"pair-forcescan-noexpand","sha256":"898079e0fcb1080531d7baeb193c99e8721494182f36f3ae2952378f53f8d172","source":"SELECT * FROM dbo.t WITH (FORCESCAN, NOEXPAND);"}
+{"id":"pair-forcescan-snapshot","sha256":"d0e18da77371e51a1ff68f413784229b48fd9ee5b7ac8c40678101a18e674325","source":"SELECT * FROM dbo.t WITH (FORCESCAN, SNAPSHOT);"}
+{"id":"pair-noexpand-snapshot","sha256":"48cb7afef239712c7028a7160b9e833374fe6c45d2c1313211711492914bff01","source":"SELECT * FROM dbo.t WITH (NOEXPAND, SNAPSHOT);"}
+{"id":"duplicate-nolock","sha256":"e21343b7e9c3e250eb7e469c932d46c63edca61b43df2f02e423f3a7b5f1f734","source":"SELECT * FROM dbo.t WITH (NOLOCK, NOLOCK);"}
+{"id":"duplicate-holdlock","sha256":"db679f2aad7196268776c0bc8f450507dc211accdda896d1f884f5292051aff7","source":"SELECT * FROM dbo.t WITH (HOLDLOCK, HOLDLOCK);"}
+{"id":"duplicate-readuncommitted","sha256":"e19b9e3142566fee0901d81339a6ed6ad51f35bdcbf7d1d4a2581d9e1638c2c8","source":"SELECT * FROM dbo.t WITH (READUNCOMMITTED, READUNCOMMITTED);"}
+{"id":"duplicate-readcommitted","sha256":"3875d4eb412e0b804630fffec4d4009e69555e418d6798f88087b3b7e8241277","source":"SELECT * FROM dbo.t WITH (READCOMMITTED, READCOMMITTED);"}
+{"id":"duplicate-readcommittedlock","sha256":"c04a7f9705e41ec605da398e4f827726b36e75ee334a6edd4b82ec73b0e5b84f","source":"SELECT * FROM dbo.t WITH (READCOMMITTEDLOCK, READCOMMITTEDLOCK);"}
+{"id":"duplicate-paglock","sha256":"ad94791d632a9c75dc1f1ed58189c9a04e60989d99bb5103d70a85ab08806ac5","source":"SELECT * FROM dbo.t WITH (PAGLOCK, PAGLOCK);"}
+{"id":"duplicate-rowlock","sha256":"e4378ff75e87c594a8e9401febbf19bee956e68193d2ec18c20eeb4d675dfb89","source":"SELECT * FROM dbo.t WITH (ROWLOCK, ROWLOCK);"}
+{"id":"duplicate-tablock","sha256":"6b5eead5c1e232dab561773ccdd1cdd5d359f5acb79e545fd5418453174361dd","source":"SELECT * FROM dbo.t WITH (TABLOCK, TABLOCK);"}
+{"id":"duplicate-tablockx","sha256":"8cf66b59c37b6e2979be70f61a911a32e0ef799d336ce31f21b9f7016a9f135f","source":"SELECT * FROM dbo.t WITH (TABLOCKX, TABLOCKX);"}
+{"id":"duplicate-repeatableread","sha256":"75d998c4ba8fbfff64274bc032c5b291acde794438f9c13961015c63249bc396","source":"SELECT * FROM dbo.t WITH (REPEATABLEREAD, REPEATABLEREAD);"}
+{"id":"duplicate-serializable","sha256":"36551f049149905f346a0bdfe86db05524f621cf95d8f1bb9d733b1446816f33","source":"SELECT * FROM dbo.t WITH (SERIALIZABLE, SERIALIZABLE);"}
+{"id":"duplicate-updlock","sha256":"365529ffb6015b0f5cd2bf91e6190948f926e1ef0b1b0fc8c188d9905feecfba","source":"SELECT * FROM dbo.t WITH (UPDLOCK, UPDLOCK);"}
+{"id":"duplicate-xlock","sha256":"b26b37a4cef6afb1369cc81f4ae061724fc2f6b2970285de8caac0f6683c4043","source":"SELECT * FROM dbo.t WITH (XLOCK, XLOCK);"}
+{"id":"duplicate-nowait","sha256":"1b15bc7d5ec9a1f735173a4983bc00da621e1e7e609b0d1168830361ddef42cc","source":"SELECT * FROM dbo.t WITH (NOWAIT, NOWAIT);"}
+{"id":"duplicate-readpast","sha256":"0e62e066cb9a334b425ac44affe72faa061888aad9b57c52f41ddeb942f8c446","source":"SELECT * FROM dbo.t WITH (READPAST, READPAST);"}
+{"id":"duplicate-forceseek","sha256":"b3a0830fe5da3737c5c4aafba823cd97de6ff103341d45a029dba63717e0c905","source":"SELECT * FROM dbo.t WITH (FORCESEEK, FORCESEEK);"}
+{"id":"duplicate-forcescan","sha256":"6c372c390e609784bb00da1f42b1ac515288d5a84c1972444897d3ca55dda2df","source":"SELECT * FROM dbo.t WITH (FORCESCAN, FORCESCAN);"}
+{"id":"duplicate-noexpand","sha256":"3e4b887e741a78d179aa476ca775ae23c17b5f722d7268c41603bc8bb6f83aff","source":"SELECT * FROM dbo.t WITH (NOEXPAND, NOEXPAND);"}
+{"id":"duplicate-snapshot","sha256":"c065674480b5bac32f07536570eef6fe29afed42e2844b6f354e61da8cb2917c","source":"SELECT * FROM dbo.t WITH (SNAPSHOT, SNAPSHOT);"}
+{"id":"index-zero","sha256":"a3a1a631a5709f28c92b0a26ea27638a3c297001d5a8c4b17c26d7b9dc7ad5f8","source":"SELECT * FROM dbo.t WITH (INDEX(0));"}
+{"id":"index-one","sha256":"bcf76314c00e5268f73afbf22fd63a599d686245b0ed7b2a0c0b30042f66c0f6","source":"SELECT * FROM dbo.t WITH (INDEX(1));"}
+{"id":"index-number-list","sha256":"ff8f1de0b7a670459772c14448e3d8fbddc8648b8473643ce3c88b0c444fe4fb","source":"SELECT * FROM dbo.t WITH (INDEX(0,1));"}
+{"id":"index-equals-zero","sha256":"838c67a7e736d31e270d330f76ba9372a830670b8d7f6a29dfa58fd0cbc6a5e7","source":"SELECT * FROM dbo.t WITH (INDEX=0);"}
+{"id":"index-equals-paren-zero","sha256":"f8f31e043ede5125efc9e75895deb5f5d879074fee82509dd59fbdb6a0d2eee9","source":"SELECT * FROM dbo.t WITH (INDEX=(0));"}
+{"id":"mixed-separator","sha256":"0d931c865117e0699554b661edabd7fa9105848279c69c8946c4885e3031c151","source":"SELECT * FROM dbo.t WITH (UPDLOCK, ROWLOCK READPAST);"}
+{"id":"hint-comment","sha256":"f5c64d2e26ec30fc746ae9433653ef77618b30f5254790d6e6333cc5c77b0859","source":"SELECT * FROM dbo.t WITH (NOLOCK /* x */ NOWAIT);"}
+{"id":"predicate-comment","sha256":"e59a0d333c7994394605c65dc0108ddc0933932ec9a4f792f78330c2d05559c7","source":"SELECT 1 WHERE a NOT /* x */ LIKE 'x';"}
+{"id":"predicate-not-in-comment","sha256":"1c01c28282a8a5111592494408aecc8a85dfd9d5ad126ff73a152e28bddd8812","source":"SELECT 1 WHERE a NOT /* x */ IN (1,2);"}
+{"id":"predicate-is-not-comment","sha256":"0a16d078e89553760233c502c90a77cf567fcc16b6f9f7242f02c207a0178faf","source":"SELECT 1 WHERE a IS /* x */ NOT NULL;"}
+{"id":"index-equals-paren-name","sha256":"f5420bdb4b81dc1b031851842eea6f94abb87f837b09b3d01e1b5e3d113c9739","source":"SELECT * FROM dbo.t WITH (INDEX=(ix));"}
+{"id":"index-mixed","sha256":"87ae7c1467e31c7e9ffe1357ad7b2169f26d01c67005f6015d1cc7b6275dcdd4","source":"SELECT * FROM dbo.t WITH (INDEX(0,ix));"}
+{"id":"index-negative","sha256":"4ed36ea860ea75a8f67c9fb06058f2ceccaee9e9f7389ad23f1a36e8b47079da","source":"SELECT * FROM dbo.t WITH (INDEX(-1));"}
+{"id":"index-fraction","sha256":"e7488d6b50dedd4086fe6f67db7d9a36ca19cdbd8114312582b23fbddf754b80","source":"SELECT * FROM dbo.t WITH (INDEX(1.5));"}
+{"id":"index-string","sha256":"ae23e16ce6cb545afa18f0cd65e29c98f8698d531bed8bb769134938ce61cc25","source":"SELECT * FROM dbo.t WITH (INDEX('ix'));"}
+{"id":"index-hex","sha256":"9a4925d427c333f1bec6e7fa6cad4c017a436a95504dff0a9a65adb1e571e33c","source":"SELECT * FROM dbo.t WITH (INDEX(0x1));"}
+{"id":"force-seek-number","sha256":"d48d90c1fc898e8c60d9e95c7ea5c605348b6de3b18b12b04354605f25584acf","source":"SELECT * FROM dbo.t WITH (FORCESEEK(2(a)));"}
+{"id":"force-seek-zero","sha256":"3688f8673519eacab6006f4c98dc002e58c2c8537188729a64b08d0d1603f1bd","source":"SELECT * FROM dbo.t WITH (FORCESEEK(0(a)));"}
+{"id":"force-seek-negative","sha256":"68fb5ab6aeb71fd43d9f4d38345c5e2ca95aa99c9c467e54a97cf2477a640bc8","source":"SELECT * FROM dbo.t WITH (FORCESEEK(-1(a)));"}
+{"id":"force-seek-name","sha256":"350d2042cfc45fe7fd402851d1dc4e9ac8ed24ab20b3bb7738b0716788738310","source":"SELECT * FROM dbo.t WITH (FORCESEEK(ix(a)));"}
+{"id":"force-seek-and-index","sha256":"f4e8144a41a1dfe360506a87b2edf8a30ee0a65764ff5b3365c80e40b01f6646","source":"SELECT * FROM dbo.t WITH (FORCESEEK(ix(a)), INDEX(ix));"}
+{"id":"nolock-value","sha256":"b7a5b969450ebdd5735b0f03ce145fc3ca1570250346af33f3766470edddbba6","source":"SELECT * FROM dbo.t WITH (NOLOCK=1);"}
+{"id":"rowlock-parameters","sha256":"18501d081bd5c70f67183177213110c26383c67f7a0698ddd7d9fbfe5738afaf","source":"SELECT * FROM dbo.t WITH (ROWLOCK(ix(a)));"}
+{"id":"spatial-int","sha256":"52de4ce7869223481ff6f0bfc624363890c4ba172e2515830109496c8f868a18","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=1);"}
+{"id":"spatial-fraction","sha256":"8e5e924fe53a43bd7721dbd47f0d63e7c19efdf62b8362374c078ce46b377e77","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=1.5);"}
+{"id":"spatial-string","sha256":"bb59699adf151d0f1a10b077125c2d708890951f8fb8cf1f61ac1dfa00ecee5d","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS='1');"}
+{"id":"spatial-hex","sha256":"82974afce01f9672850d5678a0d303c008888bd2f7f631f3507bd3bbd6d325e7","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=0x1);"}
+{"id":"spatial-negative","sha256":"63e1690e0557f34c0fcb34b493a92024c0c1e74d751ffbbe3619bcbb0cf97213","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=-1);"}
+{"id":"force-seek-value","sha256":"38824f3a9be7397e4b4b06e7290abc03eb783d4ef82f40f05eb1c97ea079b12a","source":"SELECT * FROM dbo.t WITH (FORCESEEK=1);"}
+{"id":"hint-variable","sha256":"df7eca4a56379a3d92a5b8d3fc7cdc783abe9b893d3a73891597968701cfc018","source":"SELECT * FROM dbo.t WITH (@hint);"}
+{"id":"hint-temporary-name","sha256":"162304d8cedbe9b4e1316d4fa49da6b27d7cfe367c5f0dc41352c5e7cc2aa11c","source":"SELECT * FROM dbo.t WITH (#hint);"}
+{"id":"numeric-000","sha256":"82974afce01f9672850d5678a0d303c008888bd2f7f631f3507bd3bbd6d325e7","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=0x1);"}
+{"id":"numeric-001","sha256":"543df6d96c54c5a6352939ba7a455b8b926c1b3a4f37563d2150c348ae0626f3","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=0X1);"}
+{"id":"numeric-002","sha256":"94424086a2577b85c51bf5b329ac71e6cb2e354a6c88fb1a4be27e5a9bb6e0e7","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=1.0);"}
+{"id":"numeric-003","sha256":"02f130b6de63c3c274bde2ba6a60b378fcb6749bb169ac4262a66c7298a9e2de","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=1e0);"}
+{"id":"numeric-004","sha256":"3a9372bf2269d2d2c018dac1c432dc646d924a7f4c24858adce5a59a332b2662","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=1E+0);"}
+{"id":"numeric-005","sha256":"5d84644f8c0ec0a270bfaffd8c84f889c624a340efd2d0cc3cf60508d0f1f833","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=1E-0);"}
+{"id":"numeric-006","sha256":"e3947d11da1844f4b3f95f14890cc12dafdaf0edb459b7eb99036a8a8810430f","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=1ROWLOCK);"}
+{"id":"numeric-007","sha256":"d59e7b442aa2aff46c91f68d887330518303701b4593c18f64648d4cd693c1dd","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=0XLOCK);"}
+{"id":"numeric-008","sha256":"44e729791f0bd02e0e04cd4d2159152400eb977b377e78c5deae087d91e0aaed","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=00XLOCK);"}
+{"id":"numeric-009","sha256":"6ab36332256fad203d2849c39ae441cb9a5159313cf395849bfd08259fa31f45","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=01ROWLOCK);"}
+{"id":"numeric-010","sha256":"8b399c4c07a92a6ee34dace4c0a596d2ae5d02ae7c1b99621f622c0aeb660b87","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=1/*c*/ROWLOCK);"}
+{"id":"numeric-011","sha256":"8620038efa6d2881312c4fc664bf24934e1bd269474f155488b2b9224095838a","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=1 ROWLOCK);"}
+{"id":"numeric-012","sha256":"f76e72cce3fa52d9c82ddde7ee9b7f9437a60b19895ffcd291961e70aee3c836","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=1,ROWLOCK);"}
+{"id":"numeric-013","sha256":"b6d9a6e344c0e82ac3f068dd5251f92cb3e87a4102968cb765cf5eb1147105fe","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=2147483648);"}
+{"id":"numeric-014","sha256":"0390c06579f9d27cadc0e252ee5f31bfdf79eb71e410698e0e1238b4bdc37473","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=9999999999999999999999999999999999999999999);"}
+{"id":"numeric-015","sha256":"48748b36335fe3316a616ac0d4e9431a98c2c64a7579096016c9205d31febbb8","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=0x);"}
+{"id":"numeric-016","sha256":"314ac4c703ee5c76c75766887413661b065395f7266bf954da97d7df149aff2a","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=1.e0);"}
+{"id":"range-000","sha256":"20c9283dfdc94b2faec50bfe72797d4d95d3bb18dbc1287bfce079dcc6401d56","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=2147483647);"}
+{"id":"range-001","sha256":"b6d9a6e344c0e82ac3f068dd5251f92cb3e87a4102968cb765cf5eb1147105fe","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=2147483648);"}
+{"id":"range-002","sha256":"7e04b1262a547e8d1d5992fa61f46cf389c5c0defb274f265f1398d8f0baa7b5","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=0000000000000000000000000000000000000000000000000000000000000000000001);"}
+{"id":"range-003","sha256":"fe2529053a13043337e1999ea6b7b89cb84803712b2da821e16dd9c31e684ee9","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001);"}
+{"id":"range-004","sha256":"0390c06579f9d27cadc0e252ee5f31bfdf79eb71e410698e0e1238b4bdc37473","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=9999999999999999999999999999999999999999999);"}
+{"id":"range-005","sha256":"327062e778f86412b8b1e9819541dcfb0a4581932c937607116a143f18c6facf","source":"SELECT * FROM dbo.t WITH (INDEX(2147483647));"}
+{"id":"range-006","sha256":"0a6c80ac322ac41f769e6df52c54ad00eb69640feffd1d8597b0ddb83a826e2d","source":"SELECT * FROM dbo.t WITH (INDEX(2147483648));"}
+{"id":"range-007","sha256":"ec7c8f5762bfdc736eeafdb99fb348648b6b3164d05dc0f89bdc070057eb2357","source":"SELECT * FROM dbo.t WITH (INDEX(0000000000000000000000000000000000000000000000000000000000000000000001));"}
+{"id":"range-008","sha256":"2d00ae1c3e2aea1af054fdf7caa57d63c35292f5a95c76ddef4aa26b68352145","source":"SELECT * FROM dbo.t WITH (INDEX(0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001));"}
+{"id":"range-009","sha256":"1a6fd14e63ca70e07eadd8fe6132ac4d1f0d1bf0486be8f9af5a8f755dbb08df","source":"SELECT * FROM dbo.t WITH (INDEX(9999999999999999999999999999999999999999999));"}
+{"id":"range-010","sha256":"4446ddfa4bd492a2ed6159696f1380af53875b5675be89e01e66c6ae8f1f8d56","source":"SELECT * FROM dbo.t WITH (FORCESEEK(2147483647(a)));"}
+{"id":"range-011","sha256":"14598145e4b9a46f83210a6851004355f9c4e15120071ec73b0daf5c8a752674","source":"SELECT * FROM dbo.t WITH (FORCESEEK(2147483648(a)));"}
+{"id":"range-012","sha256":"ae84c911ddb11788e4ef355a9d34adc832ce331c997152cea68bc3eb4b7d190b","source":"SELECT * FROM dbo.t WITH (FORCESEEK(0000000000000000000000000000000000000000000000000000000000000000000001(a)));"}
+{"id":"range-013","sha256":"fa8bc480897f1b0cbd7c965743588eed6396c078a475a9ccba94bb42d77d18bd","source":"SELECT * FROM dbo.t WITH (FORCESEEK(0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001(a)));"}
+{"id":"range-014","sha256":"f9ee430b57e8089b8d713f620295c8015602dd6dbc351cd22fefe21e764df044","source":"SELECT * FROM dbo.t WITH (FORCESEEK(9999999999999999999999999999999999999999999(a)));"}
+{"id":"query-hint-control-000","sha256":"55d39732256bedef2fbed1c9be7fc877bb6ccddb0ddfdd76f3a6343da3212308","source":"SELECT * FROM dbo.t WITH (INDEX = (ix));"}
+{"id":"query-hint-control-001","sha256":"03eacf94aeb2f14b860fa92f8a6115b3c522cf360e4a963d6d484cad4b27e775","source":"SELECT * FROM dbo.t WITH (INDEX = ix);"}
+{"id":"query-hint-control-002","sha256":"599d37cfb504c408fe209872261055c6eb42a9f3bf97493424671a33d47fea86","source":"SELECT * FROM dbo.t AS a OPTION (TABLE HINT (a, INDEX = (ix)));"}
+{"id":"query-hint-control-003","sha256":"9685a596a942c1960f89e1b288684db88c6071392b14be16320b11ad75ea01ee","source":"SELECT * FROM dbo.t AS a OPTION (TABLE HINT (a, INDEX = ix));"}
+{"id":"query-hint-control-004","sha256":"cd5f3f63cce342d856bcd79bf4d630e2d1c5b02975a45ea7ef30a715d9d0346c","source":"SELECT * FROM dbo.t AS a OPTION (TABLE HINT (a, NOLOCK, HOLDLOCK));"}
+{"id":"query-hint-control-005","sha256":"20cfef2884cccb5e7016551e8682f6bca3f22a3c83c9df157c5001dd2cd86c80","source":"SELECT * FROM dbo.t AS a OPTION (TABLE HINT (a, UNKNOWN_HINT));"}
+{"id":"query-hint-control-006","sha256":"bc3532825eabf505cb939878b8f6e792abeaeb070333c7cfc8951bd042b8cd3e","source":"SELECT * FROM dbo.t AS a OPTION (TABLE HINT (a, FORCESEEK(0(a))));"}
+{"id":"qi-on-contains-search","sha256":"43f836269ad32501eb1ad08b5041dfa69fa58ce0fb66c3947036f17432aa8be8","source":"SET QUOTED_IDENTIFIER ON; SELECT 1 WHERE CONTAINS(a, \"apple\");\n"}
+{"id":"qi-on-freetext-search","sha256":"20bde4bbf2a4fb0a793f7eb48f665390e8d6da74283df5a90f952103f06fb719","source":"SET QUOTED_IDENTIFIER ON; SELECT 1 WHERE FREETEXT(a, \"apple\");\n"}
+{"id":"qi-on-property","sha256":"034f45c9661917a71656b0343237ef478efbbf6ed0b27d461efc2c8d76e4ff03","source":"SET QUOTED_IDENTIFIER ON; SELECT 1 WHERE CONTAINS(PROPERTY(a, \"title\"), 'apple');\n"}
+{"id":"qi-on-language","sha256":"ec34e92b10c8912d07900f21d95eb171aa05298c1c59e40fafbfa81350700877","source":"SET QUOTED_IDENTIFIER ON; SELECT 1 WHERE CONTAINS(a, 'apple', LANGUAGE \"English\");\n"}
+{"id":"qi-off-contains-search","sha256":"971243e3b4cd9a354ed8e8fd015f71b57cef7ed6ba72db9a3a73ac5f571d6c22","source":"SET QUOTED_IDENTIFIER OFF; SELECT 1 WHERE CONTAINS(a, \"apple\");\n"}
+{"id":"qi-off-freetext-search","sha256":"ec16c78509c0fa806e5d2b9b416fdfc7da44126d3c5f150568a34bddc4111e51","source":"SET QUOTED_IDENTIFIER OFF; SELECT 1 WHERE FREETEXT(a, \"apple\");\n"}
+{"id":"qi-off-property","sha256":"c715415806420f86c1b996f8437df5ca2be14f14156f379ba89f7a4f23247603","source":"SET QUOTED_IDENTIFIER OFF; SELECT 1 WHERE CONTAINS(PROPERTY(a, \"title\"), 'apple');\n"}
+{"id":"qi-off-language","sha256":"528e11216d72f9f31b004068df621ec176d2afba413a5ef9bd85cc3adc010b33","source":"SET QUOTED_IDENTIFIER OFF; SELECT 1 WHERE CONTAINS(a, 'apple', LANGUAGE \"English\");\n"}
+{"id":"security-8","sha256":"e3ff0bebf71fb1320b5824ff2dbf91faffe3210a29c82aa86200336db4bdeaab","source":"CREATE SECURITY POLICY dbo.p ADD FILTER PREDICATE dbo.f(a) ON dbo.t WITH (STATE = OFF);\n"}
+{"id":"security-9","sha256":"fb82d9dd868d99eaf0a3046c79b1b5b507c551b6b601c680132f880c555b5396","source":"CREATE SECURITY POLICY dbo.p ADD FILTER PREDICATE dbo.f(a) ON dbo.t WITH (SCHEMABINDING = OFF);\n"}
+{"id":"security-10","sha256":"2f791ac6cce2c4a593be8738d816234e6a3e16da442a8dd1680d652f6defe27d","source":"CREATE SECURITY POLICY dbo.p ADD FILTER PREDICATE dbo.f(a) ON dbo.t WITH (STATE = OFF, SCHEMABINDING = OFF);\n"}
+{"id":"security-11","sha256":"2a224d4c51d6bb967578a41fd0f3c001436f4a144ef47878c218e7af6de22fe6","source":"ALTER SECURITY POLICY dbo.p WITH (STATE = OFF);\n"}
+{"id":"security-12","sha256":"80d993dff1a4ae2868f7a9eb2d51d6f9cd183574cba0558fafb1fbe40ae92e4b","source":"ALTER SECURITY POLICY dbo.p WITH (SCHEMABINDING = OFF);\n"}
+{"id":"security-13","sha256":"522f3c16b39c40d5016e73245d81eb85bddf4b74a8989dd1d90105033c38fb21","source":"ALTER SECURITY POLICY dbo.p WITH (STATE = OFF, SCHEMABINDING = OFF);\n"}
+{"id":"event-14","sha256":"07a9bf3f431897db347d79b974c3ce36b2eff9fb6f0f2b65616e45c6dd56e660","source":"CREATE EVENT SESSION s ON SERVER ADD EVENT sqlserver.lock_deadlock;\n"}
+{"id":"event-15","sha256":"7bbbb4f8bd23bd3c98e92783b9f5ce20f9828c8ebe0e6972abe9385759210d0c","source":"CREATE EVENT SESSION s ON SERVER ADD EVENT lock_deadlock;\n"}
+{"id":"event-16","sha256":"b1851cafbcbdca8778380f58bf7bcf3a58d3a3300301e0be7f263cae2a990284","source":"CREATE EVENT SESSION s ON SERVER ADD EVENT .lock_deadlock;\n"}
+{"id":"event-17","sha256":"03149739eda3d6b823ede96b10b42963eebeb21818639095dbc10c6fce692241","source":"CREATE EVENT SESSION s ON SERVER ADD EVENT sqlserver..lock_deadlock;\n"}
+{"id":"event-18","sha256":"c4a36de7799036f2793f771dae48a49f39396a0c207d3e7f79efead778c069a3","source":"CREATE EVENT SESSION s ON SERVER ADD EVENT server.sqlserver.lock_deadlock;\n"}
+{"id":"event-19","sha256":"d942bb286e9eb088302a737a8c756d29b16c2c7313297d855709950192bf9d06","source":"CREATE EVENT SESSION s ON SERVER ADD EVENT server.db.sqlserver.lock_deadlock;\n"}
+{"id":"target-20","sha256":"c0e5e6d462d274d442337c53a4183a840d63a48484f982d7e736dcff5e39e5f6","source":"CREATE EVENT SESSION s ON SERVER ADD TARGET package0.ring_buffer;\n"}
+{"id":"target-21","sha256":"feb2defa81b1039a7afcb1cb4ab3af20c5302d189aaeb4f52b39e5ce33e84014","source":"CREATE EVENT SESSION s ON SERVER ADD TARGET ring_buffer;\n"}
+{"id":"target-22","sha256":"9ed39c99d25ac53f677eef9c57f1f0e4a14a077212f34164c935435e82067b86","source":"CREATE EVENT SESSION s ON SERVER ADD TARGET package0..ring_buffer;\n"}
+{"id":"action-23","sha256":"bd881f163bfbb75d9c8f9fc883e88a6cc876bba4b931102a88c51e7e76e49952","source":"CREATE EVENT SESSION s ON SERVER ADD EVENT sqlserver.lock_deadlock(ACTION(sqlserver.sql_text));\n"}
+{"id":"action-24","sha256":"92b719127f6496eaaffceafea3d367954c7a9faf904feec8057827a790f0e07e","source":"CREATE EVENT SESSION s ON SERVER ADD EVENT sqlserver.lock_deadlock(ACTION(sql_text));\n"}
+{"id":"action-25","sha256":"fefc13d5041f9807cff572c5531a64a775a1c4031f711a17a49c2e9d3a24cada","source":"CREATE EVENT SESSION s ON SERVER ADD EVENT sqlserver.lock_deadlock(ACTION(sqlserver..sql_text));\n"}
+{"id":"queue-26","sha256":"60bb463f58a88c2a6bf86227bb9889f2b5ae31a36a7c69e43034df039cf060d8","source":"CREATE QUEUE dbo.q WITH ACTIVATION (DROP);\n"}
+{"id":"queue-27","sha256":"ef4b6064912f674ec5c89129400047a23d2f4b278d360425e583539197577994","source":"CREATE QUEUE dbo.q WITH ACTIVATION (DROP, STATUS = ON);\n"}
+{"id":"queue-28","sha256":"35682bd3ec432ecae7ba2fb47cd89567a27fbc5e74ba61377495aa88a277ed68","source":"CREATE QUEUE dbo.q WITH ACTIVATION (STATUS = ON, DROP);\n"}
+{"id":"queue-29","sha256":"fe3b9ade7a92df99991ebd4c148f74336e6c7e8870233dbab567bf69b5fb87b1","source":"CREATE QUEUE dbo.q WITH ACTIVATION (STATUS = OFF);\n"}
+{"id":"queue-30","sha256":"b55e8a27db841aea959094fe304e5434bcf4f6caf6988a5b38ae09fc514ec723","source":"CREATE QUEUE dbo.q WITH ACTIVATION (PROCEDURE_NAME = dbo.p, MAX_QUEUE_READERS = 1, EXECUTE AS OWNER);\n"}
+{"id":"queue-31","sha256":"26e49a958b7816191e55d8c7cc075de3e53ded1eacff47a6269423e83512463b","source":"CREATE QUEUE dbo.q WITH ACTIVATION ();\n"}
+{"id":"queue-32","sha256":"c17a692c453195018bbec3a0e76432854393ab1cb26ba65e9741d0cb99d43bc2","source":"ALTER QUEUE dbo.q WITH ACTIVATION (DROP);\n"}
+{"id":"queue-33","sha256":"4acd68b4030daac35268d96ef89796664f6234ef04161839007f1d2b0683a838","source":"ALTER QUEUE dbo.q WITH ACTIVATION (DROP, STATUS = ON);\n"}
+{"id":"queue-34","sha256":"3374af2f5cb60c5af3090197b745e0cec01a0bb08bd6d7d901a6b0ac89511e13","source":"ALTER QUEUE dbo.q WITH ACTIVATION (STATUS = ON, DROP);\n"}
+{"id":"queue-35","sha256":"14ac208ef76c935ec85b834684b7ce6335edacaa3ace7a14b3f9c87324843e73","source":"ALTER QUEUE dbo.q WITH ACTIVATION (STATUS = OFF);\n"}
+{"id":"queue-36","sha256":"6f2a88ebc9797d48e2a715d1a68a36c3c15cc787bb85077e86907d9b076a29b3","source":"ALTER QUEUE dbo.q WITH ACTIVATION (PROCEDURE_NAME = dbo.p, MAX_QUEUE_READERS = 1, EXECUTE AS OWNER);\n"}
+{"id":"queue-37","sha256":"7bde71684507f17838f31d909e8f163913f02217c7bb69abd9f064c1417afb0e","source":"ALTER QUEUE dbo.q WITH ACTIVATION ();\n"}
+{"id":"route-38","sha256":"7f78dd40116983828eb80cae9907e8cf85d2e368c68bc2957303030da78d3ed0","source":"CREATE ROUTE r WITH LIFETIME = 60;\n"}
+{"id":"route-39","sha256":"7bc306da57f0ecf08ee2ad01ae5d3cb5f413a4ca419c3a9e8b4cac7d43f56481","source":"CREATE ROUTE r WITH ADDRESS = 'LOCAL';\n"}
+{"id":"route-40","sha256":"35e7faeeca2c025a8095044d812a06cd2ee710c4e04148fe2d47f08fdff59a0c","source":"CREATE ROUTE r WITH ADDRESS = 'LOCAL', LIFETIME = 60;\n"}
+{"id":"route-41","sha256":"87577118c7e5789914b5c7830b3666bbe649525c20abb3f631af8e4cef1f5263","source":"CREATE ROUTE r WITH LIFETIME = 60, ADDRESS = 'LOCAL';\n"}
+{"id":"route-42","sha256":"de06eefda82293779008b21e695fea19fab398d3b15f4df2c66df34ea53d7c74","source":"CREATE ROUTE r WITH SERVICE_NAME = 's', LIFETIME = 60, ADDRESS = 'LOCAL';\n"}
+{"id":"route-43","sha256":"ee186f0b2c785c2223e0a0e6a22ebe8e84f05ba15e8de9d902670351f3892cff","source":"CREATE ROUTE r WITH ADDRESS = 'LOCAL', ADDRESS = 'LOCAL';\n"}
+{"id":"route-44","sha256":"0a02b0bb1a9a00e15566528512fddcc7e3008546b1c1bcbee0feaefc264ae538","source":"ALTER ROUTE r WITH LIFETIME = 60;\n"}
+{"id":"route-45","sha256":"0a2df33896f641b687049178a1d6f1f252c0e6e280576338320cb346f835a9b6","source":"ALTER ROUTE r WITH ADDRESS = 'LOCAL';\n"}
+{"id":"route-46","sha256":"f26e906f749c31249e3f14af23e0dc6a8ffbe76a22c9138344a639fca2d327cb","source":"ALTER ROUTE r WITH ADDRESS = 'LOCAL', LIFETIME = 60;\n"}
+{"id":"route-47","sha256":"456cf0a9db27b11ed7ad81855318e9d4230cef7db97c5599ae7ad6e4bde386a2","source":"ALTER ROUTE r WITH LIFETIME = 60, ADDRESS = 'LOCAL';\n"}
+{"id":"route-48","sha256":"41637ff94afeefd31e35cdf1b9773c11ac554498ccbd1d8836a8942b99feb795","source":"ALTER ROUTE r WITH SERVICE_NAME = 's', LIFETIME = 60, ADDRESS = 'LOCAL';\n"}
+{"id":"route-49","sha256":"799823f2a47a68b6718d8a5ed276000ddc3dc3800007166e0449c4432b531735","source":"ALTER ROUTE r WITH ADDRESS = 'LOCAL', ADDRESS = 'LOCAL';\n"}
+{"id":"rowset-50","sha256":"dcaffc066102b291037755c00cb67405fbfd10751b5d39a608f2eeba271f4160","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENXML(@idoc, N'/root/row', 2) WITH (id int) AS x;\n"}
+{"id":"rowset-51","sha256":"82d845d5f67dc28cc87c2ca1b8107f8f7551266d98b44444f02d5bda7a9251d3","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENXML(@idoc, N'/root/row', 2) WITH dbo.t AS x;\n"}
+{"id":"rowset-52","sha256":"5d0f5fd7cd094ce591cf4bc2ccbaad650ceb105dd5df35095e0fda44e4526599","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENXML(@idoc, N'/root/row', 2)  AS x;\n"}
+{"id":"rowset-53","sha256":"d5ebf24be3bf5aeb4b1b04eb18bc42becabcb7e25668a56c2e305486fbd70eeb","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENXML(@idoc; N'/root/row'; 2) WITH (id int) AS x;\n"}
+{"id":"rowset-54","sha256":"a885b5354e62c41b6810a0f61b94cde1b5a20d5946178d10df37e7c8f08fa920","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENXML(@idoc; N'/root/row'; 2) WITH dbo.t AS x;\n"}
+{"id":"rowset-55","sha256":"edf590a13ac485875dc931aef4df904f6754760ebc537b9cdebdeacf21f2c5a0","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENXML(@idoc; N'/root/row'; 2)  AS x;\n"}
+{"id":"rowset-56","sha256":"1b1d314a30d9796eebaa209be0ab89c9c2819a7e27466a5172533d86c3685f72","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENROWSET('p', 'd'; 'u'; 'pw', 'SELECT 1') WITH (id int) AS x;\n"}
+{"id":"rowset-57","sha256":"1e0c9c406e15f0476ef45c5bc24cc2a7223ea705512cf431735b64754fbc1c4a","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENROWSET('p', 'd'; 'u'; 'pw', 'SELECT 1') WITH dbo.t AS x;\n"}
+{"id":"rowset-58","sha256":"32edd5ace6bc62aefaac80af5956dcc661caa5d3722adbbbbe1a6dc8d7ed5f33","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENROWSET('p', 'd'; 'u'; 'pw', 'SELECT 1')  AS x;\n"}
+{"id":"rowset-59","sha256":"b660a8fb6ef4b80da0c304f8443f09bd23b6de0eec4482f6efb8d65bc6824924","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENROWSET('p'; 'd'; 'u'; 'pw'; 'SELECT 1') WITH (id int) AS x;\n"}
+{"id":"rowset-60","sha256":"35c43580dc71b4b862873fff7a8496b9228012bbe6866eea6d79f5df943c6640","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENROWSET('p'; 'd'; 'u'; 'pw'; 'SELECT 1') WITH dbo.t AS x;\n"}
+{"id":"rowset-61","sha256":"754ee4b97ea0f4100fad37da2364e0eb6014865a2f27ec269b42f673ad59c778","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENROWSET('p'; 'd'; 'u'; 'pw'; 'SELECT 1')  AS x;\n"}
+{"id":"rowset-62","sha256":"e5e01bcd88ae8c654f402f9bdda4249a4eff7f4b0f64c7d5674a691b0c63fbae","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENJSON('{}') WITH (id int) AS x;\n"}
+{"id":"rowset-63","sha256":"5f47a2785e4ee559fc82925e2086c54059da5f3a2ed9705220d2a9b490369a18","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENJSON('{}') WITH dbo.t AS x;\n"}
+{"id":"rowset-64","sha256":"c41c72585e8f0df93a069c29c6d4228521ed08a88174000afb676fcfae8596b4","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENJSON('{}')  AS x;\n"}
+{"id":"rowset-65","sha256":"e5e01bcd88ae8c654f402f9bdda4249a4eff7f4b0f64c7d5674a691b0c63fbae","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENJSON('{}') WITH (id int) AS x;\n"}
+{"id":"rowset-66","sha256":"5f47a2785e4ee559fc82925e2086c54059da5f3a2ed9705220d2a9b490369a18","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENJSON('{}') WITH dbo.t AS x;\n"}
+{"id":"rowset-67","sha256":"c41c72585e8f0df93a069c29c6d4228521ed08a88174000afb676fcfae8596b4","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENJSON('{}')  AS x;\n"}
+{"id":"rowset-68","sha256":"c2ff638190894d26caade0062d9c8e050aba853b3b8f35b112d2cefdfe2fef72","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM PREDICT(MODEL = @model, DATA = dbo.t AS d) WITH (id int) AS x;\n"}
+{"id":"rowset-69","sha256":"946da23342b74906752d86e2a5b7b2708f12a4443e17e06a2e6e904ee5b9e37f","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM PREDICT(MODEL = @model, DATA = dbo.t AS d) WITH dbo.t AS x;\n"}
+{"id":"rowset-70","sha256":"668dd3fa41805f21f7ee69b4ad8abc206c7299a244b65f70ac8a73acfbb98cd9","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM PREDICT(MODEL = @model, DATA = dbo.t AS d)  AS x;\n"}
+{"id":"rowset-71","sha256":"6e3fe54084a921d3d30e5bf552a17996c1b7cc0fd695d51c9e75079724d64e2b","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM PREDICT(MODEL = @model; DATA = dbo.t AS d) WITH (id int) AS x;\n"}
+{"id":"rowset-72","sha256":"4c58ea384b25b706e47611d5fc8e3476169646b229a42b8b03f27627a3828dfe","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM PREDICT(MODEL = @model; DATA = dbo.t AS d) WITH dbo.t AS x;\n"}
+{"id":"rowset-73","sha256":"4f1e75ebeffe2714d6bce189b38d75f61515ca4bb44378affc91441411292f7b","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM PREDICT(MODEL = @model; DATA = dbo.t AS d)  AS x;\n"}
+{"id":"regex-74","sha256":"3e28ef51c89b7d9424dffec513bc44219bd2e190fd164f7fe5cc000d981e281c","source":"SELECT 1 WHERE REGEXP_LIKE('x','x');\n"}
+{"id":"regex-75","sha256":"140c229d10d436b0c8ad3e4879a98ccc20cca960456a1e82e2c19b07723d97ed","source":"SELECT 1 WHERE NOT REGEXP_LIKE('x','x');\n"}
+{"id":"regex-76","sha256":"51fc56491298b4dc453df84aa1b590d55fc86dc5750ed0b1008c920f21895758","source":"SELECT 1 WHERE REGEXP_LIKE('x','x') AND 1=1;\n"}
+{"id":"regex-77","sha256":"9ece20f8baa024cbfd08151110ab3d3ed9ffe05bfd772679dd7c0165586ba4f9","source":"SELECT 1 WHERE REGEXP_LIKE('x','x') OR 1=0;\n"}
+{"id":"regex-78","sha256":"34e34e394bf6983ec87e6b7595939785a12025e481e54b3e32cef0fa9505167e","source":"SELECT 1 WHERE NOT (REGEXP_LIKE('x','x'));\n"}
+{"id":"regex-79","sha256":"1892f61c088e37ba212607ecfc99b8ad2a10f036859a7d59e6883b47a1f4f4f3","source":"SELECT 1 WHERE dbo.REGEXP_LIKE('x','x');\n"}
+{"id":"regex-80","sha256":"7d9f31adc4caa48de84f986bb63fb520c617210716b884039935ea311796e279","source":"SELECT 1 WHERE REGEXP_COUNT('x','x');\n"}
+{"id":"queue-order-create-00","sha256":"b28fe0f4e493b754e710a3ccc8266a1894fd3e62323e47ddcc1ccab75961d4fd","source":"CREATE QUEUE dbo.q WITH ACTIVATION (PROCEDURE_NAME = dbo.p, MAX_QUEUE_READERS = 1, EXECUTE AS OWNER, STATUS = OFF);\n"}
+{"id":"queue-order-create-01","sha256":"79717889aedb7eb59b3325f83a6029b1820aca209e7f5e6bdd4f454301b416b2","source":"CREATE QUEUE dbo.q WITH ACTIVATION (PROCEDURE_NAME = dbo.p, MAX_QUEUE_READERS = 1, STATUS = OFF, EXECUTE AS OWNER);\n"}
+{"id":"queue-order-create-02","sha256":"bffe1dd7dbf7d9b546c6551f0b5bd503c6f2cc17752036922607836c0d63d427","source":"CREATE QUEUE dbo.q WITH ACTIVATION (PROCEDURE_NAME = dbo.p, EXECUTE AS OWNER, MAX_QUEUE_READERS = 1, STATUS = OFF);\n"}
+{"id":"queue-order-create-03","sha256":"13e4921e0aba3774ff8525c5b03b71e6d5ffce920f452e1e9b8a2b6865e47706","source":"CREATE QUEUE dbo.q WITH ACTIVATION (PROCEDURE_NAME = dbo.p, EXECUTE AS OWNER, STATUS = OFF, MAX_QUEUE_READERS = 1);\n"}
+{"id":"queue-order-create-04","sha256":"5994b22e6f19172ea5f77fdb73fd598394d9786429a3f7bd9c01773289f3359b","source":"CREATE QUEUE dbo.q WITH ACTIVATION (PROCEDURE_NAME = dbo.p, STATUS = OFF, MAX_QUEUE_READERS = 1, EXECUTE AS OWNER);\n"}
+{"id":"queue-order-create-05","sha256":"faf84b06ad031929c57ac3a22ddb8026edd1811f2791534eba468ae84daa49f8","source":"CREATE QUEUE dbo.q WITH ACTIVATION (PROCEDURE_NAME = dbo.p, STATUS = OFF, EXECUTE AS OWNER, MAX_QUEUE_READERS = 1);\n"}
+{"id":"queue-order-create-06","sha256":"abd770c367ee43823b95cd6df27abc68328a4dbc7266ec46da397ddab87b6bbe","source":"CREATE QUEUE dbo.q WITH ACTIVATION (MAX_QUEUE_READERS = 1, PROCEDURE_NAME = dbo.p, EXECUTE AS OWNER, STATUS = OFF);\n"}
+{"id":"queue-order-create-07","sha256":"d57575d51ad64e4d36431a9a2a58af8a2594903309c4cb290d298ce632c27bc7","source":"CREATE QUEUE dbo.q WITH ACTIVATION (MAX_QUEUE_READERS = 1, PROCEDURE_NAME = dbo.p, STATUS = OFF, EXECUTE AS OWNER);\n"}
+{"id":"queue-order-create-08","sha256":"e98473935f55c9d23074e3bbc8a5d25fee7c1e7270d344f9b8f6aa5a756b2122","source":"CREATE QUEUE dbo.q WITH ACTIVATION (MAX_QUEUE_READERS = 1, EXECUTE AS OWNER, PROCEDURE_NAME = dbo.p, STATUS = OFF);\n"}
+{"id":"queue-order-create-09","sha256":"caee380f1c5ae4c137f010a61be0e036a05a0a33553ea58e86d75c41f4d4ca0f","source":"CREATE QUEUE dbo.q WITH ACTIVATION (MAX_QUEUE_READERS = 1, EXECUTE AS OWNER, STATUS = OFF, PROCEDURE_NAME = dbo.p);\n"}
+{"id":"queue-order-create-10","sha256":"86859881af05c86a946d3717f4d4eaa57a38aeea63e7e1b780bcff192e2168e2","source":"CREATE QUEUE dbo.q WITH ACTIVATION (MAX_QUEUE_READERS = 1, STATUS = OFF, PROCEDURE_NAME = dbo.p, EXECUTE AS OWNER);\n"}
+{"id":"queue-order-create-11","sha256":"ad82903ff433691e842c37ab69548fe24d75e84c1b0c4e9b80232c686cd4f006","source":"CREATE QUEUE dbo.q WITH ACTIVATION (MAX_QUEUE_READERS = 1, STATUS = OFF, EXECUTE AS OWNER, PROCEDURE_NAME = dbo.p);\n"}
+{"id":"queue-order-create-12","sha256":"b3fbf290a3d0f6dbd98250cb04162917546ca8628721e824b3f564555fc970dd","source":"CREATE QUEUE dbo.q WITH ACTIVATION (EXECUTE AS OWNER, PROCEDURE_NAME = dbo.p, MAX_QUEUE_READERS = 1, STATUS = OFF);\n"}
+{"id":"queue-order-create-13","sha256":"14ddb73a0ce5b18ebd7aee02d7bf8ead5f09d28a877ae502c26c18c7aa525915","source":"CREATE QUEUE dbo.q WITH ACTIVATION (EXECUTE AS OWNER, PROCEDURE_NAME = dbo.p, STATUS = OFF, MAX_QUEUE_READERS = 1);\n"}
+{"id":"queue-order-create-14","sha256":"719308acafe58e8ab7fe8cb8dd5f49f68ceb345c5976b2e47dbd5d0157d15ec9","source":"CREATE QUEUE dbo.q WITH ACTIVATION (EXECUTE AS OWNER, MAX_QUEUE_READERS = 1, PROCEDURE_NAME = dbo.p, STATUS = OFF);\n"}
+{"id":"queue-order-create-15","sha256":"40d5eaba667203b7e69a2de00157c62c260c71a21eab60f56204887347a724c6","source":"CREATE QUEUE dbo.q WITH ACTIVATION (EXECUTE AS OWNER, MAX_QUEUE_READERS = 1, STATUS = OFF, PROCEDURE_NAME = dbo.p);\n"}
+{"id":"queue-order-create-16","sha256":"f7a1c477c34bdbfe8ed2e315d1a483b74f8825ccdbfecdd3276488619754b66d","source":"CREATE QUEUE dbo.q WITH ACTIVATION (EXECUTE AS OWNER, STATUS = OFF, PROCEDURE_NAME = dbo.p, MAX_QUEUE_READERS = 1);\n"}
+{"id":"queue-order-create-17","sha256":"c1256fcdf258684fc1dc8b6bc6324d9acb1363623cad58d8208e925b1c057eb5","source":"CREATE QUEUE dbo.q WITH ACTIVATION (EXECUTE AS OWNER, STATUS = OFF, MAX_QUEUE_READERS = 1, PROCEDURE_NAME = dbo.p);\n"}
+{"id":"queue-order-create-18","sha256":"8ac60b24280619d3909dbdc278297c9eecc4f64cfad7d6379375a12e567d59f0","source":"CREATE QUEUE dbo.q WITH ACTIVATION (STATUS = OFF, PROCEDURE_NAME = dbo.p, MAX_QUEUE_READERS = 1, EXECUTE AS OWNER);\n"}
+{"id":"queue-order-create-19","sha256":"90020497497bb76ef6af8fa7ea57d0124b1597146d9be4b838cfe6ddafce22ac","source":"CREATE QUEUE dbo.q WITH ACTIVATION (STATUS = OFF, PROCEDURE_NAME = dbo.p, EXECUTE AS OWNER, MAX_QUEUE_READERS = 1);\n"}
+{"id":"queue-order-create-20","sha256":"8550476ff21a75a0dc34252ad1c9b4293c2575f652314b7c7c69e15fb20cb8e4","source":"CREATE QUEUE dbo.q WITH ACTIVATION (STATUS = OFF, MAX_QUEUE_READERS = 1, PROCEDURE_NAME = dbo.p, EXECUTE AS OWNER);\n"}
+{"id":"queue-order-create-21","sha256":"6e0c98f3f299029d3c0b7b5aef0dc199e2f67038e9cd7bae5d48858be303853d","source":"CREATE QUEUE dbo.q WITH ACTIVATION (STATUS = OFF, MAX_QUEUE_READERS = 1, EXECUTE AS OWNER, PROCEDURE_NAME = dbo.p);\n"}
+{"id":"queue-order-create-22","sha256":"dca7f408a76c25e450ab5e7f466c9d6d470c83e8acc36b83bb563f033b9487ae","source":"CREATE QUEUE dbo.q WITH ACTIVATION (STATUS = OFF, EXECUTE AS OWNER, PROCEDURE_NAME = dbo.p, MAX_QUEUE_READERS = 1);\n"}
+{"id":"queue-order-create-23","sha256":"e5ed249b9e8c23bbdae4a939cf7a970fb168c38206e51e13f170451d84c1e913","source":"CREATE QUEUE dbo.q WITH ACTIVATION (STATUS = OFF, EXECUTE AS OWNER, MAX_QUEUE_READERS = 1, PROCEDURE_NAME = dbo.p);\n"}
+{"id":"queue-order-alter-00","sha256":"7cabf488e41bc29a899f7936e4daa1d2f8753491046fd754923185f665b6463b","source":"ALTER QUEUE dbo.q WITH ACTIVATION (PROCEDURE_NAME = dbo.p, MAX_QUEUE_READERS = 1, EXECUTE AS OWNER, STATUS = OFF);\n"}
+{"id":"queue-order-alter-01","sha256":"9de102a29587e0518904d5c279da13c3c76ce42d6396566313cd084700ca7020","source":"ALTER QUEUE dbo.q WITH ACTIVATION (PROCEDURE_NAME = dbo.p, MAX_QUEUE_READERS = 1, STATUS = OFF, EXECUTE AS OWNER);\n"}
+{"id":"queue-order-alter-02","sha256":"b0a22cecab09c55ca451877971fad70066416c04b80e9fd946513b0b383398a8","source":"ALTER QUEUE dbo.q WITH ACTIVATION (PROCEDURE_NAME = dbo.p, EXECUTE AS OWNER, MAX_QUEUE_READERS = 1, STATUS = OFF);\n"}
+{"id":"queue-order-alter-03","sha256":"12810a0f6c8fbe50c853d899f252cb858886d9a6422542d6898b160d81e9995c","source":"ALTER QUEUE dbo.q WITH ACTIVATION (PROCEDURE_NAME = dbo.p, EXECUTE AS OWNER, STATUS = OFF, MAX_QUEUE_READERS = 1);\n"}
+{"id":"queue-order-alter-04","sha256":"a93142c1600b4e0c37274280ad6927dd59a2ee37a9780c79a1a53708304941f1","source":"ALTER QUEUE dbo.q WITH ACTIVATION (PROCEDURE_NAME = dbo.p, STATUS = OFF, MAX_QUEUE_READERS = 1, EXECUTE AS OWNER);\n"}
+{"id":"queue-order-alter-05","sha256":"7735e15e0b2fe8ed6982827f0b737460588c10bd324a71d6218c570b1a6c590d","source":"ALTER QUEUE dbo.q WITH ACTIVATION (PROCEDURE_NAME = dbo.p, STATUS = OFF, EXECUTE AS OWNER, MAX_QUEUE_READERS = 1);\n"}
+{"id":"queue-order-alter-06","sha256":"6a3435ccdd0bf31e45f66e0066be23870cd0c0e247671cc7671748f4e2c4fc7f","source":"ALTER QUEUE dbo.q WITH ACTIVATION (MAX_QUEUE_READERS = 1, PROCEDURE_NAME = dbo.p, EXECUTE AS OWNER, STATUS = OFF);\n"}
+{"id":"queue-order-alter-07","sha256":"7622cb11196792bd1c8a82fc12cfa8b47aea814f3a7488fe0a7d8ef2220e281b","source":"ALTER QUEUE dbo.q WITH ACTIVATION (MAX_QUEUE_READERS = 1, PROCEDURE_NAME = dbo.p, STATUS = OFF, EXECUTE AS OWNER);\n"}
+{"id":"queue-order-alter-08","sha256":"a61d7958cdf03fa824cf114c3103c1c52d3176e3a155d077fe73c229a73ad314","source":"ALTER QUEUE dbo.q WITH ACTIVATION (MAX_QUEUE_READERS = 1, EXECUTE AS OWNER, PROCEDURE_NAME = dbo.p, STATUS = OFF);\n"}
+{"id":"queue-order-alter-09","sha256":"2a9e1893d76ea23266edf220cf0698b5dc83dc93dd1f1028ba18beaeead87eaa","source":"ALTER QUEUE dbo.q WITH ACTIVATION (MAX_QUEUE_READERS = 1, EXECUTE AS OWNER, STATUS = OFF, PROCEDURE_NAME = dbo.p);\n"}
+{"id":"queue-order-alter-10","sha256":"d7b8a7a4df0dba7639c5fc65f8e01fc248a556b82863a6ef422ae82d95d23878","source":"ALTER QUEUE dbo.q WITH ACTIVATION (MAX_QUEUE_READERS = 1, STATUS = OFF, PROCEDURE_NAME = dbo.p, EXECUTE AS OWNER);\n"}
+{"id":"queue-order-alter-11","sha256":"a9c24565728a9aa17cc2c54b36b54b0b9d17c003b321d5c96f8eb83bc6f1ed16","source":"ALTER QUEUE dbo.q WITH ACTIVATION (MAX_QUEUE_READERS = 1, STATUS = OFF, EXECUTE AS OWNER, PROCEDURE_NAME = dbo.p);\n"}
+{"id":"queue-order-alter-12","sha256":"dd96fca5aa8921bc35f832ca6f0c777bb9dd0d7eb43767ff826fd30e0102b75d","source":"ALTER QUEUE dbo.q WITH ACTIVATION (EXECUTE AS OWNER, PROCEDURE_NAME = dbo.p, MAX_QUEUE_READERS = 1, STATUS = OFF);\n"}
+{"id":"queue-order-alter-13","sha256":"7653a1bdcc0487d735ec50e07b61557127cf064c811b84fa149fe0fb3358745a","source":"ALTER QUEUE dbo.q WITH ACTIVATION (EXECUTE AS OWNER, PROCEDURE_NAME = dbo.p, STATUS = OFF, MAX_QUEUE_READERS = 1);\n"}
+{"id":"queue-order-alter-14","sha256":"3f11eea54c5ff099dd74aa1557648b08cf530508750104aff822663a6bb62df4","source":"ALTER QUEUE dbo.q WITH ACTIVATION (EXECUTE AS OWNER, MAX_QUEUE_READERS = 1, PROCEDURE_NAME = dbo.p, STATUS = OFF);\n"}
+{"id":"queue-order-alter-15","sha256":"ddd2e7ab9e51c8ff565524028fd5f17c7a7857c8a8aa81dbd5be6b43205fcb11","source":"ALTER QUEUE dbo.q WITH ACTIVATION (EXECUTE AS OWNER, MAX_QUEUE_READERS = 1, STATUS = OFF, PROCEDURE_NAME = dbo.p);\n"}
+{"id":"queue-order-alter-16","sha256":"ba7ca9c8ad8d504902cacebce0a012e3515d372a1dbb72d67a0ede38b53850de","source":"ALTER QUEUE dbo.q WITH ACTIVATION (EXECUTE AS OWNER, STATUS = OFF, PROCEDURE_NAME = dbo.p, MAX_QUEUE_READERS = 1);\n"}
+{"id":"queue-order-alter-17","sha256":"2aece99b428b3e48c37f0a8521165d0b7ffcb6cf74212f4556bcd0980c3305f6","source":"ALTER QUEUE dbo.q WITH ACTIVATION (EXECUTE AS OWNER, STATUS = OFF, MAX_QUEUE_READERS = 1, PROCEDURE_NAME = dbo.p);\n"}
+{"id":"queue-order-alter-18","sha256":"8af7bf89536617dc0527791d3ebb7db6700ee86d6878c6e4b53914cd7756b430","source":"ALTER QUEUE dbo.q WITH ACTIVATION (STATUS = OFF, PROCEDURE_NAME = dbo.p, MAX_QUEUE_READERS = 1, EXECUTE AS OWNER);\n"}
+{"id":"queue-order-alter-19","sha256":"71fab0d900728aa6b51b5347b51b2cb908266c858749f6af504de2601e20d80d","source":"ALTER QUEUE dbo.q WITH ACTIVATION (STATUS = OFF, PROCEDURE_NAME = dbo.p, EXECUTE AS OWNER, MAX_QUEUE_READERS = 1);\n"}
+{"id":"queue-order-alter-20","sha256":"7f6ccf79617c9e59a7450e4a4b4496e8eec533d35b23f129e2513bd09b7e5aa5","source":"ALTER QUEUE dbo.q WITH ACTIVATION (STATUS = OFF, MAX_QUEUE_READERS = 1, PROCEDURE_NAME = dbo.p, EXECUTE AS OWNER);\n"}
+{"id":"queue-order-alter-21","sha256":"4af37545eff48e861da7ca2ce6a0f92152b865faca98f8ea2621f1f3460be9a3","source":"ALTER QUEUE dbo.q WITH ACTIVATION (STATUS = OFF, MAX_QUEUE_READERS = 1, EXECUTE AS OWNER, PROCEDURE_NAME = dbo.p);\n"}
+{"id":"queue-order-alter-22","sha256":"4d263a43cff8cacd842ab3f7adf75bab19d40d5d9a6e4da9be0f7e37dc1e5a03","source":"ALTER QUEUE dbo.q WITH ACTIVATION (STATUS = OFF, EXECUTE AS OWNER, PROCEDURE_NAME = dbo.p, MAX_QUEUE_READERS = 1);\n"}
+{"id":"queue-order-alter-23","sha256":"a7cc5900eece4c66f6a4bb0309cddfea299ebd618992fc3cad3da0208b0c2b5c","source":"ALTER QUEUE dbo.q WITH ACTIVATION (STATUS = OFF, EXECUTE AS OWNER, MAX_QUEUE_READERS = 1, PROCEDURE_NAME = dbo.p);\n"}
+{"id":"queue-missing-48","sha256":"190ec67076f38f10679563b4a4b7a351ddb28f181641cf661e90c63fa63fe1d1","source":"CREATE QUEUE dbo.q WITH ACTIVATION (MAX_QUEUE_READERS = 1, EXECUTE AS OWNER, STATUS = OFF);\n"}
+{"id":"queue-missing-49","sha256":"a2e79ef4c956931e1fdc4b27d59c86e8db13c5de9927e9ff797f165ca8b2b04c","source":"CREATE QUEUE dbo.q WITH ACTIVATION (PROCEDURE_NAME = dbo.p, EXECUTE AS OWNER, STATUS = OFF);\n"}
+{"id":"queue-missing-50","sha256":"e47b114757b339f8934c5ec8806ea7ae9761b02209078c5195baafd835f236b8","source":"CREATE QUEUE dbo.q WITH ACTIVATION (PROCEDURE_NAME = dbo.p, MAX_QUEUE_READERS = 1, STATUS = OFF);\n"}
+{"id":"queue-missing-51","sha256":"b55e8a27db841aea959094fe304e5434bcf4f6caf6988a5b38ae09fc514ec723","source":"CREATE QUEUE dbo.q WITH ACTIVATION (PROCEDURE_NAME = dbo.p, MAX_QUEUE_READERS = 1, EXECUTE AS OWNER);\n"}
+{"id":"queue-duplicate-create","sha256":"b59bf2a86fb48a3552d619ae9e0058269cd02e9d07e638d122ed8578e7e829bd","source":"CREATE QUEUE dbo.q WITH ACTIVATION (PROCEDURE_NAME = dbo.p, MAX_QUEUE_READERS = 1, EXECUTE AS OWNER, STATUS = OFF, PROCEDURE_NAME = dbo.p);\n"}
+{"id":"queue-duplicate-alter","sha256":"9aea0b279a67704f98641a2de5afa8e36d8c8b09ccf6dca18d295ef3aac182cf","source":"ALTER QUEUE dbo.q WITH ACTIVATION (PROCEDURE_NAME = dbo.p, MAX_QUEUE_READERS = 1, EXECUTE AS OWNER, STATUS = OFF, PROCEDURE_NAME = dbo.p);\n"}
+{"id":"regexp-column-0","sha256":"88517ee98df1bf010baefa4426645743d4f708f2d52b312e6901b54200e722ac","source":"SELECT a FROM dbo.t WHERE REGEXP_LIKE(a,'x');\n"}
+{"id":"regexp-column-1","sha256":"bbecf8ca10080e2350363e258ce56720a6bc60164412147c8392aaa74d4f5cfd","source":"SELECT a FROM dbo.t WHERE NOT REGEXP_LIKE(a,'x');\n"}
+{"id":"regexp-column-2","sha256":"1e814a6bccd8be40af720285e429c5c7266e7896a2f83ce6f9eeff58dc34967a","source":"SELECT a FROM dbo.t WHERE REGEXP_LIKE(a,'x') AND 1=1;\n"}
+{"id":"regexp-column-3","sha256":"da771953cfba69ed7bcfc7dccf7c68be2146b63ac6bb8b93af3c84d627bbcc6a","source":"SELECT a FROM dbo.t WHERE REGEXP_LIKE(a,'x') OR 1=0;\n"}
+{"id":"regexp-column-4","sha256":"b94e0d7528a5b1011ac41b04b4384077de6a02415914efdc04168f0a4eb8ffbb","source":"SELECT a FROM dbo.t WHERE NOT (REGEXP_LIKE(a,'x'));\n"}
+{"id":"regexp-scalar-control","sha256":"29990a7165b3de5b8b4e0fa0bf3e7b952d739e7dd096918d38f82ff727f853df","source":"SELECT a FROM dbo.t WHERE REGEXP_COUNT(a,'x');\n"}
+{"id":"regexp-qualified-control","sha256":"c974c2468b97d37e5f93b8cb2c38fb4fee87752662a975909eb0dcca306cb1a5","source":"SELECT a FROM dbo.t WHERE dbo.REGEXP_LIKE(a,'x');\n"}
+{"id":"event-add-event","sha256":"2d21450b0b6b3293920ceb683f7577d5220235d4a6a066a1cf80d64f371da2b4","source":"ALTER EVENT SESSION s ON SERVER ADD EVENT sqlserver.lock_deadlock;\n"}
+{"id":"event-unqualified-add-event","sha256":"dd0ecb1710d205c8b79e783dc61f705a451b9beed2fbbac59f09775630703c03","source":"ALTER EVENT SESSION s ON SERVER ADD EVENT lock_deadlock;\n"}
+{"id":"event-add-target","sha256":"146c9dec0a259eb63638bb0f6a7239050c3152f202946a3b256cf6a990405255","source":"ALTER EVENT SESSION s ON SERVER ADD TARGET package0.ring_buffer;\n"}
+{"id":"event-unqualified-add-target","sha256":"d8d07023d6855a8e8126124d7386fb1061050c0c6d3b46f658c9a5bd07ac4981","source":"ALTER EVENT SESSION s ON SERVER ADD TARGET ring_buffer;\n"}
+{"id":"event-drop-event","sha256":"e74067b01f83bb0b97182043ac0f395a7ad94aacd717d648b5c1ce94044ced2d","source":"ALTER EVENT SESSION s ON SERVER DROP EVENT sqlserver.lock_deadlock;\n"}
+{"id":"event-unqualified-drop-event","sha256":"1e37c1e222926c51e6ed5f8bcae1b07262480260d31e0659bb18224475e5836f","source":"ALTER EVENT SESSION s ON SERVER DROP EVENT lock_deadlock;\n"}
+{"id":"event-drop-target","sha256":"ecd20500f571b462b76271fe799157c8e1b545989b1c883a969a18a12630e4a2","source":"ALTER EVENT SESSION s ON SERVER DROP TARGET package0.ring_buffer;\n"}
+{"id":"event-unqualified-drop-target","sha256":"80b21a6b2415fa7d467d173561685ea47db9e01e89b46ec8861f096e7af97fab","source":"ALTER EVENT SESSION s ON SERVER DROP TARGET ring_buffer;\n"}
+{"id":"bulk-schema-69","sha256":"3e697c80d59c535c887f790e7f362f156e55ab41069325cb01202fc1bb076287","source":"SELECT * FROM OPENROWSET(BULK 'test.csv', FORMAT = 'CSV') WITH (id int) AS r;\n"}
+{"id":"bulk-schema-apply-70","sha256":"b9d70b8c333928f817d117974e4fb78d97bdaeb9a936d5102f078804dfdbbebe","source":"SELECT * FROM dbo.t CROSS APPLY OPENROWSET(BULK 'test.csv', FORMAT = 'CSV') WITH (id int) AS r;\n"}
+{"id":"bulk-schema-71","sha256":"80a02b92ea2cc9ed1d1c554a126bcded6988c7a9201a254f13a97b7922d022dc","source":"SELECT * FROM OPENROWSET(BULK 'test.csv', FORMAT = 'CSV') WITH dbo.t AS r;\n"}
+{"id":"bulk-schema-apply-72","sha256":"2fafa7b16235228faab0c49dafc55fdf6986e2613426c92f313c7d703147f198","source":"SELECT * FROM dbo.t CROSS APPLY OPENROWSET(BULK 'test.csv', FORMAT = 'CSV') WITH dbo.t AS r;\n"}
+{"id":"provider-apply-OPENXML","sha256":"5c4e9d8723785b34c7f82d436e64d064bb1256a393a68fd1964042f6e124293a","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM dbo.t CROSS APPLY OPENXML(@idoc; '/r'; 2) WITH dbo.t AS r;\n"}
+{"id":"provider-apply-OPENJSON","sha256":"02b5fe194a359988762f79f458238c37799af2e81f02a465e4c03a701ab2ce85","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM dbo.t CROSS APPLY OPENJSON('{}') WITH dbo.t AS r;\n"}
+{"id":"provider-apply-PREDICT","sha256":"69d01a432679701218166b82af2cbb72efb2ec072dc8a50eecd9d054fb6187be","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM dbo.t CROSS APPLY PREDICT(MODEL=@model; DATA=dbo.t AS d) WITH dbo.t AS r;\n"}
+{"id":"event-create-empty","sha256":"58eaa1c8bc0ddaf916f9c9c2587898ccfcbf2a987271492284be79206982fc33","source":"CREATE EVENT SESSION s ON SERVER;\n"}
+{"id":"event-alter-empty","sha256":"58e823a508a8a8b9711e495933deb7ea76d31233f7ecf67ef1ecc1df8c883933","source":"ALTER EVENT SESSION s ON SERVER;\n"}
+{"id":"event-create-target-only","sha256":"c0e5e6d462d274d442337c53a4183a840d63a48484f982d7e736dcff5e39e5f6","source":"CREATE EVENT SESSION s ON SERVER ADD TARGET package0.ring_buffer;\n"}
+{"id":"event-create-with-only","sha256":"420660c29580a5c85ddbfbdc2ae66e3697cfe7ebc68a6982b97b9aed42da9c08","source":"CREATE EVENT SESSION s ON SERVER WITH (MAX_MEMORY = 4096 KB);\n"}
+{"id":"provider-column-OPENXML-0","sha256":"a5eabb77d1d32153707320d63302dbc2b3b6e5eb9385c24853e8ea652dc98a28","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENXML(@idoc, '/r', 2) WITH (id int '$.id') AS r;\n"}
+{"id":"provider-column-OPENXML-1","sha256":"18f2c30fdeb4586269326c3958232784b6d592e62beb9a6f7debb97405bc5645","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENXML(@idoc, '/r', 2) WITH (id int AS JSON) AS r;\n"}
+{"id":"provider-column-OPENXML-2","sha256":"3776b1c4f19bf049da7ee04099e13c0a14a53e15048eab7f8ad65c79804f5f34","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENXML(@idoc, '/r', 2) WITH (id int NULL) AS r;\n"}
+{"id":"provider-column-PREDICT-0","sha256":"c4d108edea5af4210f2ef5df61e6f0c0484dffe2e01fb26ab0315b15a1f59067","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM PREDICT(MODEL=@model, DATA=dbo.t AS d) WITH (id int '$.id') AS r;\n"}
+{"id":"provider-column-PREDICT-1","sha256":"d0efcc1dddcc70a87e5f6f2b6d0cdddc606622e8da2bb584abc81c031aee09a0","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM PREDICT(MODEL=@model, DATA=dbo.t AS d) WITH (id int AS JSON) AS r;\n"}
+{"id":"provider-column-PREDICT-2","sha256":"da38ab8cb72b22719ae2e326332f1a9d35492d7663ea255cf40047e645ac4c5d","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM PREDICT(MODEL=@model, DATA=dbo.t AS d) WITH (id int NULL) AS r;\n"}
+{"id":"delete-bare-nolock","sha256":"8e4950cf08ddedbecbb5889c73a0bdde68d7ef3b5d182fd41386549d9646a5aa","source":"DELETE FROM dbo.t (NOLOCK);\n"}
+{"id":"delete-bare-tablock","sha256":"caec5e825b58b28fe9ed83ae09275c2ec9926a7884acf087c33757c00864d6b7","source":"DELETE FROM dbo.t (TABLOCK);\n"}
+{"id":"delete-with-tablock","sha256":"0cc110a323449d1a32cc640c2e6ba100499bbb84a02bfb3d9dd20ae54e53296b","source":"DELETE FROM dbo.t WITH (TABLOCK);\n"}
+{"id":"delete-with-nolock","sha256":"a2516d90ec139162314433e8e6da0a7e2995a17cd28443b09c72664e1cc37079","source":"DELETE FROM dbo.t WITH (NOLOCK);\n"}
+{"id":"delete-source-bare","sha256":"c634c55079945c1690e062652947131bf8a69048028d38448986b9c22a67b8bd","source":"DELETE t FROM dbo.t t (NOLOCK);\n"}
+{"id":"update-bare","sha256":"d47fc4019ef365de6e4bdb82f5dd56c84775def16da1db04cd44878c26b45ce1","source":"UPDATE dbo.t (TABLOCK) SET a=1;\n"}
+{"id":"delete-no-hint","sha256":"c594631c4dafb9919ef3d124bc03eb953ea08868b140230fbf21b28c8acf795e","source":"DELETE FROM dbo.t;\n"}
+{"id":"cache-none","sha256":"3de1747e7ca35e8d881313285f18024810aabc13a274443d1fcaf915d68193ff","source":"DECLARE @h varbinary(64); ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE;\n"}
+{"id":"cache-hex","sha256":"cc823c734e98559c4479f6315d383b5f587ebdbfd64651744c4f497f43a1ca41","source":"DECLARE @h varbinary(64); ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE 0x1234;\n"}
+{"id":"cache-zero","sha256":"0ccdbb6d8b239212f68b0d3dcbbef8e58aa977cd818515bd0886c504da65f007","source":"DECLARE @h varbinary(64); ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE 0x;\n"}
+{"id":"cache-int","sha256":"0362df9d528c5b356a39b810b26b5a215d74ca9a1b3d0a729958a43c1cb1ecd2","source":"DECLARE @h varbinary(64); ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE 1;\n"}
+{"id":"cache-string","sha256":"607ebd2f88ec73c03242083e8a79063fee1121f857900a173aad6637097b6d12","source":"DECLARE @h varbinary(64); ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE '0x1234';\n"}
+{"id":"cache-variable","sha256":"a24118408cf2de09c02e21cb16090292cc48d2f9aeb07386e4f48fea8e8ff229","source":"DECLARE @h varbinary(64); ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE @h;\n"}
+{"id":"cache-negative","sha256":"6dc998457cb802135a67e4ac0e0b6dc7f60d10925b73c7c3c8fb24eaf4ad8da3","source":"DECLARE @h varbinary(64); ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE -1;\n"}
+{"id":"cache-null","sha256":"691c91902a6e7fe3a47253b855b4461826bfd2e196d2508698c11b0d0e591e89","source":"DECLARE @h varbinary(64); ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE NULL;\n"}
+{"id":"cache-label","sha256":"64b71423fb20a210a70e4a9a93ee72667c5b9e2d372d1a0e62dba6dc3b8c076e","source":"ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE\nlabel1: SELECT 1;\n"}
+{"id":"cache-next","sha256":"53454bbcea27b705e5b0f4c9b4da28a6f184c25b6fd265fae0ed8c533748bbd7","source":"ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE\nSELECT 1;\n"}
+{"id":"permission-grant-select","sha256":"e7cb8687b4b7afd3edd69067695323ff82a56c5e8e5b738839ef67cb679e2130","source":"GRANT SELECT ON dbo.t (a) TO public;\n"}
+{"id":"permission-grant-update","sha256":"3dd32fb6aabb5c0a23c9e324db9985e9d74e9cccc30b906f31ebc9df689b1cdf","source":"GRANT UPDATE ON dbo.t (a) TO public;\n"}
+{"id":"permission-grant-references","sha256":"160d8d5a2ef0e0ca5ad8c29ddf3618201c0b55e93e12c069d4929eba7fdb2fe0","source":"GRANT REFERENCES ON dbo.t (a) TO public;\n"}
+{"id":"permission-grant-unmask","sha256":"2ba7165c7f14669dc9b1ac3cbce3f19957ecc48214a18de29cd2808fc50a4354","source":"GRANT UNMASK ON dbo.t (a) TO public;\n"}
+{"id":"permission-grant-insert","sha256":"ab9377af8d181cd02da8ad5f68267a300f77b9b30951729d9afaf283fb01aec6","source":"GRANT INSERT ON dbo.t (a) TO public;\n"}
+{"id":"permission-grant-delete","sha256":"fb88475999a8d8b7429ba109210278359b6ea399a40e1d0927e4eb191366d97d","source":"GRANT DELETE ON dbo.t (a) TO public;\n"}
+{"id":"permission-grant-execute","sha256":"2cc9d43fe6e8cda42d1e790db6a16fbf966178913df2670585ebd14b4d9987b3","source":"GRANT EXECUTE ON dbo.t (a) TO public;\n"}
+{"id":"permission-grant-select-update","sha256":"7868afc8daa191afa49f30866a3cbd406783d05a02aad4ade8c56541d030fd9b","source":"GRANT SELECT, UPDATE ON dbo.t (a) TO public;\n"}
+{"id":"permission-grant-select-insert","sha256":"679998c7a5a958d57379e4ca34767272b35dd22273ed9007d91b70be7c349137","source":"GRANT SELECT, INSERT ON dbo.t (a) TO public;\n"}
+{"id":"permission-deny-select","sha256":"e29f5a8568d12e7083580cb704647268923adcdd3859512179fec964eec4dfde","source":"DENY SELECT ON dbo.t (a) TO public;\n"}
+{"id":"permission-deny-update","sha256":"ec490c971ed47b451469c0d1cf46d6ba82e766fdd09490808593d218d5370280","source":"DENY UPDATE ON dbo.t (a) TO public;\n"}
+{"id":"permission-deny-references","sha256":"e34d595c4b949724e08971ca3341b84b9fdfa0b4d5269523427bec3a680370bb","source":"DENY REFERENCES ON dbo.t (a) TO public;\n"}
+{"id":"permission-deny-unmask","sha256":"8416574fb12e287f7d1e6bf40f408bc1f943bae1b7ac7bd7f20bc6299f78acac","source":"DENY UNMASK ON dbo.t (a) TO public;\n"}
+{"id":"permission-deny-insert","sha256":"f144d7772a4ed72f540aac2285d2054bd0ed7a0026db6d483272684fe0e4c5b4","source":"DENY INSERT ON dbo.t (a) TO public;\n"}
+{"id":"permission-deny-delete","sha256":"b655ae63fc0f7641d70d7112b248ab6ed757b928280ba81f9f09a1e30431a10f","source":"DENY DELETE ON dbo.t (a) TO public;\n"}
+{"id":"permission-deny-execute","sha256":"2ea0ef09af59e1e40022a4dc094d000130a12bc9f125282c7fffd962c665ed4b","source":"DENY EXECUTE ON dbo.t (a) TO public;\n"}
+{"id":"permission-deny-select-update","sha256":"13d71df5c60fafb589c04998fcc4ae1737248d449abdc55708a68cde229212a8","source":"DENY SELECT, UPDATE ON dbo.t (a) TO public;\n"}
+{"id":"permission-deny-select-insert","sha256":"bacfae118ae43d52f5f312fa8c162ce438d5bc6005eca6f95813c893fbf31c4f","source":"DENY SELECT, INSERT ON dbo.t (a) TO public;\n"}
+{"id":"permission-revoke-select","sha256":"fff6e4ee58a6cc04a7d5cb64e70052e2004dbe9545f0c69c00e8ece5e7010905","source":"REVOKE SELECT ON dbo.t (a) FROM public;\n"}
+{"id":"permission-revoke-update","sha256":"5b9231061e59518a7606cf7e55e437e0c285ff3f705f5e30408cd1f39f79b5ca","source":"REVOKE UPDATE ON dbo.t (a) FROM public;\n"}
+{"id":"permission-revoke-references","sha256":"8be14cb6de658f37f711302e53c9bab0192ef7d7dfc7d7bec5ddfb4eeb6c9e3c","source":"REVOKE REFERENCES ON dbo.t (a) FROM public;\n"}
+{"id":"permission-revoke-unmask","sha256":"4e7724c203f97609af3121a24163ae238bb928daffb5c26b6531f5d8f2441fe6","source":"REVOKE UNMASK ON dbo.t (a) FROM public;\n"}
+{"id":"permission-revoke-insert","sha256":"713b0e876eccb21699fed7f2e9062fd53676ae34db05b469855b9019a40a40ad","source":"REVOKE INSERT ON dbo.t (a) FROM public;\n"}
+{"id":"permission-revoke-delete","sha256":"6b5c77ac19cc98b9fe77733b78ccb89729c04e4126a5535404cbe6f6961aea04","source":"REVOKE DELETE ON dbo.t (a) FROM public;\n"}
+{"id":"permission-revoke-execute","sha256":"e74695a3ecd83dc0c1a88a20fd80bd98abf6b0b99851b0515937121b86ce7be0","source":"REVOKE EXECUTE ON dbo.t (a) FROM public;\n"}
+{"id":"permission-revoke-select-update","sha256":"988f028212bc69afed9d435612a1b74bed3c33949e789ca44035c0d555b6fa67","source":"REVOKE SELECT, UPDATE ON dbo.t (a) FROM public;\n"}
+{"id":"permission-revoke-select-insert","sha256":"7a8f2bb642bddc68a263b37092591a7a1ae3217b708be35de110d3105799691d","source":"REVOKE SELECT, INSERT ON dbo.t (a) FROM public;\n"}
+{"id":"permission-local-valid","sha256":"b987f4b82c6bdd8c178b65614dc7b414b7c9fc6f31d8e70fb0f4b8a26b58e91e","source":"GRANT SELECT(a), INSERT ON dbo.t TO public;\n"}
+{"id":"permission-local-invalid","sha256":"20d609fe6ba1ae5dad2babd778f242ecc18908e2a67007bcc78fd5848df42583","source":"GRANT SELECT, INSERT(a) ON dbo.t TO public;\n"}
+{"id":"window-no-order-rows","sha256":"00de7508bd929282906242a708c44a4f02ea93d0c5bcdeb5d7fca9628e9d8ef2","source":"SELECT MAX(a) OVER (PARTITION BY id ROWS 1 PRECEDING) FROM dbo.t;\n"}
+{"id":"window-no-order-range","sha256":"a05df43f978238648768b273b742ea67ba1323cc0cbf77f8dca6caf8d893cb78","source":"SELECT MAX(a) OVER (PARTITION BY id RANGE CURRENT ROW) FROM dbo.t;\n"}
+{"id":"window-order-rows","sha256":"8d7521b467f406af1ec5efed9df13f046cd27dd393682c7c075496b9e3445be3","source":"SELECT MAX(a) OVER (ORDER BY id ROWS 1 PRECEDING) FROM dbo.t;\n"}
+{"id":"window-order-range","sha256":"4d37b8024b18d21fc561358a0cdb46427c8712d1e715e10b29a0711f3a2514fb","source":"SELECT MAX(a) OVER (ORDER BY id RANGE CURRENT ROW) FROM dbo.t;\n"}
+{"id":"window-partition-only","sha256":"84213291a35fed12f935b5090e134da28fe26d44b0164ac5093d285c9eedeec8","source":"SELECT MAX(a) OVER (PARTITION BY id) FROM dbo.t;\n"}
+{"id":"window-range-offset","sha256":"8e5f7cd521915bb5fc3944b369b0621707b324df02ce3ded85a455f2e7caf2e0","source":"SELECT MAX(a) OVER (ORDER BY id RANGE 1 PRECEDING) FROM dbo.t;\n"}
+{"id":"window-rows-follow-short","sha256":"45eb3b3a665f2dfeb0c33b16c04f95ed55e4cc4968762b64fc1083e468017844","source":"SELECT MAX(a) OVER (ORDER BY id ROWS 1 FOLLOWING) FROM dbo.t;\n"}
+{"id":"window-range-follow-short","sha256":"c70f75abd481a490dccda9ae6e1ecad6bec3c7eec267862693308dcecfb6fc38","source":"SELECT MAX(a) OVER (ORDER BY id RANGE UNBOUNDED FOLLOWING) FROM dbo.t;\n"}
+{"id":"window-rows-current","sha256":"700f0ff81e123832f11b391ed5ae6a790be3cc7f30fea32702a6c311a2cbbad1","source":"SELECT MAX(a) OVER (ORDER BY id ROWS CURRENT ROW) FROM dbo.t;\n"}
+{"id":"window-rows-between","sha256":"9f5d6c1b46433c71570eaf63c8a7cb06daae9694e5d1160182c752eb8f8ff499","source":"SELECT MAX(a) OVER (ORDER BY id ROWS BETWEEN CURRENT ROW AND 1 FOLLOWING) FROM dbo.t;\n"}
+{"id":"window-inherited","sha256":"70a4d964fdf9dec99b662a874a28d1f12300c81f35581701a87c6b06e045a358","source":"SELECT MAX(a) OVER (w ROWS 1 PRECEDING) FROM dbo.t WINDOW w AS (ORDER BY id);\n"}
+{"id":"window-nested-order","sha256":"37ee8eaaedc6b0e7bab4760e883a4243f56dc2a112450132f475bd0b77d3ba6c","source":"SELECT MAX(a) OVER (PARTITION BY (SELECT 1 ORDER BY (SELECT 1) OFFSET 0 ROWS) ROWS 1 PRECEDING) FROM dbo.t;\n"}
+{"id":"trigger-all-server-ddl_database_level_events","sha256":"c9987e1abf22715a56f478ddcc2e227ef229f3bdfd49fede72e4e57b047a45dc","source":"CREATE TRIGGER tr149 ON ALL SERVER FOR DDL_DATABASE_LEVEL_EVENTS AS RETURN;\n"}
+{"id":"trigger-all-server-ddl_server_level_events","sha256":"5c6a39d6f2b852c9260b6de1335d4b9febe1aa05a34ac1aef32290f1bd21d591","source":"CREATE TRIGGER tr149 ON ALL SERVER FOR DDL_SERVER_LEVEL_EVENTS AS RETURN;\n"}
+{"id":"trigger-all-server-ddl_table_events","sha256":"f0879c8caf943ce6d85f018f0cc43a630e1dae5cefef83f7529fc747ef19e34d","source":"CREATE TRIGGER tr149 ON ALL SERVER FOR DDL_TABLE_EVENTS AS RETURN;\n"}
+{"id":"trigger-all-server-create_table","sha256":"2182b9f6d1de87be36f25e5f735456d856d23edfdd0351468897932efecbe63b","source":"CREATE TRIGGER tr149 ON ALL SERVER FOR CREATE_TABLE AS RETURN;\n"}
+{"id":"trigger-all-server-create_login","sha256":"c9e93ab95a962757efa679f634ffbc05acab7d7fec0273cf1da033d393c8aa1a","source":"CREATE TRIGGER tr149 ON ALL SERVER FOR CREATE_LOGIN AS RETURN;\n"}
+{"id":"trigger-all-server-insert","sha256":"c74534d83f931246d5f3b9e74af6d539dbc5d2d8b16c50d729184467b55d14de","source":"CREATE TRIGGER tr149 ON ALL SERVER FOR INSERT AS RETURN;\n"}
+{"id":"trigger-database-ddl_database_level_events","sha256":"2026b924f9c2012a1c7608bf056cc2fa0e4c5d4b9de638c831ac63e18b3715ed","source":"CREATE TRIGGER tr149 ON DATABASE FOR DDL_DATABASE_LEVEL_EVENTS AS RETURN;\n"}
+{"id":"trigger-database-ddl_server_level_events","sha256":"da90cbc42c57c8cf1229149c4a39409bb1f0273537213f925d5498a4143c3ba0","source":"CREATE TRIGGER tr149 ON DATABASE FOR DDL_SERVER_LEVEL_EVENTS AS RETURN;\n"}
+{"id":"trigger-database-ddl_table_events","sha256":"f819e52833b1fe7e9158441d718f8cfa13d099635134eb3a7014dcb230767ddd","source":"CREATE TRIGGER tr149 ON DATABASE FOR DDL_TABLE_EVENTS AS RETURN;\n"}
+{"id":"trigger-database-create_table","sha256":"86777b7ccf9150bfae0bc83c8b732dd28bfc9116c1c7646e66441b7fd18bb156","source":"CREATE TRIGGER tr149 ON DATABASE FOR CREATE_TABLE AS RETURN;\n"}
+{"id":"trigger-database-create_login","sha256":"2aee4aa5d25951c18ce615255039989ae0da7577dfda1bffbb029a0748ddf7c2","source":"CREATE TRIGGER tr149 ON DATABASE FOR CREATE_LOGIN AS RETURN;\n"}
+{"id":"trigger-database-insert","sha256":"1139a5d3eee0e606daa1ab1f1a1509ba74b0c2cc0342ce4060282ad37d1e59e2","source":"CREATE TRIGGER tr149 ON DATABASE FOR INSERT AS RETURN;\n"}
+{"id":"trigger-dbo-t-ddl_database_level_events","sha256":"3f7305fb9d2df4111b12017dd26ca6333c6dccd25b50b53f7ba5f2122dcb1318","source":"CREATE TRIGGER tr149 ON dbo.t FOR DDL_DATABASE_LEVEL_EVENTS AS RETURN;\n"}
+{"id":"trigger-dbo-t-ddl_server_level_events","sha256":"6d9b50f806ea02919a4b43bf5946b9f5a14a9b11de60bf4a748e2ca575335713","source":"CREATE TRIGGER tr149 ON dbo.t FOR DDL_SERVER_LEVEL_EVENTS AS RETURN;\n"}
+{"id":"trigger-dbo-t-ddl_table_events","sha256":"21b24b73a65f0c6959f0c17f13f94063aae3a149613cb06c417eeca9a9d13c3e","source":"CREATE TRIGGER tr149 ON dbo.t FOR DDL_TABLE_EVENTS AS RETURN;\n"}
+{"id":"trigger-dbo-t-create_table","sha256":"02ed4d6330047e101954068afaed014229d15120cfe2260b3c35f9e924b3f0a3","source":"CREATE TRIGGER tr149 ON dbo.t FOR CREATE_TABLE AS RETURN;\n"}
+{"id":"trigger-dbo-t-create_login","sha256":"cdcfe5e8821f66fc4989c443ce3c619eb4d726a880bfd45b4d32728aeb13a885","source":"CREATE TRIGGER tr149 ON dbo.t FOR CREATE_LOGIN AS RETURN;\n"}
+{"id":"trigger-dbo-t-insert","sha256":"dbc5a874c366c4b5be04f66cbd81366421b94799260093ba0bb59d90cdb32e12","source":"CREATE TRIGGER tr149 ON dbo.t FOR INSERT AS RETURN;\n"}
+{"id":"trigger-execute-all-server-caller","sha256":"1a3e7452af7460cf317e8403fd2cbd916b0b40b5b8c422c7958932c3cb546e72","source":"CREATE TRIGGER tr149 ON ALL SERVER WITH EXECUTE AS CALLER FOR DDL_DATABASE_LEVEL_EVENTS AS RETURN;\n"}
+{"id":"trigger-execute-all-server-self","sha256":"416e704a4663256bcc31f9113fd2483aa2ac94bfd28afb96b0942ff189129950","source":"CREATE TRIGGER tr149 ON ALL SERVER WITH EXECUTE AS SELF FOR DDL_DATABASE_LEVEL_EVENTS AS RETURN;\n"}
+{"id":"trigger-execute-all-server-owner","sha256":"5b7540cb203e2dc51bdeade89a1b066c1a783d0243e2e68c94059953a4906d37","source":"CREATE TRIGGER tr149 ON ALL SERVER WITH EXECUTE AS OWNER FOR DDL_DATABASE_LEVEL_EVENTS AS RETURN;\n"}
+{"id":"trigger-execute-all-server-sa","sha256":"f98d5604c8c6e63c0fd1c1b0ef50e0a4e975ee4a44cfbc04bff836d2694b73a0","source":"CREATE TRIGGER tr149 ON ALL SERVER WITH EXECUTE AS 'sa' FOR DDL_DATABASE_LEVEL_EVENTS AS RETURN;\n"}
+{"id":"trigger-execute-database-caller","sha256":"c7ca74ddcf61ce91673bb8d3912b733fa0d2164a6fda616498e7eb79efc29137","source":"CREATE TRIGGER tr149 ON DATABASE WITH EXECUTE AS CALLER FOR DDL_DATABASE_LEVEL_EVENTS AS RETURN;\n"}
+{"id":"trigger-execute-database-self","sha256":"154f3c69287561064ce9f85907ec8d01f23e51f6a119f3aeafae84cb8b74b965","source":"CREATE TRIGGER tr149 ON DATABASE WITH EXECUTE AS SELF FOR DDL_DATABASE_LEVEL_EVENTS AS RETURN;\n"}
+{"id":"trigger-execute-database-owner","sha256":"d1a815104c34ff8bb0f945bde4f064b8d813c715c4e7384f40e898cca7bda0b4","source":"CREATE TRIGGER tr149 ON DATABASE WITH EXECUTE AS OWNER FOR DDL_DATABASE_LEVEL_EVENTS AS RETURN;\n"}
+{"id":"trigger-execute-database-sa","sha256":"24603c39e82011dceae76c94e5f1b25fa3a8d9fe79ab5766da2cab70d51091e1","source":"CREATE TRIGGER tr149 ON DATABASE WITH EXECUTE AS 'sa' FOR DDL_DATABASE_LEVEL_EVENTS AS RETURN;\n"}
+{"id":"trigger-execute-dbo-t-caller","sha256":"ea245d5f4dbaa61271a22a50ce3ba6af8599206a7f2268ad38b4a0885dedef85","source":"CREATE TRIGGER tr149 ON dbo.t WITH EXECUTE AS CALLER FOR INSERT AS RETURN;\n"}
+{"id":"trigger-execute-dbo-t-self","sha256":"7632fac30e21439011fad89a9d3125c71e63c7b43bea558708b83fc1a969af0a","source":"CREATE TRIGGER tr149 ON dbo.t WITH EXECUTE AS SELF FOR INSERT AS RETURN;\n"}
+{"id":"trigger-execute-dbo-t-owner","sha256":"9b958e0468d1bac451394b35a7b1ecf82bf4db02b5ba8fa98fa7e54cf9ead3fd","source":"CREATE TRIGGER tr149 ON dbo.t WITH EXECUTE AS OWNER FOR INSERT AS RETURN;\n"}
+{"id":"trigger-execute-dbo-t-sa","sha256":"537c1f01154877ff5abaff8d0b7ceb3d94f470d706e260da5a4986d7ea457f7f","source":"CREATE TRIGGER tr149 ON dbo.t WITH EXECUTE AS 'sa' FOR INSERT AS RETURN;\n"}
+{"id":"update-with-nolock","sha256":"0afc7f7dd99db44fbc89ea0ee90bca05d9bb08929d6ecab9cd8cd0e06a81e5bb","source":"UPDATE dbo.t WITH (NOLOCK) SET a=1;\n"}
+{"id":"update-with-tablock","sha256":"e41ea8b49326d67b7b6f0e5a95c9a8828afc4508bc86c236a074b51e395606f7","source":"UPDATE dbo.t WITH (TABLOCK) SET a=1;\n"}
+{"id":"insert-with-nolock","sha256":"63f69b31a5c2df180d181c7040aa34a3217c916f0099319a1d0c95af6c2c6e47","source":"INSERT dbo.t WITH (NOLOCK) (a) VALUES(1);\n"}
+{"id":"merge-bare","sha256":"6ba53d9734f30b91b483624e1f209b7c2db826801715bbbdcf9c84105f8cb8c8","source":"MERGE dbo.t (TABLOCK) t USING dbo.s s ON t.id=s.id WHEN MATCHED THEN UPDATE SET a=1;\n"}
+{"id":"merge-with","sha256":"4759231d5c86c83113678a963222be6b38a7075a78d517ff80b39d0072fe57e2","source":"MERGE dbo.t WITH (TABLOCK) t USING dbo.s s ON t.id=s.id WHEN MATCHED THEN UPDATE SET a=1;\n"}
+{"id":"merge-with-nolock","sha256":"a8aa2aef3a5b989ecc0aa57bd976cc2029d4112ac45a167a88d4edbb53c8150d","source":"MERGE dbo.t WITH (NOLOCK) t USING dbo.s s ON t.id=s.id WHEN MATCHED THEN UPDATE SET a=1;\n"}
+{"id":"trigger-qualified-all-server","sha256":"3d71de61e2b864bb5a1ffed0eeb3db1289c65aba037b4e8d260a7fcd259aa341","source":"CREATE TRIGGER dbo.tr149 ON ALL SERVER FOR DDL_DATABASE_LEVEL_EVENTS AS RETURN;\n"}
+{"id":"trigger-qualified-all-server-bracket","sha256":"a48e37c07df609bd2b124b9359b356819e43a34dea91487c9588587de439db3c","source":"CREATE TRIGGER [dbo].[tr149] ON ALL SERVER FOR DDL_DATABASE_LEVEL_EVENTS AS RETURN;\n"}
+{"id":"trigger-qualified-database","sha256":"517d69b34892551cc215e9ba0489b73f97d1520a220fea2baac84fefa5e2ce9c","source":"CREATE TRIGGER dbo.tr149 ON DATABASE FOR DDL_DATABASE_LEVEL_EVENTS AS RETURN;\n"}
+{"id":"trigger-qualified-database-bracket","sha256":"f68c63eadf49765143f7f845654a5f0c70cfe413f368e3bfec0a2867df095aef","source":"CREATE TRIGGER [dbo].[tr149] ON DATABASE FOR DDL_DATABASE_LEVEL_EVENTS AS RETURN;\n"}
+{"id":"trigger-qualified-dbo-t","sha256":"5871b54b140f24827a6bc4090e261bdf0f92744ed912389621c01decbf1a753b","source":"CREATE TRIGGER dbo.tr149 ON dbo.t FOR INSERT AS RETURN;\n"}
+{"id":"trigger-qualified-dbo-t-bracket","sha256":"de0e4d0baf42218f338beda2cc05f7e8455fc8d11852c724d4fc520c61507f8b","source":"CREATE TRIGGER [dbo].[tr149] ON dbo.t FOR INSERT AS RETURN;\n"}
+{"id":"delete-openquery","sha256":"ff1d8138d166a5076232b423886f2f2d16750adff585b898b8f5c00d4dbe9e21","source":"DELETE FROM OPENQUERY([TSGK_149_UNDEFINED_LINK], 'SELECT a FROM t');\n"}
+{"id":"update-openquery","sha256":"f9de3ee8eafe5972e0afda35064cd20417f85f15124aa27c9960dd0411b946d4","source":"UPDATE OPENQUERY([TSGK_149_UNDEFINED_LINK], 'SELECT a FROM t') SET a=1;\n"}
+{"id":"delete-openquery-string","sha256":"e3d503cd6c2485dbed668d97bc0c76e158d49a72c77532ec24728e43b283ab52","source":"DELETE FROM OPENQUERY('TSGK_149_UNDEFINED_LINK', 'SELECT a FROM t');\n"}
+{"id":"delete-openquery-variable","sha256":"52bb8584f0f2b5341183a842f8232f35030170eb9eab760e4a139666acf069fa","source":"DELETE FROM OPENQUERY(@link, 'SELECT a FROM t');\n"}
+{"id":"delete-openquery-extra","sha256":"11a929de346ecc0aeafeff5ab84c72810363969c80f4ee3a2808d5a6f1f952a5","source":"DELETE FROM OPENQUERY([TSGK_149_UNDEFINED_LINK], 'SELECT a FROM t', 1);\n"}
+{"id":"delete-openrowset","sha256":"cc2a5076a57c078c3c7c8d1676ddf42f876ae396d790462ca30be7b7ee6af824","source":"DELETE FROM OPENROWSET('TSGK_149_UNKNOWN_PROVIDER','TSGK_149_UNUSED','SELECT a FROM t');\n"}
+{"id":"update-openrowset","sha256":"6feab14fc44da12e649e1af0ba00f6d35a128794cd4f426620fe9dcd55c84cc0","source":"UPDATE OPENROWSET('TSGK_149_UNKNOWN_PROVIDER','TSGK_149_UNUSED','SELECT a FROM t') SET a=1;\n"}
+{"id":"delete-openrowset-bulk","sha256":"b0e92975293b164eb694e653bfe8300b608aa95950954e9b2e9fb1333b9927c0","source":"DELETE FROM OPENROWSET(BULK 'TSGK_149_UNUSED', SINGLE_BLOB);\n"}
+{"id":"delete-openjson","sha256":"cbdd900409c3296d98c7c5fe17c7f5dd4cd423e769113debf85d90781fc69608","source":"DELETE FROM OPENJSON(N'[]');\n"}
+{"id":"update-openjson","sha256":"de375dca9ad84c32eb7ae72c33f6375cb2317957ac5888da26fe9e6a4ded7c61","source":"UPDATE OPENJSON(N'[]') SET a=1;\n"}
+{"id":"delete-function","sha256":"59798da737831bddfc6b9e51f216ea4343d1ee6191dd615e04a615b3866f58b0","source":"DELETE FROM dbo.fn(1);\n"}
+{"id":"update-function","sha256":"373152210ee243c383221c88d4337bbe0e14734383fc2c41a498617f18173d1a","source":"UPDATE dbo.fn(1) SET a=1;\n"}
+{"id":"delete-target-arg-0","sha256":"2f724cba240698adca74e03cba616faf6690281ee5c24141225da15bab7f30aa","source":"DECLARE @a int=1; DELETE FROM dbo.f(1);\n"}
+{"id":"delete-target-arg-1","sha256":"1c45534e459eafd8a6dca0a2c8410725e7198e285e60afe2eb6f1fe4ab1b58bb","source":"DECLARE @a int=1; DELETE FROM dbo.f(@a);\n"}
+{"id":"delete-target-arg-2","sha256":"11d205659d4ad9fc39b1049e72ed2493c6c8a5176435d2b20684cb1bd7f8fca1","source":"DECLARE @a int=1; DELETE FROM dbo.f(a);\n"}
+{"id":"delete-target-arg-3","sha256":"e8e66aa57d2fafb515df237b4b8077a77d6d2192452425a28794ca7c595b4f93","source":"DECLARE @a int=1; DELETE FROM dbo.f(NOLOCK);\n"}
+{"id":"delete-target-arg-4","sha256":"0815e1affc0bbacaadd3e7465d19a58ff47bb70353d8b7f0c6ef49bd014650a8","source":"DECLARE @a int=1; DELETE FROM dbo.f(TABLOCK);\n"}
+{"id":"delete-target-arg-5","sha256":"2a07eb930b0eac54cf1f4dfe48a5e7120dc147fdc915de53e55b1280d565fb1a","source":"DECLARE @a int=1; DELETE FROM dbo.f(1+2);\n"}
+{"id":"delete-target-arg-6","sha256":"6f67434fd520e8bb1bb454d623f4690f6eeb8efdd35f8f042b4afb4a1af44afc","source":"DECLARE @a int=1; DELETE FROM dbo.f((1));\n"}
+{"id":"update-target-arg-7","sha256":"07a27b4ac57bc9fefd009a5c05074efea385aaa173a4d1055c6a0955000709a4","source":"DECLARE @a int=1; UPDATE dbo.f(1) SET a=1;\n"}
+{"id":"update-target-arg-8","sha256":"32106ac159ba2d5f031f09e3753492ee9e1fcc90a8f206f2229cef9996a1615b","source":"DECLARE @a int=1; UPDATE dbo.f(@a) SET a=1;\n"}
+{"id":"update-target-arg-9","sha256":"f1445f399b6ce066465743bf65eedc7feb1b83dbaf2c7e3169c3e66408ab4e9b","source":"DECLARE @a int=1; UPDATE dbo.f(a) SET a=1;\n"}
+{"id":"update-target-arg-10","sha256":"104aeae8a89417f3c09f8202fc3fd5612400ff2e0bc1b6525b8603543c90ad33","source":"DECLARE @a int=1; UPDATE dbo.f(NOLOCK) SET a=1;\n"}
+{"id":"update-target-arg-11","sha256":"ef1eadc91b5f40cf7f30209285b02bf05095731dcb39c9da6057e835a2e0fca5","source":"DECLARE @a int=1; UPDATE dbo.f(TABLOCK) SET a=1;\n"}
+{"id":"update-target-arg-12","sha256":"1cd344d2de01888a7b585ec2a3aac79da51c574ee805a0db23990f53aab35e00","source":"DECLARE @a int=1; UPDATE dbo.f(1+2) SET a=1;\n"}
+{"id":"update-target-arg-13","sha256":"773ba466e871018efb08c4167046799c024ef37f3a45e3dd38901318dd32372a","source":"DECLARE @a int=1; UPDATE dbo.f((1)) SET a=1;\n"}
+{"id":"delete-g-target-arg-0","sha256":"8b0be4bd6b37b70f4f59a274ebb597fba6f85738a63d844fc64f0bc180e079f6","source":"DECLARE @a int=1; DELETE FROM dbo.g(1);\n"}
+{"id":"delete-g-target-arg-1","sha256":"159877d58fbb5eb6d902e54100336199de59c231ea7e4322ba21dd166d1e17db","source":"DECLARE @a int=1; DELETE FROM dbo.g(@a);\n"}
+{"id":"delete-g-target-arg-2","sha256":"a338f60cf113f6954500a2e3357987ebe52c77d92db960d4afa5f03b89c4ed37","source":"DECLARE @a int=1; DELETE FROM dbo.g(-1);\n"}
+{"id":"delete-g-target-arg-3","sha256":"f89fd2cfbe0655e9819d58111a170994518482b4399f56116da177719616a62e","source":"DECLARE @a int=1; DELETE FROM dbo.g(NULL);\n"}
+{"id":"delete-g-target-arg-4","sha256":"dd2768528b8ce94934506b475e7e63602c5550a8f57dc31d4e1de3022e91e18c","source":"DECLARE @a int=1; DELETE FROM dbo.g(DEFAULT);\n"}
+{"id":"delete-g-target-arg-5","sha256":"42554bbf8bb34bbb7c1893a92585a855ccc53404d019963fe1468ba6b1b58003","source":"DECLARE @a int=1; DELETE FROM dbo.g(@@SPID);\n"}
+{"id":"delete-g-target-arg-6","sha256":"ca14e70db88ef85c522d65701c1a6926da4ef289d92f7f6eb9ea13cbb7127428","source":"DECLARE @a int=1; DELETE FROM dbo.g(CURRENT_TIMESTAMP);\n"}
+{"id":"delete-g-target-arg-7","sha256":"14fb4f4db55e0db84e54662d07a23327a4124c184ac394382fbf793d38d0da5f","source":"DECLARE @a int=1; DELETE FROM dbo.g(GETDATE());\n"}
+{"id":"delete-g-target-arg-8","sha256":"0b3e28b18b4969cbdde2952c6e54cc8b1c28c56fd08dea3c957d93272378e17f","source":"DECLARE @a int=1; DELETE FROM dbo.g(CAST(1 AS int));\n"}
+{"id":"update-g-target-arg-9","sha256":"3874a95e838482c5391aa6e4e415f5bf2b29a95a3643f20df1d51f03ced0e9f5","source":"DECLARE @a int=1; UPDATE dbo.g(1) SET a=1;\n"}
+{"id":"update-g-target-arg-10","sha256":"6f430f5fd91950de70b3503d623d81b4ef71323de376c44d58432f263194115a","source":"DECLARE @a int=1; UPDATE dbo.g(@a) SET a=1;\n"}
+{"id":"update-g-target-arg-11","sha256":"6de4437767901af364e173b33f3cd90bee018dcfaac1e5245efacf0448443f2f","source":"DECLARE @a int=1; UPDATE dbo.g(-1) SET a=1;\n"}
+{"id":"update-g-target-arg-12","sha256":"dd0c623cbe91ba1637afb5fc840db0d126358760e21622d97f15e13ca91f596e","source":"DECLARE @a int=1; UPDATE dbo.g(NULL) SET a=1;\n"}
+{"id":"update-g-target-arg-13","sha256":"3fd64268601906b2579f2de03a491cbda73276615ceffab2d5da73ed80519334","source":"DECLARE @a int=1; UPDATE dbo.g(DEFAULT) SET a=1;\n"}
+{"id":"update-g-target-arg-14","sha256":"ef70df2219da2a04edfb88a1e867aeaa7bf8a744f21b514dda1f213195b681b7","source":"DECLARE @a int=1; UPDATE dbo.g(@@SPID) SET a=1;\n"}
+{"id":"update-g-target-arg-15","sha256":"862fa84fcd05a3e2d6cf5f0578c85b0e5bb81e2e79b28f86f7fba41d5e070ba0","source":"DECLARE @a int=1; UPDATE dbo.g(CURRENT_TIMESTAMP) SET a=1;\n"}
+{"id":"update-g-target-arg-16","sha256":"2e870cc19bf17a5ad81134f0c9b4c1e11fdb9aaf004f7c1bb6eafeb3ce86b254","source":"DECLARE @a int=1; UPDATE dbo.g(GETDATE()) SET a=1;\n"}
+{"id":"update-g-target-arg-17","sha256":"22ceccfd0aa0a70d2b85dc93061e65cd69455a89842f317411462e6802dcfb5d","source":"DECLARE @a int=1; UPDATE dbo.g(CAST(1 AS int)) SET a=1;\n"}
+{"id":"delete-g-plus","sha256":"8a3150c69ae8b7b7965b6e228f96340e5ce2edfdc56a0bfbba4f7897d2a0e4e3","source":"DELETE FROM dbo.g(+1);\n"}
+{"id":"update-g-plus","sha256":"80b9b1e4ed38dc45bba568d3e8ec0033c5e60b58179430fdf999f546ad2f07b7","source":"UPDATE dbo.g(+1) SET a=1;\n"}
+{"id":"exec-plus","sha256":"c9e2001844ecf0ac3486090faeaef6979d72300c8b8e79927f5f5a7b54d90e90","source":"EXEC dbo.p +1;\n"}
+{"id":"issue150-column-bare","sha256":"ca75da2ee25922335392c04dcd85bb8c0a7bbb34a30ab28c4b350c2af40e49d8","source":"SELECT TABLE FROM dbo.t;\n"}
+{"id":"issue150-column-bracket","sha256":"e81bc03e5b5df59dce967f3e4adc34c3d8feca981e551d2bfe4075eee9787b88","source":"SELECT [TABLE] FROM dbo.t;\n"}
+{"id":"issue150-schema-drop-if","sha256":"b58a33ec6786bd3504cb3af4bb160c5ca649f40f0492d097fc04b270a0cc6f91","source":"DROP SCHEMA IF EXISTS x;\n"}
+{"id":"issue150-table-bare","sha256":"834736f11135b43d9e763270f6bb80b10ffacedb360b6791befc910de2a31125","source":"SELECT * FROM TABLE;\n"}
+{"id":"issue150-table-bracket","sha256":"1133da626e4b26a5d7d493c6683d804f8e5a1d8a51ca4f571aa41973fae6d94d","source":"SELECT * FROM [TABLE];\n"}
+{"id":"issue150-table-create","sha256":"f1422be2013df0fed1cadbe9237f438fd9c5c99df7219d590dbdddccc2fb9f25","source":"CREATE TABLE [TABLE] (a int);\n"}
+{"id":"issue150-table-function","sha256":"8875b16f3b8765f3afea171c051b2dd650c3e96ddcd21e310c008fa330c55468","source":"SELECT TABLE(1);\n"}
+{"id":"issue150-table-qualified-bare","sha256":"1bf7726fca4a4a998a0a8495dbcdd1168729b39c9ef1c8f8ded2e4f2910b8f10","source":"SELECT * FROM dbo.TABLE;\n"}
+{"id":"issue150-table-qualified-bracket","sha256":"94ae55a48004d0df9744d069c888093e679096b26721ca9097d0746e9843af68","source":"SELECT * FROM dbo.[TABLE];\n"}
+{"id":"issue150-table-qualified-function","sha256":"2e5725b435dcbe0c1f3b07903b6cf4a22d3de8368fbbfb36a7fc8aeb1ce06963","source":"SELECT dbo.TABLE(1);\n"}
+{"id":"issue150-table-quote","sha256":"83943c9cc92c336f24cde9523ae03d7facda719f29483f28221662292c310f5e","source":"SELECT * FROM \"TABLE\";\n"}
+{"id":"issue150-table-temp","sha256":"27e23c0632b81b836ad876fe79f029be0fb5a6821b4743d3b26d564e3877844c","source":"CREATE TABLE #TABLE (a int);\n"}
+{"id":"issue150-table-variable","sha256":"7361c9338849fa5614f94be8378282c7390a9fc2f10129528f5721a517cafebd","source":"DECLARE @TABLE int; SELECT @TABLE;\n"}
+{"id":"issue150-xml-alter-0","sha256":"da6aa450e7b9ce3db61dda017f2d34a2dbaa98d70c267062276e334c07f75279","source":"ALTER XML SCHEMA COLLECTION x ADD N'<x/>';\n"}
+{"id":"issue150-xml-alter-1","sha256":"6187b04894cc49819f528553d6c3289b68215aaa7599338d074f36fa49cb4437","source":"ALTER XML SCHEMA COLLECTION dbo.x ADD N'<x/>';\n"}
+{"id":"issue150-xml-alter-2","sha256":"c0ff97678ccdabc9ecb6555fe4adfba9fb595d3698c332362a32c816fdda800f","source":"ALTER XML SCHEMA COLLECTION db1.dbo.x ADD N'<x/>';\n"}
+{"id":"issue150-xml-alter-3","sha256":"5e9fe9d47402647f037fe1560105b57ad25005ab851b305c486353fc7158cd87","source":"ALTER XML SCHEMA COLLECTION .x ADD N'<x/>';\n"}
+{"id":"issue150-xml-alter-4","sha256":"e58fbdd01b3c86ab795702e0b934dc52978941af7bc4ec363cbc419b5109187c","source":"ALTER XML SCHEMA COLLECTION dbo..x ADD N'<x/>';\n"}
+{"id":"issue150-xml-alter-5","sha256":"5ed63f470ba22e49d54089762400d1c76ab4bc86512b6789254db4539bde7a30","source":"ALTER XML SCHEMA COLLECTION [TABLE] ADD N'<x/>';\n"}
+{"id":"issue150-xml-create-0","sha256":"df20cfa1c8fd1cc0925f6169afa05ce9bd03cc85f012ac0a33b1cd8a402a3e52","source":"CREATE XML SCHEMA COLLECTION x AS N'<x/>';\n"}
+{"id":"issue150-xml-create-1","sha256":"4a7d1bbd634249ed1279a4746f40732a90393673a563fb6ac1e6c1f67200a4f0","source":"CREATE XML SCHEMA COLLECTION dbo.x AS N'<x/>';\n"}
+{"id":"issue150-xml-create-2","sha256":"fad38daf60c531b3d8653537238c0cf59eb4a04a5f5239bbf4facfb31e590867","source":"CREATE XML SCHEMA COLLECTION db1.dbo.x AS N'<x/>';\n"}
+{"id":"issue150-xml-create-3","sha256":"0a185b8492476d6837118dc569103efdf4298f7effb46f7dd2e824d851ba00be","source":"CREATE XML SCHEMA COLLECTION .x AS N'<x/>';\n"}
+{"id":"issue150-xml-create-4","sha256":"18416f75b7d3db1a2051d81fdf054db8a34d9000d0ed7f666c4d249e1f3c881a","source":"CREATE XML SCHEMA COLLECTION dbo..x AS N'<x/>';\n"}
+{"id":"issue150-xml-create-5","sha256":"5dd612031db968c2d3979f2d1af70dad79ffac9e8656c60cca5a481a8769d060","source":"CREATE XML SCHEMA COLLECTION [TABLE] AS N'<x/>';\n"}
+{"id":"issue150-xml-drop-0","sha256":"e1eca5cab56636a2af48df701ee9f5e006b56a34c7397c60bc7b1f08b725ea36","source":"DROP XML SCHEMA COLLECTION x;\n"}
+{"id":"issue150-xml-drop-1","sha256":"8925e204bb53be34d13383c1f3c600519fb2e7499cf833bbbb64f48729f21987","source":"DROP XML SCHEMA COLLECTION dbo.x;\n"}
+{"id":"issue150-xml-drop-2","sha256":"0b4d417b0a2d9818eb368d86a0ed140b3571f9f1840d1d4bd2ce8a04f38db7d6","source":"DROP XML SCHEMA COLLECTION db1.dbo.x;\n"}
+{"id":"issue150-xml-drop-3","sha256":"1ed4da0c9cfeca408fd99a5855cb1e465e0295002c101e0d53016dfc7f1b61ea","source":"DROP XML SCHEMA COLLECTION .x;\n"}
+{"id":"issue150-xml-drop-4","sha256":"f363682bcb0c53a5c684f91d0deb80b388795fa43931d6b670d83e427b077a08","source":"DROP XML SCHEMA COLLECTION dbo..x;\n"}
+{"id":"issue150-xml-drop-5","sha256":"5656f0afcc0106dfbb5d928148777b6d500becf937120d595120205872b7f9d5","source":"DROP XML SCHEMA COLLECTION [TABLE];\n"}
+{"id":"issue150-xml-drop-bracket","sha256":"089a826dff7cec6017a61247b6f47fdc10f57dc42ee905163bd28a0ea2a54fce","source":"DROP XML SCHEMA COLLECTION [IF EXISTS];\n"}
+{"id":"issue150-xml-drop-if","sha256":"824c801a701fbd4e949432aa59456a8b076a5f425f6e9044ef730f215604f153","source":"DROP XML SCHEMA COLLECTION IF EXISTS dbo.x;\n"}
+{"id":"issue150-xml-drop-multiple","sha256":"d5ce8dbf6a4f6a229ce92abc1a2424f9e92c8c9ea456ba0ea9ee2675adb489e7","source":"DROP XML SCHEMA COLLECTION dbo.x, dbo.y;\n"}
+{"id":"issue150-xml-drop-normal","sha256":"8925e204bb53be34d13383c1f3c600519fb2e7499cf833bbbb64f48729f21987","source":"DROP XML SCHEMA COLLECTION dbo.x;\n"}
+{"id":"issue150-xml-drop-quoted","sha256":"970075a81af9938358c31d55a918b2d6a5093d5a1f1edeaf421f6178d5017ef3","source":"DROP XML SCHEMA COLLECTION \"IF EXISTS\";\n"}
+{"id":"issue150-xml-drop-three-part","sha256":"0b4d417b0a2d9818eb368d86a0ed140b3571f9f1840d1d4bd2ce8a04f38db7d6","source":"DROP XML SCHEMA COLLECTION db1.dbo.x;\n"}
+{"id":"issue150-xml-drop-two-statements","sha256":"ea9820e48fbfac30705b81e7772e5471ff7dacae6912df6f5ac442602aba5e2f","source":"DROP XML SCHEMA COLLECTION dbo.x; SELECT 1;\n"}
+{"id":"issue150-lock-escalation-auto","sha256":"095462323fc490c45a663d4673162020e7d9409de606d4c075a50c1974f3729d","source":"ALTER TABLE dbo.t SET (LOCK_ESCALATION = AUTO);\n"}
+{"id":"issue150-lock-escalation-bracket","sha256":"e62242ddbbd1b7481cd460456d769f4e8cd0b9209112be5f0cda93a9910c4865","source":"ALTER TABLE dbo.t SET ([LOCK_ESCALATION] = TABLE);\n"}
+{"id":"issue150-lock-escalation-disable","sha256":"c06e0a2d194076dc6c292e14c3f01897bce45555cbfa773a69b1b4834ffdd3f7","source":"ALTER TABLE dbo.t SET (LOCK_ESCALATION = DISABLE);\n"}
+{"id":"issue150-lock-escalation-other","sha256":"c842280c7f4d6f1824dc033118a122127cd43365f55cdd7d61d864699956eb10","source":"ALTER TABLE dbo.t SET (OTHER_OPTION = TABLE);\n"}
+{"id":"issue150-lock-escalation-select","sha256":"09a1b93bd67d075a674e1e80bbc21792f976e8b9f13de464c89e2f095ccd4c0f","source":"SELECT LOCK_ESCALATION = TABLE FROM dbo.t;\n"}
+{"id":"issue150-lock-escalation-table","sha256":"1a0245029ae5487bb8b637b3c0336c5ff0d9c2ae590092c545607178892a27b3","source":"ALTER TABLE dbo.t SET (LOCK_ESCALATION = TABLE);\n"}
+{"id":"issue150-lock-escalation-registered","sha256":"d57947c28c3050f8b8b782a1ee921f1715ea1a49ce32bbc7ae31d69fc8d41a93","source":"ALTER TABLE dbo.Orders SET (LOCK_ESCALATION = AUTO);\nALTER TABLE dbo.Orders SET (LOCK_ESCALATION = TABLE);\nALTER TABLE dbo.Orders SET (LOCK_ESCALATION = DISABLE);\n"}
+{"id":"issue151-literal","sha256":"f1117a7ca63cf5dae279b0a9ec97f45be34f38936a02aff3040a365ef4c3a52a","source":"EXEC dbo.p 1 OUTPUT;\n"}
+{"id":"issue151-signed","sha256":"71ec39483f013175f6f7de31fd798692dcfdb1ee5bbd85fda7b826c07acc8212","source":"EXEC dbo.p -1 OUT;\n"}
+{"id":"issue151-string","sha256":"1ef0bf8e1e3611b6b3ed5a2aa99a9e6865a920db7577b8228e5c9a886a05930d","source":"EXEC dbo.p N'x' OUTPUT;\n"}
+{"id":"issue151-null","sha256":"9edc7238e19ac0a060cef6e448b11cb1629ad6533f2e3e7848083a89f74837f5","source":"EXEC dbo.p NULL OUT;\n"}
+{"id":"issue151-default","sha256":"b0462f68879671f04bbba47d76868a96275290765a9e230711a77595983e5e7c","source":"EXEC dbo.p DEFAULT OUTPUT;\n"}
+{"id":"issue151-bare","sha256":"149280f828d5c6634d87c480cebef725c2ac5c84f1da27dd0b098a96bf00400a","source":"EXEC dbo.p bare OUT;\n"}
+{"id":"issue151-bracket","sha256":"a82a980e58b83fab1cda836068934020a425ed6c46ac859b6e6f24f61c1d60e5","source":"EXEC dbo.p [x] OUTPUT;\n"}
+{"id":"issue151-quoted","sha256":"fe8f0b608f1ed0ac816ba8221f57703994c00390b5570c1ecf93efd9f5467f88","source":"EXEC dbo.p \"x\" OUT;\n"}
+{"id":"issue151-global","sha256":"f9cb60b229e2f40c1f28c8c9e1973ad4d73c8d966ab2fe98a9dedec9b0ea66f4","source":"EXEC dbo.p @@ROWCOUNT OUTPUT;\n"}
+{"id":"issue151-named-literal","sha256":"f781ea3fe63b27572ae50f8693cfea0ec9146366c72f08f812e3a3bc7dcc6e0b","source":"EXEC dbo.p @a = 1 OUTPUT;\n"}
+{"id":"issue151-named-string","sha256":"9732bf3943dc71108f555d02c0e2bb997991f1d5ec5b7b7429fac690764bd2e3","source":"EXEC dbo.p @a = N'x' OUT;\n"}
+{"id":"issue151-named-default","sha256":"61495a6daaaab43d8770f1e3a8047dff000ac0c05a29a8a3367dea7217233b5d","source":"EXEC dbo.p @a = DEFAULT OUTPUT;\n"}
+{"id":"issue151-implicit-literal","sha256":"42985e6043a35ba43962a577567c0d067ba806438dd46e8c84ed5126dc99a3da","source":"dbo.p 1 OUTPUT;\n"}
+{"id":"issue151-local","sha256":"bb9f4057dfb19e90392a4364a42099da3cd2d071d74463f6be2467f237605922","source":"DECLARE @v int; EXEC dbo.p @v OUTPUT;\n"}
+{"id":"issue151-named-local","sha256":"9295726a625e68c55e3a67880e96f9c092d4814b5487e36ac342478572f786ce","source":"DECLARE @v int; EXEC dbo.p @a = @v OUT;\n"}
+{"id":"issue151-implicit-local","sha256":"e1002ce881fd11e603868c869a32c9656de2e0569841b7f575f5a59d0d5dad18","source":"dbo.p @v OUT;\n"}
+{"id":"issue151-no-output-literal","sha256":"84fc669599f60182e9748684b5e52955570645ec35df1d87bbd0f8d1db7bf0fb","source":"EXEC dbo.p 1;\n"}
+{"id":"issue151-no-output-string","sha256":"70e659359b405c622a85ab3a9cc564a0b202ebbae229114367866c85231fc8b3","source":"EXEC dbo.p N'x';\n"}
+{"id":"issue151-no-output-default","sha256":"a6438730a054cce00151f5cb3277e853e489e74b52e082f78b366bdb1f7e711c","source":"EXEC dbo.p DEFAULT;\n"}
+{"id":"issue151-no-output-global","sha256":"30ea43496a74d58eabe81200be2cb174c2593c7b8233e6a755379f7661baf6ad","source":"EXEC dbo.p @@ROWCOUNT;\n"}
+{"id":"issue151-comment-local","sha256":"ce1e16342cb6b6b7f6402744f90a90331641c60167895ade3acb250bf3201d9d","source":"DECLARE @v int; EXEC dbo.p @v /* output */ OUTPUT;\n"}
+{"id":"issue151-formal","sha256":"23db62258f83cf3c65d4e78d2347fbd5e1d12d4abdb1b712c475d240acf7990d","source":"CREATE PROCEDURE dbo.p @v int OUTPUT AS SELECT 1;\n"}
+{"id":"issue151-long-local","sha256":"acc44cf5d44ac2c0eb0aaff6d6e45a7758e3b8ee58d2f82b4b3692612b5b88d3","source":"DECLARE @vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv int; EXEC dbo.p @vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv OUTPUT;\n"}
+{"id":"issue151-unicode-local","sha256":"72af0fe27ba6081e68b1733284bc0ed6375b1f22cbcdb3cc0db44eabb07a5eb7","source":"DECLARE @변수 int; EXEC dbo.p @변수 OUTPUT;\n"}
+{"id":"issue151-multi-local","sha256":"1becbe2a6e8f90335c92322a00cda402b6060babc927308c4cc1b44e3bb8ef77","source":"DECLARE @v int, @w int; EXEC dbo.p 1, @v OUT, @a = @w OUTPUT;\n"}
+{"id":"issue151-multi-invalid","sha256":"8ebbad5a4902d2e91c7c961f8ab5f5aceb678b51554e7aa7cb1904330f0c97bb","source":"EXEC dbo.p 1 OUTPUT, @v OUT;\n"}
+{"id":"issue151-dynamic-string","sha256":"7d6068cff891d9825870cd27e90a2c6053f626a57ec68b1e91588969561fdd2d","source":"EXEC(N'SELECT 1');\n"}
+{"id":"issue151-dynamic-variable","sha256":"743ed38310c556413584e3001207e741bb429e1e4d2e0aeba74521c973bd2738","source":"DECLARE @sql nvarchar(max) = N'SELECT 1'; EXEC(@sql);\n"}
+{"id":"issue151-remote-local","sha256":"9cac6c55d8644704e92be191e7be07b5acbd27f2ecba9fbc69fb8bf3c23726f6","source":"DECLARE @v int; EXEC(N'SELECT ?', @v OUTPUT) AT [lnk];\n"}
+{"id":"issue151-remote-literal","sha256":"d26add64c06e8bf399c05dd9d4e4b4da8be5aea3cb8d85482818c7e9aac0a437","source":"EXEC(N'SELECT ?', 1 OUTPUT) AT [lnk];\n"}
+{"id":"issue151-qualified-field","sha256":"167a8c8a83b357513e62eef3007ea0dce9220b06abf98b9574df5cdf20d531e4","source":"EXEC dbo.p dbo.x OUT;\n"}
+{"id":"issue151-comment-literal","sha256":"25e468acbb6ffe74ae73530757687d311f895a8a9b7285e06773d494e21f0091","source":"EXEC dbo.p 1 /* output */ OUTPUT;\n"}

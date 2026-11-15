@@ -61,3 +61,7 @@ package-lock.json        linguist-generated=true export-ignore -diff
 
 # GitHub Actions workflows
 .github/**/*.yml         linguist-detectable=true
+
+# Oracle data and runner: byte-exact on every platform (hashes are recorded)
+*.jsonl                  text eol=lf
+*.ps1                    text eol=lf
