@@ -15,7 +15,8 @@
   },
   "author": "M. Reifschneider",
   "contributors": [
-    "Derek Stride"
+    "Derek Stride",
+    "Kim Jae Seok"
   ],
   "license": "MIT",
   "dependencies": {

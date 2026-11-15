@@ -2,7 +2,7 @@
 name = "tree-sitter-mssql"
 description = "Tree-sitter grammar for Microsoft SQL Server T-SQL"
 version = "1.0.0"
-authors = ["Derek Stride", "M. Reifschneider"]
+authors = ["Derek Stride", "M. Reifschneider", "Kim Jae Seok"]
 license = "MIT"
 readme = "README.md"
 keywords = ["incremental", "parsing", "tree-sitter", "sql", "tsql"]
