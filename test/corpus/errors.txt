@@ -178,8 +178,8 @@ CREATE SECURITY POLICY p DROP FILTER PREDICATE ON t;
     (keyword_create)
     (keyword_security)
     (keyword_policy)
-    (object_reference
-      name: (identifier))
+    (identifier)
+    (keyword_drop)
     (keyword_filter)
     (keyword_predicate)
     (keyword_on)))
@@ -259,11 +259,10 @@ SELECT 1 GROUP BY 1;
           (keyword_select)
           (select_expression
             (term
-              (literal)
-              (identifier)))))))
+              value: (literal)
+              alias: (identifier)))))))
   (ERROR
-    (identifier)
-    (literal)))
+    (identifier)))
 
 ==================
 A string literal is not a valid table alias (ARCH-11)
@@ -378,7 +377,8 @@ UPDATE t TABLESAMPLE (10 PERCENT) SET a = 1;
         (invocation
           (object_reference
             name: (identifier))
-          (ERROR)
+          (ERROR
+            (keyword_tablesample))
           parameter: (term
             value: (literal)
             alias: (identifier)))
@@ -489,7 +489,6 @@ INSERT INTO dbo.t WITH cte AS (SELECT 1 AS a) SELECT a FROM cte;
           (table_hint_item
             (identifier))
           (ERROR
-            (literal)
             (keyword_as)))
         (query_specification
           (select

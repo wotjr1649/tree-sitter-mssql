@@ -459,7 +459,7 @@ export default {
       $.keyword_create,
       $.keyword_queue,
       field('name', $.object_reference),
-      optional($.with_clause),
+      optional(alias($._create_queue_with_clause, $.with_clause)),
       optional($.on_filegroup),
     ),
 
