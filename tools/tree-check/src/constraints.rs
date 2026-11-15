@@ -21,6 +21,9 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
         if matches!(node.kind(), "create_queue" | "alter_queue") {
             queue_activation(node, source, &mut out);
         }
+        if node.kind() == "statement" {
+            cte_terminator(node, &mut out);
+        }
         if cursor.goto_first_child() {
             continue;
         }
@@ -29,6 +32,36 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
                 return out;
             }
         }
+    }
+}
+
+/// A statement that starts with a CTE must not directly follow another statement or block: the
+/// previous one needs a `;`. It may come first in a batch, block or module body, right after
+/// `;`, a label, or as the body of IF, ELSE or WHILE. Evidence: SQL Server 2025 LocalDB
+/// 17.0.1000.7, levels 100-170, Msg 319 for the semicolon/*-no-terminator probes (after SELECT,
+/// END, IF, IF ... ELSE, WHILE and inside a procedure body), acceptance of every terminated,
+/// leading-semicolon, label, IF/ELSE/WHILE-body and first-in-block form.
+fn cte_terminator(statement: Node, out: &mut Vec<Violation>) {
+    // `WITH c AS (...) SELECT ...` is a statement whose children start with `keyword_with`, `cte`.
+    let starts_with_cte = statement.named_child(0).map(|n| n.kind()) == Some("keyword_with")
+        && statement.named_child(1).map(|n| n.kind()) == Some("cte");
+    if !starts_with_cte {
+        return;
+    }
+    let Some(prev) = statement.prev_sibling() else {
+        return;
+    };
+    let follows_statement = match prev.kind() {
+        "block" => true,
+        "statement" => prev.named_child(0).map(|n| n.kind()) != Some("label_statement"),
+        _ => false,
+    };
+    if follows_statement {
+        out.push(violation(
+            "cte-terminator",
+            "the statement before a WITH common table expression must end with ';'".into(),
+            statement,
+        ));
     }
 }
 
@@ -159,6 +192,52 @@ mod tests {
         );
         let exec_twice = "ALTER QUEUE q WITH ACTIVATION (EXECUTE AS SELF, EXECUTE AS OWNER);";
         assert_eq!(rules(exec_twice), ["queue-activation-duplicate"]);
+    }
+
+    const CTE: &str = "WITH c AS (SELECT 1 AS n) SELECT n FROM c;";
+
+    #[test]
+    fn a_cte_directly_after_a_statement_needs_a_terminator() {
+        for before in [
+            "SELECT 1
+",
+            "BEGIN SELECT 1; END
+",
+            "IF 1=1 SELECT 1
+",
+            "WHILE 1=0 SELECT 1
+",
+        ] {
+            assert_eq!(
+                rules(&format!("{before}{CTE}")),
+                ["cte-terminator"],
+                "{before}"
+            );
+        }
+        assert_eq!(
+            rules(&format!(
+                "CREATE PROCEDURE dbo.p AS SELECT 1
+{CTE}"
+            )),
+            ["cte-terminator"]
+        );
+    }
+
+    #[test]
+    fn a_terminated_leading_or_controlled_cte_passes() {
+        for sql in [
+            CTE.to_string(),
+            format!("SELECT 1; {CTE}"),
+            format!(";{CTE}"),
+            format!("here: {CTE}"),
+            format!("IF 1=1 {CTE}"),
+            format!("WHILE 1=0 {CTE}"),
+            format!("BEGIN {CTE} END;"),
+            format!("BEGIN SELECT 1; END; {CTE}"),
+            format!("CREATE PROCEDURE dbo.p AS {CTE}"),
+        ] {
+            assert!(rules(&sql).is_empty(), "{sql}");
+        }
     }
 
     #[test]
