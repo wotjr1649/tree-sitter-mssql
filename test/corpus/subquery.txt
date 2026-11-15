@@ -1,0 +1,135 @@
+================================================================================
+Scalar subquery in a predicate
+================================================================================
+
+SELECT id
+FROM foo
+WHERE id < (
+  SELECT TOP 1 id
+  FROM bar
+  ORDER BY id);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))
+        (where
+          (keyword_where)
+          (binary_expression
+            (field
+              (identifier))
+            (subquery
+              (query_specification
+                (select
+                  (keyword_select)
+                  (top_clause
+                    (keyword_top)
+                    (literal))
+                  (select_expression
+                    (term
+                      (field
+                        (identifier)))))
+                (from
+                  (keyword_from)
+                  (relation
+                    (object_reference
+                      (identifier)))))
+              (order_by
+                (keyword_order)
+                (keyword_by)
+                (order_target
+                  (field
+                    (identifier)))))))))))
+
+================================================================================
+Correlated subquery in a select list and a set statement
+================================================================================
+
+SELECT (SELECT MAX(qty) FROM lines l WHERE l.order_id = o.id) AS max_qty
+FROM orders o;
+
+SET @SiteRef = (select site_group from apparms with (readuncommitted))
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (subquery
+                (query_specification
+                  (select
+                    (keyword_select)
+                    (select_expression
+                      (term
+                        (invocation
+                          (object_reference
+                            (identifier))
+                          (term
+                            (field
+                              (identifier)))))))
+                  (from
+                    (keyword_from)
+                    (relation
+                      (object_reference
+                        (identifier))
+                      (identifier)))
+                  (where
+                    (keyword_where)
+                    (binary_expression
+                      (field
+                        (object_reference
+                          (identifier))
+                        (identifier))
+                      (field
+                        (object_reference
+                          (identifier))
+                        (identifier))))))
+              (keyword_as)
+              (identifier))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))
+            (identifier)))))
+    (statement
+      (set_statement
+        (keyword_set)
+        (object_reference
+          (identifier))
+        (assignment_operator)
+        (subquery
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (field
+                    (identifier)))))
+            (from
+              (keyword_from)
+              (relation
+                (object_reference
+                  (identifier)))
+              (table_hint
+                (keyword_with)
+                (table_hint_item
+                  (identifier))))))))))
