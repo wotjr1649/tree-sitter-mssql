@@ -1,0 +1,1839 @@
+================================================================================
+ddl-external/external-data-source-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL DATA SOURCE ds WITH (LOCATION = 'abs://acct.blob.core.windows.net', CREDENTIAL = cred, PUSHDOWN = ON);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_data_source (keyword_create) (keyword_external) (keyword_data) (keyword_source) name: (identifier) (with_options (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (keyword_on)))))))
+
+================================================================================
+ddl-external/external-data-source-create-options (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL DATA SOURCE ds WITH (LOCATION = 'sqlserver://srv:1433', CONNECTION_OPTIONS = 'ApplicationIntent=ReadOnly', CREDENTIAL = cred);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_data_source (keyword_create) (keyword_external) (keyword_data) (keyword_source) name: (identifier) (with_options (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/external-data-source-alter (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL DATA SOURCE ds SET LOCATION = 'adls://acct.dfs.core.windows.net', CREDENTIAL = cred;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_data_source (keyword_alter) (keyword_external) (keyword_data) (keyword_source) name: (identifier) (keyword_set) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+ddl-external/external-data-source-alter-credential (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL DATA SOURCE ds SET CREDENTIAL = cred;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_data_source (keyword_alter) (keyword_external) (keyword_data) (keyword_source) name: (identifier) (keyword_set) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+ddl-external/external-data-source-alter-missing-value (engine 102; tree-check external-option-assignment; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL DATA SOURCE ds SET LOCATION = ;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_data_source (keyword_alter) (keyword_external) (keyword_data) (keyword_source) name: (identifier) (keyword_set) (option name: (identifier)))) (ERROR)))
+
+================================================================================
+ddl-external/external-data-source-alter-duplicate (engine 102; tree-check external-option-duplicate; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL DATA SOURCE ds SET LOCATION = 'abs://a', LOCATION = 'abs://b';
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_data_source (keyword_alter) (keyword_external) (keyword_data) (keyword_source) name: (identifier) (keyword_set) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal))))))
+
+================================================================================
+ddl-external/external-data-source-alter-unknown (engine 102; tree-check external-option; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL DATA SOURCE ds SET UNKNOWN_OPTION = 1;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_data_source (keyword_alter) (keyword_external) (keyword_data) (keyword_source) name: (identifier) (keyword_set) (option name: (identifier) value: (literal))))))
+
+================================================================================
+ddl-external/external-data-source-create-no-location (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL DATA SOURCE ds WITH (CREDENTIAL = cred);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_data_source (keyword_create) (keyword_external) (keyword_data) (keyword_source) name: (identifier) (with_options (keyword_with) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/external-data-source-create-duplicate (engine 102; tree-check external-option-duplicate; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL DATA SOURCE ds WITH (LOCATION = 'abs://a', LOCATION = 'abs://b');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_data_source (keyword_create) (keyword_external) (keyword_data) (keyword_source) name: (identifier) (with_options (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-file-format-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL FILE FORMAT ff WITH (FORMAT_TYPE = DELIMITEDTEXT, FORMAT_OPTIONS (FIELD_TERMINATOR = '|', STRING_DELIMITER = '0x22', FIRST_ROW = 2, USE_TYPE_DEFAULT = TRUE, ENCODING = 'UTF8'));
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_file_format (keyword_create) (keyword_external) (keyword_file) (keyword_format) name: (identifier) (with_options (keyword_with) (option name: (identifier) value: (identifier)) (option name: (identifier) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+ddl-external/external-file-format-parquet (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL FILE FORMAT ff WITH (FORMAT_TYPE = PARQUET, DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_file_format (keyword_create) (keyword_external) (keyword_file) (keyword_format) name: (identifier) (with_options (keyword_with) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-file-format-no-type (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL FILE FORMAT ff WITH (DATA_COMPRESSION = 'org.apache.hadoop.io.compress.GzipCodec');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_file_format (keyword_create) (keyword_external) (keyword_file) (keyword_format) name: (identifier) (with_options (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-file-format-duplicate-type (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL FILE FORMAT ff WITH (FORMAT_TYPE = PARQUET, FORMAT_TYPE = ORC);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_file_format (keyword_create) (keyword_external) (keyword_file) (keyword_format) name: (identifier) (with_options (keyword_with) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/external-table-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL TABLE dbo.ext (id int, body nvarchar(100) NULL) WITH (LOCATION = '/data/', DATA_SOURCE = ds, FILE_FORMAT = ff);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_table (keyword_create) (keyword_external) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int)) (column_definition name: (identifier) type: (nvarchar (keyword_nvarchar) size: (literal)) (keyword_null))) (with_options (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/external-table-missing-data-source (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL TABLE dbo.ext (id int) WITH (LOCATION = '/data/');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_table (keyword_create) (keyword_external) (keyword_table) name: (object_reference schema: (identifier) name: (identifier)) (column_definitions (column_definition name: (identifier) type: (keyword_int))) (with_options (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-table-drop-qualified (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+DROP EXTERNAL TABLE db1.dbo.ext;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (drop_external_table (keyword_drop) (keyword_external) (keyword_table) name: (object_reference database: (identifier) schema: (identifier) name: (identifier))))))
+
+================================================================================
+ddl-external/external-table-drop-many (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+DROP EXTERNAL TABLE dbo.ext, dbo.ext2;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (drop_external_table (keyword_drop) (keyword_external) (keyword_table) name: (object_reference schema: (identifier) name: (identifier))))) (ERROR (identifier) (identifier)))
+
+================================================================================
+ddl-external/external-table-drop-if-exists (engine 156; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+DROP EXTERNAL TABLE IF EXISTS dbo.ext;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (drop_external_table (keyword_drop) (keyword_external) (keyword_table) name: (object_reference name: (identifier)))) (ERROR (identifier))))
+
+================================================================================
+ddl-external/external-data-source-drop (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+DROP EXTERNAL DATA SOURCE ds;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (drop_external_data_source (keyword_drop) (keyword_external) (keyword_data) (keyword_source) name: (identifier)))))
+
+================================================================================
+ddl-external/external-file-format-drop (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+DROP EXTERNAL FILE FORMAT ff;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (drop_external_file_format (keyword_drop) (keyword_external) (keyword_file) (keyword_format) name: (identifier)))))
+
+================================================================================
+ddl-external/external-language-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL LANGUAGE Java AUTHORIZATION dbo FROM (CONTENT = N'C:\ext\java.zip', FILE_NAME = 'javaextension.dll', PLATFORM = WINDOWS, PARAMETERS = '-Xmx512m', ENVIRONMENT_VARIABLES = '{"JRE_HOME":"/opt/jre"}');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_language (keyword_create) (keyword_external) (keyword_language) name: (identifier) (keyword_authorization) (identifier) (keyword_from) (external_file_spec (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-language-create-two-platforms (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+DECLARE @bits varbinary(max) = 0x504B0304; CREATE EXTERNAL LANGUAGE Java FROM (CONTENT = 0x504B0304, FILE_NAME = 'javaextension.dll', PLATFORM = WINDOWS), (CONTENT = @bits, FILE_NAME = 'java.so', PLATFORM = LINUX);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (varbinary (keyword_varbinary) size: (keyword_max)) (literal)))) (statement (create_external_language (keyword_create) (keyword_external) (keyword_language) name: (identifier) (keyword_from) (external_file_spec (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier))) (external_file_spec (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/external-language-alter-add (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL LANGUAGE Java ADD (CONTENT = 0x504B0304, FILE_NAME = 'java.so', PLATFORM = LINUX);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_language (keyword_alter) (keyword_external) (keyword_language) name: (identifier) (keyword_add) (external_file_spec (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/external-language-alter-set-variable (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+DECLARE @bits varbinary(max) = 0x504B0304; ALTER EXTERNAL LANGUAGE Java AUTHORIZATION dbo SET (CONTENT = @bits, FILE_NAME = 'javaextension.dll');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (varbinary (keyword_varbinary) size: (keyword_max)) (literal)))) (statement (alter_external_language (keyword_alter) (keyword_external) (keyword_language) name: (identifier) (keyword_authorization) (identifier) (keyword_set) (external_file_spec (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-language-alter-remove (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL LANGUAGE Java REMOVE PLATFORM LINUX;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_language (keyword_alter) (keyword_external) (keyword_language) name: (identifier) (keyword_remove) (keyword_platform) (identifier)))))
+
+================================================================================
+ddl-external/external-language-alter-missing-content (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL LANGUAGE Java SET (FILE_NAME = 'java.so');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_language (keyword_alter) (keyword_external) (keyword_language) name: (identifier) (keyword_set) (external_file_spec (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-language-create-missing-content (engine 39123; tree-check external-option-required; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL LANGUAGE Java FROM (FILE_NAME = 'java.so');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_language (keyword_create) (keyword_external) (keyword_language) name: (identifier) (keyword_from) (external_file_spec (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-language-create-missing-file-name (engine 39123; tree-check external-option-required; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL LANGUAGE Java FROM (CONTENT = 0x504B0304);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_language (keyword_create) (keyword_external) (keyword_language) name: (identifier) (keyword_from) (external_file_spec (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-language-create-duplicate (engine 1039; tree-check external-option-duplicate; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL LANGUAGE Java FROM (CONTENT = 0x504B0304, FILE_NAME = 'java.so', FILE_NAME = 'java2.so');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_language (keyword_create) (keyword_external) (keyword_language) name: (identifier) (keyword_from) (external_file_spec (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-language-create-reordered (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL LANGUAGE Java FROM (FILE_NAME = 'java.so', CONTENT = 0x504B0304);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_language (keyword_create) (keyword_external) (keyword_language) name: (identifier) (keyword_from) (external_file_spec (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-language-remove-unknown-platform (engine 102; tree-check external-platform; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL LANGUAGE Java REMOVE PLATFORM MACOS;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_language (keyword_alter) (keyword_external) (keyword_language) name: (identifier) (keyword_remove) (keyword_platform) (identifier)))))
+
+================================================================================
+ddl-external/external-language-drop (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+DROP EXTERNAL LANGUAGE Java;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (drop_external_language (keyword_drop) (keyword_external) (keyword_language) name: (identifier)))))
+
+================================================================================
+ddl-external/external-library-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL LIBRARY pkg AUTHORIZATION dbo FROM (CONTENT = 'C:\pkgs\pkg.zip', PLATFORM = WINDOWS), (CONTENT = 0x504B0304, PLATFORM = LINUX) WITH (LANGUAGE = 'R');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_library (keyword_create) (keyword_external) (keyword_library) name: (identifier) (keyword_authorization) (identifier) (keyword_from) (external_file_spec (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier))) (external_file_spec (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier))) (with_options (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-library-create-variable (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+DECLARE @bits varbinary(max) = 0x504B0304; CREATE EXTERNAL LIBRARY pkg FROM (CONTENT = @bits) WITH (LANGUAGE = 'Python');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (varbinary (keyword_varbinary) size: (keyword_max)) (literal)))) (statement (create_external_library (keyword_create) (keyword_external) (keyword_library) name: (identifier) (keyword_from) (external_file_spec (option name: (identifier) value: (identifier))) (with_options (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-library-alter-none (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL LIBRARY pkg SET (CONTENT = NONE, PLATFORM = LINUX) WITH (LANGUAGE = 'Python');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_library (keyword_alter) (keyword_external) (keyword_library) name: (identifier) (keyword_set) (external_file_spec (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier))) (with_options (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-library-create-without-language (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL LIBRARY pkg FROM (CONTENT = 0x504B0304);
+
+--------------------------------------------------------------------------------
+
+(program (ERROR (keyword_create) (keyword_external) (keyword_library) (identifier) (keyword_from) (external_file_spec (option name: (identifier) value: (literal)))) (batch))
+
+================================================================================
+ddl-external/external-library-alter-without-language (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL LIBRARY pkg SET (CONTENT = 0x504B0304);
+
+--------------------------------------------------------------------------------
+
+(program (ERROR (keyword_alter) (keyword_external) (keyword_library) (identifier) (keyword_set) (external_file_spec (option name: (identifier) value: (literal)))) (batch))
+
+================================================================================
+ddl-external/external-library-create-no-content (engine 319; tree-check external-option-required; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL LIBRARY pkg FROM (PLATFORM = LINUX) WITH (LANGUAGE = 'Python');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_library (keyword_create) (keyword_external) (keyword_library) name: (identifier) (keyword_from) (external_file_spec (option name: (identifier) value: (identifier))) (with_options (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-library-create-duplicate-content (engine 1039,319; tree-check external-option-duplicate; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL LIBRARY pkg FROM (CONTENT = 0x504B0304, CONTENT = 0x504B0304) WITH (LANGUAGE = 'Python');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_library (keyword_create) (keyword_external) (keyword_library) name: (identifier) (keyword_from) (external_file_spec (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal))) (with_options (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-library-drop (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+DROP EXTERNAL LIBRARY pkg AUTHORIZATION dbo;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (drop_external_library (keyword_drop) (keyword_external) (keyword_library) name: (identifier) (keyword_authorization) (identifier)))))
+
+================================================================================
+ddl-external/external-pool-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL RESOURCE POOL ep WITH (MAX_CPU_PERCENT = 75, AFFINITY CPU = (0, 2 TO 3), MAX_MEMORY_PERCENT = 30, MAX_PROCESSES = 10);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_resource_pool (keyword_create) (keyword_external) (keyword_resource) (keyword_pool) name: (identifier) (with_options (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) (keyword_cpu) (external_cpu_range (literal)) (external_cpu_range (literal) (keyword_to) (literal))) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-pool-create-defaults (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL RESOURCE POOL ep;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_resource_pool (keyword_create) (keyword_external) (keyword_resource) (keyword_pool) name: (identifier)))))
+
+================================================================================
+ddl-external/external-pool-alter (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL RESOURCE POOL "default" WITH (AFFINITY CPU = AUTO, MAX_MEMORY_PERCENT = 30);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_resource_pool (keyword_alter) (keyword_external) (keyword_resource) (keyword_pool) name: (identifier) (with_options (keyword_with) (option name: (identifier) (keyword_cpu) (identifier)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-pool-numanode (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL RESOURCE POOL ep WITH (AFFINITY NUMANODE = (0 TO 1));
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_resource_pool (keyword_alter) (keyword_external) (keyword_resource) (keyword_pool) name: (identifier) (with_options (keyword_with) (option name: (identifier) (keyword_numanode) (external_cpu_range (literal) (keyword_to) (literal))))))))
+
+================================================================================
+ddl-external/external-pool-duplicate (engine 1039; tree-check external-option-duplicate; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL RESOURCE POOL ep WITH (MAX_CPU_PERCENT = 10, MAX_CPU_PERCENT = 20);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_resource_pool (keyword_alter) (keyword_external) (keyword_resource) (keyword_pool) name: (identifier) (with_options (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-pool-unknown-option (engine 102; tree-check external-option; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL RESOURCE POOL ep WITH (UNKNOWN_OPTION = 1);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_resource_pool (keyword_create) (keyword_external) (keyword_resource) (keyword_pool) name: (identifier) (with_options (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-pool-alter-no-options (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL RESOURCE POOL ep;
+
+--------------------------------------------------------------------------------
+
+(program (ERROR (keyword_alter) (keyword_external) (keyword_resource) (keyword_pool) (identifier)) (batch))
+
+================================================================================
+ddl-external/external-pool-missing-range-end (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL RESOURCE POOL ep WITH (AFFINITY CPU = (0 TO));
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_resource_pool (keyword_create) (keyword_external) (keyword_resource) (keyword_pool) name: (identifier) (with_options (keyword_with) (option name: (identifier) (keyword_cpu) (external_cpu_range (literal)) (ERROR (keyword_to))))))))
+
+================================================================================
+ddl-external/external-pool-drop (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+DROP EXTERNAL RESOURCE POOL ep;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (drop_external_resource_pool (keyword_drop) (keyword_external) (keyword_resource) (keyword_pool) name: (identifier)))))
+
+================================================================================
+ddl-external/external-model-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL MODEL emb AUTHORIZATION dbo WITH (LOCATION = 'https://example.invalid/embeddings', API_FORMAT = 'OpenAI', MODEL_TYPE = EMBEDDINGS, MODEL = 'text-embedding-3-small');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_model (keyword_create) (keyword_external) (keyword_model) name: (identifier) (keyword_authorization) (identifier) (with_options (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-model-alter (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL MODEL emb SET (LOCATION = 'https://example.invalid/embeddings', API_FORMAT = 'OpenAI', MODEL_TYPE = EMBEDDINGS, MODEL = 'text-embedding-3-small', PARAMETERS = '{"dimensions":768}');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_model (keyword_alter) (keyword_external) (keyword_model) name: (identifier) (keyword_set) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal))))))
+
+================================================================================
+ddl-external/external-model-missing-location (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL MODEL emb WITH (API_FORMAT = 'OpenAI', MODEL_TYPE = EMBEDDINGS, MODEL = 'm');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_model (keyword_create) (keyword_external) (keyword_model) name: (identifier) (with_options (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-model-alter-one-option (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL MODEL emb SET (PARAMETERS = '{}');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_model (keyword_alter) (keyword_external) (keyword_model) name: (identifier) (keyword_set) (option name: (identifier) value: (literal))))))
+
+================================================================================
+ddl-external/external-model-duplicate (engine 102; tree-check external-option-duplicate; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL MODEL emb WITH (LOCATION = 'https://example.invalid/embeddings', API_FORMAT = 'OpenAI', MODEL_TYPE = EMBEDDINGS, MODEL = 'text-embedding-3-small', MODEL = 'm2');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_model (keyword_create) (keyword_external) (keyword_model) name: (identifier) (with_options (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-model-drop (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+DROP EXTERNAL MODEL emb;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (drop_external_model (keyword_drop) (keyword_external) (keyword_model) name: (identifier)))))
+
+================================================================================
+ddl-external/external-stream-create (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL STREAM s WITH (LOCATION = N'input', DATA_SOURCE = ds, FILE_FORMAT = ff);
+
+--------------------------------------------------------------------------------
+
+(program (ERROR (keyword_create) (keyword_external) (keyword_with)) (batch))
+
+================================================================================
+ddl-external/external-stream-drop (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+DROP EXTERNAL STREAM s;
+
+--------------------------------------------------------------------------------
+
+(program (ERROR (keyword_drop) (keyword_external)) (batch))
+
+================================================================================
+ddl-external/external-new-words-identifiers (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+SELECT language, library, resource, pool, affinity, cpu, numanode, platform FROM dbo.t language;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (field name: (identifier))) (term value: (field name: (identifier))) (term value: (field name: (identifier))) (term value: (field name: (identifier))) (term value: (field name: (identifier))) (term value: (field name: (identifier))) (term value: (field name: (identifier))) (term value: (field name: (identifier))))) (from (keyword_from) (relation (object_reference schema: (identifier) name: (identifier)) alias: (identifier)))))))
+
+================================================================================
+ddl-external/external-data-source-alter-no-equals (engine 102; tree-check external-option-assignment; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL DATA SOURCE ds SET LOCATION 'abs://a';
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_data_source (keyword_alter) (keyword_external) (keyword_data) (keyword_source) name: (identifier) (keyword_set) (option name: (identifier) value: (literal))))))
+
+================================================================================
+ddl-external/external-model-no-equals (engine 102; tree-check external-option-assignment; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL MODEL emb SET (PARAMETERS '{}');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_model (keyword_alter) (keyword_external) (keyword_model) name: (identifier) (keyword_set) (option name: (identifier) value: (literal))))))
+
+================================================================================
+ddl-external/external-language-content-no-equals (engine 102; tree-check external-option-assignment; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL LANGUAGE Java FROM (CONTENT 0x504B0304, FILE_NAME = 'java.so');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_language (keyword_create) (keyword_external) (keyword_language) name: (identifier) (keyword_from) (external_file_spec (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-language-platform-unknown (engine 102; tree-check external-platform; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL LANGUAGE Java FROM (CONTENT = 0x504B0304, FILE_NAME = 'java.so', PLATFORM = MACOS);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_language (keyword_create) (keyword_external) (keyword_language) name: (identifier) (keyword_from) (external_file_spec (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/external-library-alter-no-content (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL LIBRARY pkg SET (PLATFORM = LINUX) WITH (LANGUAGE = 'Python');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_library (keyword_alter) (keyword_external) (keyword_library) name: (identifier) (keyword_set) (external_file_spec (option name: (identifier) value: (identifier))) (with_options (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-library-wrong-with-option (engine 102; tree-check external-option,external-option-required; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL LIBRARY pkg FROM (CONTENT = 0x504B0304) WITH (OTHER_OPTION = 'Python');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_library (keyword_create) (keyword_external) (keyword_library) name: (identifier) (keyword_from) (external_file_spec (option name: (identifier) value: (literal))) (with_options (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-library-create-none (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL LIBRARY pkg FROM (CONTENT = NONE) WITH (LANGUAGE = 'Python');
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_library (keyword_create) (keyword_external) (keyword_library) name: (identifier) (keyword_from) (external_file_spec (option name: (identifier) value: (identifier))) (with_options (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/external-library-drop-no-owner (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+DROP EXTERNAL LIBRARY pkg;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (drop_external_library (keyword_drop) (keyword_external) (keyword_library) name: (identifier)))))
+
+================================================================================
+ddl-external/external-language-spec-with-comments (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE EXTERNAL LANGUAGE [자바] FROM (file_name /*name*/ = 'java.so', content = 0x504B0304); SELECT platform FROM dbo.t;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_external_language (keyword_create) (keyword_external) (keyword_language) name: (identifier) (keyword_from) (external_file_spec (option name: (identifier) (marginalia) value: (literal)) (option name: (identifier) value: (literal))))) (statement (query_specification (select (keyword_select) (select_expression (term value: (field name: (identifier))))) (from (keyword_from) (relation (object_reference schema: (identifier) name: (identifier))))))))
+
+================================================================================
+ddl-external/external-pool-affinity-duplicate (engine 1039; tree-check external-option-duplicate; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL RESOURCE POOL ep WITH (AFFINITY CPU = AUTO, AFFINITY CPU = (0));
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_resource_pool (keyword_alter) (keyword_external) (keyword_resource) (keyword_pool) name: (identifier) (with_options (keyword_with) (option name: (identifier) (keyword_cpu) (identifier)) (option name: (identifier) (keyword_cpu) (external_cpu_range (literal))))))))
+
+================================================================================
+ddl-external/external-pool-numanode-auto (engine 102; tree-check external-affinity; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL RESOURCE POOL ep WITH (AFFINITY NUMANODE = AUTO);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_resource_pool (keyword_alter) (keyword_external) (keyword_resource) (keyword_pool) name: (identifier) (with_options (keyword_with) (option name: (identifier) (keyword_numanode) (identifier)))))))
+
+================================================================================
+ddl-external/external-pool-affinity-unknown (engine 102; tree-check external-affinity; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL RESOURCE POOL ep WITH (AFFINITY CPU = UNKNOWN_VALUE);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_resource_pool (keyword_alter) (keyword_external) (keyword_resource) (keyword_pool) name: (identifier) (with_options (keyword_with) (option name: (identifier) (keyword_cpu) (identifier)))))))
+
+================================================================================
+ddl-external/external-pool-max-negative (engine 102; tree-check external-option-assignment; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL RESOURCE POOL ep WITH (MAX_PROCESSES = -1);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_resource_pool (keyword_alter) (keyword_external) (keyword_resource) (keyword_pool) name: (identifier) (with_options (keyword_with) (option name: (identifier)) (ERROR (literal)))))))
+
+================================================================================
+ddl-external/external-pool-max-no-equals (engine 102; tree-check external-option-assignment; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER EXTERNAL RESOURCE POOL ep WITH (MAX_CPU_PERCENT 50);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_external_resource_pool (keyword_alter) (keyword_external) (keyword_resource) (keyword_pool) name: (identifier) (with_options (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/fulltext-catalog-options (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT CATALOG ftc ON FILEGROUP fg IN PATH 'C:\ft' WITH ACCENT_SENSITIVITY = ON AS DEFAULT AUTHORIZATION dbo;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_catalog (keyword_create) (keyword_fulltext) (keyword_catalog) (identifier) (keyword_on) (identifier) (identifier) (keyword_in) (identifier) (literal) (with_clause (keyword_with) (option name: (identifier) value: (keyword_on))) (keyword_as) (keyword_default) (keyword_authorization) (identifier)))))
+
+================================================================================
+ddl-external/fulltext-catalog-path-missing (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT CATALOG ftc IN PATH;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_catalog (keyword_create) (keyword_fulltext) (keyword_catalog) (identifier) (keyword_in) (identifier) (literal (MISSING keyword_null))))))
+
+================================================================================
+ddl-external/fulltext-catalog-accent-duplicate (engine 102; tree-check fulltext-option-duplicate; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT CATALOG ftc WITH ACCENT_SENSITIVITY = ON, ACCENT_SENSITIVITY = OFF;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_catalog (keyword_create) (keyword_fulltext) (keyword_catalog) (identifier) (with_clause (keyword_with) (option name: (identifier) value: (keyword_on)) (option name: (identifier) value: (keyword_off)))))))
+
+================================================================================
+ddl-external/fulltext-index-options (engine 7609; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT INDEX ON dbo.docs (title TYPE COLUMN ext, body LANGUAGE 1033 STATISTICAL_SEMANTICS) KEY INDEX pk ON ftc WITH (CHANGE_TRACKING = MANUAL, STOPLIST = OFF, SEARCH PROPERTY LIST = spl);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_index (keyword_create) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (fulltext_index_column name: (identifier) (identifier) (identifier) (identifier)) (fulltext_index_column name: (identifier) (identifier) (literal) (identifier)) (keyword_key) (keyword_index) (identifier) (keyword_on) (identifier) (with_options (keyword_with) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (keyword_off)) (option name: (identifier) (identifier) (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/fulltext-index-catalog-first (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT INDEX ON dbo.docs (body) KEY INDEX pk ON (ftc, FILEGROUP fg) WITH (CHANGE_TRACKING AUTO, STOPLIST SYSTEM);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_index (keyword_create) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (fulltext_index_column name: (identifier)) (keyword_key) (keyword_index) (identifier) (keyword_on) (identifier) (identifier) (identifier) (with_options (keyword_with) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/fulltext-index-filegroup-first (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT INDEX ON dbo.docs (body) KEY INDEX pk ON (FILEGROUP fg, ftc) WITH (CHANGE_TRACKING OFF, NO POPULATION, STOPLIST sl);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_index (keyword_create) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (fulltext_index_column name: (identifier)) (keyword_key) (keyword_index) (identifier) (keyword_on) (identifier) (identifier) (identifier) (with_options (keyword_with) (option name: (identifier) value: (keyword_off)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/fulltext-index-filegroup-only (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT INDEX ON dbo.docs (body) KEY INDEX pk ON (FILEGROUP fg);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_index (keyword_create) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (fulltext_index_column name: (identifier)) (keyword_key) (keyword_index) (identifier) (keyword_on) (identifier) (identifier)))))
+
+================================================================================
+ddl-external/fulltext-index-no-columns (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT INDEX ON dbo.docs KEY INDEX pk;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_index (keyword_create) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_key) (keyword_index) (identifier)))))
+
+================================================================================
+ddl-external/fulltext-index-bare-search-options (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT INDEX ON dbo.docs (body) KEY INDEX pk WITH CHANGE_TRACKING OFF, NO POPULATION, SEARCH PROPERTY LIST = spl;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_index (keyword_create) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (fulltext_index_column name: (identifier)) (keyword_key) (keyword_index) (identifier) (with_clause (keyword_with) (option name: (identifier) value: (keyword_off)) (option name: (identifier) value: (identifier)) (option name: (identifier) (identifier) (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/fulltext-index-missing-key (engine 156; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT INDEX ON dbo.docs (body) ON ftc;
+
+--------------------------------------------------------------------------------
+
+(program (ERROR (keyword_create) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (fulltext_index_column name: (identifier))) (batch))
+
+================================================================================
+ddl-external/fulltext-index-empty-columns (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT INDEX ON dbo.docs () KEY INDEX pk;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_index (keyword_create) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (fulltext_index_column name: (identifier (MISSING _identifier))) (keyword_key) (keyword_index) (identifier)))))
+
+================================================================================
+ddl-external/fulltext-index-empty-options (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT INDEX ON dbo.docs (body) KEY INDEX pk WITH ();
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_index (keyword_create) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (fulltext_index_column name: (identifier)) (keyword_key) (keyword_index) (identifier) (with_options (keyword_with) (option name: (identifier (MISSING _identifier))))))))
+
+================================================================================
+ddl-external/fulltext-index-missing-filegroup (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT INDEX ON dbo.docs (body) KEY INDEX pk ON (ftc, FILEGROUP);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_index (keyword_create) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (fulltext_index_column name: (identifier)) (keyword_key) (keyword_index) (identifier) (keyword_on) (identifier) (identifier) (identifier (MISSING _identifier))))))
+
+================================================================================
+ddl-external/fulltext-index-missing-search-value (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT INDEX ON dbo.docs (body) KEY INDEX pk WITH (SEARCH PROPERTY LIST =);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_index (keyword_create) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (fulltext_index_column name: (identifier)) (keyword_key) (keyword_index) (identifier) (with_options (keyword_with) (option name: (identifier) (identifier) (identifier) value: (identifier (MISSING _identifier))))))))
+
+================================================================================
+ddl-external/fulltext-index-change-duplicate (engine 102; tree-check fulltext-option-duplicate; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT INDEX ON dbo.docs (body) KEY INDEX pk WITH (CHANGE_TRACKING AUTO, CHANGE_TRACKING MANUAL);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_index (keyword_create) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (fulltext_index_column name: (identifier)) (keyword_key) (keyword_index) (identifier) (with_options (keyword_with) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/fulltext-index-stoplist-duplicate (engine 102; tree-check fulltext-option-duplicate; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT INDEX ON dbo.docs (body) KEY INDEX pk WITH (STOPLIST SYSTEM, STOPLIST OFF);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_index (keyword_create) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (fulltext_index_column name: (identifier)) (keyword_key) (keyword_index) (identifier) (with_options (keyword_with) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (keyword_off)))))))
+
+================================================================================
+ddl-external/fulltext-index-search-duplicate (engine 102; tree-check fulltext-option-duplicate; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT INDEX ON dbo.docs (body) KEY INDEX pk WITH (SEARCH PROPERTY LIST = spl, SEARCH PROPERTY LIST = spl2);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_index (keyword_create) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (fulltext_index_column name: (identifier)) (keyword_key) (keyword_index) (identifier) (with_options (keyword_with) (option name: (identifier) (identifier) (identifier) value: (identifier)) (option name: (identifier) (identifier) (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/fulltext-index-no-population-alone (engine 102; tree-check fulltext-no-population; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT INDEX ON dbo.docs (body) KEY INDEX pk WITH (NO POPULATION);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_index (keyword_create) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (fulltext_index_column name: (identifier)) (keyword_key) (keyword_index) (identifier) (with_options (keyword_with) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/fulltext-index-no-population-auto (engine 7663; tree-check fulltext-no-population; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT INDEX ON dbo.docs (body) KEY INDEX pk WITH (CHANGE_TRACKING AUTO, NO POPULATION);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_index (keyword_create) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (fulltext_index_column name: (identifier)) (keyword_key) (keyword_index) (identifier) (with_options (keyword_with) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/fulltext-index-change-unknown (engine 102; tree-check fulltext-change-tracking; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT INDEX ON dbo.docs (body) KEY INDEX pk WITH (CHANGE_TRACKING BOGUS);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_index (keyword_create) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (fulltext_index_column name: (identifier)) (keyword_key) (keyword_index) (identifier) (with_options (keyword_with) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/fulltext-alter-index-set-equals (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER FULLTEXT INDEX ON dbo.docs SET CHANGE_TRACKING = MANUAL; ALTER FULLTEXT INDEX ON dbo.docs SET STOPLIST = OFF; ALTER FULLTEXT INDEX ON dbo.docs SET SEARCH PROPERTY LIST = OFF;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_fulltext_index (keyword_alter) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_set) (identifier) (identifier))) (statement (alter_fulltext_index (keyword_alter) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_set) (identifier) (identifier))) (statement (alter_fulltext_index (keyword_alter) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_set) (identifier) (identifier) (identifier) (identifier)))))
+
+================================================================================
+ddl-external/fulltext-alter-index-set-bare (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER FULLTEXT INDEX ON dbo.docs SET CHANGE_TRACKING AUTO; ALTER FULLTEXT INDEX ON dbo.docs SET STOPLIST SYSTEM WITH NO POPULATION; ALTER FULLTEXT INDEX ON dbo.docs SET SEARCH PROPERTY LIST spl WITH NO POPULATION;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_fulltext_index (keyword_alter) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_set) (identifier) (identifier))) (statement (alter_fulltext_index (keyword_alter) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_set) (identifier) (identifier) (with_clause (keyword_with) (option name: (identifier) value: (identifier))))) (statement (alter_fulltext_index (keyword_alter) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_set) (identifier) (identifier) (identifier) (identifier) (with_clause (keyword_with) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/fulltext-alter-index-pause-resume (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER FULLTEXT INDEX ON dbo.docs PAUSE POPULATION; ALTER FULLTEXT INDEX ON dbo.docs RESUME POPULATION;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_fulltext_index (keyword_alter) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_pause) (identifier))) (statement (alter_fulltext_index (keyword_alter) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_resume) (identifier)))))
+
+================================================================================
+ddl-external/fulltext-alter-index-semantics (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER FULLTEXT INDEX ON dbo.docs ALTER COLUMN body ADD STATISTICAL_SEMANTICS WITH NO POPULATION; ALTER FULLTEXT INDEX ON dbo.docs ALTER COLUMN body DROP STATISTICAL_SEMANTICS;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_fulltext_index (keyword_alter) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) (identifier) (keyword_add) (keyword_statistical_semantics) (with_clause (keyword_with) (option name: (identifier) value: (identifier))))) (statement (alter_fulltext_index (keyword_alter) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) (identifier) (keyword_drop) (keyword_statistical_semantics)))))
+
+================================================================================
+ddl-external/fulltext-alter-index-population-missing (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER FULLTEXT INDEX ON dbo.docs PAUSE;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_fulltext_index (keyword_alter) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_pause) (MISSING identifier)))))
+
+================================================================================
+ddl-external/fulltext-alter-index-set-missing (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER FULLTEXT INDEX ON dbo.docs SET STOPLIST =;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_fulltext_index (keyword_alter) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_set) (identifier) (identifier (MISSING _identifier))))))
+
+================================================================================
+ddl-external/fulltext-alter-index-semantics-missing (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER FULLTEXT INDEX ON dbo.docs ALTER COLUMN body ADD;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_fulltext_index (keyword_alter) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_alter) (keyword_column) (identifier) (keyword_add) (MISSING keyword_statistical_semantics)))))
+
+================================================================================
+ddl-external/fulltext-stoplist-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT STOPLIST sl; CREATE FULLTEXT STOPLIST sl2 FROM db1.sl1 AUTHORIZATION dbo; CREATE FULLTEXT STOPLIST sl3 FROM SYSTEM STOPLIST;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_stoplist (keyword_create) (keyword_fulltext) (keyword_stoplist) name: (identifier))) (statement (create_fulltext_stoplist (keyword_create) (keyword_fulltext) (keyword_stoplist) name: (identifier) (keyword_from) (object_reference schema: (identifier) name: (identifier)) (keyword_authorization) (identifier))) (statement (create_fulltext_stoplist (keyword_create) (keyword_fulltext) (keyword_stoplist) name: (identifier) (keyword_from) (keyword_system) (keyword_stoplist)))))
+
+================================================================================
+ddl-external/fulltext-stoplist-source-missing (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE FULLTEXT STOPLIST sl FROM;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_fulltext_stoplist (keyword_create) (keyword_fulltext) (keyword_stoplist) name: (identifier))) (ERROR (keyword_from))))
+
+================================================================================
+ddl-external/fulltext-stoplist-add (engine 7609; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER FULLTEXT STOPLIST sl ADD N'그리고' LANGUAGE 1042; ALTER FULLTEXT STOPLIST sl ADD 'the' LANGUAGE 'English';
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_fulltext_stoplist (keyword_alter) (keyword_fulltext) (keyword_stoplist) name: (identifier) (keyword_add) (literal) (keyword_language) (literal))) (statement (alter_fulltext_stoplist (keyword_alter) (keyword_fulltext) (keyword_stoplist) name: (identifier) (keyword_add) (literal) (keyword_language) (literal)))))
+
+================================================================================
+ddl-external/fulltext-stoplist-drop (engine 7609; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER FULLTEXT STOPLIST sl DROP 'the' LANGUAGE 0x409; ALTER FULLTEXT STOPLIST sl DROP ALL LANGUAGE 1033; ALTER FULLTEXT STOPLIST sl DROP ALL;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_fulltext_stoplist (keyword_alter) (keyword_fulltext) (keyword_stoplist) name: (identifier) (keyword_drop) (literal) (keyword_language) (literal))) (statement (alter_fulltext_stoplist (keyword_alter) (keyword_fulltext) (keyword_stoplist) name: (identifier) (keyword_drop) (keyword_all) (keyword_language) (literal))) (statement (alter_fulltext_stoplist (keyword_alter) (keyword_fulltext) (keyword_stoplist) name: (identifier) (keyword_drop) (keyword_all)))))
+
+================================================================================
+ddl-external/fulltext-stoplist-language-missing (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER FULLTEXT STOPLIST sl ADD 'the';
+
+--------------------------------------------------------------------------------
+
+(program (ERROR (keyword_alter) (keyword_fulltext) (keyword_stoplist) (identifier) (keyword_add) (literal)) (batch))
+
+================================================================================
+ddl-external/fulltext-stoplist-drop-word-missing (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER FULLTEXT STOPLIST sl DROP LANGUAGE 1033;
+
+--------------------------------------------------------------------------------
+
+(program (ERROR (keyword_alter) (keyword_fulltext) (keyword_stoplist) (identifier) (keyword_drop) (literal)) (batch))
+
+================================================================================
+ddl-external/fulltext-search-list-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE SEARCH PROPERTY LIST spl; CREATE SEARCH PROPERTY LIST spl2 FROM db1.spl1 AUTHORIZATION dbo;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_search_property_list (keyword_create) (keyword_search) (keyword_property) (keyword_list) name: (identifier))) (statement (create_search_property_list (keyword_create) (keyword_search) (keyword_property) (keyword_list) name: (identifier) (keyword_from) (object_reference schema: (identifier) name: (identifier)) (keyword_authorization) (identifier)))))
+
+================================================================================
+ddl-external/fulltext-search-list-source-missing (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE SEARCH PROPERTY LIST spl FROM;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_search_property_list (keyword_create) (keyword_search) (keyword_property) (keyword_list) name: (identifier))) (ERROR (keyword_from))))
+
+================================================================================
+ddl-external/fulltext-search-list-property-missing (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE SEARCH LIST spl;
+
+--------------------------------------------------------------------------------
+
+(program (ERROR (keyword_create) (keyword_search)) (batch))
+
+================================================================================
+ddl-external/fulltext-drop (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+DROP FULLTEXT CATALOG ftc; DROP FULLTEXT INDEX ON dbo.docs; DROP FULLTEXT STOPLIST sl;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (drop_fulltext_catalog (keyword_drop) (keyword_fulltext) (keyword_catalog) name: (identifier))) (statement (drop_fulltext_index (keyword_drop) (keyword_fulltext) (keyword_index) (keyword_on) name: (object_reference schema: (identifier) name: (identifier)))) (statement (drop_fulltext_stoplist (keyword_drop) (keyword_fulltext) (keyword_stoplist) name: (identifier)))))
+
+================================================================================
+ddl-external/fulltext-drop-index-on-missing (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+DROP FULLTEXT INDEX dbo.docs;
+
+--------------------------------------------------------------------------------
+
+(program (ERROR (keyword_drop) (keyword_fulltext) (keyword_index)) (batch))
+
+================================================================================
+ddl-external/fulltext-identifier-positions (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+SELECT stoplist AS search, property, list, statistical_semantics, filegroup, language FROM dbo.t AS stoplist;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (field name: (identifier)) (keyword_as) alias: (identifier)) (term value: (field name: (identifier))) (term value: (field name: (identifier))) (term value: (field name: (identifier))) (term value: (field name: (identifier))) (term value: (field name: (identifier))))) (from (keyword_from) (relation (object_reference schema: (identifier) name: (identifier)) (keyword_as) alias: (identifier)))))))
+
+================================================================================
+ddl-external/fulltext-pause-wrong-target (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER FULLTEXT INDEX ON dbo.docs PAUSE BOGUS;
+
+--------------------------------------------------------------------------------
+
+(program (ERROR (keyword_alter) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_pause)) (batch))
+
+================================================================================
+ddl-external/fulltext-resume-wrong-target (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER FULLTEXT INDEX ON dbo.docs RESUME BOGUS;
+
+--------------------------------------------------------------------------------
+
+(program (ERROR (keyword_alter) (keyword_fulltext) (keyword_index) (keyword_on) (object_reference schema: (identifier) name: (identifier)) (keyword_resume)) (batch))
+
+================================================================================
+ddl-external/endpoint-create-tsql-empty (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434) FOR TSQL ();
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal))) (endpoint_payload (keyword_for) type: (identifier))))))
+
+================================================================================
+ddl-external/endpoint-create-tsql-strict-ipv4 (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AUTHORIZATION sa STATE = STARTED AS TCP (LISTENER_PORT = 1434, LISTENER_IP = (10.0.0.5)) FOR TSQL (ENCRYPTION = STRICT);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (keyword_authorization) (identifier) (endpoint_state (identifier) value: (identifier)) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal))) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-create-tsql-ipv6 (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434, LISTENER_IP = ('::1')) FOR TSQL (ENCRYPTION = NEGOTIATED);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal))) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-create-sb-empty (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 4022) FOR SERVICE_BROKER ();
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal))) (endpoint_payload (keyword_for) type: (identifier))))))
+
+================================================================================
+ddl-external/endpoint-create-sb-forwarding (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 4022, LISTENER_IP = ALL) FOR SERVICE_BROKER (AUTHENTICATION = WINDOWS NTLM, ENCRYPTION = DISABLED, MESSAGE_FORWARDING = ENABLED, MESSAGE_FORWARD_SIZE = 10);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal)) (option name: (identifier) value: (keyword_all))) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) (keyword_windows) protocol: (identifier)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/endpoint-create-mirroring-role (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 5022) FOR DATABASE_MIRRORING (ROLE = WITNESS);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal))) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-alter-state-only (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep STATE = STOPPED;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_state (identifier) value: (identifier))))))
+
+================================================================================
+ddl-external/endpoint-alter-transport-only (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep AS TCP (LISTENER_PORT = 4023);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/endpoint-alter-transport-ip-only (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep AS TCP (LISTENER_IP = ALL);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (keyword_all)))))))
+
+================================================================================
+ddl-external/endpoint-alter-payload-empty (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER ();
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier))))))
+
+================================================================================
+ddl-external/endpoint-alter-mirroring-empty (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR DATABASE_MIRRORING ();
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier))))))
+
+================================================================================
+ddl-external/endpoint-alter-mirroring-encryption-only (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR DATABASE_MIRRORING (ENCRYPTION = REQUIRED);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-tcp-no-comma (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434 LISTENER_IP = ALL) FOR TSQL ();
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal) value: (identifier)) (ERROR (keyword_all))) (endpoint_payload (keyword_for) type: (identifier))))))
+
+================================================================================
+ddl-external/endpoint-payload-no-comma (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (AUTHENTICATION = WINDOWS ENCRYPTION = REQUIRED MESSAGE_FORWARDING = ENABLED MESSAGE_FORWARD_SIZE = 10);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (ERROR (option name: (identifier) (keyword_windows) protocol: (identifier))) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-external/endpoint-tcp-reverse-options (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_IP = ALL, LISTENER_PORT = 1434) FOR TSQL ();
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (keyword_all)) (option name: (identifier) value: (literal))) (endpoint_payload (keyword_for) type: (identifier))))))
+
+================================================================================
+ddl-external/endpoint-payload-reverse-options (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (MESSAGE_FORWARD_SIZE = 10, MESSAGE_FORWARDING = ENABLED, ENCRYPTION = REQUIRED, AUTHENTICATION = WINDOWS);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)) (option name: (identifier) (keyword_windows)))))))
+
+================================================================================
+ddl-external/endpoint-auth-windows (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (AUTHENTICATION = WINDOWS);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) (keyword_windows)))))))
+
+================================================================================
+ddl-external/endpoint-auth-windows-ntlm (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (AUTHENTICATION = WINDOWS NTLM);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) (keyword_windows) protocol: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-auth-windows-kerberos-certificate (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (AUTHENTICATION = WINDOWS KERBEROS CERTIFICATE c);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) (keyword_windows) protocol: (identifier) (keyword_certificate) certificate: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-auth-certificate-windows-negotiate (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (AUTHENTICATION = CERTIFICATE c WINDOWS NEGOTIATE);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) (keyword_certificate) certificate: (identifier) (keyword_windows) protocol: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-auth-certificate (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (AUTHENTICATION = CERTIFICATE c);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) (keyword_certificate) certificate: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-encryption-disabled (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (ENCRYPTION = DISABLED);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-encryption-supported (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (ENCRYPTION = SUPPORTED);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-encryption-aes (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (ENCRYPTION = REQUIRED ALGORITHM AES);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier) (identifier) algorithm: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-encryption-rc4 (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (ENCRYPTION = SUPPORTED ALGORITHM RC4);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier) (identifier) algorithm: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-encryption-aes-rc4 (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (ENCRYPTION = REQUIRED ALGORITHM AES RC4);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier) (identifier) algorithm: (identifier) algorithm: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-encryption-rc4-aes (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (ENCRYPTION = SUPPORTED ALGORITHM RC4 AES);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier) (identifier) algorithm: (identifier) algorithm: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-create-mirroring-missing-role (engine 7801; tree-check endpoint-required; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 5022) FOR DATABASE_MIRRORING (ENCRYPTION = REQUIRED);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal))) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-create-tcp-empty (engine 102; tree-check endpoint-required; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP () FOR TSQL ();
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier)) (endpoint_payload (keyword_for) type: (identifier))))))
+
+================================================================================
+ddl-external/endpoint-create-tcp-ip-only (engine 7801; tree-check endpoint-required; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_IP = ALL) FOR TSQL ();
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (keyword_all))) (endpoint_payload (keyword_for) type: (identifier))))))
+
+================================================================================
+ddl-external/endpoint-tcp-duplicate-port (engine 7816; tree-check endpoint-duplicate; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434, LISTENER_PORT = 1435) FOR TSQL ();
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal))) (endpoint_payload (keyword_for) type: (identifier))))))
+
+================================================================================
+ddl-external/endpoint-tcp-duplicate-ip (engine 7816; tree-check endpoint-duplicate; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434, LISTENER_IP = ALL, LISTENER_IP = ALL) FOR TSQL ();
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal)) (option name: (identifier) value: (keyword_all)) (option name: (identifier) value: (keyword_all))) (endpoint_payload (keyword_for) type: (identifier))))))
+
+================================================================================
+ddl-external/endpoint-payload-duplicate-encryption (engine 7816; tree-check endpoint-duplicate; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (ENCRYPTION = REQUIRED, ENCRYPTION = SUPPORTED);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-payload-duplicate-authentication (engine 7816; tree-check endpoint-duplicate; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (AUTHENTICATION = WINDOWS, AUTHENTICATION = CERTIFICATE c);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) (keyword_windows)) (option name: (identifier) (keyword_certificate) certificate: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-payload-duplicate-role (engine 7816; tree-check endpoint-duplicate; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR DATABASE_MIRRORING (ROLE = WITNESS, ROLE = ALL);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (keyword_all)))))))
+
+================================================================================
+ddl-external/endpoint-invalid-state (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep STATE = RUNNING;
+
+--------------------------------------------------------------------------------
+
+(program (ERROR (keyword_alter) (keyword_endpoint) (identifier) (identifier)) (batch))
+
+================================================================================
+ddl-external/endpoint-invalid-encryption (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (ENCRYPTION = STRICT);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-invalid-tsql-encryption (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR TSQL (ENCRYPTION = REQUIRED);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-invalid-auth-protocol (engine 102; tree-check endpoint-authentication; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (AUTHENTICATION = WINDOWS BASIC);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) (keyword_windows) protocol: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-invalid-algorithm (engine 102; tree-check endpoint-algorithm; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (ENCRYPTION = REQUIRED ALGORITHM DES);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier) (identifier) algorithm: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-invalid-disabled-algorithm (engine 102; tree-check endpoint-algorithm; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (ENCRYPTION = DISABLED ALGORITHM AES);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier) (identifier) algorithm: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-invalid-repeated-algorithm (engine 102; tree-check endpoint-algorithm; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (ENCRYPTION = REQUIRED ALGORITHM AES AES);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier) (identifier) algorithm: (identifier) algorithm: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-invalid-role (engine 102; tree-check endpoint-value; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR DATABASE_MIRRORING (ROLE = LEADER);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-invalid-forwarding (engine 156; tree-check endpoint-value; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (MESSAGE_FORWARDING = ON);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (keyword_on)))))))
+
+================================================================================
+ddl-external/endpoint-invalid-tcp-option (engine 102; tree-check endpoint-option; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434, UNKNOWN_OPTION = 1) FOR TSQL ();
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal))) (endpoint_payload (keyword_for) type: (identifier))))))
+
+================================================================================
+ddl-external/endpoint-invalid-sb-role (engine 102; tree-check endpoint-option; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (ROLE = WITNESS);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-invalid-mirroring-forwarding (engine 102; tree-check endpoint-option; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR DATABASE_MIRRORING (ROLE = WITNESS, MESSAGE_FORWARDING = ENABLED);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-invalid-tsql-authentication (engine 102; tree-check endpoint-option; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR TSQL (AUTHENTICATION = WINDOWS);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) (keyword_windows)))))))
+
+================================================================================
+ddl-external/endpoint-invalid-tcp-trailing-comma (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434,) FOR TSQL ();
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal)) (ERROR)) (endpoint_payload (keyword_for) type: (identifier))))))
+
+================================================================================
+ddl-external/endpoint-invalid-payload-trailing-comma (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (ENCRYPTION = REQUIRED,);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier)) (ERROR))))))
+
+================================================================================
+ddl-external/endpoint-invalid-ipv4 (engine 102; tree-check endpoint-value; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434, LISTENER_IP = (10.0.0)) FOR TSQL ();
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal) (ERROR))) (endpoint_payload (keyword_for) type: (identifier))))))
+
+================================================================================
+ddl-external/endpoint-invalid-ipv6-unquoted (engine 102; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434, LISTENER_IP = (::1)) FOR TSQL ();
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal)) (ERROR (identifier) (literal))) (endpoint_payload (keyword_for) type: (identifier))))))
+
+================================================================================
+ddl-external/endpoint-invalid-alter-authorization (engine 156; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep AUTHORIZATION sa STATE = STARTED;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (ERROR (keyword_authorization)) (endpoint_state (identifier) value: (identifier))))))
+
+================================================================================
+ddl-external/endpoint-invalid-alter-bare (engine 7863; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep;
+
+--------------------------------------------------------------------------------
+
+(program (ERROR (keyword_alter) (keyword_endpoint) (identifier)) (batch))
+
+================================================================================
+ddl-external/endpoint-invalid-create-missing-transport (engine 7801; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep FOR TSQL ();
+
+--------------------------------------------------------------------------------
+
+(program (ERROR (keyword_create) (keyword_endpoint) (identifier) (keyword_for) (identifier)) (batch))
+
+================================================================================
+ddl-external/endpoint-invalid-create-missing-payload (engine 7801; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434);
+
+--------------------------------------------------------------------------------
+
+(program (ERROR (keyword_create) (keyword_endpoint) (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal)))) (batch))
+
+================================================================================
+ddl-external/endpoint-drop (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+DROP ENDPOINT ep;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (drop_endpoint (keyword_drop) (keyword_endpoint) name: (identifier)))))
+
+================================================================================
+ddl-external/endpoint-invalid-drop-if-exists (engine 156; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+DROP ENDPOINT IF EXISTS ep;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (drop_endpoint (keyword_drop) (keyword_endpoint) name: (identifier))) (ERROR (identifier))))
+
+================================================================================
+ddl-external/endpoint-bare-identifiers (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+SELECT endpoint, tcp, state, authentication, algorithm, listener_ip, tsql, service_broker, database_mirroring FROM dbo.t;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (field name: (identifier))) (term value: (field name: (identifier))) (term value: (field name: (identifier))) (term value: (field name: (identifier))) (term value: (field name: (identifier))) (term value: (field name: (identifier))) (term value: (field name: (identifier))) (term value: (field name: (identifier))) (term value: (field name: (identifier))))) (from (keyword_from) (relation (object_reference schema: (identifier) name: (identifier))))))))
+
+================================================================================
+ddl-external/endpoint-create-followed-by-select (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434) FOR TSQL () SELECT 1;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal))) (endpoint_payload (keyword_for) type: (identifier)))) (statement (query_specification (select (keyword_select) (select_expression (term value: (literal))))))))
+
+================================================================================
+ddl-external/endpoint-ipv4-out-of-range (engine 7810; tree-check endpoint-value; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434, LISTENER_IP = (999.0.0.1)) FOR TSQL ();
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal))) (endpoint_payload (keyword_for) type: (identifier))))))
+
+================================================================================
+ddl-external/endpoint-commented-options (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT [끝점] STATE /*state*/ = STARTED AS TCP (listener_port /*port*/ = 1434, LISTENER_IP = ALL) FOR SERVICE_BROKER (AUTHENTICATION = WINDOWS /*auth*/ NTLM, ENCRYPTION = REQUIRED ALGORITHM AES RC4);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_state (identifier) (marginalia) value: (identifier)) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) (marginalia) value: (literal)) (option name: (identifier) value: (keyword_all))) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) (keyword_windows) (marginalia) protocol: (identifier)) (option name: (identifier) value: (identifier) (identifier) algorithm: (identifier) algorithm: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-state-disabled-tsql (engine 7871; tree-check endpoint-create-state; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep STATE = DISABLED AS TCP (LISTENER_PORT = 1436) FOR TSQL (ENCRYPTION = NEGOTIATED);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_state (identifier) value: (identifier)) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal))) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-state-disabled-broker (engine 7871; tree-check endpoint-create-state; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep STATE = DISABLED AS TCP (LISTENER_PORT = 4022) FOR SERVICE_BROKER ();
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_state (identifier) value: (identifier)) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal))) (endpoint_payload (keyword_for) type: (identifier))))))
+
+================================================================================
+ddl-external/endpoint-state-disabled-mirroring (engine 7871; tree-check endpoint-create-state; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep STATE = DISABLED AS TCP (LISTENER_PORT = 5022) FOR DATABASE_MIRRORING (ROLE = WITNESS);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_state (identifier) value: (identifier)) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal))) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-mirroring-partner (engine 7878; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 5027) FOR DATABASE_MIRRORING (ROLE = PARTNER);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal))) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-mirroring-all (engine 7878; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 5028) FOR DATABASE_MIRRORING (ROLE = ALL);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal))) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (keyword_all)))))))
+
+================================================================================
+ddl-external/endpoint-encryption-unknown-tsql (engine 102; tree-check endpoint-value; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR TSQL (ENCRYPTION = BOGUS);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-encryption-unknown-service_broker (engine 102; tree-check endpoint-value; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER ENDPOINT ep FOR SERVICE_BROKER (ENCRYPTION = BOGUS);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (alter_endpoint (keyword_alter) (keyword_endpoint) name: (identifier) (endpoint_payload (keyword_for) type: (identifier) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-external/endpoint-ipv4-short-10 (engine 102; tree-check endpoint-value; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434, LISTENER_IP = (10)) FOR TSQL ();
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal))) (endpoint_payload (keyword_for) type: (identifier))))))
+
+================================================================================
+ddl-external/endpoint-ipv4-short-10-0 (engine 102; tree-check endpoint-value; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434, LISTENER_IP = (10.0)) FOR TSQL ();
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal))) (endpoint_payload (keyword_for) type: (identifier))))))

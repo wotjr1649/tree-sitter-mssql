@@ -20,6 +20,9 @@ import set_rules from './set.js';
 import service_broker_rules from './service-broker.js';
 import security_rules from './security.js';
 import database_rules from './database.js';
+import external_rules from './external.js';
+import endpoint_rules from './endpoint.js';
+import fulltext_rules from './fulltext.js';
 
 export default {
   // A bare BEGIN ... END grouping block. Body items are `;`-optional, as
@@ -647,4 +650,7 @@ export default {
   ...service_broker_rules,
   ...security_rules,
   ...database_rules,
+  ...external_rules,
+  ...endpoint_rules,
+  ...fulltext_rules,
 };

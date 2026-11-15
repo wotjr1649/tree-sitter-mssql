@@ -22,6 +22,20 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
             queue_activation(node, source, &mut out);
         }
         match node.kind() {
+            "create_endpoint" | "alter_endpoint" => endpoint_options(node, source, &mut out),
+            "create_fulltext_catalog" | "create_fulltext_index" => {
+                fulltext_options(node, source, &mut out)
+            }
+            "create_external_data_source"
+            | "alter_external_data_source"
+            | "create_external_model"
+            | "alter_external_model"
+            | "create_external_language"
+            | "alter_external_language"
+            | "create_external_library"
+            | "alter_external_library"
+            | "create_external_resource_pool"
+            | "alter_external_resource_pool" => external_options(node, source, &mut out),
             "statement" => {
                 cte_terminator(node, &mut out);
                 cte_table_source(node, &mut out);
@@ -717,6 +731,389 @@ fn table_hint_aliases(option: Node, source: &[u8], out: &mut Vec<Violation>) {
             ));
         }
         seen.push(alias);
+    }
+}
+
+/// EXTERNAL option sets measured with LocalDB 17.0.1000.7 at levels 100-170:
+/// ddl-external/external-* duplicates are Msg 102/1039; CREATE LANGUAGE requires CONTENT and
+/// FILE_NAME (39123), CREATE LIBRARY requires CONTENT (319); both ALTER forms may omit CONTENT.
+/// Missing model LOCATION, file-format FORMAT_TYPE and external-table DATA_SOURCE are accepted
+/// by PARSEONLY, so they are deliberately not required here (ADR-0003).
+fn external_options(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let kind = statement.kind();
+    let language = kind.ends_with("_language");
+    let library = kind.ends_with("_library");
+    let mut cursor = statement.walk();
+    if language {
+        let children: Vec<Node> = statement
+            .named_children(&mut cursor)
+            .filter(|n| !n.is_extra())
+            .collect();
+        if children.iter().any(|n| n.kind() == "keyword_remove")
+            && let Some(platform) = children.last()
+            && !matches!(upper_text(*platform, source).as_str(), "WINDOWS" | "LINUX")
+        {
+            out.push(violation(
+                "external-platform",
+                "PLATFORM must be WINDOWS or LINUX".into(),
+                *platform,
+            ));
+        }
+    }
+    let mut cursor = statement.walk();
+    let containers: Vec<Node> = statement
+        .named_children(&mut cursor)
+        .filter(|n| matches!(n.kind(), "external_file_spec" | "with_options"))
+        .collect();
+    // ALTER DATA SOURCE/MODEL has its option list directly on the statement.
+    let containers = if containers.is_empty()
+        && matches!(kind, "alter_external_data_source" | "alter_external_model")
+    {
+        vec![statement]
+    } else {
+        containers
+    };
+    for container in containers {
+        let file = container.kind() == "external_file_spec";
+        let allowed: &[&str] = if file && language {
+            &[
+                "CONTENT",
+                "FILE_NAME",
+                "PLATFORM",
+                "PARAMETERS",
+                "ENVIRONMENT_VARIABLES",
+            ]
+        } else if file && library {
+            &["CONTENT", "PLATFORM"]
+        } else if library {
+            &["LANGUAGE"]
+        } else if kind.ends_with("_resource_pool") {
+            &[
+                "MAX_CPU_PERCENT",
+                "MAX_MEMORY_PERCENT",
+                "MAX_PROCESSES",
+                "AFFINITY",
+            ]
+        } else if kind.ends_with("_data_source") {
+            &[
+                "LOCATION",
+                "CREDENTIAL",
+                "CONNECTION_OPTIONS",
+                "PUSHDOWN",
+                "RESOURCE_MANAGER_LOCATION",
+                "TYPE",
+                "DATABASE_NAME",
+                "SHARD_MAP_NAME",
+            ]
+        } else {
+            &[
+                "LOCATION",
+                "API_FORMAT",
+                "MODEL_TYPE",
+                "MODEL",
+                "CREDENTIAL",
+                "PARAMETERS",
+                "LOCAL_RUNTIME_PATH",
+            ]
+        };
+        let mut seen = Vec::new();
+        let mut c = container.walk();
+        for option in container
+            .named_children(&mut c)
+            .filter(|n| n.kind() == "option")
+        {
+            let Some(name) = option.child_by_field_name("name") else {
+                continue;
+            };
+            let key = upper_text(name, source);
+            if seen.contains(&key) {
+                out.push(violation(
+                    "external-option-duplicate",
+                    format!("{key} appears more than once"),
+                    option,
+                ));
+            } else {
+                seen.push(key.clone());
+            }
+            if !allowed.contains(&key.as_str()) {
+                out.push(violation(
+                    "external-option",
+                    format!("{key} is not valid in this EXTERNAL option set"),
+                    option,
+                ));
+            }
+            if key == "AFFINITY" {
+                let mut ac = option.walk();
+                let children: Vec<Node> = option
+                    .named_children(&mut ac)
+                    .filter(|n| !n.is_extra())
+                    .collect();
+                if let Some(scalar) = children
+                    .iter()
+                    .find(|n| n.kind() == "identifier" && n.id() != name.id())
+                    && (upper_text(*scalar, source) != "AUTO"
+                        || !children.iter().any(|n| n.kind() == "keyword_cpu"))
+                {
+                    out.push(violation(
+                        "external-affinity",
+                        "only AFFINITY CPU accepts AUTO; otherwise use a range list".into(),
+                        *scalar,
+                    ));
+                }
+            }
+            let mut o = option.walk();
+            if !option.children(&mut o).any(|n| n.kind() == "=") {
+                out.push(violation(
+                    "external-option-assignment",
+                    format!("{key} requires '='"),
+                    option,
+                ));
+            }
+            if key == "PLATFORM"
+                && let Some(value) = option.child_by_field_name("value")
+                && !matches!(upper_text(value, source).as_str(), "WINDOWS" | "LINUX")
+            {
+                out.push(violation(
+                    "external-platform",
+                    "PLATFORM must be WINDOWS or LINUX".into(),
+                    value,
+                ));
+            }
+        }
+        let required: &[&str] = if file && kind == "create_external_language" {
+            &["CONTENT", "FILE_NAME"]
+        } else if file && kind == "create_external_library" {
+            &["CONTENT"]
+        } else if library && !file {
+            &["LANGUAGE"]
+        } else {
+            &[]
+        };
+        for key in required {
+            if !seen.iter().any(|k| k == key) {
+                out.push(violation(
+                    "external-option-required",
+                    format!("{kind} requires {key}"),
+                    container,
+                ));
+            }
+        }
+    }
+}
+/// FULLTEXT options appear at most once; CHANGE_TRACKING names a mode and NO POPULATION needs
+/// CHANGE_TRACKING OFF in CREATE. Evidence: LocalDB 17.0.1000.7, levels 100-170,
+/// ddl-external/fulltext-{catalog-accent,index-change,index-stoplist,index-search}-duplicate,
+/// index-change-unknown and index-no-population-alone: Msg 102; index-no-population-auto: Msg
+/// 7663. CREATE contains both settings, so their conflict needs no catalog state (ADR-0003).
+fn fulltext_options(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let mut cursor = statement.walk();
+    let mut seen = Vec::new();
+    let mut tracking_off = false;
+    let mut no_population = None;
+    for clause in statement
+        .named_children(&mut cursor)
+        .filter(|n| matches!(n.kind(), "with_clause" | "with_options"))
+    {
+        let mut c = clause.walk();
+        for option in clause
+            .named_children(&mut c)
+            .filter(|n| n.kind() == "option")
+        {
+            let Some(name) = option.child_by_field_name("name") else {
+                continue;
+            };
+            let key = upper_text(name, source);
+            if seen.contains(&key) {
+                out.push(violation(
+                    "fulltext-option-duplicate",
+                    format!("{key} appears more than once in FULLTEXT options"),
+                    option,
+                ));
+            } else {
+                seen.push(key.clone());
+            }
+            if statement.kind() != "create_fulltext_index" {
+                continue;
+            }
+            let value = option
+                .child_by_field_name("value")
+                .map(|n| upper_text(n, source))
+                .unwrap_or_default();
+            if key == "CHANGE_TRACKING" {
+                tracking_off |= value == "OFF";
+                if !matches!(value.as_str(), "AUTO" | "MANUAL" | "OFF") {
+                    out.push(violation(
+                        "fulltext-change-tracking",
+                        "CHANGE_TRACKING needs AUTO, MANUAL or OFF".into(),
+                        option,
+                    ));
+                }
+            } else if key == "NO" && value == "POPULATION" {
+                no_population = Some(option);
+            }
+        }
+    }
+    if let Some(option) = no_population
+        && !tracking_off
+    {
+        out.push(violation(
+            "fulltext-no-population",
+            "CREATE FULLTEXT INDEX NO POPULATION needs CHANGE_TRACKING OFF".into(),
+            option,
+        ));
+    }
+}
+/// Endpoint option sets and enum values checked by the engine while parsing (ADR-0003).
+/// Evidence: LocalDB 17.0.1000.7, levels 100-170, ddl-external/endpoint-* probes:
+/// duplicate options Msg 7816, CREATE's missing LISTENER_PORT/ROLE Msg 7801, unknown options,
+/// protocol/algorithm/role Msg 102, MESSAGE_FORWARDING = ON Msg 156, IPv4 octets Msg 7810,
+/// CREATE STATE = DISABLED Msg 7871. TSQL ENCRYPTION = REQUIRED
+/// and SERVICE_BROKER ENCRYPTION = STRICT are accepted, so no payload-specific mode check.
+fn endpoint_options(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let creating = statement.kind() == "create_endpoint";
+    let mut cursor = statement.walk();
+    for clause in statement.named_children(&mut cursor) {
+        let kind = clause.kind();
+        if creating
+            && kind == "endpoint_state"
+            && clause
+                .child_by_field_name("value")
+                .map(|n| upper_text(n, source))
+                == Some("DISABLED".into())
+        {
+            out.push(violation(
+                "endpoint-create-state",
+                "CREATE ENDPOINT cannot specify STATE = DISABLED".into(),
+                clause,
+            ));
+        }
+        if !matches!(kind, "endpoint_transport" | "endpoint_payload") {
+            continue;
+        }
+        let payload = clause
+            .child_by_field_name("type")
+            .map(|n| upper_text(n, source))
+            .unwrap_or_default();
+        let allowed: &[&str] = match (kind, payload.as_str()) {
+            ("endpoint_transport", _) => &["LISTENER_PORT", "LISTENER_IP"],
+            (_, "TSQL") => &["ENCRYPTION"],
+            (_, "SERVICE_BROKER") => &[
+                "AUTHENTICATION",
+                "ENCRYPTION",
+                "MESSAGE_FORWARDING",
+                "MESSAGE_FORWARD_SIZE",
+            ],
+            (_, "DATABASE_MIRRORING") => &["AUTHENTICATION", "ENCRYPTION", "ROLE"],
+            _ => &[],
+        };
+        let mut seen = std::collections::HashSet::new();
+        let mut child_cursor = clause.walk();
+        for option in clause
+            .named_children(&mut child_cursor)
+            .filter(|n| n.kind() == "option")
+        {
+            let Some(name_node) = option.child_by_field_name("name") else {
+                continue;
+            };
+            let name = upper_text(name_node, source);
+            if !allowed.contains(&name.as_str()) {
+                out.push(violation(
+                    "endpoint-option",
+                    format!("{name} is not valid in this endpoint option set"),
+                    option,
+                ));
+                continue;
+            }
+            if !seen.insert(name.clone()) {
+                out.push(violation(
+                    "endpoint-duplicate",
+                    format!("{name} occurs more than once"),
+                    option,
+                ));
+            }
+            if let Some(protocol) = option.child_by_field_name("protocol")
+                && !matches!(
+                    upper_text(protocol, source).as_str(),
+                    "NTLM" | "KERBEROS" | "NEGOTIATE"
+                )
+            {
+                out.push(violation(
+                    "endpoint-authentication",
+                    "WINDOWS protocol must be NTLM, KERBEROS or NEGOTIATE".into(),
+                    protocol,
+                ));
+            }
+            if let Some(value) = option.child_by_field_name("value") {
+                let text = upper_text(value, source);
+                let valid = match name.as_str() {
+                    "ROLE" => matches!(text.as_str(), "WITNESS" | "PARTNER" | "ALL"),
+                    "ENCRYPTION" => matches!(
+                        text.as_str(),
+                        "DISABLED" | "SUPPORTED" | "REQUIRED" | "NEGOTIATED" | "STRICT"
+                    ),
+                    "MESSAGE_FORWARDING" => matches!(text.as_str(), "ENABLED" | "DISABLED"),
+                    "LISTENER_IP"
+                        if !text.starts_with("'") && !text.starts_with("N'") && text != "ALL" =>
+                    {
+                        text.split('.').count() == 4
+                            && text.split('.').all(|part| part.parse::<u8>().is_ok())
+                    }
+                    _ => true,
+                };
+                if !valid {
+                    out.push(violation(
+                        "endpoint-value",
+                        format!("invalid {name} value"),
+                        value,
+                    ));
+                }
+            }
+            let mut algorithm_cursor = option.walk();
+            let algorithms: Vec<Node> = option
+                .children_by_field_name("algorithm", &mut algorithm_cursor)
+                .collect();
+            let mut seen_algorithms = std::collections::HashSet::new();
+            for algorithm in &algorithms {
+                let text = upper_text(*algorithm, source);
+                if !matches!(text.as_str(), "AES" | "RC4") || !seen_algorithms.insert(text) {
+                    out.push(violation(
+                        "endpoint-algorithm",
+                        "ALGORITHM accepts AES, RC4 or each once in either order".into(),
+                        *algorithm,
+                    ));
+                }
+            }
+            if !algorithms.is_empty()
+                && option
+                    .child_by_field_name("value")
+                    .map(|n| upper_text(n, source))
+                    == Some("DISABLED".into())
+            {
+                out.push(violation(
+                    "endpoint-algorithm",
+                    "DISABLED cannot specify ALGORITHM".into(),
+                    option,
+                ));
+            }
+        }
+        let required = if !creating {
+            None
+        } else if kind == "endpoint_transport" {
+            Some("LISTENER_PORT")
+        } else if payload == "DATABASE_MIRRORING" {
+            Some("ROLE")
+        } else {
+            None
+        };
+        if let Some(name) = required
+            && !seen.contains(name)
+        {
+            out.push(violation(
+                "endpoint-required",
+                format!("CREATE ENDPOINT requires {name}"),
+                clause,
+            ));
+        }
     }
 }
 
@@ -1752,5 +2149,258 @@ mod tests {
     #[test]
     fn other_statements_are_not_checked() {
         assert!(rules("SELECT 1 WHERE 1 = 1;").is_empty());
+    }
+
+    #[test]
+    fn external_option_sets_match_the_engine() {
+        for sql in [
+            "CREATE EXTERNAL LANGUAGE Java FROM (FILE_NAME = 'java.so', CONTENT = 0x504B0304);",
+            "ALTER EXTERNAL LANGUAGE Java SET (FILE_NAME = 'java.so');",
+            "ALTER EXTERNAL LANGUAGE Java REMOVE PLATFORM LINUX;",
+            "CREATE EXTERNAL MODEL emb WITH (API_FORMAT = 'OpenAI', MODEL_TYPE = EMBEDDINGS, MODEL = 'm');",
+            "ALTER EXTERNAL MODEL emb SET (PARAMETERS = '{}');",
+            "CREATE EXTERNAL DATA SOURCE ds WITH (CREDENTIAL = cred);",
+            "ALTER EXTERNAL LIBRARY pkg SET (PLATFORM = LINUX) WITH (LANGUAGE = 'Python');",
+            "ALTER EXTERNAL RESOURCE POOL ep WITH (AFFINITY NUMANODE = (0 TO 1));",
+        ] {
+            assert!(rules(sql).is_empty(), "{sql}");
+        }
+        for (sql, rule) in [
+            (
+                "ALTER EXTERNAL RESOURCE POOL ep WITH (AFFINITY NUMANODE = AUTO);",
+                "external-affinity",
+            ),
+            (
+                "ALTER EXTERNAL RESOURCE POOL ep WITH (AFFINITY CPU = UNKNOWN_VALUE);",
+                "external-affinity",
+            ),
+            (
+                "CREATE EXTERNAL LANGUAGE Java FROM (FILE_NAME = 'java.so');",
+                "external-option-required",
+            ),
+            (
+                "CREATE EXTERNAL LANGUAGE Java FROM (CONTENT = 0x504B0304);",
+                "external-option-required",
+            ),
+            (
+                "CREATE EXTERNAL LANGUAGE Java FROM (CONTENT = 0x504B0304, FILE_NAME = 'java.so', FILE_NAME = 'java2.so');",
+                "external-option-duplicate",
+            ),
+            (
+                "CREATE EXTERNAL LIBRARY pkg FROM (PLATFORM = LINUX) WITH (LANGUAGE = 'Python');",
+                "external-option-required",
+            ),
+            (
+                "CREATE EXTERNAL LIBRARY pkg FROM (CONTENT = 0x504B0304, CONTENT = 0x504B0304) WITH (LANGUAGE = 'Python');",
+                "external-option-duplicate",
+            ),
+            (
+                "ALTER EXTERNAL LANGUAGE Java REMOVE PLATFORM MACOS;",
+                "external-platform",
+            ),
+            (
+                "ALTER EXTERNAL DATA SOURCE ds SET LOCATION = 'abs://a', LOCATION = 'abs://b';",
+                "external-option-duplicate",
+            ),
+            (
+                "CREATE EXTERNAL DATA SOURCE ds WITH (LOCATION = 'abs://a', LOCATION = 'abs://b');",
+                "external-option-duplicate",
+            ),
+            (
+                "ALTER EXTERNAL DATA SOURCE ds SET UNKNOWN_OPTION = 1;",
+                "external-option",
+            ),
+            (
+                "ALTER EXTERNAL RESOURCE POOL ep WITH (MAX_CPU_PERCENT = 10, MAX_CPU_PERCENT = 20);",
+                "external-option-duplicate",
+            ),
+            (
+                "CREATE EXTERNAL RESOURCE POOL ep WITH (UNKNOWN_OPTION = 1);",
+                "external-option",
+            ),
+            (
+                "CREATE EXTERNAL MODEL emb WITH (MODEL = 'm', MODEL = 'm2');",
+                "external-option-duplicate",
+            ),
+        ] {
+            assert_eq!(rules(sql), [rule], "{sql}");
+        }
+    }
+    #[test]
+    fn fulltext_options_appear_at_most_once() {
+        for options in [
+            "CHANGE_TRACKING AUTO, CHANGE_TRACKING MANUAL",
+            "STOPLIST SYSTEM, STOPLIST OFF",
+            "SEARCH PROPERTY LIST = spl, SEARCH PROPERTY LIST = spl2",
+        ] {
+            assert_eq!(
+                rules(&format!(
+                    "CREATE FULLTEXT INDEX ON dbo.docs (body) KEY INDEX pk WITH ({options});"
+                )),
+                ["fulltext-option-duplicate"],
+                "{options}"
+            );
+        }
+        assert_eq!(
+            rules(
+                "CREATE FULLTEXT CATALOG ftc WITH ACCENT_SENSITIVITY = ON, ACCENT_SENSITIVITY = OFF;"
+            ),
+            ["fulltext-option-duplicate"]
+        );
+        assert!(rules("CREATE FULLTEXT INDEX ON dbo.docs (body) KEY INDEX pk WITH (CHANGE_TRACKING AUTO, STOPLIST SYSTEM, SEARCH PROPERTY LIST = spl);").is_empty());
+    }
+
+    #[test]
+    fn fulltext_change_tracking_has_a_mode() {
+        for mode in ["AUTO", "MANUAL", "OFF"] {
+            for sql in [
+                format!(
+                    "CREATE FULLTEXT INDEX ON dbo.docs KEY INDEX pk WITH (CHANGE_TRACKING = {mode});"
+                ),
+                format!(
+                    "CREATE FULLTEXT INDEX ON dbo.docs KEY INDEX pk WITH CHANGE_TRACKING {mode};"
+                ),
+            ] {
+                assert!(rules(&sql).is_empty(), "{sql}");
+            }
+        }
+        assert_eq!(
+            rules(
+                "CREATE FULLTEXT INDEX ON dbo.docs (body) KEY INDEX pk WITH (CHANGE_TRACKING BOGUS);"
+            ),
+            ["fulltext-change-tracking"]
+        );
+    }
+
+    #[test]
+    fn fulltext_no_population_requires_tracking_off_in_create() {
+        for options in ["NO POPULATION", "CHANGE_TRACKING AUTO, NO POPULATION"] {
+            assert_eq!(
+                rules(&format!(
+                    "CREATE FULLTEXT INDEX ON dbo.docs (body) KEY INDEX pk WITH ({options});"
+                )),
+                ["fulltext-no-population"],
+                "{options}"
+            );
+        }
+        assert!(rules("CREATE FULLTEXT INDEX ON dbo.docs (body) KEY INDEX pk WITH (CHANGE_TRACKING OFF, NO POPULATION, STOPLIST sl);").is_empty());
+        assert!(rules("CREATE FULLTEXT INDEX ON dbo.docs (body) KEY INDEX pk WITH change_tracking /*mode*/ off, no /*skip*/ population;").is_empty());
+        assert!(
+            rules("ALTER FULLTEXT INDEX ON dbo.docs SET STOPLIST SYSTEM WITH NO POPULATION;")
+                .is_empty()
+        );
+    }
+    #[test]
+    fn endpoint_sets_match_the_engine() {
+        for ok in [
+            "CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434, LISTENER_IP = ALL) FOR TSQL ();",
+            "CREATE ENDPOINT ep AS TCP (LISTENER_IP = ALL, LISTENER_PORT = 1434) FOR TSQL (ENCRYPTION = REQUIRED);",
+            "ALTER ENDPOINT ep STATE = STOPPED;",
+            "ALTER ENDPOINT ep AS TCP (LISTENER_IP = ALL);",
+            "ALTER ENDPOINT ep FOR DATABASE_MIRRORING ();",
+            "ALTER ENDPOINT ep FOR DATABASE_MIRRORING (ENCRYPTION = REQUIRED);",
+            "ALTER ENDPOINT ep FOR SERVICE_BROKER (ENCRYPTION = STRICT);",
+            "ALTER ENDPOINT ep FOR SERVICE_BROKER (AUTHENTICATION = WINDOWS NTLM CERTIFICATE c, ENCRYPTION = REQUIRED ALGORITHM AES RC4);",
+            "ALTER ENDPOINT ep FOR SERVICE_BROKER (AUTHENTICATION = CERTIFICATE c WINDOWS NEGOTIATE, ENCRYPTION = SUPPORTED ALGORITHM RC4 AES);",
+            "ALTER ENDPOINT ep FOR SERVICE_BROKER (MESSAGE_FORWARD_SIZE = 10, MESSAGE_FORWARDING = ENABLED, ENCRYPTION = REQUIRED);",
+        ] {
+            assert!(rules(ok).is_empty(), "{ok}");
+        }
+        for (bad, rule) in [
+            (
+                "ALTER ENDPOINT ep FOR TSQL (ENCRYPTION = BOGUS);",
+                "endpoint-value",
+            ),
+            (
+                "ALTER ENDPOINT ep FOR SERVICE_BROKER (ENCRYPTION = BOGUS);",
+                "endpoint-value",
+            ),
+            (
+                "CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434, LISTENER_IP = (10)) FOR TSQL ();",
+                "endpoint-value",
+            ),
+            (
+                "CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434, LISTENER_IP = (10.0)) FOR TSQL ();",
+                "endpoint-value",
+            ),
+            (
+                "CREATE ENDPOINT ep STATE = DISABLED AS TCP (LISTENER_PORT = 1436) FOR TSQL ();",
+                "endpoint-create-state",
+            ),
+            (
+                "CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434, LISTENER_IP = (999.0.0.1)) FOR TSQL ();",
+                "endpoint-value",
+            ),
+            (
+                "CREATE ENDPOINT ep AS TCP (LISTENER_IP = ALL) FOR TSQL ();",
+                "endpoint-required",
+            ),
+            (
+                "CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 5022) FOR DATABASE_MIRRORING (ENCRYPTION = REQUIRED);",
+                "endpoint-required",
+            ),
+            (
+                "CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434, LISTENER_PORT = 1435) FOR TSQL ();",
+                "endpoint-duplicate",
+            ),
+            (
+                "CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434, LISTENER_IP = ALL, LISTENER_IP = ALL) FOR TSQL ();",
+                "endpoint-duplicate",
+            ),
+            (
+                "ALTER ENDPOINT ep FOR SERVICE_BROKER (ENCRYPTION = REQUIRED, ENCRYPTION = SUPPORTED);",
+                "endpoint-duplicate",
+            ),
+            (
+                "ALTER ENDPOINT ep FOR SERVICE_BROKER (AUTHENTICATION = WINDOWS, AUTHENTICATION = CERTIFICATE c);",
+                "endpoint-duplicate",
+            ),
+            (
+                "ALTER ENDPOINT ep FOR DATABASE_MIRRORING (ROLE = WITNESS, ROLE = ALL);",
+                "endpoint-duplicate",
+            ),
+            (
+                "ALTER ENDPOINT ep FOR SERVICE_BROKER (AUTHENTICATION = WINDOWS BASIC);",
+                "endpoint-authentication",
+            ),
+            (
+                "ALTER ENDPOINT ep FOR SERVICE_BROKER (ENCRYPTION = REQUIRED ALGORITHM DES);",
+                "endpoint-algorithm",
+            ),
+            (
+                "ALTER ENDPOINT ep FOR SERVICE_BROKER (ENCRYPTION = DISABLED ALGORITHM AES);",
+                "endpoint-algorithm",
+            ),
+            (
+                "ALTER ENDPOINT ep FOR SERVICE_BROKER (ENCRYPTION = REQUIRED ALGORITHM AES AES);",
+                "endpoint-algorithm",
+            ),
+            (
+                "ALTER ENDPOINT ep FOR DATABASE_MIRRORING (ROLE = LEADER);",
+                "endpoint-value",
+            ),
+            (
+                "ALTER ENDPOINT ep FOR SERVICE_BROKER (MESSAGE_FORWARDING = ON);",
+                "endpoint-value",
+            ),
+            (
+                "CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434, UNKNOWN_OPTION = 1) FOR TSQL ();",
+                "endpoint-option",
+            ),
+            (
+                "ALTER ENDPOINT ep FOR SERVICE_BROKER (ROLE = WITNESS);",
+                "endpoint-option",
+            ),
+            (
+                "ALTER ENDPOINT ep FOR DATABASE_MIRRORING (ROLE = WITNESS, MESSAGE_FORWARDING = ENABLED);",
+                "endpoint-option",
+            ),
+            (
+                "ALTER ENDPOINT ep FOR TSQL (AUTHENTICATION = WINDOWS);",
+                "endpoint-option",
+            ),
+        ] {
+            assert_eq!(rules(bad), [rule], "{bad}");
+        }
     }
 }

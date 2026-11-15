@@ -42,6 +42,13 @@ export default {
   _create_statement: ($) =>
     choice(
       $.create_table,
+      $.create_external_model,
+      $.create_external_language,
+      $.create_external_library,
+      $.create_external_resource_pool,
+      $.create_endpoint,
+      $.create_fulltext_stoplist,
+      $.create_search_property_list,
       $.create_view,
       $.create_index,
       $.create_function,
@@ -472,12 +479,17 @@ export default {
         $.keyword_index,
         $.keyword_on,
         $.object_reference,
-        paren_list($.fulltext_index_column, true),
+        optional(paren_list($.fulltext_index_column, true)),
         $.keyword_key,
         $.keyword_index,
         $.identifier,
-        optional(seq($.keyword_on, $.identifier)),
-        optional($.with_clause),
+        optional(seq($.keyword_on, $._fulltext_catalog_filegroup)),
+        optional(
+          choice(
+            alias($._fulltext_with_clause, $.with_clause),
+            alias($._fulltext_with_options, $.with_options),
+          ),
+        ),
       ),
     ),
 

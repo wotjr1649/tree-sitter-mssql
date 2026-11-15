@@ -996,7 +996,7 @@ CREATE SERVER AUDIT SPECIFICATION probe_sas FOR SERVER AUDIT probe_audit ADD (FA
 
 ---
 
-(program (batch (statement (create_server_audit_specification (keyword_create) (keyword_server) (keyword_audit) (keyword_specification) name: (identifier) (keyword_for) (keyword_server) (keyword_audit) (identifier) (keyword_add) (audit_action (permission (identifier))) (with_options (keyword_with) (option name: (identifier) value: (keyword_on))))) (ERROR (keyword_with) (ERROR) (identifier) (keyword_off))))
+(program (batch (statement (create_server_audit_specification (keyword_create) (keyword_server) (keyword_audit) (keyword_specification) name: (identifier) (keyword_for) (keyword_server) (keyword_audit) (identifier) (keyword_add) (audit_action (permission (identifier))) (with_options (keyword_with) (option name: (identifier) value: (keyword_on))))) (ERROR (keyword_with) (identifier (MISSING _identifier)) (identifier) (ERROR (keyword_off)))))
 
 ================================================================================
 ddl-database/ag/positive-001 — LocalDB 17.0.1000.7 levels 100-170: accepted

@@ -372,4 +372,86 @@ mod tests {
             assert!(check_history(&mut p, &h).unwrap().is_empty(), "{id}");
         }
     }
+
+    #[test]
+    fn external_ddl_edits_match_fresh_trees() {
+        let cases = [
+            (
+                "source",
+                "ALTER EXTERNAL DATA SOURCE ds SET LOCATION = 'abs://a';\n",
+                vec![
+                    ("'abs://a'", "'abs://자료'"),
+                    (" = ", " "),
+                    ("LOCATION ", "LOCATION = "),
+                ],
+            ),
+            (
+                "model",
+                "ALTER EXTERNAL MODEL emb SET (PARAMETERS = '{}');\n",
+                vec![
+                    ("'{}'", "'{\"dimensions\":768}'"),
+                    ("PARAMETERS", "MODEL"),
+                    ("MODEL =", "PARAMETERS ="),
+                ],
+            ),
+            (
+                "language",
+                "CREATE EXTERNAL LANGUAGE Java FROM (CONTENT = 0x504B0304, FILE_NAME = 'java.so');\n",
+                vec![
+                    ("'java.so'", "'자바.so'"),
+                    ("CREATE", "ALTER"),
+                    ("FROM", "ADD"),
+                    ("ADD", "SET"),
+                ],
+            ),
+            (
+                "library",
+                "CREATE EXTERNAL LIBRARY pkg FROM (CONTENT = 0x504B0304) WITH (LANGUAGE = 'Python');\n",
+                vec![("CREATE", "ALTER"), ("FROM", "SET"), ("0x504B0304", "NONE")],
+            ),
+            (
+                "pool",
+                "CREATE EXTERNAL RESOURCE POOL ep WITH (AFFINITY CPU = (0, 2 TO 3));\n",
+                vec![
+                    ("(0, 2 TO 3)", "AUTO"),
+                    ("CPU", "NUMANODE"),
+                    ("AUTO", "(0 TO 1)"),
+                ],
+            ),
+            (
+                "fulltext",
+                "CREATE FULLTEXT INDEX ON dbo.docs (body) KEY INDEX pk ON (ftc, FILEGROUP fg) WITH (CHANGE_TRACKING OFF, NO POPULATION);\n",
+                vec![
+                    ("(ftc, FILEGROUP fg)", "(FILEGROUP fg, ftc)"),
+                    (" OFF", " AUTO"),
+                    (", NO POPULATION", ""),
+                ],
+            ),
+            (
+                "endpoint",
+                "CREATE ENDPOINT ep STATE = STARTED AS TCP (LISTENER_PORT = 1434, LISTENER_IP = (10.0.0.5)) FOR SERVICE_BROKER (AUTHENTICATION = WINDOWS NTLM, ENCRYPTION = REQUIRED ALGORITHM AES);\n",
+                vec![
+                    ("CREATE", "ALTER"),
+                    ("STARTED", "DISABLED"),
+                    ("10.0.0.5", "'::1'"),
+                    ("WINDOWS NTLM", "CERTIFICATE cert WINDOWS NEGOTIATE"),
+                    ("AES", "RC4 AES"),
+                ],
+            ),
+        ];
+        for (id, source, edits) in cases {
+            let history = History {
+                id: id.into(),
+                source: source.into(),
+                edits: edits
+                    .iter()
+                    .map(|(find, replace)| ((*find).into(), (*replace).into()))
+                    .collect(),
+            };
+            assert!(
+                check_history(&mut parser(), &history).unwrap().is_empty(),
+                "{id}"
+            );
+        }
+    }
 }
