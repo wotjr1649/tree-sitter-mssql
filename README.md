@@ -1,30 +1,32 @@
 # tree-sitter-mssql
 
-[![Verify](https://github.com/alfpricot/tree-sitter-mssql/actions/workflows/verify.yml/badge.svg?branch=dev)](https://github.com/alfpricot/tree-sitter-mssql/actions/workflows/verify.yml) [![crates.io](https://img.shields.io/crates/v/tree-sitter-mssql.svg)](https://crates.io/crates/tree-sitter-mssql)
+[![Verify](https://github.com/wotjr1649/tree-sitter-mssql/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/wotjr1649/tree-sitter-mssql/actions/workflows/verify.yml)
 
-A [tree-sitter](https://tree-sitter.github.io/tree-sitter/) grammar for Microsoft SQL Server Transact-SQL (T-SQL). It covers T-SQL only, not a general or multi-dialect SQL, and one grammar accepts the union of every SQL Server version's syntax, from SQL Server 2008 through the current release and Azure SQL, so a consumer never needs to know the server version a file targets. It started as a fork of [`tree-sitter-sql`](https://github.com/DerekStride/tree-sitter-sql) by Derek Stride (MIT licensed; see `LICENSE` and `NOTICE`). [docs/scope.md](docs/scope.md) holds the scope rules, version handling, and the list of covered syntax.
+An owner-maintained [tree-sitter](https://tree-sitter.github.io/tree-sitter/) grammar for Microsoft SQL Server Transact-SQL (T-SQL). It covers T-SQL only, and one grammar accepts the union of every SQL Server version's syntax, so a consumer never needs to know the server version a file targets. [docs/scope.md](docs/scope.md) holds the scope rules, version handling, and the list of covered syntax.
 
-## Installation
+**Why it exists.** T-SQL has no well-maintained tree-sitter grammar. The only candidate, [`alfpricot/tree-sitter-mssql`](https://github.com/alfpricot/tree-sitter-mssql) (MIT), has one maintainer, changed its owner name twice in two months (`meloncholic` → `meloncholera` → `alfpricot`) and rewrote its Git history, which orphaned the commit a downstream consumer pinned. This repository continues that grammar so defects get fixed quickly and pinned commits stay reachable.
 
-For Rust:
+**Upstream relation.** This repository starts from upstream v1.0.0, commit [`852cbd2`](https://github.com/alfpricot/tree-sitter-mssql/commit/852cbd20d7dc8078bdea0ebbcbb621e78c86f0cf), merged with its full history on 2026-11-15. Upstream started as a fork of [`tree-sitter-sql`](https://github.com/DerekStride/tree-sitter-sql) by Derek Stride. Upstream changes are merged when useful; see [docs/decisions/ADR-0001-continue-from-upstream-v1.md](docs/decisions/ADR-0001-continue-from-upstream-v1.md) and [NOTICE](NOTICE).
 
-```sh
-cargo add tree-sitter tree-sitter-mssql
+**Consumer.** The first consumer is `go-treesitter`, a CGO-free Go tree-sitter library, which pins a commit of this repository and regenerates `src/parser.c` with tree-sitter CLI 0.27.2.
+
+**Correctness reference.** Valid T-SQL means what SQL Server's own parser accepts under `SET PARSEONLY ON` at a stated compatibility level. Where upstream tests or [docs/accepted-gaps.md](docs/accepted-gaps.md) disagree with SQL Server, SQL Server wins. [docs/roadmap.md](docs/roadmap.md) lists the planned work, starting with a SQL Server oracle.
+
+## Using it
+
+Nothing is published to crates.io, npm or any other registry. Pin a commit of this repository: the generated parser (`src/parser.c`, `src/grammar.json`, `src/node-types.json`) is committed, and `src/scanner.c` must be compiled alongside `src/parser.c`.
+
+For Rust, as a Git dependency pinned to a commit:
+
+```toml
+[dependencies]
+tree-sitter-mssql = { git = "https://github.com/wotjr1649/tree-sitter-mssql", rev = "<commit>" }
 ```
-
-For Node.js:
-
-```sh
-npm install tree-sitter-mssql
-```
-
-A GitHub Packages copy of the npm package is also published as `@alfpricot/tree-sitter-mssql`.
 
 ### Requirements
 
 - Rust 1.85 or newer (the crate uses edition 2024).
-- For Node.js, the `tree-sitter` package `^0.25.0` is an optional peer dependency.
-- The npm package ships prebuilt native addons for `linux-x64` and `win32-x64`, so those platforms need no C toolchain. Any other platform compiles the committed generated parser on install and needs a C compiler.
+- For Node.js, the `tree-sitter` package `^0.25.0` is an optional peer dependency, and building the addon needs a C toolchain.
 
 ## Usage
 
@@ -44,21 +46,11 @@ const parser = new Parser();
 parser.setLanguage(SQL);
 ```
 
-Every [GitHub Release](https://github.com/alfpricot/tree-sitter-mssql/releases) carries a `tree-sitter-mssql.wasm` build for `web-tree-sitter` consumers (browsers, sandboxed runtimes):
-
-```js
-import { Parser, Language } from "web-tree-sitter";
-await Parser.init();
-const language = await Language.load("tree-sitter-mssql.wasm");
-const parser = new Parser();
-parser.setLanguage(language);
-```
-
 [docs/consuming.md](docs/consuming.md) covers the exported symbol, the parser ABI, the query-file constants, node-kind stability, and `versions.json`.
 
 ## How to contribute
 
-Branch from `dev`, regenerate the parser after any `grammar.js` change, and run the checks described in [CONTRIBUTING.md](CONTRIBUTING.md). [docs/development.md](docs/development.md) has the build and test details, and [ARCHITECTURE.md](ARCHITECTURE.md) maps the repository.
+Fix a defect starting from a failing corpus case or SQL Server oracle case, regenerate the parser with tree-sitter CLI 0.27.2 after any grammar change, and run the checks described in [CONTRIBUTING.md](CONTRIBUTING.md). [AGENTS.md](AGENTS.md) holds the standing rules, [docs/development.md](docs/development.md) has the build and test details, and [ARCHITECTURE.md](ARCHITECTURE.md) maps the repository.
 
 ## License
 
