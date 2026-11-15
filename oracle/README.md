@@ -14,7 +14,20 @@ The reference for valid T-SQL is SQL Server's own parser under `SET PARSEONLY ON
 
 - A case is **positive** when SQL Server accepts it at any verified level. A case is a **negative** only when every level rejects it.
 - Rejections include context errors that a grammar cannot and should not catch (conflicting hints, boolean versus scalar, permissions). Agreement is therefore never expected to reach 100 %. Classifying the rejections as syntax or context is a later step.
-- `verdicts/localdb-17.0.1000.7.json`: SQL Server 2025 LocalDB 17.0.1000.7 (RTM, Express, Windows), levels 100–170, observed 2026-11-15. The current C# runner and the PowerShell prototype it replaced gave identical verdicts on all 5,808 case-level pairs.
+- The replay merges every verdict file. A case is positive when any engine at any level accepts it.
+
+| Verdict file | Engine | Platform | Levels | Cases that differ from LocalDB at a shared level |
+| --- | --- | --- | --- | ---: |
+| `localdb-17.0.1000.7.json` | 2025 RTM, Express | Windows (LocalDB) | 100–170 | — |
+| `linux-17.0.5065.9.json` | 2025 CU11, Enterprise Developer | Linux | 100–170 | 5 |
+| `linux-16.0.4325.4.json` | 2022 CU28, Developer | Linux | 100–160 | 9 |
+| `linux-15.0.4510.2.json` | 2019 CU32, Developer | Linux | 100–150 | 12 |
+| `linux-14.0.3570.2.json` | 2017 CU31, Developer | Linux | 100–140 | 19 |
+
+- The C# runner and the PowerShell prototype it replaced gave identical LocalDB verdicts on all 5,808 case-level pairs.
+- The Linux files are the `Oracle engine` workflow's output.
+- The 5 cases that differ on 2025 CU11 are OPENROWSET with a non-SQL-Server provider, which Linux rejects with 7222 (platform, not syntax).
+- The older engines also reject features they predate, such as UNMASK permissions and `REGEXP_*`.
 
 ## Checking the grammar
 
