@@ -36,6 +36,13 @@ A context-free grammar can express "each of n options at most once, in any order
 3. **Context errors stay outside the grammar.** These are errors that need names, types or permissions (ADR-0002 §2). They are not option-set rules and stay with grammar-kit's `CheckTSQLContext`.
 4. **Until a rule exists, the gap is recorded.** Each over-acceptance left by a structure-only change is listed in `docs/accepted-gaps.md`, with its oracle cases, until its rule lands.
 
+## Rules in force
+
+| Rule | Statements | Evidence |
+| --- | --- | --- |
+| `queue-activation-duplicate`: each ACTIVATION setting at most once | `CREATE QUEUE`, `ALTER QUEUE` | LocalDB 17.0.1000.7, levels 100–170, Msg 102: `queue-duplicate-create/alter`, 8 probes |
+| `queue-activation-required`: CREATE needs PROCEDURE_NAME, MAX_QUEUE_READERS and EXECUTE AS | `CREATE QUEUE` | Msg 102: `queue-missing-48/49/50`, `queue-29`, 13 probes; accepted: `queue-missing-51` |
+
 ## Consequences
 
 - Grammar changes for option lists stay within the cost budget (ADR-0002 §6), and public node shapes stay stable.
