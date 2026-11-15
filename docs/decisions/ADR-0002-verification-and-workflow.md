@@ -95,7 +95,8 @@ The goal is complete T-SQL support with zero defects (ADR-0001: SQL Server's par
      regenerate with the same pinned version.
 9. **Upstream's deliberate error tests.** `test/corpus/errors.txt` pins `SELECT 1 WHERE 1=1;` and
    `SELECT 1 GROUP BY 1;` as errors, while SQL Server accepts both (measured at levels 110 and 170 on 2026-11-15). They are rewritten as
-   positive cases in the change that fixes the grammar, and the divergence is recorded for upstream merges.
+   positive cases in the change that fixes the grammar, and the divergence is recorded for upstream merges
+   in [`docs/upstream-divergence.md`](../upstream-divergence.md).
 10. **`docs/accepted-gaps.md`** stays as the ledger, rewritten against engine verdicts. Each row carries a case ID,
     direction, profile and issue, and rows not yet measured are marked `UNVERIFIED`.
 

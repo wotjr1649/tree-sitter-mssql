@@ -222,49 +222,6 @@ SELECT "" FROM t;
                 (identifier)))))))))
 
 ==================
-WHERE without FROM is not legal T-SQL, even though WHERE lexes as a bare alias here
-==================
-
-SELECT 1 WHERE 1=1;
-
----
-
-(program
-  (batch
-    (statement
-      (query_specification
-        (select
-          (keyword_select)
-          (select_expression
-            (term
-              (literal)
-              (identifier))))))
-    (ERROR
-      (literal)
-      (literal))))
-
-==================
-GROUP BY without FROM is not legal T-SQL
-==================
-
-SELECT 1 GROUP BY 1;
-
----
-
-(program
-  (batch
-    (statement
-      (query_specification
-        (select
-          (keyword_select)
-          (select_expression
-            (term
-              value: (literal)
-              alias: (identifier)))))))
-  (ERROR
-    (identifier)))
-
-==================
 A string literal is not a valid table alias (ARCH-11)
 ==================
 
