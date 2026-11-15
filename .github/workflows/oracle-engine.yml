@@ -1,0 +1,125 @@
+# =============================================================================
+#  tree-sitter-mssql · GitHub Actions
+# -----------------------------------------------------------------------------
+#  File                oracle-engine.yml
+#  Workflow name       Oracle engine
+#  Triggers            pull_request touching the oracle runner, cases or verdicts
+#                      schedule (weekly)
+#                      workflow_dispatch
+#  Purpose             Runs the PARSEONLY runner (oracle/runner/ParseOnly) against
+#                      real SQL Server engines in Linux containers, pinned by
+#                      digest: its self-test first, then every oracle case at
+#                      every compatibility level the engine supports. The new
+#                      verdicts are uploaded and compared with the committed
+#                      LocalDB verdicts; differences are reported for
+#                      classification, not treated as failures. Runner or
+#                      infrastructure failures fail the job.
+# =============================================================================
+
+name: Oracle engine
+
+on:
+  pull_request:
+    paths:
+      - 'oracle/runner/**'
+      - 'oracle/kit/**'
+      - 'oracle/verdicts/**'
+      - 'tools/verdict-diff.mjs'
+      - '.github/workflows/oracle-engine.yml'
+  schedule:
+    - cron: '30 7 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: oracle-engine-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  engine:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: SQL Server 2017 CU31 GDR20
+            image: mcr.microsoft.com/mssql/server:2017-CU31-GDR20-ubuntu-18.04@sha256:82ed5013ddc4611edea92ef0ea386520b3840acb1b7568fb11632558b9aa6886
+            pid: Developer
+            levels: '100,110,120,130,140'
+          - name: SQL Server 2019 CU32 GDR13
+            image: mcr.microsoft.com/mssql/server:2019-CU32-GDR13-ubuntu-20.04@sha256:8a6d7b2fac89dbc6e08f256a8d12de6d068881c1fe5783ac78797b62c0070f47
+            pid: Developer
+            levels: '100,110,120,130,140,150'
+          - name: SQL Server 2022 CU28
+            image: mcr.microsoft.com/mssql/server:2022-CU28-ubuntu-22.04@sha256:e10cd49443c94dbdcb7a050987db22ff4d8c87052ac53768abe1ed848d3fcef6
+            pid: Developer
+            levels: '100,110,120,130,140,150,160'
+          - name: SQL Server 2025 CU11
+            image: mcr.microsoft.com/mssql/server:2025-CU11-ubuntu-24.04@sha256:a554b8cf6ab60b92838737f03d0422c4babcd491d09cba3bec0e5e41e292b921
+            pid: EnterpriseDeveloper
+            levels: '100,110,120,130,140,150,160,170'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Start the engine
+        # A throwaway password for a throwaway container: generated here, masked, never stored.
+        env:
+          IMAGE: ${{ matrix.image }}
+          PID: ${{ matrix.pid }}
+        run: |
+          set -euo pipefail
+          password="P$(openssl rand -hex 16)!a1"
+          echo "::add-mask::${password}"
+          echo "MSSQL_PASSWORD=${password}" >> "$GITHUB_ENV"
+          MSSQL_SA_PASSWORD="${password}" docker run -d --name mssql \
+            -e ACCEPT_EULA=Y -e MSSQL_PID="${PID}" -e MSSQL_SA_PASSWORD \
+            -p 1433:1433 "${IMAGE}"
+
+      - name: Build the runner
+        working-directory: oracle/runner/ParseOnly
+        run: |
+          dotnet restore --locked-mode
+          dotnet build -c Release --no-restore
+
+      - name: Wait for the engine, then run the runner's self-test
+        # Exit 2 means the engine is not reachable yet; 1 is a real self-test failure.
+        run: |
+          set -u
+          for attempt in $(seq 1 60); do
+            dotnet oracle/runner/ParseOnly/bin/Release/net10.0/ParseOnly.dll --self-test --server localhost,1433 && exit 0
+            status=$?
+            if [ "$status" -ne 2 ]; then exit "$status"; fi
+            sleep 5
+          done
+          docker logs mssql | tail -50
+          echo '::error::The engine did not become reachable within 5 minutes.'
+          exit 1
+
+      - name: Judge every oracle case
+        env:
+          LEVELS: ${{ matrix.levels }}
+        run: >-
+          dotnet oracle/runner/ParseOnly/bin/Release/net10.0/ParseOnly.dll
+          --server localhost,1433 --levels "$LEVELS"
+          --cases oracle/kit/cases.jsonl --out verdicts.json
+
+      - name: Compare with the committed LocalDB verdicts
+        run: node tools/verdict-diff.mjs oracle/verdicts/localdb-17.0.1000.7.json verdicts.json
+
+      - name: Upload the verdicts
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: verdicts-${{ strategy.job-index }}
+          path: verdicts.json
+          if-no-files-found: ignore
