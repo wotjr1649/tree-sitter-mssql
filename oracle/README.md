@@ -6,6 +6,7 @@ The reference for valid T-SQL is SQL Server's own parser under `SET PARSEONLY ON
 | --- | --- |
 | `kit/cases.jsonl` | 726 cases from tree-sitter-grammar-kit: `id`, `sha256`, `source` ([NOTICE](kit/NOTICE)) |
 | `kit/edits.jsonl` | 353 edit histories (939 edits) for comparing incremental and fresh parses |
+| `probes/*.jsonl` | Cases written and engine-checked while fixing defects. They gate those fixes like the kit cases do. IDs are prefixed with the set name. Current sets: `queue-activation` (86, the QUEUE fix and constraint rules) and `identifiers` (23: Unicode names, and bare `#`/`@` sigil names, which the engine accepts and the grammar does not yet) |
 | `verdicts/*.json` | Engine verdicts per case and compatibility level: the error numbers, `[]` for accepted. `meta` records the engine build, edition, platform, session `SET` state, levels, and the hashes of the cases and of the runner |
 | `runner/ParseOnly/` | The runner that produces the verdicts (C#, .NET 10, Microsoft.Data.SqlClient pinned by `packages.lock.json`) |
 | `expected.json` | The grammar's current result per case (`clean` or `error`) and the edit histories whose incremental parse differs from a fresh one |
@@ -14,7 +15,7 @@ The reference for valid T-SQL is SQL Server's own parser under `SET PARSEONLY ON
 
 - A case is **positive** when SQL Server accepts it at any verified level. A case is a **negative** only when every level rejects it.
 - Rejections include context errors that a grammar cannot and should not catch (conflicting hints, boolean versus scalar, permissions). Agreement is therefore never expected to reach 100 %. Classifying the rejections as syntax or context is a later step.
-- The replay merges every verdict file. A case is positive when any engine at any level accepts it.
+- The replay merges every verdict file; each file is bound by its `meta.cases_sha256` to the one case set (kit or a probe set) it was made from. A case is positive when any engine at any level accepts it.
 
 | Verdict file | Engine | Platform | Levels | Cases that differ from LocalDB at a shared level |
 | --- | --- | --- | --- | ---: |

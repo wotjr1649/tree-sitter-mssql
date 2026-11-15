@@ -1,6 +1,6 @@
 // Replays the SQL Server oracle against the current grammar (ADR-0002).
 //
-// For every case in oracle/kit/cases.jsonl the parse tree is judged by tree-check (clean or error) and
+// For every case in oracle/kit/cases.jsonl and oracle/probes/*.jsonl the parse tree is judged by tree-check (clean or error) and
 // compared with the committed baseline oracle/expected.json; edit histories are replayed to compare
 // incremental and fresh parses. Engine verdicts (oracle/verdicts/*.json) give each case's class: a case
 // is positive when SQL Server accepts it at any verified compatibility level.
@@ -68,8 +68,10 @@ function runTreeCheck(exe, args) {
 
 function matrix(cases, verdicts, current, level) {
   const m = { acceptedClean: 0, acceptedError: 0, rejectedError: 0, rejectedClean: 0 };
-  for (const c of cases) {
-    const accepted = level ? verdicts[c.id][level]?.length === 0 : isPositive(verdicts[c.id]);
+  // A per-level table counts only the cases that engine and level judged.
+  const judged = level ? cases.filter((c) => Array.isArray(verdicts[c.id][level])) : cases;
+  for (const c of judged) {
+    const accepted = level ? verdicts[c.id][level].length === 0 : isPositive(verdicts[c.id]);
     const error = current[c.id] === 'error';
     m[
       accepted
@@ -82,7 +84,7 @@ function matrix(cases, verdicts, current, level) {
     ]++;
   }
   const agree = m.acceptedClean + m.rejectedError;
-  return { ...m, agree, total: cases.length, percent: ((agree / cases.length) * 100).toFixed(2) };
+  return { ...m, agree, total: judged.length, percent: ((agree / judged.length) * 100).toFixed(2) };
 }
 
 function main(argv) {
@@ -96,23 +98,38 @@ function main(argv) {
   const update = argv.includes('--update');
   const allowed = new Set((arg('--allow-regression') ?? '').split(',').filter(Boolean));
 
-  const casesText = readFileSync('oracle/kit/cases.jsonl');
-  const cases = readCases(casesText.toString('utf8'));
+  // Case sets: grammar-kit's cases plus the probes measured while fixing defects (oracle/probes).
+  const setFiles = [
+    'oracle/kit/cases.jsonl',
+    ...readdirSync('oracle/probes')
+      .filter((f) => f.endsWith('.jsonl'))
+      .sort()
+      .map((f) => join('oracle/probes', f)),
+  ];
+  const sets = setFiles.map((file) => {
+    const text = readFileSync(file);
+    return { file, sha: sha256(text), cases: readCases(text.toString('utf8')) };
+  });
+  const cases = sets.flatMap((s) => s.cases);
+  assert.equal(
+    new Set(cases.map((c) => c.id)).size,
+    cases.length,
+    'case IDs must be unique across sets',
+  );
   const verdictFiles = readdirSync('oracle/verdicts')
     .filter((f) => f.endsWith('.json'))
     .sort();
-  assert(verdictFiles.length > 0, 'no verdict files in oracle/verdicts');
-  // Verdicts from every observation file are merged per level; each file must describe these exact cases.
+  // Verdicts from every observation file are merged per level. Each file is bound by hash to the one
+  // case set it was made from, and every case set needs at least one file.
   const verdicts = Object.fromEntries(cases.map((c) => [c.id, {}]));
+  const covered = new Set();
   for (const file of verdictFiles) {
     const v = JSON.parse(readFileSync(join('oracle/verdicts', file), 'utf8'));
     assert.equal(v.meta.mode, 'PARSEONLY', `${file}: only PARSEONLY verdicts count`);
-    assert.equal(
-      v.meta.cases_sha256,
-      sha256(casesText),
-      `${file}: verdicts were made from different cases`,
-    );
-    for (const c of cases) {
+    const set = sets.find((s) => s.sha === v.meta.cases_sha256);
+    assert(set, `${file}: verdicts were made from cases that are not in the repository`);
+    covered.add(set.file);
+    for (const c of set.cases) {
       assert(v.verdicts[c.id], `${file}: no verdict for ${c.id}`);
       for (const [level, errors] of Object.entries(v.verdicts[c.id])) {
         const key = `${v.meta.engine.product_version}@${level}`;
@@ -120,6 +137,7 @@ function main(argv) {
       }
     }
   }
+  for (const s of sets) assert(covered.has(s.file), `${s.file}: no verdict file`);
   const positive = Object.fromEntries(cases.map((c) => [c.id, isPositive(verdicts[c.id])]));
 
   const dir = mkdtempSync(join(tmpdir(), 'oracle-replay-'));

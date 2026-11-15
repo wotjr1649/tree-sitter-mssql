@@ -1,0 +1,23 @@
+{"id":"identifiers/hangul-alias","sha256":"3a9002110fac42955e4fed538820d350ad9abdb738490abf1fc46aeb7ffaf906","source":"SELECT 1 AS 이름;"}
+{"id":"identifiers/hangul-table-column","sha256":"1285fb6d80682da2ebfafcf4202c6a222641474a573cfa0bc2e34faad6670262","source":"SELECT 이름 FROM dbo.고객 WHERE 나이 > 1;"}
+{"id":"identifiers/hangul-variable","sha256":"000c760c77810a01212c856bd294258dce8af83cac34036558e491652c0ccd60","source":"DECLARE @변수 int; SET @변수 = 1;"}
+{"id":"identifiers/hangul-temp-table","sha256":"aaa8bec3f17c74fb4c38e021bea9efd6a6edb7bd208397fc3800f3e9311fb1f7","source":"CREATE TABLE #가 (열 int);"}
+{"id":"identifiers/georgian-alias","sha256":"616310e1357cd2fdf53269a12101ee07c0ecc716ab66a2829ab192d8f067a41b","source":"SELECT 1 AS ა;"}
+{"id":"identifiers/cjk-alias","sha256":"c4405218e803f7273683fcca21dd12b70cb93a8461f90bcbf1d62ca1cba97e04","source":"SELECT 1 AS 名前;"}
+{"id":"identifiers/combining-mark-continue","sha256":"8a44ed4fc1170ea951fd89bec6bfe02aaddeeb47d4db1ce0043cd2172de4aa27","source":"SELECT 1 AS état;"}
+{"id":"identifiers/digit-continue","sha256":"4ea6e57ba15c99af3ba739012934e1d7f7b854223f75dd5b90201b038eb7094c","source":"SELECT 1 AS a1b2;"}
+{"id":"identifiers/unicode-digit-continue","sha256":"907bf909629e67cde4f6583fd1e54f053d08e308473fc4aa59d656ef9d27be3c","source":"SELECT 1 AS a١;"}
+{"id":"identifiers/post-3.2-letter-start","sha256":"3142931f3068ad616250752811919f176181620d44bc1ea167c672497ec6a454","source":"SELECT 1 AS ȡ;"}
+{"id":"identifiers/post-3.2-letter-continue","sha256":"5ae1efaf8b5e3487e9585c6a65b3ca213b990de198394a7f0255720d4097a402","source":"SELECT 1 AS aȡ;"}
+{"id":"identifiers/supplementary-start","sha256":"ddcc6827ba98e3e652afd0ef6f19787931344458bd9ccb769566e87b9314e89e","source":"SELECT 1 AS 𠀀;"}
+{"id":"identifiers/supplementary-continue","sha256":"03c378b78b5c124cf6232ea968a2d111c104e16f3b5e63b9d743fcda2ce62dce","source":"SELECT 1 AS a𠀀;"}
+{"id":"identifiers/math-symbol-start","sha256":"a7f6b1c09de134ad5f19278ca322237eb7aa5f433b9ae1500d7ff459f8301d31","source":"SELECT 1 AS ×;"}
+{"id":"identifiers/alias-hash","sha256":"451b1c3afb36e5d393eba82741fffcc6d1778011c1cc9a7fc55de87fbebc4576","source":"SELECT 1 AS #;"}
+{"id":"identifiers/alias-hashhash","sha256":"e51539fb63a4eecd667998c0f8de357550561ea21dd48153d8ac5813dbcaf163","source":"SELECT 1 AS ##;"}
+{"id":"identifiers/table-hash","sha256":"2a0c4243748ac643cd23ab2aa834c5f28bd62353643ed77581967022a23ee10e","source":"CREATE TABLE # (a int);"}
+{"id":"identifiers/from-hash","sha256":"38e6798d1e2030f4f91ac6d655906f92181a534a91fc631c96078930e6ddbdbb","source":"SELECT * FROM #;"}
+{"id":"identifiers/from-hashhash","sha256":"d4cd2db65cdb328776db6798d2497fa350dddcc516f94f12f59c0c56bc7a4bd1","source":"SELECT * FROM ##;"}
+{"id":"identifiers/var-at","sha256":"457222fd17d784345b308f9d1fffa02fea49e86fa5d4f5cbffa3d7a40b3dc090","source":"DECLARE @ int;"}
+{"id":"identifiers/var-atat","sha256":"6c6d2c78797034072fa7239d052a7733c030bd5e4f8bd787554b42afdc08e886","source":"DECLARE @@ int;"}
+{"id":"identifiers/var-at-digit","sha256":"9e1b3db215be611054e9b74d5999832a7f15859f0761487a43d11d907dd772da","source":"DECLARE @1 int;"}
+{"id":"identifiers/temp-digit","sha256":"8a845fee4f878a2b0f1ffc205ecf2cdfa190949b09ab6fe164f4213a86dd3b29","source":"CREATE TABLE #1 (a int);"}
