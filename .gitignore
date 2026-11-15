@@ -70,3 +70,7 @@ _ref/
 .scratch/
 fuzz/artifacts/
 oracle/out/
+
+# .NET build output (oracle runner)
+bin/
+obj/
