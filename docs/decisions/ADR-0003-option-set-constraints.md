@@ -46,6 +46,13 @@ A context-free grammar can express "each of n options at most once, in any order
 | `cte-terminator`: a statement that starts with a CTE must not directly follow another statement or block without `;` (it may come first in a batch, block or module body, or after `;`, a label, IF, ELSE or WHILE) | any statement list | Msg 319 for the `semicolon/*-no-terminator` probes (after SELECT, END, IF, IF ... ELSE, WHILE, inside a procedure body); every terminated, leading, label and control-body form accepted |
 | `exec-output-requires-at`: a value marked OUTPUT/OUT in `EXEC ( ... )` needs `AT linked_server` | `EXEC ( string, ... )` | accepted with AT (OUTPUT, OUT, several); Msg 102 without AT (`oracle/probes/exec-output.jsonl`) |
 | `exec-output-variable`: OUTPUT/OUT marks only a local variable (`@v`, not `@@v`) | procedure-call arguments, `EXEC ( ... ) AT` | Msg 179 for constants, strings, DEFAULT, NULL, system variables and bare or bracketed names (kit `issue151-*`, 12 probes); Msg 102 for an expression |
+| `column-permission`: a column list allows only SELECT, UPDATE, REFERENCES, UNMASK, ALL [PRIVILEGES] | `GRANT`, `DENY`, `REVOKE` | Msg 1020 for 10 other permissions, per permission or for the object (`context/perm-*`, kit `permission-*`); allowed ones accepted |
+| `trigger-scope`: a DATABASE/ALL SERVER trigger has no schema in its name, no DML event and no EXECUTE AS OWNER; ON DATABASE takes no server-only event; a DML trigger takes only INSERT/UPDATE/DELETE | `CREATE`/`ALTER`/`CREATE OR ALTER TRIGGER` | Msg 1094, 1098, 1083, 1082 (`context/trig-*`: all 312 event types of `sys.trigger_event_types` on both scopes; kit `trigger-*`) |
+| `builtin-arity`: fixed argument counts of the one-argument aggregates, ABS, LEN, ISNULL, STRING_AGG (unqualified names) | any expression | Msg 174 (`context/arity-*`, `context/count-*`, kit `count-*`); schema-qualified names accepted |
+| `scalar-function-return`: a bare RETURN in a scalar function | `CREATE`/`ALTER FUNCTION` | Msg 1075 at any depth (`context/return-*`, kit `scalar-return-*`); table functions and procedures accepted |
+| `cte-table-source`: a single SELECT after WITH needs a table source outside the CTE definitions | `WITH ... SELECT` | Msg 422 (`context/cte-*`, kit `cte-none`); accepted with FROM in a subquery, for UNION, INSERT, UPDATE |
+| `window-frame-order`: ROWS/RANGE needs ORDER BY in the same OVER or a base window | `OVER ( ... )` | Msg 10756 or 102 (`context/window-*`, kit `window-no-order-*`) |
+| `merge-terminator`: MERGE ends with `;` | `MERGE` anywhere | Msg 10713 (`context/merge-*`, `semicolon/merge-*`); a comment before the `;` is fine |
 
 ## Consequences
 

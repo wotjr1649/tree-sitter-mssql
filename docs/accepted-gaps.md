@@ -51,7 +51,7 @@ not a claim of zero defects, and these are not option-set constraints covered by
 
 | Cases | SQL Server verdict | Classification and disposition |
 | --- | --- | --- |
-| `count-empty`, `mut-02235`, `mut-02255` | Msg 174 on every committed engine/level | Contextual function arity (COUNT without an argument); outside this clause-order fix, per ADR-0002 §2 |
+| `count-empty`, `mut-02235`, `mut-02255` | Msg 174 on every committed engine/level | Rejected by the `builtin-arity` constraint (ADR-0003, ADR-0004) |
 | `regex-79` | Msg 4145 on SQL Server 2017–2022 and 2025 levels 100–160; Msg 156 on both 2025 engines at level 170 | Mixed: contextual scalar predicate at lower levels, unresolved qualified REGEXP_LIKE syntax at 170. The syntax rejection is not covered by ADR-0002 context or ADR-0003 option-set rules |
 | `regex-80` | Msg 4145 on 2025; 195 on older engines | Contextual scalar REGEXP_COUNT used as a predicate; older engines lack the function |
 | `qi-on-contains-search`, `qi-on-freetext-search`, `qi-on-property`, `qi-on-language` | Msg 102 on every committed engine/level | Unresolved syntax over-acceptance: with QUOTED_IDENTIFIER ON, these full-text arguments require strings rather than double-quoted identifiers. Requires session-aware lexical/argument rules, not an option-set constraint. Matching `qi-off-*` cases are accepted |
@@ -63,9 +63,7 @@ The focused probes also leave the existing later-UNION-branch INTO restriction u
 levels 100–170 but has a tree error. The grammar-kit issue-128 report distinguishes this
 from NOEXEC Msg 196; compile-time rejection is not a syntax verdict.
 
-| Scalar-function RETURN without a value, with repeated semicolons | Empty RETURN was already structurally accepted; repeated semicolons expose it in a scalar function. LocalDB 100–170 returns 1075 because the scalar-function return contract needs a value. This is a module/type-context check, outside the grammar. | kit `mut-02699` (now clean); `oracle/expected.json` |
 | Blocks containing only empty statements, including TRY/CATCH bodies | The existing block rules allow zero real statements. Adding anonymous semicolons extends that existing gap to semicolon-only blocks. LocalDB 100–170 returns 102; a future nonempty-body constraint should require a real statement. | `semicolon/block-empty`, `try-empty`; corpus `semicolon.txt` |
-| A MERGE without its required trailing `;` | Existing terminators are owned by the surrounding statement list, while MERGE itself does not require one. LocalDB 100–170 returns 10713. Keep that ownership; enforce the boundary separately. | `semicolon/merge-unterminated`, `merge-next-no-terminator`; corpus `semicolon.txt` |
 | Consecutive bare ENABLE/DISABLE TRIGGER statements without a separator | LocalDB 100–170 returns 102; the semicolon-separated control is accepted. This pre-existing boundary gap needs its own constraint. | `semicolon/trigger-chain`; corpus `semicolon.txt` |
 | `SELECT FROM;` (also with a leading `;`) | FROM is read as an identifier when the SELECT expression is absent; the new empty statement support exposes this existing SELECT gap. LocalDB 100–170 returns 156. | `semicolon/invalid-leading-select`; corpus `semicolon.txt` |
 | A statement-less BEGIN/END block followed by a CTE | LocalDB 100–170 returns 156 and 102; the grammar accepts the empty block; the CTE after it is now rejected by the `cte-terminator` constraint, so the input fails as SQL Server says, though for that reason rather than the empty block. | `semicolon/cte-after-empty-block`; corpus `semicolon.txt` |

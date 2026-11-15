@@ -1,0 +1,797 @@
+{"id":"context/perm-object-select","sha256":"9849a7cec51697d6ef1c71dd893d004fadce0ac43c1b3bb086c9c35369130ae3","source":"GRANT SELECT ON dbo.t (a) TO public;"}
+{"id":"context/perm-local-select","sha256":"1256ac999a81c14ca8d86cebbdcb56adc77a9835b22e91ffd3d437df619aa509","source":"GRANT SELECT (a) ON dbo.t TO public;"}
+{"id":"context/perm-object-update","sha256":"32c3a2b0d57fde58934ed038dde4ca7671c53e24c6b58895cb469fe55857e1fa","source":"GRANT UPDATE ON dbo.t (a) TO public;"}
+{"id":"context/perm-local-update","sha256":"2faf3dc746ef652ef9299a458e558474aa92a3d0f04bbadefc73b8f856085181","source":"GRANT UPDATE (a) ON dbo.t TO public;"}
+{"id":"context/perm-object-references","sha256":"363b4539718bca4576e989d32dd29f9fbf939d903c38e31c36cc3ba638402987","source":"GRANT REFERENCES ON dbo.t (a) TO public;"}
+{"id":"context/perm-local-references","sha256":"2e2536d68ca093f1b8ac14e029dee769951d7a4fd3710aad3923dd985e9bd59d","source":"GRANT REFERENCES (a) ON dbo.t TO public;"}
+{"id":"context/perm-object-unmask","sha256":"29d10b92671fc741bcc6abff025b95072cf954f580c8bd4afa63d371b50508f8","source":"GRANT UNMASK ON dbo.t (a) TO public;"}
+{"id":"context/perm-local-unmask","sha256":"aaa858aac95a3c0b40e70bec4e9bbe47de89dc194d6e8d8eda6bf051806e7ee2","source":"GRANT UNMASK (a) ON dbo.t TO public;"}
+{"id":"context/perm-object-insert","sha256":"6432c2dc55dea2eaf7bb646232cc35100d0bd1e5383f9f087807ee7ab5888b60","source":"GRANT INSERT ON dbo.t (a) TO public;"}
+{"id":"context/perm-local-insert","sha256":"c29102bae4bc191c123ada1370361647a792d064c513fb3d073084ec57b7786f","source":"GRANT INSERT (a) ON dbo.t TO public;"}
+{"id":"context/perm-object-delete","sha256":"4b980252df69788d63dc0d3a7753ec960def43633f8a59f200319b9dc7bc2a35","source":"GRANT DELETE ON dbo.t (a) TO public;"}
+{"id":"context/perm-local-delete","sha256":"3e03daa7dcfb47784dc4aa648474b9abfab936d6caf0e89876796e975318f72f","source":"GRANT DELETE (a) ON dbo.t TO public;"}
+{"id":"context/perm-object-execute","sha256":"52b96575310ba5e68767c6a74cf8f2696ab000b69cde3e2a61f0faaea99f239c","source":"GRANT EXECUTE ON dbo.t (a) TO public;"}
+{"id":"context/perm-local-execute","sha256":"a6ac8a95daef111fd923047bed63721b3e2c4a39b4a7c8458d496cffb1186cb2","source":"GRANT EXECUTE (a) ON dbo.t TO public;"}
+{"id":"context/perm-object-alter","sha256":"7c24fd9c4ef3036fa519f0657cdecb35ac1082bfaf5f763dac5bb62c0b509883","source":"GRANT ALTER ON dbo.t (a) TO public;"}
+{"id":"context/perm-local-alter","sha256":"74a5c7c2e347a170b46901c52eb44b481d0d7420176b98799989846b0271d5f9","source":"GRANT ALTER (a) ON dbo.t TO public;"}
+{"id":"context/perm-object-control","sha256":"b28bad83b47d460efeefd336eabce325c401430629850f27e30de91041168099","source":"GRANT CONTROL ON dbo.t (a) TO public;"}
+{"id":"context/perm-local-control","sha256":"bcb319c4a3a00569ae663d9365f6629879d0deb584bd1dcb88f0dfbfd5952e5f","source":"GRANT CONTROL (a) ON dbo.t TO public;"}
+{"id":"context/perm-object-take-ownership","sha256":"e0062409295e305c97c8a281e09101fe3559bcee728fd15e0ff779f67a6094a9","source":"GRANT TAKE OWNERSHIP ON dbo.t (a) TO public;"}
+{"id":"context/perm-local-take-ownership","sha256":"669cc921b1c88f2025a5d8e04889ac0752390a5a5810595d5f49be7bb3893930","source":"GRANT TAKE OWNERSHIP (a) ON dbo.t TO public;"}
+{"id":"context/perm-object-view-definition","sha256":"622ea41efc10927820829d8b742ef8c934c68eb0004b53c55f2142ccd5f95250","source":"GRANT VIEW DEFINITION ON dbo.t (a) TO public;"}
+{"id":"context/perm-local-view-definition","sha256":"486544baa6cd059be3d92857e8b01408f9440a260f70731d9b41567223d6c998","source":"GRANT VIEW DEFINITION (a) ON dbo.t TO public;"}
+{"id":"context/perm-object-view-change-tracking","sha256":"421b3b3bcbdee02de4a60f3c815ad7bf1000e25718c4de1907862def76dfe362","source":"GRANT VIEW CHANGE TRACKING ON dbo.t (a) TO public;"}
+{"id":"context/perm-local-view-change-tracking","sha256":"b485dc2e47a376cf2341e5c86b9124b84c99b95f893d5a86f5e782b549f36093","source":"GRANT VIEW CHANGE TRACKING (a) ON dbo.t TO public;"}
+{"id":"context/perm-object-all","sha256":"e53616062dcbd9ecb3217931d6e68ce9d68669702a4da3b8bbb7fd5a0b9bef2d","source":"GRANT ALL ON dbo.t (a) TO public;"}
+{"id":"context/perm-local-all","sha256":"9caffa6a6a4e966e5f01014cc575429a3e6bd5523ead29055ad75ace41532c4e","source":"GRANT ALL (a) ON dbo.t TO public;"}
+{"id":"context/perm-object-all-privileges","sha256":"d2c337491102e822599d74273e901b29e8912a4b97365d40a6b248b02f594bd6","source":"GRANT ALL PRIVILEGES ON dbo.t (a) TO public;"}
+{"id":"context/perm-local-all-privileges","sha256":"3464c2b1caf206f8d185192616d6444243c17c2c3e1410316c02ab969eb8b4ce","source":"GRANT ALL PRIVILEGES (a) ON dbo.t TO public;"}
+{"id":"context/perm-class-select","sha256":"9f3349e0dea09801ccda447ec96095c0f94ab5df41d621ef43b30452ad14f084","source":"GRANT SELECT ON OBJECT::dbo.t (a) TO public;"}
+{"id":"context/perm-class-insert","sha256":"21eb2c7126296cc4adcc276d9efa9068a49eca992e19dc2854679c0f32818380","source":"GRANT INSERT ON OBJECT::dbo.t (a) TO public;"}
+{"id":"context/perm-local-mixed-ok","sha256":"cddb89a6228a9b99f17386d33bddff5c35b6837d24be0c785c01fae32e686ba4","source":"GRANT UPDATE (a), REFERENCES (b), DELETE ON dbo.t TO public;"}
+{"id":"context/perm-revoke-option-insert","sha256":"90bc9700380ddfd65d1eb2ed73285e4ff43f4f80a3ca3b1a8a10484be4b44ca6","source":"REVOKE GRANT OPTION FOR INSERT ON dbo.t (a) FROM public CASCADE;"}
+{"id":"context/perm-revoke-option-select","sha256":"7c0c34458a7d795fe71f39f76e4b12029c54c1d1c303566dd3c256022b804a97","source":"REVOKE GRANT OPTION FOR SELECT ON dbo.t (a) FROM public CASCADE;"}
+{"id":"context/perm-deny-local-delete","sha256":"1b1e28aa63f70737a8a0161400ce0734a53a0dc100f3136eee7f65c80dc77840","source":"DENY DELETE (a) ON dbo.t TO public;"}
+{"id":"context/perm-no-columns-delete","sha256":"da89f4fc23678473074d2e40503f44301171e815c3f6572f147103cbf581541f","source":"GRANT DELETE ON dbo.t TO public;"}
+{"id":"context/trig-db-create_table","sha256":"47298aace7e41af094a125a92fe7a401f942087d136cd68833abb942ad0c5ef3","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_TABLE AS RETURN;"}
+{"id":"context/trig-srv-create_table","sha256":"41b739c750ef17f30a6b7be5f3d14eb4375f5ac7730598329c05f09848e2889a","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_TABLE AS RETURN;"}
+{"id":"context/trig-db-alter_table","sha256":"236d56a47bf5e373f5e750be79e04d1ae303fbf5ecfcbfb05343a6b6c2625fcb","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_TABLE AS RETURN;"}
+{"id":"context/trig-srv-alter_table","sha256":"578d3a74ebe68810e62555e27938e481f408117ede50a66535029b609055bc48","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_TABLE AS RETURN;"}
+{"id":"context/trig-db-drop_table","sha256":"15856f1a3706fbb2d4b8d60ffebabc74495105ac86a0503e8c767533a7005695","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_TABLE AS RETURN;"}
+{"id":"context/trig-srv-drop_table","sha256":"7e87d244f1cefc7a8481cd4d0ff0e8825fb590e466ec663d0bb3d528ef599015","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_TABLE AS RETURN;"}
+{"id":"context/trig-db-create_index","sha256":"9937c5e7adf2eaafe9dc778d125e90324c30c6cd6bc73d5849ea3af2aa6a92ab","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_INDEX AS RETURN;"}
+{"id":"context/trig-srv-create_index","sha256":"73f11c71290e57dff6ce7993c4b8571730676e26283600d02407173e0e01ec95","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_INDEX AS RETURN;"}
+{"id":"context/trig-db-alter_index","sha256":"adbc6a229fdb1b477d641a2ca05d8206ebe9970a9abea8228c0c2305c66b2aec","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_INDEX AS RETURN;"}
+{"id":"context/trig-srv-alter_index","sha256":"e516f88c142245bd72789c2b0f3babed3b655f4caf3663422245a4cb2cd13f7f","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_INDEX AS RETURN;"}
+{"id":"context/trig-db-drop_index","sha256":"b1792d2fe6b054a4c3ea3212845e2d4d10e882b370a57312f4c54be5ccd9d04e","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_INDEX AS RETURN;"}
+{"id":"context/trig-srv-drop_index","sha256":"6ac0bd2f2ced1b204335a1d6f88f52960ca105ddbc24e7d4f079facb0191dec9","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_INDEX AS RETURN;"}
+{"id":"context/trig-db-create_statistics","sha256":"2c9097350c8d983c84b6d3b544585b1cc28bfcdeec8647114bd376d2942d8052","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_STATISTICS AS RETURN;"}
+{"id":"context/trig-srv-create_statistics","sha256":"98fb6f0835044ef0b056214d781cdebf1057e58a51f66581922a794aaa09da6e","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_STATISTICS AS RETURN;"}
+{"id":"context/trig-db-update_statistics","sha256":"ac57f091c7c7f107e8c581d4bb530c243b5b856fe6f3f02f8a3a39d5559c289c","source":"CREATE TRIGGER tr ON DATABASE FOR UPDATE_STATISTICS AS RETURN;"}
+{"id":"context/trig-srv-update_statistics","sha256":"e04f5dc572d38eafc4c7148451d938e2a0c18efb3078f83f9e2bd39d1f4bfb22","source":"CREATE TRIGGER tr ON ALL SERVER FOR UPDATE_STATISTICS AS RETURN;"}
+{"id":"context/trig-db-drop_statistics","sha256":"cf5f02df8aa4557f59f27619e0bf55a3e4621a9c8cba9307c956fdc9931fdfb2","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_STATISTICS AS RETURN;"}
+{"id":"context/trig-srv-drop_statistics","sha256":"f17951d4c62de6cddbae1396f44996cbd930aa584970180156897177bd49dc94","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_STATISTICS AS RETURN;"}
+{"id":"context/trig-db-create_synonym","sha256":"7cc0519365d4d1d9fca488434abaa08fc66e13d9ec136fe04418b8270d4716f9","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_SYNONYM AS RETURN;"}
+{"id":"context/trig-srv-create_synonym","sha256":"b9be489abd1402c1f78939fe61b4de72de7da2bdebc6ebdcda3b2bb49afdaee8","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_SYNONYM AS RETURN;"}
+{"id":"context/trig-db-drop_synonym","sha256":"5447efb6fc6e44604d0de196416bd3cda520298054fd65b510681dc6117e0f89","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_SYNONYM AS RETURN;"}
+{"id":"context/trig-srv-drop_synonym","sha256":"4ffa1dd1b2c6547c92187e2e44f9b63bd52fb875cd9f65970df8e35226fad979","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_SYNONYM AS RETURN;"}
+{"id":"context/trig-db-create_view","sha256":"1cba442ed65dd1ecf86e13955d2e69760cf73a3c72d43ebf3a125a79a1c84e11","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_VIEW AS RETURN;"}
+{"id":"context/trig-srv-create_view","sha256":"b3eacca9bee8767dc4d2f3ec0acfa1c51d32392eac7e259a7985e47d42255562","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_VIEW AS RETURN;"}
+{"id":"context/trig-db-alter_view","sha256":"bfb6f0a87e6bbd461fae8f4f5662f6f7c2d74828125c8ccd7113a49f0f72a6b9","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_VIEW AS RETURN;"}
+{"id":"context/trig-srv-alter_view","sha256":"995cdea15bdd5bd08324a804c6bc110a0fbd73a93e2e6d1abb70cc9a5fe521ac","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_VIEW AS RETURN;"}
+{"id":"context/trig-db-drop_view","sha256":"4e9fece8592dee60c10e34dd2998e250bdb07e3c65af38dfa9306082f3f3aea8","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_VIEW AS RETURN;"}
+{"id":"context/trig-srv-drop_view","sha256":"762aec5d414ee0be83ad54f9773fac72f7acb1af775b48f0c88a685318b8e1ef","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_VIEW AS RETURN;"}
+{"id":"context/trig-db-create_procedure","sha256":"acdb1b6baa1d2fa9e19303ebc0d72dc23386a221503bf7d2246c790a5a10b9eb","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_PROCEDURE AS RETURN;"}
+{"id":"context/trig-srv-create_procedure","sha256":"7fe5f26f8180addc571b55fdc3b8152c4c0c56c3a1995732355182181526d8b8","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_PROCEDURE AS RETURN;"}
+{"id":"context/trig-db-alter_procedure","sha256":"6892a4ae2badd9fe9c59eb895f3124eee71ff2ac1308cd6010ae3e0d0b63c931","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_PROCEDURE AS RETURN;"}
+{"id":"context/trig-srv-alter_procedure","sha256":"a37a9e8ecfb6b4415a27c664889e61485184a95a6d060804a24c16c4a871cff1","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_PROCEDURE AS RETURN;"}
+{"id":"context/trig-db-drop_procedure","sha256":"28aa918096faa99507f39d63135c083ffd61cad1d4659c65bcdf852a1ccc4630","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_PROCEDURE AS RETURN;"}
+{"id":"context/trig-srv-drop_procedure","sha256":"b0c82d62ae006a7e57937d8515054649be75c7864d0e1305281020d74dea92fc","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_PROCEDURE AS RETURN;"}
+{"id":"context/trig-db-create_function","sha256":"decd80410ee50771ee568c86bf7821c87613b7487f3ac53e0afc8562f7e9047d","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_FUNCTION AS RETURN;"}
+{"id":"context/trig-srv-create_function","sha256":"2dd6af3121eaaf3fae6938b4e525aa63774fb5e5c29e4bac539c1f2df36d0d1b","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_FUNCTION AS RETURN;"}
+{"id":"context/trig-db-alter_function","sha256":"b0c9bd9ffa64b897604c701fe16237d37d9ffd87b55803cf61226b59540aedcd","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_FUNCTION AS RETURN;"}
+{"id":"context/trig-srv-alter_function","sha256":"5a311b5a94f16f8f0bd1a530086ed8f28bf9c658b1954b118693d454fb85fb1a","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_FUNCTION AS RETURN;"}
+{"id":"context/trig-db-drop_function","sha256":"54a7c73d24a7eeaf1dec1b1a93036772d85d417316c496afe3fdf82fb89304a9","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_FUNCTION AS RETURN;"}
+{"id":"context/trig-srv-drop_function","sha256":"fd4c84e14b2cd6cb0393a86feec992f051429707acc24c31bd395f15a34a5416","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_FUNCTION AS RETURN;"}
+{"id":"context/trig-db-create_trigger","sha256":"7058c7dbd8fa7437b30504a3ec9069091207b37cddecf5835857cf6b71cac3cf","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_TRIGGER AS RETURN;"}
+{"id":"context/trig-srv-create_trigger","sha256":"3cb7be710241743170cbff6e274d43b75350013404bbe809bb32fd4bfa2250b3","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_TRIGGER AS RETURN;"}
+{"id":"context/trig-db-alter_trigger","sha256":"5c77a60522667bf66925f970475a34d6d4a425cca45697347a112702a50c6113","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_TRIGGER AS RETURN;"}
+{"id":"context/trig-srv-alter_trigger","sha256":"9148553be452575a48e4b3a478c9601f73378ec87c9e5b1dbec4dc07fe345e4f","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_TRIGGER AS RETURN;"}
+{"id":"context/trig-db-drop_trigger","sha256":"95fe184fc005a4ae8daadbe6ccc262fd1f6826b7381846e3feb37b951993ab4b","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_TRIGGER AS RETURN;"}
+{"id":"context/trig-srv-drop_trigger","sha256":"d56f54e438973e44cb1605f878ead542a2fa526d05bc1e213e265ba3226bd18d","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_TRIGGER AS RETURN;"}
+{"id":"context/trig-db-create_event_notification","sha256":"213713eefc74db268200a7a4462de65bebe6c210e7fd7ca708bd85a9e01b5ee4","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_EVENT_NOTIFICATION AS RETURN;"}
+{"id":"context/trig-srv-create_event_notification","sha256":"af1990659b8e4d63f301459c4668c0bb25148f933b287ace470f4009a7b51b0a","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_EVENT_NOTIFICATION AS RETURN;"}
+{"id":"context/trig-db-drop_event_notification","sha256":"9e48522dd05c70f4f4524dabc144334e0ac4b0cccfe018cf7806e6bcddbfd81c","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_EVENT_NOTIFICATION AS RETURN;"}
+{"id":"context/trig-srv-drop_event_notification","sha256":"8ce2fb9d28e575df6712a99583403a094c3758030b62d71e36f9cb27268f644d","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_EVENT_NOTIFICATION AS RETURN;"}
+{"id":"context/trig-db-create_type","sha256":"6a9c2346fd1250e11cddba35500a8d956dad7aeb8d9beb0e429a1980d81d290c","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_TYPE AS RETURN;"}
+{"id":"context/trig-srv-create_type","sha256":"56f3964e46a6df604ef3f04920cf14dba5cc119f9210fa527c2e693982673817","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_TYPE AS RETURN;"}
+{"id":"context/trig-db-drop_type","sha256":"e0c63ac68b46ea8a93facf039063bd4fbb66902c943652abc18bd638d23f5d87","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_TYPE AS RETURN;"}
+{"id":"context/trig-srv-drop_type","sha256":"0925e53d17cfb462e4cf7a685e73589ba4704f5e4a88f91ea41ed53b3842cd10","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_TYPE AS RETURN;"}
+{"id":"context/trig-db-create_assembly","sha256":"0e2514ff46449db8d41e5e8815c4867e3eded173a6ca1897ca48b573ce9014e9","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_ASSEMBLY AS RETURN;"}
+{"id":"context/trig-srv-create_assembly","sha256":"e997e9eb1c2c5a51c3c00f59dd8ac5a55588e3e6b7e7e84c7ee79313cc7e56a1","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_ASSEMBLY AS RETURN;"}
+{"id":"context/trig-db-alter_assembly","sha256":"9e616f4635f9107b66026c39a9daa802bb7b01e1694c0ab5e62f4ecc52e6e778","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_ASSEMBLY AS RETURN;"}
+{"id":"context/trig-srv-alter_assembly","sha256":"92ec92eaaf2f892ddf210960a168d64711323d3a85ab53e80bc219d173511195","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_ASSEMBLY AS RETURN;"}
+{"id":"context/trig-db-drop_assembly","sha256":"1066cf98ee1791e50424336165281bed26f25eca5215aa146f84f4dfa180da04","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_ASSEMBLY AS RETURN;"}
+{"id":"context/trig-srv-drop_assembly","sha256":"2c3e75721e87d53ad51d2bc2bba8758bb277db3e470b9a39b7a970053f4984ff","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_ASSEMBLY AS RETURN;"}
+{"id":"context/trig-db-create_user","sha256":"2979c326d57cae328265fca43c3594d72d33d0d317c03ea73b690ba53cfbc901","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_USER AS RETURN;"}
+{"id":"context/trig-srv-create_user","sha256":"0161286fa439497e31f6df536c09f1109f2f0c164694df9abcf64eda89d71b1b","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_USER AS RETURN;"}
+{"id":"context/trig-db-alter_user","sha256":"e5722049c6ca4a961cd144933e11a5b8b2619c61eff17838848773969dfe4d3f","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_USER AS RETURN;"}
+{"id":"context/trig-srv-alter_user","sha256":"c8b88c5ff6892f8934fad1909c3857dc378c8957b3bd4dcf3aa8cfb418c6c9b3","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_USER AS RETURN;"}
+{"id":"context/trig-db-drop_user","sha256":"b88664ed670d025c01478ae8050e39669033d41276f23d3474575aefd8454821","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_USER AS RETURN;"}
+{"id":"context/trig-srv-drop_user","sha256":"0870b9b41c765bf378e635c1e9018e9a78fad9dcec6acb20d232d57fd5b90444","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_USER AS RETURN;"}
+{"id":"context/trig-db-create_role","sha256":"5ee4d214b6daa4cb79b37c98c3e7d1031012dcf61b08cf57ad8d8ab6ed99fee5","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_ROLE AS RETURN;"}
+{"id":"context/trig-srv-create_role","sha256":"07d7636304f7eb88e6bf7af7a491e5d838a80ecb18322ec1837a072303a2527c","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_ROLE AS RETURN;"}
+{"id":"context/trig-db-alter_role","sha256":"019b119dfdf6afcdaaa5a06933e7a64645f50ed273b3d1cab56cd90aecbd7248","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_ROLE AS RETURN;"}
+{"id":"context/trig-srv-alter_role","sha256":"2641d1a8a610bf30b14c766caadcadeb6aa155a4fcfbf14659fabe221dbd91b6","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_ROLE AS RETURN;"}
+{"id":"context/trig-db-drop_role","sha256":"d9f5e1160b453d839c05f99b1ee552ea46101ee489c39d1ee4305f5f3ce027e5","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_ROLE AS RETURN;"}
+{"id":"context/trig-srv-drop_role","sha256":"1db63fd83b0b956c79e868d7116e2c00bf24e1244038fd2db7e4a5af581cef68","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_ROLE AS RETURN;"}
+{"id":"context/trig-db-create_application_role","sha256":"1a9d24c4ebbc6a6297ee207b0ec1900e1bb6112f647dced2fe95e02d15bd5f24","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_APPLICATION_ROLE AS RETURN;"}
+{"id":"context/trig-srv-create_application_role","sha256":"45ccb6b766170682679adc57f824bd8f4f8187a165d77da5cd31bed87f9de766","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_APPLICATION_ROLE AS RETURN;"}
+{"id":"context/trig-db-alter_application_role","sha256":"140e486dd21a071ce6019f687709c742ab6223667120e580f7f374405912a17d","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_APPLICATION_ROLE AS RETURN;"}
+{"id":"context/trig-srv-alter_application_role","sha256":"570dedf679e932e350b0279c805a97253e8f8921042223a53b6ecd1262bdb158","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_APPLICATION_ROLE AS RETURN;"}
+{"id":"context/trig-db-drop_application_role","sha256":"3d3d829f052b307b6c77c5cd3a0546ed32d5195fda095b5a61b9e46063c63661","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_APPLICATION_ROLE AS RETURN;"}
+{"id":"context/trig-srv-drop_application_role","sha256":"a5f6d38e537fbfe3221efe1961ca5f615c0f6ac5cc567d61eb3fdf5afd4df028","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_APPLICATION_ROLE AS RETURN;"}
+{"id":"context/trig-db-create_schema","sha256":"0d7618dabf56361b3aaa83ae9f6c5d2aee389f60b1c5a7c39caab577421ffd64","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_SCHEMA AS RETURN;"}
+{"id":"context/trig-srv-create_schema","sha256":"22e95865f0350f6b67357d173dd140ddd67f9599e54fa651fef7c9b132a4e476","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_SCHEMA AS RETURN;"}
+{"id":"context/trig-db-alter_schema","sha256":"334e320e71485fa6ad9ba8219c70743c10f119cafef61843f91d2009e1acef05","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_SCHEMA AS RETURN;"}
+{"id":"context/trig-srv-alter_schema","sha256":"a71480c1dc44fc37181ac5eb4d95e40d1b74bf5bf6507687048e451fc697395e","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_SCHEMA AS RETURN;"}
+{"id":"context/trig-db-drop_schema","sha256":"ce89d8e43894cb7d7f6a3e70fffa3a7f9fbe2bdb1d7e0d993916fa4ba366508c","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_SCHEMA AS RETURN;"}
+{"id":"context/trig-srv-drop_schema","sha256":"b18ebc03b916f88e1286763016337409ee66190763aa1858f04e9b6c0d000f90","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_SCHEMA AS RETURN;"}
+{"id":"context/trig-db-create_login","sha256":"584f75a7b4d7686ce7f0eaac21b67d7fee366000aec8b245dd9f3887a5cebe13","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_LOGIN AS RETURN;"}
+{"id":"context/trig-srv-create_login","sha256":"d7fe320992f1409878910607c052ae06271806630a3e565ebae186a93dfff4cd","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_LOGIN AS RETURN;"}
+{"id":"context/trig-db-alter_login","sha256":"b5e89ef0fc4e4ed46bc640fd9a152c575d462a16fc1ccdba38f1f9c2dd5069b7","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_LOGIN AS RETURN;"}
+{"id":"context/trig-srv-alter_login","sha256":"0d9fdb572c71423e6e2202406b5494719f487f596f07a40dec061d2d3caa67e0","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_LOGIN AS RETURN;"}
+{"id":"context/trig-db-drop_login","sha256":"ce6fdf4e70d7dee6d4e591ec6ad6bc06ca13776ad9c99effb8cb39da8d1b1ddc","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_LOGIN AS RETURN;"}
+{"id":"context/trig-srv-drop_login","sha256":"c2dca49c1fe401895a9f8f18689158ee3f086c6b805879f3e77671748f8638d6","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_LOGIN AS RETURN;"}
+{"id":"context/trig-db-create_message_type","sha256":"8036d67a022b2073d65868c227ecb44ba0d9f0d50fb829cd524d15922ce289c5","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_MESSAGE_TYPE AS RETURN;"}
+{"id":"context/trig-srv-create_message_type","sha256":"79cafd9178c18393ff9181489f8e2689ebfccac560dddf8f98879a90f8806435","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_MESSAGE_TYPE AS RETURN;"}
+{"id":"context/trig-db-alter_message_type","sha256":"42492147fb4c77746d0936a4998196084ff3d94043e0324e9914284edca9d674","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_MESSAGE_TYPE AS RETURN;"}
+{"id":"context/trig-srv-alter_message_type","sha256":"27ec7cf7f5377d7aea0e6c0ce4162b9570e57f07dbacbf13bdcdf55fabacb3ea","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_MESSAGE_TYPE AS RETURN;"}
+{"id":"context/trig-db-drop_message_type","sha256":"334f555c5218dccc48ad933f675d2f5d872641c89c7d967edfead6e6981d360f","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_MESSAGE_TYPE AS RETURN;"}
+{"id":"context/trig-srv-drop_message_type","sha256":"3c255f3a791d0fa49cbb15e4a7f09460c63db8e675f860cfde99c5010bd6569f","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_MESSAGE_TYPE AS RETURN;"}
+{"id":"context/trig-db-create_contract","sha256":"7fa4d70dd62c62e39428d799aeb16bbf7c17a924857fbcd7921b65e40e9f98bd","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_CONTRACT AS RETURN;"}
+{"id":"context/trig-srv-create_contract","sha256":"16097962a680d1edb67089abc5dae7cc8bf98bf0be5d374cb9f032fb2b9eccc8","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_CONTRACT AS RETURN;"}
+{"id":"context/trig-db-drop_contract","sha256":"66875fe046fb722801c00419274731a5ddc8c63e976a2060f0db1bab25dabe07","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_CONTRACT AS RETURN;"}
+{"id":"context/trig-srv-drop_contract","sha256":"a8faa4001310af84e1e3c4f1576515c78137f03c02fffbc6a275b03717e7b9dd","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_CONTRACT AS RETURN;"}
+{"id":"context/trig-db-create_queue","sha256":"95d15755d6cf750fd5b206c6b2ccaa0a1f367d5a72b4e2e47b8516c256313b94","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_QUEUE AS RETURN;"}
+{"id":"context/trig-srv-create_queue","sha256":"ab58c9d5015d415dc4566d628f4bd7a8a5d3f5fb30e02ab8a07e4e4326d736da","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_QUEUE AS RETURN;"}
+{"id":"context/trig-db-alter_queue","sha256":"4c26e4059c9f1c85c465c29614fa0f7640764a8ddb8ffc12b7cfc35d52f241e6","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_QUEUE AS RETURN;"}
+{"id":"context/trig-srv-alter_queue","sha256":"5868f4d02a04e9f854f72ae0bb3d80fd8db940e59113e902944585b8a9f6eaf9","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_QUEUE AS RETURN;"}
+{"id":"context/trig-db-drop_queue","sha256":"cf73c8a3f4e74dda28c7602fd9a30357ca50f47f30ab76ec81e3be2ae409f7aa","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_QUEUE AS RETURN;"}
+{"id":"context/trig-srv-drop_queue","sha256":"11b4051f4cd0de1ba3db69f5b5ab400b5a139445e8703b852bcc4884539eef05","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_QUEUE AS RETURN;"}
+{"id":"context/trig-db-create_service","sha256":"57c22e0cf80b78bce9590681af20bc5ae71423117b74d98a952bc0fd640be17e","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_SERVICE AS RETURN;"}
+{"id":"context/trig-srv-create_service","sha256":"ea21d512e3bdfbffb7cee364477b5c388b45ae619ddb18f35dcfdd64e1b0aa37","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_SERVICE AS RETURN;"}
+{"id":"context/trig-db-alter_service","sha256":"3de3d95d0dc69dad186034b12860ceaa0890d6349fdede1ace0a975b6707c5d9","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_SERVICE AS RETURN;"}
+{"id":"context/trig-srv-alter_service","sha256":"f6ba710bb8dd04e1655e3b64fbdb51c34a896a9cdfea5e12a5403766699c4439","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_SERVICE AS RETURN;"}
+{"id":"context/trig-db-drop_service","sha256":"3ee817d5e529d371256dc0b7180d9e2d1d68f34f48073a47c865e4e8a00133f9","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_SERVICE AS RETURN;"}
+{"id":"context/trig-srv-drop_service","sha256":"49b14bca65e19d36765883245fd0cba8d77970f948658bfdb1b6ab37bdda2c4e","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_SERVICE AS RETURN;"}
+{"id":"context/trig-db-create_route","sha256":"8ce8254303433531b0dd639a66ecc516070f52be4e896c2392ce019eeaa95552","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_ROUTE AS RETURN;"}
+{"id":"context/trig-srv-create_route","sha256":"8ee5ef18112c99fb5c59962ff6e78f3e63e56c3916be524af694cb7ce7d9e0a6","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_ROUTE AS RETURN;"}
+{"id":"context/trig-db-alter_route","sha256":"485bb12459d2be1950927ccc0f3f7c89b967d07969b1afc0c7ccd78983c19a30","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_ROUTE AS RETURN;"}
+{"id":"context/trig-srv-alter_route","sha256":"f38c7cda05e4aa4dff94ac712b043f24d895878dcab218c11c143c94a0449315","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_ROUTE AS RETURN;"}
+{"id":"context/trig-db-drop_route","sha256":"2d9651ad514a11a4069c703d22a2e6976e964c3533d22b7e5c0292c662ffff58","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_ROUTE AS RETURN;"}
+{"id":"context/trig-srv-drop_route","sha256":"a780b8775a4faf62f1e193d88cb45299ab69f2b8fbd0526d41392796f370679f","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_ROUTE AS RETURN;"}
+{"id":"context/trig-db-grant_server","sha256":"e86cdceccc7aaa356fbc419b1f2fbe4ff3b11f9eed2514a27991e112ee4e0d05","source":"CREATE TRIGGER tr ON DATABASE FOR GRANT_SERVER AS RETURN;"}
+{"id":"context/trig-srv-grant_server","sha256":"944c515bf4cfc1de6f65718f8d9de32fb53e7d630f9a24d8eecd37a184f05dc5","source":"CREATE TRIGGER tr ON ALL SERVER FOR GRANT_SERVER AS RETURN;"}
+{"id":"context/trig-db-deny_server","sha256":"d186d08625fed5236f601c25decb9567b5aac4fded4620d754a9c2204a0e4241","source":"CREATE TRIGGER tr ON DATABASE FOR DENY_SERVER AS RETURN;"}
+{"id":"context/trig-srv-deny_server","sha256":"a431e062791346a6e775238e4eb5c036b105f8cef5d46048b5da9c80f9db0352","source":"CREATE TRIGGER tr ON ALL SERVER FOR DENY_SERVER AS RETURN;"}
+{"id":"context/trig-db-revoke_server","sha256":"3baaf2bfc7efd4a21e45550b9b68caba21eec43db9e74e227f8cfb4b24ceecf9","source":"CREATE TRIGGER tr ON DATABASE FOR REVOKE_SERVER AS RETURN;"}
+{"id":"context/trig-srv-revoke_server","sha256":"9f916b64dbfd579e066258033569251e842e031053127a69073fc68df03ff2f7","source":"CREATE TRIGGER tr ON ALL SERVER FOR REVOKE_SERVER AS RETURN;"}
+{"id":"context/trig-db-grant_database","sha256":"eb0d4297f4663b8707467d218201aec6c2684b356ae6ec8e7ad3f33bd87a12fb","source":"CREATE TRIGGER tr ON DATABASE FOR GRANT_DATABASE AS RETURN;"}
+{"id":"context/trig-srv-grant_database","sha256":"256bde0eb95ee8db78e40672531e18eeb42956df8a80a1a6cb853730a54a7a6c","source":"CREATE TRIGGER tr ON ALL SERVER FOR GRANT_DATABASE AS RETURN;"}
+{"id":"context/trig-db-deny_database","sha256":"1e042a6c7efc319c22977f8937d28c12690369bfb82a31aa58697f3c359c74b4","source":"CREATE TRIGGER tr ON DATABASE FOR DENY_DATABASE AS RETURN;"}
+{"id":"context/trig-srv-deny_database","sha256":"8a3f554bf07c6d0497775f22348ccc9ade4976013a7a4c97e076fedc68fb6876","source":"CREATE TRIGGER tr ON ALL SERVER FOR DENY_DATABASE AS RETURN;"}
+{"id":"context/trig-db-revoke_database","sha256":"7553c358d6fce7319813b484efd02d54f1328661abc2d51238f8c13fcd21519c","source":"CREATE TRIGGER tr ON DATABASE FOR REVOKE_DATABASE AS RETURN;"}
+{"id":"context/trig-srv-revoke_database","sha256":"5e33636ec22984812accaedda1f35ca4f8367ef4db16a8c25670ed5d765a82fe","source":"CREATE TRIGGER tr ON ALL SERVER FOR REVOKE_DATABASE AS RETURN;"}
+{"id":"context/trig-db-create_remote_service_binding","sha256":"c29c8a612729e32da97ac62ac6d6f733e71a459063e8d0d97625b96a252f7563","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_REMOTE_SERVICE_BINDING AS RETURN;"}
+{"id":"context/trig-srv-create_remote_service_binding","sha256":"9734dafcf95042929b0946a3828d23ce7af8405e23423d2803546baa96b1bc67","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_REMOTE_SERVICE_BINDING AS RETURN;"}
+{"id":"context/trig-db-alter_remote_service_binding","sha256":"f35c623007e1dfb0b7e48fd21339703ce6a037fc7940c452e1de81998dc17081","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_REMOTE_SERVICE_BINDING AS RETURN;"}
+{"id":"context/trig-srv-alter_remote_service_binding","sha256":"d0ebe53d246bdf53b61176d9c0a877c81e2ae59606a146bfdfef03ceb978bddb","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_REMOTE_SERVICE_BINDING AS RETURN;"}
+{"id":"context/trig-db-drop_remote_service_binding","sha256":"8fb73e52cbabc8bc8e8fc9126106f93196d5306f44d883e1de824401297e92ea","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_REMOTE_SERVICE_BINDING AS RETURN;"}
+{"id":"context/trig-srv-drop_remote_service_binding","sha256":"ace4883ebd53bbe46880dcb28db475217d35ef3aded8badb878ff3bda5b88f58","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_REMOTE_SERVICE_BINDING AS RETURN;"}
+{"id":"context/trig-db-create_xml_schema_collection","sha256":"60857b42ead23a84c25eec12c9bf386beef8932a56f559c84156046f612ac9ec","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_XML_SCHEMA_COLLECTION AS RETURN;"}
+{"id":"context/trig-srv-create_xml_schema_collection","sha256":"4dde2b8848e25455d2ce28f037d7a0065a28119baaf1d07ef277419ede8e7675","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_XML_SCHEMA_COLLECTION AS RETURN;"}
+{"id":"context/trig-db-alter_xml_schema_collection","sha256":"a6b4e5d5da94e869d6c148e54f3ccf1b8eaf9a75db3b95b712a3fd625c2091fd","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_XML_SCHEMA_COLLECTION AS RETURN;"}
+{"id":"context/trig-srv-alter_xml_schema_collection","sha256":"92eadd5f2eec0b326a59ac07256212b59944f29493ff2353ae8d7c8b504abbde","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_XML_SCHEMA_COLLECTION AS RETURN;"}
+{"id":"context/trig-db-drop_xml_schema_collection","sha256":"5d9fbf06c2c839069556a085b1dd57c78d90276a13ee6c617a2895748d8909f0","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_XML_SCHEMA_COLLECTION AS RETURN;"}
+{"id":"context/trig-srv-drop_xml_schema_collection","sha256":"f114d3bd9d1bce391cdd7c74ac590b1bd3f7d3cca4c1242a73ee74e485b4aa18","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_XML_SCHEMA_COLLECTION AS RETURN;"}
+{"id":"context/trig-db-create_endpoint","sha256":"460b037e42fcfaa6281d1a53d0bdb21925b05d8464825e3a0b3c88e403f55d0f","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_ENDPOINT AS RETURN;"}
+{"id":"context/trig-srv-create_endpoint","sha256":"f72fb8215993019a96008848d9da6b2abb5f779590a0030b73f5817cc6259ea5","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_ENDPOINT AS RETURN;"}
+{"id":"context/trig-db-alter_endpoint","sha256":"5e20e2f7cfd042052ad13752894ccc778effe79260aa3bb2fdada07bd5d675c4","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_ENDPOINT AS RETURN;"}
+{"id":"context/trig-srv-alter_endpoint","sha256":"fd0ce02c3954e126200170d79c2e77f0f582faf37d781edf978cdff81580abc0","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_ENDPOINT AS RETURN;"}
+{"id":"context/trig-db-drop_endpoint","sha256":"895883301788ec676e2e4c3e57ffe9f1e29a2bbeba2fed5aceb1f87cb3c5404e","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_ENDPOINT AS RETURN;"}
+{"id":"context/trig-srv-drop_endpoint","sha256":"b95420e56f26d86ac6dc7847eb9150029910800bad501f78c064b6795a1424c4","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_ENDPOINT AS RETURN;"}
+{"id":"context/trig-db-create_partition_function","sha256":"14db744b03321565ed8a4555c0e091093692cb4d752f2b98ec9b5051ef2cf990","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_PARTITION_FUNCTION AS RETURN;"}
+{"id":"context/trig-srv-create_partition_function","sha256":"fcdabf84eeb5ce4ed7abe1be5876caf68db2bc19d385d9eae4497698e3e6aaef","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_PARTITION_FUNCTION AS RETURN;"}
+{"id":"context/trig-db-alter_partition_function","sha256":"d1ed1cd47c861e2b4d1a8c58422fa83ac22a2ff118ddc17a8b5b0285e03bd4e2","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_PARTITION_FUNCTION AS RETURN;"}
+{"id":"context/trig-srv-alter_partition_function","sha256":"08f557d662a505fc5f2b0f38a96389caf07effb8045c6ad95291d4d7aa1a4128","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_PARTITION_FUNCTION AS RETURN;"}
+{"id":"context/trig-db-drop_partition_function","sha256":"f737c68025004471547b8a25331be6644c00c1f4814c2ac274cf4c9e5228c6e3","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_PARTITION_FUNCTION AS RETURN;"}
+{"id":"context/trig-srv-drop_partition_function","sha256":"96ea4307e7e1439a63265b4c1ceaaf1e7c7e120f65fb26936b1f368d3ed96e2b","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_PARTITION_FUNCTION AS RETURN;"}
+{"id":"context/trig-db-create_partition_scheme","sha256":"4763d7ee2cfacc4bdeb53db53cdd86a58d60c0ba2b0c7313ba4e22fc71221781","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_PARTITION_SCHEME AS RETURN;"}
+{"id":"context/trig-srv-create_partition_scheme","sha256":"28c80f78b7e3c489de505e922ced3343a74c76fb0cbdb8868cf45af19bafc17f","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_PARTITION_SCHEME AS RETURN;"}
+{"id":"context/trig-db-alter_partition_scheme","sha256":"2cbc4582b6b0de11aea5f74dd3de8159d5b38b988070f05813ff73177e799e2b","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_PARTITION_SCHEME AS RETURN;"}
+{"id":"context/trig-srv-alter_partition_scheme","sha256":"8335fe2a23b991dfb8b00011f5ca92305584449e7cdbf1c49c7f057833780402","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_PARTITION_SCHEME AS RETURN;"}
+{"id":"context/trig-db-drop_partition_scheme","sha256":"71b3b745cb7ea4d5cbd5a8ec28383c4d808a97809e4bff9cbb8527c649d256bb","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_PARTITION_SCHEME AS RETURN;"}
+{"id":"context/trig-srv-drop_partition_scheme","sha256":"d2bbae12e629d518703501d79a87794ceea3115e2223eff79d58b3c4666aa6b6","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_PARTITION_SCHEME AS RETURN;"}
+{"id":"context/trig-db-create_certificate","sha256":"040c49f4dd4bf8f7c7b14e89a893e1bb3455b16b7e1683476ff40e822b83a572","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_CERTIFICATE AS RETURN;"}
+{"id":"context/trig-srv-create_certificate","sha256":"6aadf76219c3abcd7d5cf7cd9230695a3e0f602f07e66470b29eab901f6e7f57","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_CERTIFICATE AS RETURN;"}
+{"id":"context/trig-db-alter_certificate","sha256":"95472a88eebb0a6987038be44ce29dbf3d954f3dc3a3202c3434e41574f49923","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_CERTIFICATE AS RETURN;"}
+{"id":"context/trig-srv-alter_certificate","sha256":"f4095d1c32851b7ab2db9173e12ed73da99f0291bc4ebd27119e3a8c0cd6da49","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_CERTIFICATE AS RETURN;"}
+{"id":"context/trig-db-drop_certificate","sha256":"0275dedafd71452f4bf7c654568745cf39e19642bc28a153c7b0605eb2310d48","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_CERTIFICATE AS RETURN;"}
+{"id":"context/trig-srv-drop_certificate","sha256":"680137b31baf5465385a632eb8253929c983daf80991025d09b1953bb2f3f9d2","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_CERTIFICATE AS RETURN;"}
+{"id":"context/trig-db-create_database","sha256":"c9dd89c1fedfa2668de46ec51a48ee2601487f1d85df34782bef907ded9c89d9","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_DATABASE AS RETURN;"}
+{"id":"context/trig-srv-create_database","sha256":"850fbc1d68c04a30ee7d80e3c4a8e59fe30215e2c9fe578db8d398510b912353","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_DATABASE AS RETURN;"}
+{"id":"context/trig-db-alter_database","sha256":"908f55437a29eea1849a283de4c4d7f01b28ebc7d284e7d0605be610a1628b2d","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_DATABASE AS RETURN;"}
+{"id":"context/trig-srv-alter_database","sha256":"39b9be2f06b37a038f1fda239692361e66c72da357dc9392f9175d8db5eee19a","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_DATABASE AS RETURN;"}
+{"id":"context/trig-db-drop_database","sha256":"a7ad4f6fd87be6268a9dbd17407a696054ce89f94b8fc31cac5536f8dec91fa9","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_DATABASE AS RETURN;"}
+{"id":"context/trig-srv-drop_database","sha256":"dc69cfe1a7e8276e7dad9059b5119cb3e6ba1c86b4f9cd415a48320421609d5c","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_DATABASE AS RETURN;"}
+{"id":"context/trig-db-alter_authorization_server","sha256":"2fca1810c6f2c49d923e517c18de631b94b2f815efc0596fa1a12a0a256b963f","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_AUTHORIZATION_SERVER AS RETURN;"}
+{"id":"context/trig-srv-alter_authorization_server","sha256":"579f01ffb99eeb80a3ff1e9f7ed2b22502f69a9366879bc1722d822cc78f5aed","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_AUTHORIZATION_SERVER AS RETURN;"}
+{"id":"context/trig-db-alter_authorization_database","sha256":"1941953bdd23efe4da2ea3eb0829f0c0c596fb12d9f29452ce9e707957ecd4d9","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_AUTHORIZATION_DATABASE AS RETURN;"}
+{"id":"context/trig-srv-alter_authorization_database","sha256":"9981b6e6cdfac32c2b2f5621149bd7fd29b16326ac47538badf43d3b973e5941","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_AUTHORIZATION_DATABASE AS RETURN;"}
+{"id":"context/trig-db-create_xml_index","sha256":"1389b4af7b867aef7282a4e89cd4e1db3e7173d3b900e7741b482b7bda7aa837","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_XML_INDEX AS RETURN;"}
+{"id":"context/trig-srv-create_xml_index","sha256":"1aba028077f78096d6d0121e0e18e20446fa482c2753943d7b75b64fc5c557e1","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_XML_INDEX AS RETURN;"}
+{"id":"context/trig-db-add_role_member","sha256":"04546c1657db12e585daced216512633a32b7a98ce732ca493b7ff8ddf35360e","source":"CREATE TRIGGER tr ON DATABASE FOR ADD_ROLE_MEMBER AS RETURN;"}
+{"id":"context/trig-srv-add_role_member","sha256":"d664f42ceeb490d548e45ab2d2fc30eac326b305688c29f613dc7cf7b9ff91f2","source":"CREATE TRIGGER tr ON ALL SERVER FOR ADD_ROLE_MEMBER AS RETURN;"}
+{"id":"context/trig-db-drop_role_member","sha256":"9167816402e39bb1e0cd565737b01397921ddafae13f1f73ba21a93553932c71","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_ROLE_MEMBER AS RETURN;"}
+{"id":"context/trig-srv-drop_role_member","sha256":"d9ee92ffeae6bc05e21294433a5f5b7ac6ce4331be00fdb6a3bcb9ea8100d26e","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_ROLE_MEMBER AS RETURN;"}
+{"id":"context/trig-db-add_server_role_member","sha256":"4b683b386e775d46e243e2363f3b6f8ea7fe4accd7eae5454817c251b1dbda00","source":"CREATE TRIGGER tr ON DATABASE FOR ADD_SERVER_ROLE_MEMBER AS RETURN;"}
+{"id":"context/trig-srv-add_server_role_member","sha256":"04f13ee7fe4034483ba4c78224cd61829ec9091456d887de9d50e02677726a86","source":"CREATE TRIGGER tr ON ALL SERVER FOR ADD_SERVER_ROLE_MEMBER AS RETURN;"}
+{"id":"context/trig-db-drop_server_role_member","sha256":"982fd79c21d9f0fb36bf2ebc8b948abda4990ba71552871581e3f74cf0425e8c","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_SERVER_ROLE_MEMBER AS RETURN;"}
+{"id":"context/trig-srv-drop_server_role_member","sha256":"336ddca3d8062bb9577cc2b315b9f755369ccd8d827f2403d9017a0edd9a8611","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_SERVER_ROLE_MEMBER AS RETURN;"}
+{"id":"context/trig-db-alter_extended_property","sha256":"7b9d7eb0b492ff01f16ab4190ab7834cbaf5bd166941cd3f6a391b93e1355832","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_EXTENDED_PROPERTY AS RETURN;"}
+{"id":"context/trig-srv-alter_extended_property","sha256":"ef0ea776952820f235b09b188192c09d8352d4d1a533b13266e64f878865dfd7","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_EXTENDED_PROPERTY AS RETURN;"}
+{"id":"context/trig-db-alter_fulltext_catalog","sha256":"096438806ce51d6d418e68f70a3e1c759f3866982e1f73640097c85a11b26f16","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_FULLTEXT_CATALOG AS RETURN;"}
+{"id":"context/trig-srv-alter_fulltext_catalog","sha256":"25080c32eacea61e387a0af046ec2b805a4751e23cb4b1fa563da92cd41bb31e","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_FULLTEXT_CATALOG AS RETURN;"}
+{"id":"context/trig-db-alter_fulltext_index","sha256":"40b8733ede8ddb8ea3b6ba48ba15b58aba779a5e34b4a83c7c5dfb986640c398","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_FULLTEXT_INDEX AS RETURN;"}
+{"id":"context/trig-srv-alter_fulltext_index","sha256":"cb0902fafa7cab6b5b89099384808292b272739b58dd2ba70cf0a1575aada06e","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_FULLTEXT_INDEX AS RETURN;"}
+{"id":"context/trig-db-alter_instance","sha256":"16ef1b7d932c3277101e1d42bd4447af935dffa087b39d69cd7810c3312e00c6","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_INSTANCE AS RETURN;"}
+{"id":"context/trig-srv-alter_instance","sha256":"e911599814c0d68f442c8f29befb7b04cdaefaa972e74d0e43ce95d55d4d621b","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_INSTANCE AS RETURN;"}
+{"id":"context/trig-db-alter_message","sha256":"ebe07bbb25d7c773c81b83de393d752efbaeb1e68cb02855580d7b7ce60cbfc6","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_MESSAGE AS RETURN;"}
+{"id":"context/trig-srv-alter_message","sha256":"33bbb1875c5f389619f1a6c4dbd1be46bdef711509d824fab14b2575341fff7d","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_MESSAGE AS RETURN;"}
+{"id":"context/trig-db-alter_plan_guide","sha256":"5bd620667eea190f594c3680583391dcfe0c054c61aebc8a4393f1dddf3e5502","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_PLAN_GUIDE AS RETURN;"}
+{"id":"context/trig-srv-alter_plan_guide","sha256":"7e05b6277d322c6efbb7c54732350bf96627fab6c3bf922fe06455b9cb5d0a6f","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_PLAN_GUIDE AS RETURN;"}
+{"id":"context/trig-db-alter_remote_server","sha256":"2a3e3133706d25773bc74719b227876a561d2137a80ee18a8bbab007124ebc1e","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_REMOTE_SERVER AS RETURN;"}
+{"id":"context/trig-srv-alter_remote_server","sha256":"78ef620d2c220cdfda0f1fcdeda7e28ee75d85ca4f48e6bc21c728dd9cd94162","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_REMOTE_SERVER AS RETURN;"}
+{"id":"context/trig-db-bind_default","sha256":"b1a098d157a8b250a7d8d768cb653b074b3b68388e0dc98a9d6f10fa7c934cb8","source":"CREATE TRIGGER tr ON DATABASE FOR BIND_DEFAULT AS RETURN;"}
+{"id":"context/trig-srv-bind_default","sha256":"e5179969e931d75518ce45f11c470d35e01a397ed439d0d7e15174f309366621","source":"CREATE TRIGGER tr ON ALL SERVER FOR BIND_DEFAULT AS RETURN;"}
+{"id":"context/trig-db-bind_rule","sha256":"8eb4614aaa834bde1da7e200853941bf4fe52eb72692bafe9982e59f265dd844","source":"CREATE TRIGGER tr ON DATABASE FOR BIND_RULE AS RETURN;"}
+{"id":"context/trig-srv-bind_rule","sha256":"28c7e76161be4758726022c3cc0f747bd5ec76516bd8476e52a80b544a25b0a5","source":"CREATE TRIGGER tr ON ALL SERVER FOR BIND_RULE AS RETURN;"}
+{"id":"context/trig-db-create_default","sha256":"06f761a3963b8c75bf454f9cd937032bb036431594292cd086868c81cd6a7000","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_DEFAULT AS RETURN;"}
+{"id":"context/trig-srv-create_default","sha256":"1080620feb6783507be61092446f1a80d1d77104ff871a2abdc87a7597cfe78b","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_DEFAULT AS RETURN;"}
+{"id":"context/trig-db-create_extended_procedure","sha256":"a11c6895f2b0e442a2cef9cbed577151c1a33274dae6449655b305b27f58d15f","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_EXTENDED_PROCEDURE AS RETURN;"}
+{"id":"context/trig-srv-create_extended_procedure","sha256":"b26aa1cc732276c7839a2448fedbfe79ace4d46ff8bae3c3f7e9d8273d94eacf","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_EXTENDED_PROCEDURE AS RETURN;"}
+{"id":"context/trig-db-create_extended_property","sha256":"29e401f300fba99622da0634eb88686be03283b1712a7a6c8b634ef0f146049a","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_EXTENDED_PROPERTY AS RETURN;"}
+{"id":"context/trig-srv-create_extended_property","sha256":"1590de97836142199550fa00b1a17447983c2444113ab56d6a426e5f2413c403","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_EXTENDED_PROPERTY AS RETURN;"}
+{"id":"context/trig-db-create_fulltext_catalog","sha256":"b40eff15b88647abc90b5d37f35263b630bdebfa14e48a82f9c41b32acc9ba21","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_FULLTEXT_CATALOG AS RETURN;"}
+{"id":"context/trig-srv-create_fulltext_catalog","sha256":"e65f826d4a0dcc2ec565f291a645c0c8a7d060e1fb8ad44cf3ac40a1f88f22fc","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_FULLTEXT_CATALOG AS RETURN;"}
+{"id":"context/trig-db-create_fulltext_index","sha256":"d30da9156ef04535d8a50cd94dd82049665abcc2ae73f330e88633010d37fabc","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_FULLTEXT_INDEX AS RETURN;"}
+{"id":"context/trig-srv-create_fulltext_index","sha256":"15300362ddf4e4f0bc448a31104ee84a8f22abf9f364d800ba31bfe49bc95652","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_FULLTEXT_INDEX AS RETURN;"}
+{"id":"context/trig-db-create_linked_server","sha256":"d78400d64037504488a6ac9f958f0dac3ca456e4df80ab0c5a8aeff18b23d4da","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_LINKED_SERVER AS RETURN;"}
+{"id":"context/trig-srv-create_linked_server","sha256":"8037e1bf318d2e5410ed5d8cc5953e4fc55b72b7576ba95addda075198f591b3","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_LINKED_SERVER AS RETURN;"}
+{"id":"context/trig-db-create_linked_server_login","sha256":"4c880be763a7a99fdcc69f41231d89b626de0785cd0f41a645f8e09bae20c1f0","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_LINKED_SERVER_LOGIN AS RETURN;"}
+{"id":"context/trig-srv-create_linked_server_login","sha256":"749687b2bd4c5086d218ec471d3cb7ab8496fe01465402ca165c264982a0b47b","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_LINKED_SERVER_LOGIN AS RETURN;"}
+{"id":"context/trig-db-create_message","sha256":"c13c9715dbbeb307bc0e8a26c41c04f4b79c3df4fa4a562199f247b33296a30c","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_MESSAGE AS RETURN;"}
+{"id":"context/trig-srv-create_message","sha256":"aeb5e46126163a1fdbf8aa9ea94a192e04ff9e3dfc902c9163076855a20ebff1","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_MESSAGE AS RETURN;"}
+{"id":"context/trig-db-create_plan_guide","sha256":"f935c6b090584448630bd10869db98d9221e162ac1c1f01275c8c9197dc25967","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_PLAN_GUIDE AS RETURN;"}
+{"id":"context/trig-srv-create_plan_guide","sha256":"de7d307a91b20c01532e97ef62f8e8aa026b443cd912d2104800929177fc68fc","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_PLAN_GUIDE AS RETURN;"}
+{"id":"context/trig-db-create_rule","sha256":"a996a53fa24142e38b8292165baf43812e49d0e9f6000851032613824387f65d","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_RULE AS RETURN;"}
+{"id":"context/trig-srv-create_rule","sha256":"cbe42c9defef1fff26c5aeba9f29aab8b2ce65d4b03c1ce4c22838725ca606f0","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_RULE AS RETURN;"}
+{"id":"context/trig-db-create_remote_server","sha256":"282ec104a6edb09695d63c1893cc7a276c91435104c329c56e8a7b42e7749359","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_REMOTE_SERVER AS RETURN;"}
+{"id":"context/trig-srv-create_remote_server","sha256":"3edac279170f67bfce78b5d6358b84d90a97c50f0213cabe9cf7a65f57f9af36","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_REMOTE_SERVER AS RETURN;"}
+{"id":"context/trig-db-drop_default","sha256":"9a76b0c31164ffde979080a63f8067daafa67f0514b4c6fe7f8f80cfddf72351","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_DEFAULT AS RETURN;"}
+{"id":"context/trig-srv-drop_default","sha256":"88096ab5b7594edfac06ab4d986e90bc3237df45eac356f12353069f32113d39","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_DEFAULT AS RETURN;"}
+{"id":"context/trig-db-drop_extended_procedure","sha256":"e25edc3dd071274e31c44b56ab67ef34b9aa3269e8decbc82c20ae70f8577bf1","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_EXTENDED_PROCEDURE AS RETURN;"}
+{"id":"context/trig-srv-drop_extended_procedure","sha256":"9d3015e22f53cc05ae610a296a701fcc9ffd410e0557ac0b78a822c88f0bcb1b","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_EXTENDED_PROCEDURE AS RETURN;"}
+{"id":"context/trig-db-drop_extended_property","sha256":"ae5a43f62ee24814e866ea563c19bbf09bfb9fa0027a091aab7a24b866ca26dd","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_EXTENDED_PROPERTY AS RETURN;"}
+{"id":"context/trig-srv-drop_extended_property","sha256":"f71107e5387bb7da7cf57f019503c58a8db75f66646fd16683bfcc9b125e46dc","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_EXTENDED_PROPERTY AS RETURN;"}
+{"id":"context/trig-db-drop_fulltext_catalog","sha256":"7141e035c950159cda6a5a5378d3dd2c8565da006848659b28b35decbe092296","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_FULLTEXT_CATALOG AS RETURN;"}
+{"id":"context/trig-srv-drop_fulltext_catalog","sha256":"e6ca7a186ca6daf6114ce4d521a28b5f3b1347073a6befbe84b0054cba59e49e","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_FULLTEXT_CATALOG AS RETURN;"}
+{"id":"context/trig-db-drop_fulltext_index","sha256":"52f6ade9fa8a3010d50d714506a9ad64af0192d96e3ab221db7622bc5001dc97","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_FULLTEXT_INDEX AS RETURN;"}
+{"id":"context/trig-srv-drop_fulltext_index","sha256":"a5fce60297d52d4c65c9dff684c6aef522e0c28309560ad3483eea1fe292363a","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_FULLTEXT_INDEX AS RETURN;"}
+{"id":"context/trig-db-drop_linked_server_login","sha256":"0436d2dc06cccff3f1f4e5c93224c72defcda99d17f8ee71d67edd6ac28a4e14","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_LINKED_SERVER_LOGIN AS RETURN;"}
+{"id":"context/trig-srv-drop_linked_server_login","sha256":"f31364d1fc9887b7dd8de29380eff05b79128d1105018fc3f999cb0662646793","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_LINKED_SERVER_LOGIN AS RETURN;"}
+{"id":"context/trig-db-drop_message","sha256":"caa9b42d9c9defd646f91dea9a77310a1b3a85631930532f89b166f076758494","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_MESSAGE AS RETURN;"}
+{"id":"context/trig-srv-drop_message","sha256":"819cfb4fb5975099485e17b37f740a46217ab90094eae2f0aa4a9fb5effc8079","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_MESSAGE AS RETURN;"}
+{"id":"context/trig-db-drop_plan_guide","sha256":"0580ee0c765983681fa99b108625bf3410391db69f561d565baec53a2dff41ed","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_PLAN_GUIDE AS RETURN;"}
+{"id":"context/trig-srv-drop_plan_guide","sha256":"0416aef1de8aa6457cffa37945a668566419e8426d029b6ea3b77566f36dc073","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_PLAN_GUIDE AS RETURN;"}
+{"id":"context/trig-db-drop_rule","sha256":"e84e10d248d13eb376c4583a546b65d7e7027927bcbe7accc9e1576bd014e398","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_RULE AS RETURN;"}
+{"id":"context/trig-srv-drop_rule","sha256":"2915520f9a5db115ab3662a0633830274af46a0d4a2640d5dea9108c8bad7ed9","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_RULE AS RETURN;"}
+{"id":"context/trig-db-drop_remote_server","sha256":"0fc074988c9e4cbd9554512b3a3e866442b24da7ed5a6980e42cbf7b3e4296dd","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_REMOTE_SERVER AS RETURN;"}
+{"id":"context/trig-srv-drop_remote_server","sha256":"82068594209597015921cff262d0b2c464b5fd2a790da8d55de6dbf88dd888dc","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_REMOTE_SERVER AS RETURN;"}
+{"id":"context/trig-db-rename","sha256":"15bfc491bdab6744cd44474cc00fe682b8efac4e4efc5496a4eaad233be5090f","source":"CREATE TRIGGER tr ON DATABASE FOR RENAME AS RETURN;"}
+{"id":"context/trig-srv-rename","sha256":"2027dc3b9d11ca3057310c0f6fcf763c72ea96c2ca48d5b20e25e183a777ed5c","source":"CREATE TRIGGER tr ON ALL SERVER FOR RENAME AS RETURN;"}
+{"id":"context/trig-db-unbind_default","sha256":"469f9a48e5c596b496d9d5f4e7d43aacd513cd9e02d82500530adcbd69ef3103","source":"CREATE TRIGGER tr ON DATABASE FOR UNBIND_DEFAULT AS RETURN;"}
+{"id":"context/trig-srv-unbind_default","sha256":"285c11f113edf50bf8f396f930af995de8425a213eb5ea894aa9f75fe37aca2a","source":"CREATE TRIGGER tr ON ALL SERVER FOR UNBIND_DEFAULT AS RETURN;"}
+{"id":"context/trig-db-unbind_rule","sha256":"f96e48a54c9bdc368553a48caa9bb6bbc42bc19fc89b947e516b9aad2a639931","source":"CREATE TRIGGER tr ON DATABASE FOR UNBIND_RULE AS RETURN;"}
+{"id":"context/trig-srv-unbind_rule","sha256":"e0d32bb6d3763684380f87d826b312923c3e135bcc1eb654b787eec862c0868b","source":"CREATE TRIGGER tr ON ALL SERVER FOR UNBIND_RULE AS RETURN;"}
+{"id":"context/trig-db-create_symmetric_key","sha256":"af4c72ae350a42694b4d12f32b8c2889826b5c8178db287e944f5a388d9a9d39","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_SYMMETRIC_KEY AS RETURN;"}
+{"id":"context/trig-srv-create_symmetric_key","sha256":"dea62fd637e930d332b8f5a69e567f3030912948bf34ebaa443f8d54685923a6","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_SYMMETRIC_KEY AS RETURN;"}
+{"id":"context/trig-db-alter_symmetric_key","sha256":"c189f29bbf5550e07d8adb170c6571d8543c77b501eb2dd188c37965f564b598","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_SYMMETRIC_KEY AS RETURN;"}
+{"id":"context/trig-srv-alter_symmetric_key","sha256":"20bfcbee8700ab890515db658d132b3ebd2e0f43880a1467fbb61f8a0b77f90c","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_SYMMETRIC_KEY AS RETURN;"}
+{"id":"context/trig-db-drop_symmetric_key","sha256":"98980031234dc6e77374765a9aa9acf70f24725d91fffa399f6915c271f4dfe3","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_SYMMETRIC_KEY AS RETURN;"}
+{"id":"context/trig-srv-drop_symmetric_key","sha256":"b61a0374faf9aa16c7109813b7a0f3b00e904787125c619bc67381148481886c","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_SYMMETRIC_KEY AS RETURN;"}
+{"id":"context/trig-db-create_asymmetric_key","sha256":"24cb1565fd5a23c28a078ef8864d95eb802f1a4b6ff5e311a2280a88522b0747","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_ASYMMETRIC_KEY AS RETURN;"}
+{"id":"context/trig-srv-create_asymmetric_key","sha256":"771fab99c9d398f29e0abbe7ee4f98e0c66317a6c6afc404b949d56454693d21","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_ASYMMETRIC_KEY AS RETURN;"}
+{"id":"context/trig-db-alter_asymmetric_key","sha256":"67666458dd5ad83b85487a29b3b734625bc1770639a492532fbf894a032eaf48","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_ASYMMETRIC_KEY AS RETURN;"}
+{"id":"context/trig-srv-alter_asymmetric_key","sha256":"fd8ec6846474e8734c1d135b212e6156b47412470f57925d77515f6a1a6fa1ab","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_ASYMMETRIC_KEY AS RETURN;"}
+{"id":"context/trig-db-drop_asymmetric_key","sha256":"de54971fdf65e6e2bb24410defc62b2fe5183574967a63ff414e1ae7bf177a05","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_ASYMMETRIC_KEY AS RETURN;"}
+{"id":"context/trig-srv-drop_asymmetric_key","sha256":"82deda5400e70c9cf57528ec53f659c781f30b4876abf7f3c43d1f309c9312d9","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_ASYMMETRIC_KEY AS RETURN;"}
+{"id":"context/trig-db-alter_service_master_key","sha256":"e63bc6aad4eaf7f5e2440edad32c9ff5cbf3911edc858e292a1763b541afaa6f","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_SERVICE_MASTER_KEY AS RETURN;"}
+{"id":"context/trig-srv-alter_service_master_key","sha256":"38f1c22c783aa14b22fd1a963aa0ff4860d7aaefafab57d62f1cae4ef1784222","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_SERVICE_MASTER_KEY AS RETURN;"}
+{"id":"context/trig-db-create_master_key","sha256":"294602b32dd25ee9611c23c51ec7f03e0fea4066c845580d4544a32fb97dfd83","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_MASTER_KEY AS RETURN;"}
+{"id":"context/trig-srv-create_master_key","sha256":"288f97ba5616b1528a1d5ea952a3adffb41b1f7aab68fdfd929219ba9e9f138d","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_MASTER_KEY AS RETURN;"}
+{"id":"context/trig-db-alter_master_key","sha256":"68463ed83f6172132f0aff7ca05127887ba30b4523cc6aa255559bc3fec70d2e","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_MASTER_KEY AS RETURN;"}
+{"id":"context/trig-srv-alter_master_key","sha256":"2ff708e149ec234da33da38f771ecde767da4a919d34274f6e14a7057c149d95","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_MASTER_KEY AS RETURN;"}
+{"id":"context/trig-db-drop_master_key","sha256":"734eddac8d972ed59ec98115cbbaa58d415544aaa22645ec811c951074768ea2","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_MASTER_KEY AS RETURN;"}
+{"id":"context/trig-srv-drop_master_key","sha256":"a5ebb38a62afa654aa649132ed01523947de8054cdae459ad3c03a6b6d00a5ce","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_MASTER_KEY AS RETURN;"}
+{"id":"context/trig-db-add_signature_schema_object","sha256":"d2023a73d394a16a70df28f3218823d96653218914dde61e9846cfac7c22eb91","source":"CREATE TRIGGER tr ON DATABASE FOR ADD_SIGNATURE_SCHEMA_OBJECT AS RETURN;"}
+{"id":"context/trig-srv-add_signature_schema_object","sha256":"db8dd8f69e42c8bc4834100cd9c6a427241a182a7854e652cc9c46ce3f3b0dd9","source":"CREATE TRIGGER tr ON ALL SERVER FOR ADD_SIGNATURE_SCHEMA_OBJECT AS RETURN;"}
+{"id":"context/trig-db-drop_signature_schema_object","sha256":"bbca72a77acf30f2215270dd3eec9af6cfbd9422b7aae328bbcb341a015b7152","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_SIGNATURE_SCHEMA_OBJECT AS RETURN;"}
+{"id":"context/trig-srv-drop_signature_schema_object","sha256":"134bde28d8b375689f2df8c878b3800a858ef6327c020e5d46f9965d2b5d3e09","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_SIGNATURE_SCHEMA_OBJECT AS RETURN;"}
+{"id":"context/trig-db-add_signature","sha256":"0d5c2248e8c4c81e530bacc8de433bc6f4a02b6528441634905b06066866b649","source":"CREATE TRIGGER tr ON DATABASE FOR ADD_SIGNATURE AS RETURN;"}
+{"id":"context/trig-srv-add_signature","sha256":"35eedd7a01031ad4fde3ab87a46a7af0dee9d1aa6d0781e59b892ab2b7522d14","source":"CREATE TRIGGER tr ON ALL SERVER FOR ADD_SIGNATURE AS RETURN;"}
+{"id":"context/trig-db-drop_signature","sha256":"1ea75ba5792b24df9a3471d60f99e65be70428e7656f11c159fa70a4331f4149","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_SIGNATURE AS RETURN;"}
+{"id":"context/trig-srv-drop_signature","sha256":"a77a022fa2336025abedc8680cbbc90b57fa972e6891b7b53f7c03d4e9fbf2bb","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_SIGNATURE AS RETURN;"}
+{"id":"context/trig-db-create_credential","sha256":"e406a78d711302729ebdf7daa76c28ff8e75418c44299e7ab0ee544c23cdf124","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_CREDENTIAL AS RETURN;"}
+{"id":"context/trig-srv-create_credential","sha256":"e0c16578d319c9f289067ca96530d112e7597c91a9e0cc43d1588ae1a1a1b125","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_CREDENTIAL AS RETURN;"}
+{"id":"context/trig-db-alter_credential","sha256":"c1572c3c6158ed93246fe864b801653d19126d00604bc464c76fbd23b8ba1e6f","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_CREDENTIAL AS RETURN;"}
+{"id":"context/trig-srv-alter_credential","sha256":"2eebd18e4dfc208f53da994d1c9fb14d1eb384b429181b31b8a382aef7aa8d7b","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_CREDENTIAL AS RETURN;"}
+{"id":"context/trig-db-drop_credential","sha256":"3c9d1a2f9c6c530b7200c718fd44a04edffd120c0be3b5ff876bbc40dd0a69d2","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_CREDENTIAL AS RETURN;"}
+{"id":"context/trig-srv-drop_credential","sha256":"9bff3779e2c10bb34553292798ab821e731c985b2292fb01113e68d74dcb9ec4","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_CREDENTIAL AS RETURN;"}
+{"id":"context/trig-db-drop_linked_server","sha256":"4985a36d12477faf3aced4b5e504ae322f4e096c9330c1ddcb86db71bedecf7c","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_LINKED_SERVER AS RETURN;"}
+{"id":"context/trig-srv-drop_linked_server","sha256":"5ea68718af2137bfc18cd6b5452c7cf1b4ede7468ae06078d28711edac535564","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_LINKED_SERVER AS RETURN;"}
+{"id":"context/trig-db-alter_linked_server","sha256":"48b7f8e070b17f295802c335ac8b1ee33dd731f56d0c7f45818c7524cfd743ca","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_LINKED_SERVER AS RETURN;"}
+{"id":"context/trig-srv-alter_linked_server","sha256":"27be311571993aad3c47402504227c59a7188a4db7705a52763b6f0be275dcff","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_LINKED_SERVER AS RETURN;"}
+{"id":"context/trig-db-create_event_session","sha256":"7ba3c3fa727a9ff1aba1ce65c1f30380212581b9c1d5e91145af9af4f9d0acf7","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_EVENT_SESSION AS RETURN;"}
+{"id":"context/trig-srv-create_event_session","sha256":"bd48a8d7ec71274afcf7d1687b6fb733906c53578c3c3ccbc48d2e4ed14a05ec","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_EVENT_SESSION AS RETURN;"}
+{"id":"context/trig-db-alter_event_session","sha256":"2a921548d410b7e81eea8a69a68a8835b45d73f46cb21623aa4c921fd4782ea0","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_EVENT_SESSION AS RETURN;"}
+{"id":"context/trig-srv-alter_event_session","sha256":"9c245c8a168df9b3c88cd9ad9c68b6dc06193acc8606fdc9760a50bcc615fa03","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_EVENT_SESSION AS RETURN;"}
+{"id":"context/trig-db-drop_event_session","sha256":"097e174eb5502ea500d560cfa69400057567e78741b78090d227492fcbfe0a4a","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_EVENT_SESSION AS RETURN;"}
+{"id":"context/trig-srv-drop_event_session","sha256":"2d869f1f4747eb926eb7f4ac8c96157f5714cf7333baeb21fb7eaa606c602d30","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_EVENT_SESSION AS RETURN;"}
+{"id":"context/trig-db-create_resource_pool","sha256":"f5e9e6b97be478d2033b1743f6dbdd515c5c0e742a8a729ca5d6f988255560ce","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_RESOURCE_POOL AS RETURN;"}
+{"id":"context/trig-srv-create_resource_pool","sha256":"cd2d7c0d53fc8ecbbe11aa0bf22706a1460f9cc39e68ab533ccff1839efcd6a2","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_RESOURCE_POOL AS RETURN;"}
+{"id":"context/trig-db-alter_resource_pool","sha256":"080a8c0912028e8b972b87e63dfd32cc185759a379482eb049d22c3eb5ee8e27","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_RESOURCE_POOL AS RETURN;"}
+{"id":"context/trig-srv-alter_resource_pool","sha256":"a85d4fdf9b08d7feca3edb5124620271458fb895f7a36af06d151ecb2ec81436","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_RESOURCE_POOL AS RETURN;"}
+{"id":"context/trig-db-drop_resource_pool","sha256":"3dd5b2ca1b4a8f7c806c23034de22015496f34cb765131bf444dce5c6eef13bc","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_RESOURCE_POOL AS RETURN;"}
+{"id":"context/trig-srv-drop_resource_pool","sha256":"daa4b9de3d15f5941edf4aaa9265c3cfa393d641e5a0079a47386e0e198aab5e","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_RESOURCE_POOL AS RETURN;"}
+{"id":"context/trig-db-create_workload_group","sha256":"f68efb3f47f2f8b6fb8971e2698ba46d0551deff1451c280cf134d499ea784c7","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_WORKLOAD_GROUP AS RETURN;"}
+{"id":"context/trig-srv-create_workload_group","sha256":"7811ec643daf44c4f6166ebd86d0152b882369a19aba9e35456826e3e2550f66","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_WORKLOAD_GROUP AS RETURN;"}
+{"id":"context/trig-db-alter_workload_group","sha256":"07c8f91fe0145948f8ff767fe7181abf1bf665bfcf88e38430f05665115b8af8","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_WORKLOAD_GROUP AS RETURN;"}
+{"id":"context/trig-srv-alter_workload_group","sha256":"23a8594fa1dfeb6e436831c4fae3d446d6f7e951d5f011a4d816e8c508305d0f","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_WORKLOAD_GROUP AS RETURN;"}
+{"id":"context/trig-db-drop_workload_group","sha256":"40ba395b053bfd5033df08dbb55b7a5e765bf9b65b05383886eaa6930ba39a15","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_WORKLOAD_GROUP AS RETURN;"}
+{"id":"context/trig-srv-drop_workload_group","sha256":"aa7c4365ff96d75cfb095121c8de87d70ec8c28bb57e4a2f68ddb300bb4088d8","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_WORKLOAD_GROUP AS RETURN;"}
+{"id":"context/trig-db-alter_resource_governor_config","sha256":"8d019ea725ccf3d899ce8dc3fa7980cd275f8aa9359c777dc4e3c38ed93065c3","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_RESOURCE_GOVERNOR_CONFIG AS RETURN;"}
+{"id":"context/trig-srv-alter_resource_governor_config","sha256":"b8ae99944c0d7fc749882ecd6fc6c859a026cf17349b8ea6906b75cbc8d78e07","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_RESOURCE_GOVERNOR_CONFIG AS RETURN;"}
+{"id":"context/trig-db-create_spatial_index","sha256":"a1433b41be06f80ecba189bb2da87c11d943ecf745a2da4631fbade8236ac6a0","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_SPATIAL_INDEX AS RETURN;"}
+{"id":"context/trig-srv-create_spatial_index","sha256":"7eee5db8b4b58f4b3140f2440420805340e30ed8b6d2151fc996381052bba0bf","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_SPATIAL_INDEX AS RETURN;"}
+{"id":"context/trig-db-create_cryptographic_provider","sha256":"2d0e4a07a5c61ba199bafce6de057c0b6a6edc17bed8a1d031d92752f203c8cb","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_CRYPTOGRAPHIC_PROVIDER AS RETURN;"}
+{"id":"context/trig-srv-create_cryptographic_provider","sha256":"4f351e91914eb79422fc384b0be05928803512272ec9d9d3381be46eadaaa95d","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_CRYPTOGRAPHIC_PROVIDER AS RETURN;"}
+{"id":"context/trig-db-alter_cryptographic_provider","sha256":"dfb92ced5e0ea5d3a32a3db4b37a77c51891bab37378f96c6ee24bffb31ebd4e","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_CRYPTOGRAPHIC_PROVIDER AS RETURN;"}
+{"id":"context/trig-srv-alter_cryptographic_provider","sha256":"f45ebc79f3660ee687515b3b1b45f7af0ac5e4c2f47bde539937887b6e941038","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_CRYPTOGRAPHIC_PROVIDER AS RETURN;"}
+{"id":"context/trig-db-drop_cryptographic_provider","sha256":"6f18194865d37552d04255ee0ac567d9f26cc3b5ece5b3f096d83e44f681bcda","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_CRYPTOGRAPHIC_PROVIDER AS RETURN;"}
+{"id":"context/trig-srv-drop_cryptographic_provider","sha256":"8be25a9283b3bd74f5476510bb5fb87a273301f54368b0438f584d438486cff0","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_CRYPTOGRAPHIC_PROVIDER AS RETURN;"}
+{"id":"context/trig-db-create_database_encryption_key","sha256":"7431440d47f3cdf22b5663979d226004db7bfc29bac3ae9002e583c9ec15e25d","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_DATABASE_ENCRYPTION_KEY AS RETURN;"}
+{"id":"context/trig-srv-create_database_encryption_key","sha256":"6c2fb1f1af9433316bc267dcc9cec6a9b2fd61399a5966731db4fbc5a77cc183","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_DATABASE_ENCRYPTION_KEY AS RETURN;"}
+{"id":"context/trig-db-alter_database_encryption_key","sha256":"a98c303d54debe931608457e676e09e984f794e60b97ee68684eab9b2b19209b","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_DATABASE_ENCRYPTION_KEY AS RETURN;"}
+{"id":"context/trig-srv-alter_database_encryption_key","sha256":"2885ad03d99b46698a4e480a4519ba2e7db83ed463b0e1560a2ee57867a7b05a","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_DATABASE_ENCRYPTION_KEY AS RETURN;"}
+{"id":"context/trig-db-drop_database_encryption_key","sha256":"00a701b822712b10d9a5aaadc414a24e91ebeb6a7e219f2c619219820d622a85","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_DATABASE_ENCRYPTION_KEY AS RETURN;"}
+{"id":"context/trig-srv-drop_database_encryption_key","sha256":"4a8774f26e3435b62f9dc92291f32a8963a9ceb3f2d5bedfecb66e936a75022a","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_DATABASE_ENCRYPTION_KEY AS RETURN;"}
+{"id":"context/trig-db-create_broker_priority","sha256":"b31a66155a6ceba0d1128f23f4715cddcaadfb90ae2cc0de087240770386b91b","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_BROKER_PRIORITY AS RETURN;"}
+{"id":"context/trig-srv-create_broker_priority","sha256":"09a377943799c611585550ac6fa1f0335de53fa25b669c225f6c2100f4b17b17","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_BROKER_PRIORITY AS RETURN;"}
+{"id":"context/trig-db-alter_broker_priority","sha256":"8624780efc0882113f73fa6b4ffb2ff006225b2fbebdf55bd3f458016cbb2498","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_BROKER_PRIORITY AS RETURN;"}
+{"id":"context/trig-srv-alter_broker_priority","sha256":"9c175f50ca528aace057fdd06312e060d6c4ef29542c061655b8696e9671d403","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_BROKER_PRIORITY AS RETURN;"}
+{"id":"context/trig-db-drop_broker_priority","sha256":"a02afcaf12fff470187434b8f3453bb306cf766e39d6bb954c7fc20d47266db3","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_BROKER_PRIORITY AS RETURN;"}
+{"id":"context/trig-srv-drop_broker_priority","sha256":"d2a7f738a8a432bd62316541c169aad359b8f728a1ce2bb6409e03ca871dcdc2","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_BROKER_PRIORITY AS RETURN;"}
+{"id":"context/trig-db-create_server_audit","sha256":"0ce31cd3d2e51ba4440b4a17b25a2c68aebae510828600e591c80d49b14b3576","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_SERVER_AUDIT AS RETURN;"}
+{"id":"context/trig-srv-create_server_audit","sha256":"77efba268afb4b382ed6046dcebdb5852525fee94367b0224de206a985eefb8c","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_SERVER_AUDIT AS RETURN;"}
+{"id":"context/trig-db-alter_server_audit","sha256":"ab8f7f817dc0e38952e705c45b4a9c219552a8c80d3d536320502ac0a6102064","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_SERVER_AUDIT AS RETURN;"}
+{"id":"context/trig-srv-alter_server_audit","sha256":"9852246aec3781fb440f5ff8f66856903219af07e5a970a0b9aa35e78d3f179c","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_SERVER_AUDIT AS RETURN;"}
+{"id":"context/trig-db-drop_server_audit","sha256":"faa03a5b67e8e4950426c1282baddbaf3a65bb0ef412fad8aec725219b39546e","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_SERVER_AUDIT AS RETURN;"}
+{"id":"context/trig-srv-drop_server_audit","sha256":"0a06d506b47c79d0414817854c282c322e9e864adb43674caf75b256c6d5971f","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_SERVER_AUDIT AS RETURN;"}
+{"id":"context/trig-db-create_server_audit_specification","sha256":"f122632b957599201b40980b006833e425d259751f37792fef0e669a4d91cbe5","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_SERVER_AUDIT_SPECIFICATION AS RETURN;"}
+{"id":"context/trig-srv-create_server_audit_specification","sha256":"450e0b16040809f5329f40957a8c56c07d8c9ded4a32e24553c6e74f95c30d45","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_SERVER_AUDIT_SPECIFICATION AS RETURN;"}
+{"id":"context/trig-db-alter_server_audit_specification","sha256":"88d1f3a7173a66b9a60bd4c5d3e17d87646cfa1916fbe891ae344981e5e726ee","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_SERVER_AUDIT_SPECIFICATION AS RETURN;"}
+{"id":"context/trig-srv-alter_server_audit_specification","sha256":"127624197c653d7faf8dd0ff20f5907638dfe470acf7b30a796fe5335462abee","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_SERVER_AUDIT_SPECIFICATION AS RETURN;"}
+{"id":"context/trig-db-drop_server_audit_specification","sha256":"8d597854cfddc1be19f8be111a36e8ce02ef99494ff5e1e0427414e9fcaa3c91","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_SERVER_AUDIT_SPECIFICATION AS RETURN;"}
+{"id":"context/trig-srv-drop_server_audit_specification","sha256":"b19375b8809058a7de2cde420cf806ab978cecf2e0f6671272e9b8fc22a12cb5","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_SERVER_AUDIT_SPECIFICATION AS RETURN;"}
+{"id":"context/trig-db-create_database_audit_specification","sha256":"d85eaa84645b7c790cbe67b0ba9c30ddb543801a4f6c73c54e14afeeeb6ecf10","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_DATABASE_AUDIT_SPECIFICATION AS RETURN;"}
+{"id":"context/trig-srv-create_database_audit_specification","sha256":"eb9c4315a8f3bbd273461e66192ad1dffd8d0527c74a365f0d7673450bc5232b","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_DATABASE_AUDIT_SPECIFICATION AS RETURN;"}
+{"id":"context/trig-db-alter_database_audit_specification","sha256":"28b8074af2dc72a66d72dc25708db9f237fb55746f3e03e8f7ba97eeeddd99bc","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_DATABASE_AUDIT_SPECIFICATION AS RETURN;"}
+{"id":"context/trig-srv-alter_database_audit_specification","sha256":"ea646fcf0428d75d5cf73f771fbb0964fba1a93242160d122871230467577b1e","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_DATABASE_AUDIT_SPECIFICATION AS RETURN;"}
+{"id":"context/trig-db-drop_database_audit_specification","sha256":"c5f90ca22d14e0027962dd36640203168987bad13fd8e4f382b580c8816a9aaf","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_DATABASE_AUDIT_SPECIFICATION AS RETURN;"}
+{"id":"context/trig-srv-drop_database_audit_specification","sha256":"7c981037ef354d261a91ce3fea1e33da11940868fd6e24f012da4c4c4a7b012a","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_DATABASE_AUDIT_SPECIFICATION AS RETURN;"}
+{"id":"context/trig-db-create_fulltext_stoplist","sha256":"a4932350c440c8467e088dc1007095e457b7266edfd1224848b31ce06b137cdc","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_FULLTEXT_STOPLIST AS RETURN;"}
+{"id":"context/trig-srv-create_fulltext_stoplist","sha256":"e63ab6f1023bde15d12ffecabd5e94eab0aec6f0459f274b6157b839b049db4c","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_FULLTEXT_STOPLIST AS RETURN;"}
+{"id":"context/trig-db-alter_fulltext_stoplist","sha256":"8cc8c0b9d3af4133b38a6700e38d9c78b488b85923a5deb398fcd220fbd0d407","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_FULLTEXT_STOPLIST AS RETURN;"}
+{"id":"context/trig-srv-alter_fulltext_stoplist","sha256":"2496e7b6e402ab34e4fb20511a7c89777fd53cd6fb54a86a83bc25ed1d47b422","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_FULLTEXT_STOPLIST AS RETURN;"}
+{"id":"context/trig-db-drop_fulltext_stoplist","sha256":"d87b83390e78f319b2d671138bf8ed919b5aa240aa4a693ec02605fad6288a1e","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_FULLTEXT_STOPLIST AS RETURN;"}
+{"id":"context/trig-srv-drop_fulltext_stoplist","sha256":"b063149749af77589ff00ccc2fe8e9d99040c75015c0b6c68d401c6a72e6a68d","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_FULLTEXT_STOPLIST AS RETURN;"}
+{"id":"context/trig-db-alter_server_configuration","sha256":"37e9ca02a0b84a89f44fc98de97600aa75dce73cf3559f1e4cbc9fe187fe1471","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_SERVER_CONFIGURATION AS RETURN;"}
+{"id":"context/trig-srv-alter_server_configuration","sha256":"614e822dbe253241d9b4136b856c2b3e2bb3c11357a0db302e5c0fbad122434b","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_SERVER_CONFIGURATION AS RETURN;"}
+{"id":"context/trig-db-create_search_property_list","sha256":"515e608d24113c055e5e43741daa37774ab7d38e0fda03a5677edc79d0836a46","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_SEARCH_PROPERTY_LIST AS RETURN;"}
+{"id":"context/trig-srv-create_search_property_list","sha256":"5d5cf2b9938f5af28decbc34f2c87b7880169cdd423a7763afd66ef4720030b9","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_SEARCH_PROPERTY_LIST AS RETURN;"}
+{"id":"context/trig-db-alter_search_property_list","sha256":"e11bd4a9e5a3cc0f074c7197cacaab31818259f18c9eb79d530fad03351542f5","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_SEARCH_PROPERTY_LIST AS RETURN;"}
+{"id":"context/trig-srv-alter_search_property_list","sha256":"1ea10452219474cb6496d8288e2642d3b177a808994dae1f4e8391e7e996cbc8","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_SEARCH_PROPERTY_LIST AS RETURN;"}
+{"id":"context/trig-db-drop_search_property_list","sha256":"a8491868bf04fd67934f64251436b74c74ac790d06982bda3d52499e6c1ea5f7","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_SEARCH_PROPERTY_LIST AS RETURN;"}
+{"id":"context/trig-srv-drop_search_property_list","sha256":"5d012a6a91d0bedcbd64a3aeca0cdde6d2309aa3b37c5cbada9116f789e5a9a6","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_SEARCH_PROPERTY_LIST AS RETURN;"}
+{"id":"context/trig-db-create_server_role","sha256":"5ddbe466a06bb78779711c4c7c5b25073c3f0338443c31b4e22e953ff9d3c840","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_SERVER_ROLE AS RETURN;"}
+{"id":"context/trig-srv-create_server_role","sha256":"d7202e100b53a9499edd4b7c47f2aa2e5fd40e851d628781edc051eb5553eee1","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_SERVER_ROLE AS RETURN;"}
+{"id":"context/trig-db-alter_server_role","sha256":"d7d61de7ce53e9067e446afd1a7928c499e831ad97b711fd81b2052dbc5f1b54","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_SERVER_ROLE AS RETURN;"}
+{"id":"context/trig-srv-alter_server_role","sha256":"03628ab6512f5ef5e2a313f78b8d0929ab75fa7420bee74cabe91ae4d6012985","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_SERVER_ROLE AS RETURN;"}
+{"id":"context/trig-db-drop_server_role","sha256":"c0f8660b9708161824c661c1b0bcaa40cc5c2354b115309f2e91a2d27f347b53","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_SERVER_ROLE AS RETURN;"}
+{"id":"context/trig-srv-drop_server_role","sha256":"874278f15b4eef92654749379788b6be095ccc55decaf310d918a2d22d46a087","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_SERVER_ROLE AS RETURN;"}
+{"id":"context/trig-db-create_sequence","sha256":"2d597f0cc2f81d328619aaaaca3a714c6cd093ba24632bd88b718e2ea4e14384","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_SEQUENCE AS RETURN;"}
+{"id":"context/trig-srv-create_sequence","sha256":"dad7d3003e393f4b0f6a8f2b6ed5a8946b12d01dce0a96fe0de0a96fea3f1e0f","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_SEQUENCE AS RETURN;"}
+{"id":"context/trig-db-alter_sequence","sha256":"8fbe7369bb7cdc18870da3dc0d011ece7a043024c2bf75e07f25963a30b55c96","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_SEQUENCE AS RETURN;"}
+{"id":"context/trig-srv-alter_sequence","sha256":"0272af333be9d2edacc9fe4a9d3a078cd4414758f9afb3c1ea50111fd921b940","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_SEQUENCE AS RETURN;"}
+{"id":"context/trig-db-drop_sequence","sha256":"ce95a04355f0434b05d75981ade5b57515d1530344b585201b711ca08ad09975","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_SEQUENCE AS RETURN;"}
+{"id":"context/trig-srv-drop_sequence","sha256":"4d3016ca2d95ff8133413d3092b552c9c69490563c119f6a71b7e2979719c697","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_SEQUENCE AS RETURN;"}
+{"id":"context/trig-db-create_availability_group","sha256":"d1c35886b51e88422dc3f18b1becfcd5969a75a04383bacb895fac4d7b436afa","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_AVAILABILITY_GROUP AS RETURN;"}
+{"id":"context/trig-srv-create_availability_group","sha256":"16c8fede86937ec835ccb01b56fc7613faaad01fb612aaa43fb977d1c614adbd","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_AVAILABILITY_GROUP AS RETURN;"}
+{"id":"context/trig-db-alter_availability_group","sha256":"fcf38673bebd27a5754fd16e3a5e3c0ce565fb092edcb2976eeec88add605b84","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_AVAILABILITY_GROUP AS RETURN;"}
+{"id":"context/trig-srv-alter_availability_group","sha256":"1f7fc17c2978579ecdd8327713968d9ab59ea7767d37773fa985c331482266a5","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_AVAILABILITY_GROUP AS RETURN;"}
+{"id":"context/trig-db-drop_availability_group","sha256":"f5aef7ed29e15c8f589a0e9457e04b89456d60d0a2239cb04f25ed7c508a5d38","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_AVAILABILITY_GROUP AS RETURN;"}
+{"id":"context/trig-srv-drop_availability_group","sha256":"6c06e3ee96ca2f511bfab6ada7928311f90fd874d8aa4125ce85740b649c7352","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_AVAILABILITY_GROUP AS RETURN;"}
+{"id":"context/trig-db-create_audit","sha256":"3de51f64da0d2e33477cde1372a94b8f7b11a019f73049f4241206d6d6bbb8c3","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_AUDIT AS RETURN;"}
+{"id":"context/trig-srv-create_audit","sha256":"58d9ccbce7cb7f3499ef6f047f50e71e5c7aba7093613e89b38ee8d9733bf9f1","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_AUDIT AS RETURN;"}
+{"id":"context/trig-db-drop_audit","sha256":"45957d177e36b64f065d3a3f296594e57f8da3aaddb45ff503488c3d6a09ec45","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_AUDIT AS RETURN;"}
+{"id":"context/trig-srv-drop_audit","sha256":"f7f68f4e77a23e9767228fc4c9d43985b832625dc370339e91d4a3074092b481","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_AUDIT AS RETURN;"}
+{"id":"context/trig-db-alter_audit","sha256":"8032c649ebd71daad30fa6a3f2a87de7495610ce6a774af1d5be9363e367c5b9","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_AUDIT AS RETURN;"}
+{"id":"context/trig-srv-alter_audit","sha256":"c185eadb69c4b4ffabd840e8966f0386b35f41966d20ee3b615d18e64e4661d5","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_AUDIT AS RETURN;"}
+{"id":"context/trig-db-create_security_policy","sha256":"5cab302bf7c8c36bb6e7dd5ee75c53adfb4fe372859911ba9dff2f57fdb23b26","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_SECURITY_POLICY AS RETURN;"}
+{"id":"context/trig-srv-create_security_policy","sha256":"6c06b1911af23a6c03a191d0974e59301436e8c87bd3f49961e1f788d75bed70","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_SECURITY_POLICY AS RETURN;"}
+{"id":"context/trig-db-alter_security_policy","sha256":"ce8391739fc849ae779532e8c320cf71ec1e99c5b682a788e3b42b96b150a5f7","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_SECURITY_POLICY AS RETURN;"}
+{"id":"context/trig-srv-alter_security_policy","sha256":"2e59cfb0cf8c341ed21c99109641a71c48567280aae66a10bd14ff4d67bd4f68","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_SECURITY_POLICY AS RETURN;"}
+{"id":"context/trig-db-drop_security_policy","sha256":"8fced7524c9fdf07a70200a6899699928c376a8284a4ebadd9837ecd38dfdae0","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_SECURITY_POLICY AS RETURN;"}
+{"id":"context/trig-srv-drop_security_policy","sha256":"7903afe787570c7be9b4d1ec0f12defcf25d3dac5a747eb42ab468d0e651caf6","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_SECURITY_POLICY AS RETURN;"}
+{"id":"context/trig-db-create_column_master_key","sha256":"a6dbfbd1d06315c0f1986f1b277c782f674bfa7fdc0ae89f429fb3b0b618baf9","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_COLUMN_MASTER_KEY AS RETURN;"}
+{"id":"context/trig-srv-create_column_master_key","sha256":"6089a58a14c3b85e65fb1c21692e8daa7ed7a4b4ecb1748af09d657028d3b993","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_COLUMN_MASTER_KEY AS RETURN;"}
+{"id":"context/trig-db-drop_column_master_key","sha256":"1a8f9fd411408c88bf97f42bcbc1d9b011d30c6fbb13f1e2d4af638ef435fb2c","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_COLUMN_MASTER_KEY AS RETURN;"}
+{"id":"context/trig-srv-drop_column_master_key","sha256":"586942b779efd4cbe49fdac31a8f55eafa74599fc6fb84ca3e3ceed868f4f109","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_COLUMN_MASTER_KEY AS RETURN;"}
+{"id":"context/trig-db-create_column_encryption_key","sha256":"23e0d096fe58ea390ba833033a0c35837a5a85469b977ae259768add402f3b73","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_COLUMN_ENCRYPTION_KEY AS RETURN;"}
+{"id":"context/trig-srv-create_column_encryption_key","sha256":"10338d013e8333924b04edc2e5ad8b210ed42969f71ddd1c65c1af31c88e353e","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_COLUMN_ENCRYPTION_KEY AS RETURN;"}
+{"id":"context/trig-db-alter_column_encryption_key","sha256":"9b4392cbffef1127e0e769be7cb97c8c448d74fb65e6c1ee2deec2b52f0ec929","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_COLUMN_ENCRYPTION_KEY AS RETURN;"}
+{"id":"context/trig-srv-alter_column_encryption_key","sha256":"d440b95dd416f4d8c7f8ad4e759787c0ca57928f9bc14d230c1a1e118b95ae98","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_COLUMN_ENCRYPTION_KEY AS RETURN;"}
+{"id":"context/trig-db-drop_column_encryption_key","sha256":"6ab3f0c1f5912fe557232f80c1d9222210a64ba734b42b17c901d38140fff426","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_COLUMN_ENCRYPTION_KEY AS RETURN;"}
+{"id":"context/trig-srv-drop_column_encryption_key","sha256":"24da83eed4a17e79154a113b114e0fe78829dcce3885ca2f085fa5618c3ab039","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_COLUMN_ENCRYPTION_KEY AS RETURN;"}
+{"id":"context/trig-db-alter_database_scoped_configuration","sha256":"c93d8a86f17cdca19f0949e304dcd67c7259fa1c23ad9306ab8d547c002917d5","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_DATABASE_SCOPED_CONFIGURATION AS RETURN;"}
+{"id":"context/trig-srv-alter_database_scoped_configuration","sha256":"21eaa844b2ba32c46f6875844060cd753731cd9ceadafb163a64b786d4709617","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_DATABASE_SCOPED_CONFIGURATION AS RETURN;"}
+{"id":"context/trig-db-create_external_resource_pool","sha256":"b5db449b160da3ee965216bfd3ae298daac53ab59a417bc9ab2efa02ba17acda","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_EXTERNAL_RESOURCE_POOL AS RETURN;"}
+{"id":"context/trig-srv-create_external_resource_pool","sha256":"dc613b880135923d6c89e994a5d329061678562def2bb6bdbde7b1a78692a603","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_EXTERNAL_RESOURCE_POOL AS RETURN;"}
+{"id":"context/trig-db-alter_external_resource_pool","sha256":"204669ab9894120c6e7c99ff5ecd6bfe52e283be41c93ad3c9ffa5640538bfea","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_EXTERNAL_RESOURCE_POOL AS RETURN;"}
+{"id":"context/trig-srv-alter_external_resource_pool","sha256":"824e7490d92339492084a8148e04e996f758366229282b9154893a6ee3514a79","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_EXTERNAL_RESOURCE_POOL AS RETURN;"}
+{"id":"context/trig-db-drop_external_resource_pool","sha256":"835b37c03ecdf4932ae45d5b5a2e4db6e9059ac8afb8ef63fc0b8e79d6b7d5a0","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_EXTERNAL_RESOURCE_POOL AS RETURN;"}
+{"id":"context/trig-srv-drop_external_resource_pool","sha256":"a44567d30c902eec10825894e105902bf6d9c3b7919dcdeee4040e93e809be43","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_EXTERNAL_RESOURCE_POOL AS RETURN;"}
+{"id":"context/trig-db-create_external_library","sha256":"46518390b8ca7fd9141ec623401d0741e99cb7b8d776c8f57d46f94fc15b1fdf","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_EXTERNAL_LIBRARY AS RETURN;"}
+{"id":"context/trig-srv-create_external_library","sha256":"1b00881cad881312c9f1418c1bc5f7b0f7bdbcb19d3f1c7deba8f1ccb466d1ea","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_EXTERNAL_LIBRARY AS RETURN;"}
+{"id":"context/trig-db-alter_external_library","sha256":"62c05f6bf33ae7d2e9129cf13d507009963985407bcb65f9349a27f7d9558f71","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_EXTERNAL_LIBRARY AS RETURN;"}
+{"id":"context/trig-srv-alter_external_library","sha256":"754c28ef4eeb55a68dc8ff22b621da3b0fbe5a31787c6b9838db7fdd1fb0178f","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_EXTERNAL_LIBRARY AS RETURN;"}
+{"id":"context/trig-db-drop_external_library","sha256":"55d28e9a36209df9044c5d6f1628106d5445a9f01980c428efb9572a57dd48d9","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_EXTERNAL_LIBRARY AS RETURN;"}
+{"id":"context/trig-srv-drop_external_library","sha256":"36a54b6a8e1e903f3af72815169b8be8164bb522e164398d2f62490d9f4f9274","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_EXTERNAL_LIBRARY AS RETURN;"}
+{"id":"context/trig-db-add_sensitivity_classification","sha256":"7407189c6649e7603717de88dfca70286d524356c107ee7b3e02b21f509e6de9","source":"CREATE TRIGGER tr ON DATABASE FOR ADD_SENSITIVITY_CLASSIFICATION AS RETURN;"}
+{"id":"context/trig-srv-add_sensitivity_classification","sha256":"4871078ced0417bc43e36821371406bc472750f9bf514176fab08a6ff8f1aac8","source":"CREATE TRIGGER tr ON ALL SERVER FOR ADD_SENSITIVITY_CLASSIFICATION AS RETURN;"}
+{"id":"context/trig-db-drop_sensitivity_classification","sha256":"61b71f8981979fc4fe3b04e701534a753b813aecb378ba6287d213280e8779a4","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_SENSITIVITY_CLASSIFICATION AS RETURN;"}
+{"id":"context/trig-srv-drop_sensitivity_classification","sha256":"536b09c81b76d5196576d56fd13bc95f3a495e764c6ad2fb1369e2d1a8e12412","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_SENSITIVITY_CLASSIFICATION AS RETURN;"}
+{"id":"context/trig-db-create_external_language","sha256":"a9b65ca809111aeaf9150403e6cf20f0d71518ba60711dc47fd5b5e2749c6391","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_EXTERNAL_LANGUAGE AS RETURN;"}
+{"id":"context/trig-srv-create_external_language","sha256":"bc11c11faa876e35fdb665b0a36ac4c24d583a8f7900924db0d55d43351be7f6","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_EXTERNAL_LANGUAGE AS RETURN;"}
+{"id":"context/trig-db-alter_external_language","sha256":"fa37efd386d34cf9744b5f0ed6bbb2abbd66fbce4de2b69ccd5f2f4cfc69b8d3","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_EXTERNAL_LANGUAGE AS RETURN;"}
+{"id":"context/trig-srv-alter_external_language","sha256":"b3bfea47ba452889c242c8bd3dc737350b483df16e1a40f6f4cf1aa0dc813582","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_EXTERNAL_LANGUAGE AS RETURN;"}
+{"id":"context/trig-db-drop_external_language","sha256":"e50c3f098b3bcefe8f5e5bd0a4b6755849fd65ec7fe53aac9a5a9798ae8beae9","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_EXTERNAL_LANGUAGE AS RETURN;"}
+{"id":"context/trig-srv-drop_external_language","sha256":"9344e17f58c120f06ba2469df3bfc89290a5002d3a708e658e1ec23ee3eafbdb","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_EXTERNAL_LANGUAGE AS RETURN;"}
+{"id":"context/trig-db-create_external_stream","sha256":"7730b47e85445a350f549f4a229cf33a3de48fc2195c98665e47e097107b7fa0","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_EXTERNAL_STREAM AS RETURN;"}
+{"id":"context/trig-srv-create_external_stream","sha256":"7184abd6e63ff9188d5bcfec3df3355f44cf65a4d475aece52fc1c873c3f0f56","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_EXTERNAL_STREAM AS RETURN;"}
+{"id":"context/trig-db-drop_external_stream","sha256":"f0e7c45f5cf17547f160d6dc6467170073158d64796363d8cdd2ef8199a4f442","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_EXTERNAL_STREAM AS RETURN;"}
+{"id":"context/trig-srv-drop_external_stream","sha256":"1111a124fd0d6b1ce48b8ad20da73bf25846ec21dd3dae71e2968a7f4f9660cf","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_EXTERNAL_STREAM AS RETURN;"}
+{"id":"context/trig-db-create_pool","sha256":"cc487f36ef04eb0337c3dfffd0172e08589c06ca64c3c3dbe1c0de9c1f183824","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_POOL AS RETURN;"}
+{"id":"context/trig-srv-create_pool","sha256":"957266e5d4df0a3447f557fcb4b90b90f89dfedd203725f4feef4d5c812e75ff","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_POOL AS RETURN;"}
+{"id":"context/trig-db-alter_pool","sha256":"b7eda25b347c2b4b52365703876f0bec9e7bc424c47dd2071e469700d469780e","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_POOL AS RETURN;"}
+{"id":"context/trig-srv-alter_pool","sha256":"b87eb7569467e5b5ef6eb042fbaa47599c4b5a79acd48a93f2f2a76718391ee8","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_POOL AS RETURN;"}
+{"id":"context/trig-db-drop_pool","sha256":"d7cd5e523b343c7abbbecec4fff32e3d7758705254905f927fa444c4cfd0aa49","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_POOL AS RETURN;"}
+{"id":"context/trig-srv-drop_pool","sha256":"778c3cff33f251817e4c2c4bcd9399fccc8b55620715fbec748a69992c8f35b9","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_POOL AS RETURN;"}
+{"id":"context/trig-db-create_synapse_wlg","sha256":"6c406fc703c9734fdb8f10ed2a37f720b6f34d417d6230e7e78be5b06d573a07","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_SYNAPSE_WLG AS RETURN;"}
+{"id":"context/trig-srv-create_synapse_wlg","sha256":"b5357f5841b02688d4efa74ce2327713d0b25cc869ae49622c113bd6e61cc650","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_SYNAPSE_WLG AS RETURN;"}
+{"id":"context/trig-db-alter_synapse_wlg","sha256":"5e5134f71bb4328eee3515d9252264b6ab4ecdd8c3653b780a1775d55eb571fb","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_SYNAPSE_WLG AS RETURN;"}
+{"id":"context/trig-srv-alter_synapse_wlg","sha256":"cbf62c8aa140b91fcd3481e0477b1189c6f4d3a8a6b84cc02e545556729173a3","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_SYNAPSE_WLG AS RETURN;"}
+{"id":"context/trig-db-drop_synapse_wlg","sha256":"609401bb3c3eb2673d793a5689c10552c257f04cf0e60dc4c4a71a49be982b2b","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_SYNAPSE_WLG AS RETURN;"}
+{"id":"context/trig-srv-drop_synapse_wlg","sha256":"b1e7173beb222aff2dd34b5b77a3540b3681a3db91aa2f9d4c968d8bcc459c56","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_SYNAPSE_WLG AS RETURN;"}
+{"id":"context/trig-db-create_synapse_wlc","sha256":"9f75454d8aa712d5c2dae352a4f4b6aeb50c05319337cc1e4fd153ab73f08b07","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_SYNAPSE_WLC AS RETURN;"}
+{"id":"context/trig-srv-create_synapse_wlc","sha256":"90fa33b20cbef4e361351f49a6a3ab60eb1ae315f88c76297d4d216541156785","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_SYNAPSE_WLC AS RETURN;"}
+{"id":"context/trig-db-alter_synapse_wlc","sha256":"f79293332d73bca9a9060a86cb7ad6ee2c2d6e48121d6ce54db7af5bbca5ce85","source":"CREATE TRIGGER tr ON DATABASE FOR ALTER_SYNAPSE_WLC AS RETURN;"}
+{"id":"context/trig-srv-alter_synapse_wlc","sha256":"4bfcaca2e9b9a8929abfae6d1ab76cbec83feaf965bf418dadebbf4c1c4f78fc","source":"CREATE TRIGGER tr ON ALL SERVER FOR ALTER_SYNAPSE_WLC AS RETURN;"}
+{"id":"context/trig-db-drop_synapse_wlc","sha256":"915327d745281574f233b440bfe53299f868e7eeeae26049dd165e5ed0b4032c","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_SYNAPSE_WLC AS RETURN;"}
+{"id":"context/trig-srv-drop_synapse_wlc","sha256":"c88c5edc21034e5f0c881452436d439062215f8312ec3d15cc4dd45ea0639aec","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_SYNAPSE_WLC AS RETURN;"}
+{"id":"context/trig-db-undo_drop","sha256":"6d756482b982b7a95bc20d48d807f5002d1a636d663baa9442216bc33a9e7562","source":"CREATE TRIGGER tr ON DATABASE FOR UNDO_DROP AS RETURN;"}
+{"id":"context/trig-srv-undo_drop","sha256":"1eb764cb8f463a7e0de02f6a33fdbd37def11adda72a1da48840b427c22e59cd","source":"CREATE TRIGGER tr ON ALL SERVER FOR UNDO_DROP AS RETURN;"}
+{"id":"context/trig-db-create_vector_index","sha256":"a2348d94aaaa43ba8374da0c636cd7d669816067279e8dad53720849fa4e9c55","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_VECTOR_INDEX AS RETURN;"}
+{"id":"context/trig-srv-create_vector_index","sha256":"f6eeee827c066684b968444a2cd300ef649c690e40fa3d918be071cd63e24aff","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_VECTOR_INDEX AS RETURN;"}
+{"id":"context/trig-db-add_information_protection","sha256":"d9e9941037350532449200808163a7bcb9d6e17cb83b0f86bf66da815e9c974c","source":"CREATE TRIGGER tr ON DATABASE FOR ADD_INFORMATION_PROTECTION AS RETURN;"}
+{"id":"context/trig-srv-add_information_protection","sha256":"e4db776a1f8382e39d0af69cd731369712c7a6c3b24e58b1a5d0020c439d31e6","source":"CREATE TRIGGER tr ON ALL SERVER FOR ADD_INFORMATION_PROTECTION AS RETURN;"}
+{"id":"context/trig-db-drop_information_protection","sha256":"8e8b996976ec71f1ee7cb1deba0359fd3334ddf5edcabe6f01379760c71a73af","source":"CREATE TRIGGER tr ON DATABASE FOR DROP_INFORMATION_PROTECTION AS RETURN;"}
+{"id":"context/trig-srv-drop_information_protection","sha256":"644476d12046edd55a99c43cd14cfd89ef67d08c453337cbdb669a7d8ed2492b","source":"CREATE TRIGGER tr ON ALL SERVER FOR DROP_INFORMATION_PROTECTION AS RETURN;"}
+{"id":"context/trig-db-create_json_index","sha256":"ee40229e9f69040ed368723578bba57b42685e106c8b71e7ecf2f7c46d3c8cfb","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_JSON_INDEX AS RETURN;"}
+{"id":"context/trig-srv-create_json_index","sha256":"48577b354455064b239c992c6823d5298cc2a852251a2edc9e17a49c4e82fdf5","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_JSON_INDEX AS RETURN;"}
+{"id":"context/trig-db-ddl_events","sha256":"1b3d17944f2750f08c89207106791259d4f67ab7351bb8885f7117909748ac11","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_events","sha256":"bf4ff25255fafe7c654866f8dee2c00b58f09c57beb86f503bf78076a618d059","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_server_level_events","sha256":"40cd0ee0771ec16e554720cf242570f549262bb4cd7599592ed9b0675b8a5c51","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_SERVER_LEVEL_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_server_level_events","sha256":"4877d506dd068d88acb4da20bc39b69c5efda7d746a186743f2c6f0bc0d61071","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_SERVER_LEVEL_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_endpoint_events","sha256":"21def7243d696b9e44d61a0ebd7dd894170ab92ccf18e8a5b869605440479a96","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_ENDPOINT_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_endpoint_events","sha256":"42ca58aa1b7593940471ad0fd867e05e9c9d76b8d66c173eeab6b0b1c75c200e","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_ENDPOINT_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_database_events","sha256":"8b0dcbb6346001390e01d87d61611c21bf93c833931d99a0920e6f3ac43e1794","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_DATABASE_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_database_events","sha256":"d1111fe0f15e9077c29360286946d576d4c6ef37f5970d637686c9aae94e17c5","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_DATABASE_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_server_security_events","sha256":"d956537787115e2f0d799a1a589dde3983ff85738e8e675b6b60cd4b905cb63d","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_SERVER_SECURITY_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_server_security_events","sha256":"be90974a4c349c8843acce924317137d9bec1bf8609bd2d073257c215f7fb43c","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_SERVER_SECURITY_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_login_events","sha256":"cf519176cbfdc449b8051dad4216a9a6a862fcb28dd744102d131c410f1d3008","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_LOGIN_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_login_events","sha256":"fef0341bc975347edf1c4d3c1e8ee3234654f7345ecaf301c933e670024e1b7b","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_LOGIN_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_gdr_server_events","sha256":"6851107f4ab483aafeb4b3135487931b1b647fe0c93bd58378adfa3d5a273bc7","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_GDR_SERVER_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_gdr_server_events","sha256":"cdb45a75ecf1a6f3e9cd3958421e2dec440253a52274cc751282a8741eb2645f","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_GDR_SERVER_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_authorization_server_events","sha256":"d40df46ed6542595b528ae11d8e83fa2b5e04c4c4e24386795acc0a9c8561e9f","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_AUTHORIZATION_SERVER_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_authorization_server_events","sha256":"fc475254724888abfd6f8ae30d5f0c5429b8d303f1cd4c8fae439378c0d8cf18","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_AUTHORIZATION_SERVER_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_credential_events","sha256":"69802e8aa7c71c46ed5838dddac1a67fd18bb654972cd54a292e9967111ad68e","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_CREDENTIAL_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_credential_events","sha256":"681f242fc2d18625b4139c0c448524225b85d6192d45a2a7cd3f991c5e5e3617","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_CREDENTIAL_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_service_master_key_events","sha256":"07d46e9865f45fe0961fa511d1e3c3993d4dd4fac60e178374e60d1ff50c10ad","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_SERVICE_MASTER_KEY_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_service_master_key_events","sha256":"4f7ba0e04a1091aea66704aa003b5734fccee711ec1ccc45a063e2f0a599c3c6","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_SERVICE_MASTER_KEY_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_extended_procedure_events","sha256":"3b4af6906abb74254cba435eef8a51f8d0c5d160f59eda5e03e32198fa6f940f","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_EXTENDED_PROCEDURE_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_extended_procedure_events","sha256":"09e4648870f26fa352087552c9dab437498816532fec5742bd8dfd006962d393","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_EXTENDED_PROCEDURE_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_linked_server_events","sha256":"d904210211c03916d4b3b50c7cc58361cdb95961f09c4d308fc19f8664caa514","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_LINKED_SERVER_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_linked_server_events","sha256":"d745b9c6ec1089735d0742549b822462df5cc764239553e8ee2731481d7ff4e2","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_LINKED_SERVER_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_linked_server_login_events","sha256":"9ab48dca7254f42ce4776d670ecf44ace87f910a1c1414b8c68983aacd68cf2e","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_LINKED_SERVER_LOGIN_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_linked_server_login_events","sha256":"93fe02b4035b247b041058fbf3c2f7e0123e753aabf57026018cd07312f2a9b4","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_LINKED_SERVER_LOGIN_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_message_events","sha256":"cd6d2fee70b85b32a9e7cb06752b1cd20a027f6d2f6defd2152162eb1dd44f10","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_MESSAGE_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_message_events","sha256":"1ac649a4cd69f5ac9a23d1a2c3a015393ae8d18f47e44d0b907b350a42f91e26","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_MESSAGE_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_remote_server_events","sha256":"2e84be89ae7105f0906fe28fd4b6da3af6c3b1316ced671cc130f2609e796090","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_REMOTE_SERVER_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_remote_server_events","sha256":"e4f9cb7a9dd92645dd84d7b97296d35fe9a5e0ea2e0adcf57c7bafdf88235596","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_REMOTE_SERVER_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_database_level_events","sha256":"8ee192121ed4929acd48631ed697412c22def9d7dbb67d0f1143478a994da5cb","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_DATABASE_LEVEL_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_database_level_events","sha256":"fa7d9c66c4baa698ba3d444b5d4219eab99d6f6c69c32374c62bbde35ee9584e","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_DATABASE_LEVEL_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_table_view_events","sha256":"00c0cb16c1d2c9bc1fcc11a1b35708ea6bb824638b6e07a273473bde65da900d","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_TABLE_VIEW_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_table_view_events","sha256":"8a95503aea910c30ad1aa025e3f48e1cda85bb79a156308ecc8cbeb33fb3f44c","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_TABLE_VIEW_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_table_events","sha256":"775e91ad4b084886480b790d8c5489327e6c007006b2c8aa273ef2e4c51292e2","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_TABLE_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_table_events","sha256":"1bf86226c28199e1248fbfef97fa4916a78fea1b4afce37756dc60a03b85c7c1","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_TABLE_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_view_events","sha256":"55f6105db7f8ddb9c53d2189546f312d3398d43ef5d7ec1829244fdfbbc85ab5","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_VIEW_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_view_events","sha256":"fc146d801df727344c5040e8224d70a5152d7d0a9d216e6ba3529adfc287ceb6","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_VIEW_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_index_events","sha256":"d7907a414fbaa0409c3d8267e000f8d177d1537152382fbff3ec82adc4dd500d","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_INDEX_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_index_events","sha256":"6c04987cf85294461992419440d11ec39d97292c38cb71e324d4e06a58a0474b","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_INDEX_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_statistics_events","sha256":"6beacbf4be373778272ed15c2164257d79d9ef823d9705d1d01f6dd361a4581e","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_STATISTICS_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_statistics_events","sha256":"dde1f373b2a07081a9baa7bfdcf7006cc8ade0ecbe890d3f0d84611cfde4cc67","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_STATISTICS_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_synonym_events","sha256":"c6160e39498340228fef5304dfc8d99e83ca85ad1581171841140e72c03bbc9b","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_SYNONYM_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_synonym_events","sha256":"56c25910e1ca3bd9d64163cfce9d2fd45a36b8b4e54abe11da14fee39e355235","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_SYNONYM_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_function_events","sha256":"cfc4b93b510789d614e620bd7fa052421b73c5eae26760bcfda5a8b47dc8bf94","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_FUNCTION_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_function_events","sha256":"1933dbcb52d2fbf33531a520dbf492671b0d22dc75d4ace9cc431817e385d861","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_FUNCTION_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_procedure_events","sha256":"ed179ff3d847eb75e5a42330ec5aab92b10e6bb0e0baa50f8f14ce305e0b4f8f","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_PROCEDURE_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_procedure_events","sha256":"06dd38a3968b7d70a26473e82c17dee51c9baf4c2b9fe77c06e7adb56dfcdc11","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_PROCEDURE_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_trigger_events","sha256":"d217d89d5c2b65cdc5f761ca7229e4f8d001d27d5825ed5b6514d17250de3653","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_TRIGGER_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_trigger_events","sha256":"6450d6ddd443d8f7e2ba1e5aa355c7c980fd2863b77ce76d921efa326bc6f1c4","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_TRIGGER_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_event_notification_events","sha256":"2716a115e43182dc7130d19933909c626c3fc995010d1d837e5cdd109a086b0c","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_EVENT_NOTIFICATION_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_event_notification_events","sha256":"67df4c32a2d63509a5840e4f6bbba41b457a2f966c33f9cc234b3ae20f36dd32","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_EVENT_NOTIFICATION_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_assembly_events","sha256":"2c526ca272a39c11989e882cc32889cd25e7af158eb475a01233d07009b63fe3","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_ASSEMBLY_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_assembly_events","sha256":"13b27e2b7f473a343806403824e4bcb76578641d2a29f97e9b4106d5f5315ed7","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_ASSEMBLY_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_type_events","sha256":"e8b18affd3d3929156cf5c516dffc731832b0dcec9a58182561cb37c1cdc2ac0","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_TYPE_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_type_events","sha256":"8b8b69915720fd4f29a3eec648c64c1469a30f34c1c5cab2abb7ca4dd10258f9","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_TYPE_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_database_security_events","sha256":"22bb5f8b0d9080ed90d2e5e7bf7e474f7fe7bfe1167b8f59f5cad511ecdf5d17","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_DATABASE_SECURITY_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_database_security_events","sha256":"1a3e43bf150e88547dd91f7c45512d9d478aa0efd722a016f717a57c81bb5ab5","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_DATABASE_SECURITY_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_certificate_events","sha256":"fe4fb28304f4c553b90d6690a67f4170d264d1d7f79a571a29ffc1dceef76d06","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_CERTIFICATE_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_certificate_events","sha256":"bdac36d045f12e4dda4d234baefb4c0d4fdccc9573ea7dc4d50ce964c8fabbf1","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_CERTIFICATE_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_user_events","sha256":"f0d6c7e09e546a63fd317d7454ee30dfb41919a1606e403311b10c2a46399e63","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_USER_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_user_events","sha256":"de1050009e0cafb1770af76906947a307c642991587d96b9dbde7849475cebe0","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_USER_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_role_events","sha256":"f62c257c171f1f190f5cff2852ec9b02c9402ab48ae1fbb52ba80d56db1d79ca","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_ROLE_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_role_events","sha256":"0d0a97450992d4c58a487f351a96a8ab71bf446268dd6aa3ff30be1821fd9580","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_ROLE_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_application_role_events","sha256":"2cfbfa47ec6525f278ec90acc3847e104d8e7a0cd403cf607ef5929d2ce65fa2","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_APPLICATION_ROLE_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_application_role_events","sha256":"f06ba056d42440cc7cb3ccc7f1f418e8900f8558ab330986c9d581fa00d69c44","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_APPLICATION_ROLE_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_schema_events","sha256":"9c5a03e02ec8f6783501e94cf1599be26ded5e8403e05e036da85e937a3cd1da","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_SCHEMA_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_schema_events","sha256":"5471eb15e086c831b6624a226300b19f8db8c1cef124960f15ac2d7993075378","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_SCHEMA_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_gdr_database_events","sha256":"8b39900147c5f2356ad27fae01ce1f3c1673737dda62b562413b238c234d6c4e","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_GDR_DATABASE_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_gdr_database_events","sha256":"bb282964fddcf831585ee9174ad7857b5f50457d052a29c2a4fe51fffdafcf32","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_GDR_DATABASE_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_authorization_database_events","sha256":"cee526527eb6d7ec8dd73caf03c8841bd52f76ece16272843e74a0b2b2657651","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_AUTHORIZATION_DATABASE_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_authorization_database_events","sha256":"d498b62a60e0da14f426cc54fd92675e3019ad5928e2188e9eae2ceaaf05dbe7","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_AUTHORIZATION_DATABASE_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_symmetric_key_events","sha256":"ad9d0909cf8b5b62074ea08dcb6a94bec3f218f609861dd4c8c1d57add5f7518","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_SYMMETRIC_KEY_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_symmetric_key_events","sha256":"59bffe23618b23bb3bc2071d8e70ac0bda5ca2c21e8de8444ed759bb670dde61","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_SYMMETRIC_KEY_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_asymmetric_key_events","sha256":"2f03d60d6e6696401dfba6945a179e24d2216af8129c52c094dac93c9ef46ad6","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_ASYMMETRIC_KEY_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_asymmetric_key_events","sha256":"3defd19102ad3273822409994d7cb95da1ff9227d37def0f4c4444f910d27079","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_ASYMMETRIC_KEY_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_crypto_signature_events","sha256":"93bbc3fa12130e400d3faf45e45718e2aebc10c64b7048ed9f90b7a540c87622","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_CRYPTO_SIGNATURE_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_crypto_signature_events","sha256":"ef1b40d28ad35a8856669b482e3e7b7a11d1348421def6b737d607d83b8265b1","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_CRYPTO_SIGNATURE_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_master_key_events","sha256":"238275f4dc13177a07da2504b021dddf34764811333ae1ca7494a8c3b1e11b69","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_MASTER_KEY_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_master_key_events","sha256":"a13d55816dac735f682cca85a46111fd247423b3b04d65f155c33ef9f00d170e","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_MASTER_KEY_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_ssb_events","sha256":"83ab5cea53d88cebdf2d34682f6577adf7a8dfee5ec4dd7e7846e2e6f678dae6","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_SSB_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_ssb_events","sha256":"5178a414814e8b95341940958e5a64aec57d0a2cdb66d82b3ccab9f48e418808","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_SSB_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_message_type_events","sha256":"d5bb16eb2738b7c7fd837fe0917c374ba7f2b74d2748bd2420c97e8712484068","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_MESSAGE_TYPE_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_message_type_events","sha256":"0248d6c762b5bca41cac06d12986b72e37f9737050714131deddf0f2bc929bbe","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_MESSAGE_TYPE_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_contract_events","sha256":"f8d439cd730b4e6f299c9ad1d3ccf957456aeace2f836e437eb217d4a0e076a2","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_CONTRACT_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_contract_events","sha256":"ec8d3ac7323bcc44f6def674a73e7255845323ce758950a601efeb9b3608085d","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_CONTRACT_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_queue_events","sha256":"9a750d67f14052101015e8f2c4f4bb02b1d8702b588eba5c3582d0dc7ef09ad5","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_QUEUE_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_queue_events","sha256":"f4fe4d6e174301c7c282feeb24ffc17c3905a0ab84ef4a67b94a34dfa26783d0","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_QUEUE_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_service_events","sha256":"97caf830ce30e3a04f23d069d7b9890dd10d4993e7af14cac27eba795d17dcc0","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_SERVICE_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_service_events","sha256":"58f07d23def5a283b59162116088a494bb8c8461e9f7222ae4f8115d6cdd8555","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_SERVICE_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_route_events","sha256":"495a7fa3bf82416625ce89cf5312ab26168c1f1d18c3eed46df9f78309dbb195","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_ROUTE_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_route_events","sha256":"859b4ebcd168db01cccc8b9d52e3d1059406f65cfb41ee96bd492f5062aa5876","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_ROUTE_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_remote_service_binding_events","sha256":"f210dd407e234e2cf6f5941745fade0b547734962b1fdb577d2abe4ac8afd025","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_REMOTE_SERVICE_BINDING_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_remote_service_binding_events","sha256":"1f00811645750bd5dafb41846c1c587be2e2c0fdb8ab8a04a7a3252e94c1dd0c","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_REMOTE_SERVICE_BINDING_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_xml_schema_collection_events","sha256":"4ba3950233bb6066268a0dc18971aec8b42c55da5bdae97784ad12839e52e9d7","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_XML_SCHEMA_COLLECTION_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_xml_schema_collection_events","sha256":"a980978fbd958abe90af44927cc6260734eb22c84eb58483bdc25ea083823039","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_XML_SCHEMA_COLLECTION_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_partition_events","sha256":"0de7ae6eb2ffb284657a4baeb17d0b3846cda8da4d5806eacc9d6fd2d1007113","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_PARTITION_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_partition_events","sha256":"ac0dd2c3acb9ea6cf6e12697f36a5ff5d660a86cff6f671f601459e72f074886","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_PARTITION_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_partition_function_events","sha256":"6f350f59a95489c63cd4419d80e1335e39f7c73b5c4bb034035ccdc1e44a703a","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_PARTITION_FUNCTION_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_partition_function_events","sha256":"3459843f50aa21b13f8a2421b2fdc4f7d7911439f14003ffe23bd3cd35b24726","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_PARTITION_FUNCTION_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_partition_scheme_events","sha256":"538f7aa9461cd1bd643f8ba7c588ab74f8ba96f6de0490fece5d4f2c04369c20","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_PARTITION_SCHEME_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_partition_scheme_events","sha256":"78e7aba7948cc6f1e5b511097a1acac4f864e7e0dfcd8795339a27f00da9d652","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_PARTITION_SCHEME_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_default_events","sha256":"c3f88d46829a1ef02cd7672dfcfd0b7c197d444f0fa68f49a6a0066453b154fe","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_DEFAULT_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_default_events","sha256":"73d2ee76a6c193cb2bcd5cf2ba5774521fa9801d55ad9d7017a4ba5222c35d19","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_DEFAULT_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_extended_property_events","sha256":"37eaf742e6a7cb1ffaed0a4d5d778460847678469fc2ee52e448fa1c3955f2a7","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_EXTENDED_PROPERTY_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_extended_property_events","sha256":"28469b63ebbbfdbb82c29ef0b5eee5529e698122cafbf13aeb7779f2fb480ffe","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_EXTENDED_PROPERTY_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_fulltext_catalog_events","sha256":"035e9636f2b611f965e21d9260eecbe2855a161ffa7cbdb7e5de1d056afeee79","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_FULLTEXT_CATALOG_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_fulltext_catalog_events","sha256":"e94deb5e1b2dc01e6cd4cf908c8075e2ba0d26ac87f7b2af51cbc494db9e45be","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_FULLTEXT_CATALOG_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_plan_guide_events","sha256":"3d7fc403a4d646b7a8b76477d796f45fe4ccdfc4b392d9f1cb40864ad6a6b990","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_PLAN_GUIDE_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_plan_guide_events","sha256":"f052d038faa88e56fc0d2c86a662c58a9153fc8518b478ee00c84f3518d4e772","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_PLAN_GUIDE_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_rule_events","sha256":"51ebb8291c99ed787679810754b32cf50485edea291659ee94a2471af632b4b0","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_RULE_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_rule_events","sha256":"0abfe4d00ea43c7fd5ebb0d856e12208d089df9e66a0ca06631f1339d6bee745","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_RULE_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_event_session_events","sha256":"086abd6d9b965179b2653c6a35b659edbefd1a833e853ef566096b9068d3c959","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_EVENT_SESSION_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_event_session_events","sha256":"fddab10f01de362068cf671a9ed230ac72a776037f1355057a08bee9e891910e","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_EVENT_SESSION_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_resource_governor_events","sha256":"281771fc487bb7d96172ca17bae50ed3332ce7c28c3f6a2f0b293363ca8ffdbb","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_RESOURCE_GOVERNOR_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_resource_governor_events","sha256":"0b9ccf900e22d2524dff71766a190c5a44f67c20c639ca03698124ea2b0f614d","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_RESOURCE_GOVERNOR_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_resource_pool","sha256":"c1e00e4ab1f1533708730e84fdb650d58304695acbc179f431ddf4b92a57b1b2","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_RESOURCE_POOL AS RETURN;"}
+{"id":"context/trig-srv-ddl_resource_pool","sha256":"cff6a292fd55ef9e6fd74eb57b3f1a03fea3d6064f0d5f4f7f0f533d9090203b","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_RESOURCE_POOL AS RETURN;"}
+{"id":"context/trig-db-ddl_workload_group","sha256":"46be6fd32e0076b8408e2943241e5fd864dc8d01ab16e26624b967852c699cd9","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_WORKLOAD_GROUP AS RETURN;"}
+{"id":"context/trig-srv-ddl_workload_group","sha256":"9c7556f2acdb35f2221a5989b7b84bb874c31a25c9e239fe0c6e4e7190260246","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_WORKLOAD_GROUP AS RETURN;"}
+{"id":"context/trig-db-ddl_cryptographic_provider_events","sha256":"dc631bdaa106587268d7790f9bc0808d312cb91e3e2f1fd5b5586b2e9518e9e3","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_CRYPTOGRAPHIC_PROVIDER_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_cryptographic_provider_events","sha256":"d3cf5c4563d7b657502d1b073e4991eb905256de2b5a32bf55623c672f5e63c8","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_CRYPTOGRAPHIC_PROVIDER_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_database_encryption_key_events","sha256":"773f9e8ca2847cc79f8d43e05c0b84a70e2261efb7474a3742e9cf7e6f8912d0","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_DATABASE_ENCRYPTION_KEY_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_database_encryption_key_events","sha256":"1cb72582b479c78ad72538045cecfc249f0bb5291ff0a332fa292886d61909dc","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_DATABASE_ENCRYPTION_KEY_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_broker_priority_events","sha256":"20bd31a6a4bfd9cecf2981c095d256034d265461af5f8ceef88d431108b02da7","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_BROKER_PRIORITY_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_broker_priority_events","sha256":"1682ab12d0bbefdc6a532c116b662322ff93c8d331a39d336f7ee251453ad152","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_BROKER_PRIORITY_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_server_audit_events","sha256":"d61d103b4aff7a4c9a9b03b09a706c48ec460a3337267c5176325e20395064bb","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_SERVER_AUDIT_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_server_audit_events","sha256":"edb2bd7137ad8eec64b53fac823c02bfe36c8be35606eabcdedf51d32ae6d0f1","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_SERVER_AUDIT_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_server_audit_specification_events","sha256":"a2d4ca058a688b0f1db289a505a8a603cb67a425ef89be71e07facaafddcdd9d","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_SERVER_AUDIT_SPECIFICATION_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_server_audit_specification_events","sha256":"438b7763e01ad2df3963bea10cb10eb53231f84e3cb213b023bda47376a070ca","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_SERVER_AUDIT_SPECIFICATION_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_database_audit_specification_events","sha256":"a621eae25135accb898a0592025a8f4d26641565dc51908b392a26f83dbc9e34","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_DATABASE_AUDIT_SPECIFICATION_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_database_audit_specification_events","sha256":"d384de149c8655c8d8231f5b60ea96ed6b984649340ecc5902dfaa23238264bb","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_DATABASE_AUDIT_SPECIFICATION_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_fulltext_stoplist_events","sha256":"399572ede60401a0fb6889451e1c1685b7cb130d56f8c186bd5c116eee2ae811","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_FULLTEXT_STOPLIST_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_fulltext_stoplist_events","sha256":"add8d38af394e79ecf8abbdc852cb8321f180be8ef5fa6fad110f06832ee3a84","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_FULLTEXT_STOPLIST_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_search_property_list_events","sha256":"76a08c978cbe1220b587c50d6acd2746cfe21b26c6b0b7b4cc50a69414b66b06","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_SEARCH_PROPERTY_LIST_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_search_property_list_events","sha256":"f6f6739cf36ceb9a08ef0886d7c66a62e64a9e4336b274bd142132354c6568ac","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_SEARCH_PROPERTY_LIST_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_sequence_events","sha256":"a63383b639b179030fc63286a76cdba71ca618a2fe7e66ea573b7dc5f9b4882e","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_SEQUENCE_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_sequence_events","sha256":"c8174eff5c3223c38b01344ce48f73db5205e92f054a8891ede1ec819945b966","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_SEQUENCE_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_availability_group_events","sha256":"ae1d001e3631344a5db74b29050d1744c45f7b535c48e82a0afa0ec981b73122","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_AVAILABILITY_GROUP_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_availability_group_events","sha256":"763ca6bbcc9cbb49a58df1f8192df29c30545061ec4b07f1782bb591653167d3","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_AVAILABILITY_GROUP_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_database_audit_events","sha256":"3329b8e6e34e3f0702e8f645943db00beee7e12fd4478323662dde2e3620fd95","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_DATABASE_AUDIT_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_database_audit_events","sha256":"9a4551d4fee15f43773e5b34bedd2f6df73b8cdfbfaf313a29dc38079f455eb6","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_DATABASE_AUDIT_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_security_policy_events","sha256":"d5e92551954cc96becf663911f26f5b5a1ea52622f394e578fcbf24bf2aea435","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_SECURITY_POLICY_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_security_policy_events","sha256":"456a6f41036d9b17d0931c05aeefff0f737617439588fd4f6d897ceb9c6de0d0","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_SECURITY_POLICY_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_column_master_key_events","sha256":"4b35656a4d46b6d2dc511e67e3d5783f7edcbdf398fd6e69a99e6910562820ce","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_COLUMN_MASTER_KEY_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_column_master_key_events","sha256":"7b49845645861339498ed99b49899fdf353876e9cd71663c4720b400cae292dc","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_COLUMN_MASTER_KEY_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_column_encryption_key_events","sha256":"e5aa58491c43ee9e8db64e6aa3efb92031997b330aa097742132a31ddb0f4a4e","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_COLUMN_ENCRYPTION_KEY_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_column_encryption_key_events","sha256":"b31f74ff75f7288deb9e7ab87b4e3a70edef8799075c5674e9fe36a902e5cb80","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_COLUMN_ENCRYPTION_KEY_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_external_resource_pool_events","sha256":"f0aadf2c7ee0ec9be55caa1a7c0a589a7ada9ba0edf765dd6e8add8ff2822e6a","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_EXTERNAL_RESOURCE_POOL_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_external_resource_pool_events","sha256":"5b1c1cfbaf497fc121c2ed1528cf571bc199db5a652bc0415aadd77a9265fb6e","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_EXTERNAL_RESOURCE_POOL_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_library_events","sha256":"ccb463c1021ff5319d9222dc43c1abb1faa49a58fca3a8d99137d24e5ccb62ef","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_LIBRARY_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_library_events","sha256":"170f161d90ee2ba63cac74129a86f9fdaaa3bf557b59f470ac370de3a5b7127a","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_LIBRARY_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_sensitivity_events","sha256":"162157f44ca86e799b6e814bc63b42e5aa9da4c2bc3bc2f02a67db25148ca0c1","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_SENSITIVITY_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_sensitivity_events","sha256":"aab5cb6c20608e052cafa000bd752a12838367d056cff200b1551ba52072d711","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_SENSITIVITY_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_external_language_events","sha256":"ee06555d965de3059168f236671e15c630cd7c96b184b09b11d86127b52fee39","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_EXTERNAL_LANGUAGE_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_external_language_events","sha256":"aa2b94e158af8f423d330f96619705f9d8e6f2beaf917439a195dacdc7e792cb","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_EXTERNAL_LANGUAGE_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_external_stream_events","sha256":"da56709c07d4d19a77fd0548795ff3b92c9bf6ed14ffa286c48d89ca5d97dd67","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_EXTERNAL_STREAM_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_external_stream_events","sha256":"6354d7fba48715e87f908a765f985c1cbb2f561aa501354cdcba886f435c172a","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_EXTERNAL_STREAM_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_synapse_pool_events","sha256":"0e7dbef491f534bdd7c4da06460f2a16667bdb35c7f1e5fd3721cfbbd00eed5b","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_SYNAPSE_POOL_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_synapse_pool_events","sha256":"e54684802f906a6f72aa55a9b179b086670e6966c45b8900925096dfb3497493","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_SYNAPSE_POOL_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_synapse_wlg_events","sha256":"684cb46e6612f5f6a0d8ab835d1ab5fd422ad07dfec4cdd8049508267d5e03f7","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_SYNAPSE_WLG_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_synapse_wlg_events","sha256":"296ab33e2229ec47109baf3d071b350a27432f62aa67314f6a3f10bf6f826743","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_SYNAPSE_WLG_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_synapse_wlc_events","sha256":"08ab1e6705398e0f0de62800d7e74612e036e86c01084b14949e9db7e0d09292","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_SYNAPSE_WLC_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_synapse_wlc_events","sha256":"0137835234a8e9831938638d3c8955dbd125bd2d94975ef860837eb3882d2f9d","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_SYNAPSE_WLC_EVENTS AS RETURN;"}
+{"id":"context/trig-db-ddl_fido_events","sha256":"3c650474515983725ed6c2c6006c305e2b724e34cbc2c24e50f58224e0915c5b","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_FIDO_EVENTS AS RETURN;"}
+{"id":"context/trig-srv-ddl_fido_events","sha256":"a0b36600f1ba69aac42b727c1c4ebeccd1bb1ca216788538cd9a7fb540ee81ad","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_FIDO_EVENTS AS RETURN;"}
+{"id":"context/trig-db-insert","sha256":"478c0b75645537ac975943c6b9ff5ce368c18839fd05a140a2d7cdfe7c03e445","source":"CREATE TRIGGER tr ON DATABASE FOR INSERT AS RETURN;"}
+{"id":"context/trig-srv-insert","sha256":"a728e8d50bf351b6634618530a4ef8296f87de7cb864288804dbfea18e2140f6","source":"CREATE TRIGGER tr ON ALL SERVER FOR INSERT AS RETURN;"}
+{"id":"context/trig-db-update","sha256":"67762d3daf28bdccb096dcd477313134de72917b3fa375ed0c300d9bc371d31f","source":"CREATE TRIGGER tr ON DATABASE FOR UPDATE AS RETURN;"}
+{"id":"context/trig-srv-update","sha256":"0616deba9961ac782793d772e2fc58d44bf3952b5ab8c8da7efb2504637be999","source":"CREATE TRIGGER tr ON ALL SERVER FOR UPDATE AS RETURN;"}
+{"id":"context/trig-db-delete","sha256":"12363a4b8109facb734f136a8fb7900bd12671b16e2124be9c1566ff86e37db5","source":"CREATE TRIGGER tr ON DATABASE FOR DELETE AS RETURN;"}
+{"id":"context/trig-srv-delete","sha256":"2a202f498968bca8ee850ac220d948a180278e0b6a613703e3dc72d168d18329","source":"CREATE TRIGGER tr ON ALL SERVER FOR DELETE AS RETURN;"}
+{"id":"context/trig-db-logon","sha256":"23600bac24ee07989478423bea1f4f75db696854585c1527d8747dee89745e36","source":"CREATE TRIGGER tr ON DATABASE FOR LOGON AS RETURN;"}
+{"id":"context/trig-srv-logon","sha256":"83c0381766028544388eb5c0cbff99bba5a104644dd4e1cfeba0ee880125f96f","source":"CREATE TRIGGER tr ON ALL SERVER FOR LOGON AS RETURN;"}
+{"id":"context/trig-db-not_an_event","sha256":"bfdc395acf4d83c4022c52691892666b6e0844b4b340247ddb21b9cda169a5e6","source":"CREATE TRIGGER tr ON DATABASE FOR NOT_AN_EVENT AS RETURN;"}
+{"id":"context/trig-srv-not_an_event","sha256":"78607c56c0c72751f6221f9f01d448fcba8e8b6a7b6a56fe325d9c8b88794296","source":"CREATE TRIGGER tr ON ALL SERVER FOR NOT_AN_EVENT AS RETURN;"}
+{"id":"context/trig-dml-create-table","sha256":"893c859727e39e3de84d6a5e17098dca960bd4055a529e1f65349e505ce43019","source":"CREATE TRIGGER tr ON dbo.t FOR CREATE_TABLE AS RETURN;"}
+{"id":"context/trig-dml-ddl-events","sha256":"9d8167b4458d3b257a8e5a5294b7c6a5d088929104671b667b0c77c44756fe4a","source":"CREATE TRIGGER tr ON dbo.t FOR DDL_DATABASE_LEVEL_EVENTS AS RETURN;"}
+{"id":"context/trig-dml-logon","sha256":"3f28d8c3dd2dfc5fea1b85e050a41121e68e1b02081c06f5645cb7832e7b39cb","source":"CREATE TRIGGER tr ON dbo.t FOR LOGON AS RETURN;"}
+{"id":"context/trig-dml-insert-create","sha256":"4a0b05050fad5719921a0ef2aaa042307258534e6b4a3c102ee7b2ae2e3d85eb","source":"CREATE TRIGGER tr ON dbo.t FOR INSERT, CREATE_TABLE AS RETURN;"}
+{"id":"context/trig-db-mixed","sha256":"c9b112ebcb389575d4c0d031f7352c55d07a249efabacb510ad2d2e9d47d15a6","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_TABLE, INSERT AS RETURN;"}
+{"id":"context/trig-db-after","sha256":"ba5a199e8bd96bdb7b4821ac05446941219be1792f63c1d7ff183a6f3dc3d521","source":"CREATE TRIGGER tr ON DATABASE AFTER CREATE_TABLE AS RETURN;"}
+{"id":"context/trig-dml-qualified","sha256":"22ab2cf14dd52d278f7c5b05748dca31b6a308df8a4bd1b9f1f15c3580808056","source":"CREATE TRIGGER dbo.tr ON dbo.t FOR INSERT AS RETURN;"}
+{"id":"context/trig-dml-owner","sha256":"1ca76f24b9916f79143a2aa8a2555f301098462a64aefc349e8a7d5fb72bd81c","source":"CREATE TRIGGER tr ON dbo.t WITH EXECUTE AS OWNER FOR INSERT AS RETURN;"}
+{"id":"context/trig-alter-db-qualified","sha256":"01a1560b2ba4d65310b6b58c7c61948ac7df847d80cd6913a32466bd9b58bf6e","source":"ALTER TRIGGER dbo.tr ON DATABASE FOR CREATE_TABLE AS RETURN;"}
+{"id":"context/trig-alter-db-insert","sha256":"bb7f03e13fe3db14c2de33f424f0089ca87f3cdf77550e3464e949091b20edc8","source":"ALTER TRIGGER tr ON DATABASE FOR INSERT AS RETURN;"}
+{"id":"context/trig-alter-db-owner","sha256":"9ce19fda92062b49af29755a9a65f8ee12a2e0da25739006fb12b9845056a607","source":"ALTER TRIGGER tr ON DATABASE WITH EXECUTE AS OWNER FOR CREATE_TABLE AS RETURN;"}
+{"id":"context/trig-createalter-db-qualified","sha256":"6e828a7e5e9ac95e04c6250388082b554012934d19bde76184c357e4222abe1c","source":"CREATE OR ALTER TRIGGER dbo.tr ON DATABASE FOR CREATE_TABLE AS RETURN;"}
+{"id":"context/trig-db-owner-encryption","sha256":"fc0c8ffcc82840da0d2e2c3d073f1d074c815ebb097116ad63f6f61ae41a43de","source":"CREATE TRIGGER tr ON DATABASE WITH ENCRYPTION, EXECUTE AS OWNER FOR CREATE_TABLE AS RETURN;"}
+{"id":"context/count-star","sha256":"4ba7f1a9c3cd2d07a0352d8ee2a8fc25da778c9519694b929afd13298f5f7533","source":"SELECT COUNT(*) FROM dbo.t;"}
+{"id":"context/count-all-star","sha256":"3450767d68cb0f179242f543a0871c454c97bc0ffb4a2cb97857b2d91def421b","source":"SELECT COUNT(ALL *) FROM dbo.t;"}
+{"id":"context/count-distinct","sha256":"6642b9c75f1c5fefb532d72af13be5fc12af873e706ecffde5472a345171e460","source":"SELECT COUNT(DISTINCT a) FROM dbo.t;"}
+{"id":"context/count-distinct-two","sha256":"0e0da6fadd3d8764eb448a1fd21d6bf938c812b9c2c6bef43cb6c0e1c41484b7","source":"SELECT COUNT(DISTINCT a, b) FROM dbo.t;"}
+{"id":"context/count-empty","sha256":"43eb0de7166ec1bfd79c5971893348381bb387f6bfb1a0f10ca6c7f25d72b19d","source":"SELECT COUNT() FROM dbo.t;"}
+{"id":"context/count-two","sha256":"8f0ed4fae7b758ec5c0881f81ddf5ca0da3b6e87617ecf2b4305f3b05a3349aa","source":"SELECT COUNT(a, b) FROM dbo.t;"}
+{"id":"context/count-big-two","sha256":"2955f531be4d0f859a95f6b9806f846c64c51b065909891a4e8f51a2043f85d5","source":"SELECT COUNT_BIG(a, b) FROM dbo.t;"}
+{"id":"context/count-bracket-two","sha256":"d7fab5a40429e548fef5d00ab24b57aafa9ec00c84ea18f1dcf2df8ab1936d62","source":"SELECT [COUNT](a, b) FROM dbo.t;"}
+{"id":"context/count-qualified-two","sha256":"9f0948ec8ce55f02729010d05eb5744a8676aae8529ef029feba55466ca0ba84","source":"SELECT dbo.COUNT(a, b) FROM dbo.t;"}
+{"id":"context/count-lower-empty","sha256":"66df8d4685d75149705ac02e87c7d69bbdbe7f2a4d18674380e51d549225f33e","source":"SELECT count() FROM dbo.t;"}
+{"id":"context/count-over-empty","sha256":"a9baacb5041d23f224bec37edeef253c971eccb84721643a244a119d4337d3d8","source":"SELECT COUNT() OVER () FROM dbo.t;"}
+{"id":"context/count-big-star","sha256":"cfda2a95ad9cfc161fc0bc1c8f28b48a1da32ba2a67ec53f9dc2f150cf91a4ed","source":"SELECT COUNT_BIG(*) FROM dbo.t;"}
+{"id":"context/count-sum-two","sha256":"7509f64a6ee2e1c7c3b136bc8d77cac0e5dca756d98edc32fdf958aa25467510","source":"SELECT SUM(a, b) FROM dbo.t;"}
+{"id":"context/count-max-empty","sha256":"a225140d383fce48125009776b39ea362c037173a2b74b464cdfda53dd00545c","source":"SELECT MAX() FROM dbo.t;"}
+{"id":"context/arity-avg-0","sha256":"c32a917a9ff92516b59976ac1b6b50590b93c7b24c9d91b78a7f5999aa61bea8","source":"SELECT AVG() FROM dbo.t;"}
+{"id":"context/arity-avg-1","sha256":"dfaf959991fe6376a3e2facafe63e7a06398d761831b3d5e9471b50e87e8e72c","source":"SELECT AVG(a) FROM dbo.t;"}
+{"id":"context/arity-avg-2","sha256":"43b0c2e65f7a26abca5af0e4170d08b1a19308ef3ed5bfd4007445c85d6d72f9","source":"SELECT AVG(a, b) FROM dbo.t;"}
+{"id":"context/arity-avg-3","sha256":"95e4bba8b4ffa6a80dd467b8546d1b8c7ed78d1476d3837029259c5a9ea61d6d","source":"SELECT AVG(a, b, c) FROM dbo.t;"}
+{"id":"context/arity-min-0","sha256":"0066c73e860409fce7f2d320fb82f88808b73cbe50cbe96819deb9f12ee9b474","source":"SELECT MIN() FROM dbo.t;"}
+{"id":"context/arity-min-1","sha256":"a985c197543060c82db02200b0df144c5260f9095489df8ab62a5e177072b5af","source":"SELECT MIN(a) FROM dbo.t;"}
+{"id":"context/arity-min-2","sha256":"e82bfb837e26e20e1988016533f32cfedb3ab7b83a96f31bbe5bb665cff9f39e","source":"SELECT MIN(a, b) FROM dbo.t;"}
+{"id":"context/arity-min-3","sha256":"5bc846e2f1e38967503a8a5289d525577dd78da54871a4400093410e3d0bcb58","source":"SELECT MIN(a, b, c) FROM dbo.t;"}
+{"id":"context/arity-sum-0","sha256":"f08fff3e0fdb305c5d9f7d26ebc05ab53e87c4ae30c40064ebbed6a38e27af78","source":"SELECT SUM() FROM dbo.t;"}
+{"id":"context/arity-sum-1","sha256":"f3cb9e7a6958c92939c8fb989861614fc4619cf6aef43673fc120b3c5d1137b6","source":"SELECT SUM(a) FROM dbo.t;"}
+{"id":"context/arity-sum-2","sha256":"7509f64a6ee2e1c7c3b136bc8d77cac0e5dca756d98edc32fdf958aa25467510","source":"SELECT SUM(a, b) FROM dbo.t;"}
+{"id":"context/arity-sum-3","sha256":"151c3768cac91772b53a074e3e2145695c5e2102999bb36f19a234508ef4a78a","source":"SELECT SUM(a, b, c) FROM dbo.t;"}
+{"id":"context/arity-max-0","sha256":"a225140d383fce48125009776b39ea362c037173a2b74b464cdfda53dd00545c","source":"SELECT MAX() FROM dbo.t;"}
+{"id":"context/arity-max-1","sha256":"63a4f84b8672001d5a8dfc6d3a2782c885aedbacb5c6d7710be719e0a59cfdd9","source":"SELECT MAX(a) FROM dbo.t;"}
+{"id":"context/arity-max-2","sha256":"7e0d266654dd054ade8c261c814a43f15739703a201764485b06e7e92d7839e8","source":"SELECT MAX(a, b) FROM dbo.t;"}
+{"id":"context/arity-max-3","sha256":"e30057ec8452848b0cff0d9ddf93cef7c25c9a4e4416bd4f8495caabe26e15e0","source":"SELECT MAX(a, b, c) FROM dbo.t;"}
+{"id":"context/arity-stdev-0","sha256":"0c11bbcde18842f9be8ce292105a019008a7a58fc62bed7180b4f7927f9ac714","source":"SELECT STDEV() FROM dbo.t;"}
+{"id":"context/arity-stdev-1","sha256":"bb1661b874c946ad7d491ac47ace12685e063d63ba7fb785e00e63c1a772b023","source":"SELECT STDEV(a) FROM dbo.t;"}
+{"id":"context/arity-stdev-2","sha256":"4040e51e486b12a93a685efa585304b055f2a48c6423b5e89e5f7df71cdc8f94","source":"SELECT STDEV(a, b) FROM dbo.t;"}
+{"id":"context/arity-stdev-3","sha256":"7bcfbca9c8971129ad38a8a0a4f155c2f4f77df5df4092442ca7661915355288","source":"SELECT STDEV(a, b, c) FROM dbo.t;"}
+{"id":"context/arity-stdevp-0","sha256":"03f5e16609c735fc9de3c1b89670aa99558b8f643643376e98ef292e6d0c7b19","source":"SELECT STDEVP() FROM dbo.t;"}
+{"id":"context/arity-stdevp-1","sha256":"db314af2d0446ec7b77da9f0b99bebaef9fa2ce0d1862eef820b750adf74bf80","source":"SELECT STDEVP(a) FROM dbo.t;"}
+{"id":"context/arity-stdevp-2","sha256":"d673ebb25c53ea95bf8ed02aafa33c03bd9b37b0d5502852e6c3b3bfc8d428ee","source":"SELECT STDEVP(a, b) FROM dbo.t;"}
+{"id":"context/arity-stdevp-3","sha256":"c907b6f768603e67ac1a86f43ec8a067b4dfc2c35714a8c55d68ccc5a373919b","source":"SELECT STDEVP(a, b, c) FROM dbo.t;"}
+{"id":"context/arity-var-0","sha256":"1e0e5149486410dbd724ce7fff998336d7b452d3a60a863928d75e68e67241d2","source":"SELECT VAR() FROM dbo.t;"}
+{"id":"context/arity-var-1","sha256":"a9618374e21cff1b0ea9b52fc25b65d7303db6905022dfe1ed42b07fe73ee62f","source":"SELECT VAR(a) FROM dbo.t;"}
+{"id":"context/arity-var-2","sha256":"62e0a8919fcd42a5c4eec6e436ce38f2a98b242fa66bee2e5c05908bba64e3f3","source":"SELECT VAR(a, b) FROM dbo.t;"}
+{"id":"context/arity-var-3","sha256":"6d23e34c4371d0962010316b8163875d579d7642c4aa223c6223c0a159b75e06","source":"SELECT VAR(a, b, c) FROM dbo.t;"}
+{"id":"context/arity-varp-0","sha256":"1b03f0464c8ecc7239c09ed570eeae7d4c42503abe5c3ba9b565c5f106a071cb","source":"SELECT VARP() FROM dbo.t;"}
+{"id":"context/arity-varp-1","sha256":"cda814583ff7ef7e1fc4b85db08966d8060c9b1a05697c9c0501a32c3cbce759","source":"SELECT VARP(a) FROM dbo.t;"}
+{"id":"context/arity-varp-2","sha256":"4df6cc8510a528a562268d64dee4f7902ac490a73942d96cc9710d25ec462ce1","source":"SELECT VARP(a, b) FROM dbo.t;"}
+{"id":"context/arity-varp-3","sha256":"8f2d18bdfc5d2bdc0d77c95ef2e90830dde2b597ca9b987ab1a5af9f88f9e42c","source":"SELECT VARP(a, b, c) FROM dbo.t;"}
+{"id":"context/arity-checksum_agg-0","sha256":"0554fedeab8600fe5f73e4b157924afbb0b2d266fdbf1095d64ca1ff352e7dcf","source":"SELECT CHECKSUM_AGG() FROM dbo.t;"}
+{"id":"context/arity-checksum_agg-1","sha256":"ea56aa909245e0935a12407f14e4f8667b9923ddc5f3b78352fea8e7eac21bae","source":"SELECT CHECKSUM_AGG(a) FROM dbo.t;"}
+{"id":"context/arity-checksum_agg-2","sha256":"477c710f78833cbc09288ee3379d7e8d43ccd6d7d7f0f30b52006e962d6e5986","source":"SELECT CHECKSUM_AGG(a, b) FROM dbo.t;"}
+{"id":"context/arity-checksum_agg-3","sha256":"351e427cf054d4413ce1f873bb7a07dd353e61cab2f6365ede54000f5bddab39","source":"SELECT CHECKSUM_AGG(a, b, c) FROM dbo.t;"}
+{"id":"context/arity-grouping-0","sha256":"f06900f23ce5f6f25a47c2f125e748095d2d965a159ab148f5e485bdb19d9c2b","source":"SELECT GROUPING() FROM dbo.t;"}
+{"id":"context/arity-grouping-1","sha256":"6a448439ae0e2c319cd50762cca43b6975980f63dadcbe7f7c5aa390e3a0cf25","source":"SELECT GROUPING(a) FROM dbo.t;"}
+{"id":"context/arity-grouping-2","sha256":"a7eb69075f1f287b45293bf8d88fe85f479617c062a2fe7a5268c620ec43af9d","source":"SELECT GROUPING(a, b) FROM dbo.t;"}
+{"id":"context/arity-grouping-3","sha256":"88595ec6fe589030e7fda8fb285067af5e9d4a11ed71038271afd21eb0cc3f11","source":"SELECT GROUPING(a, b, c) FROM dbo.t;"}
+{"id":"context/arity-grouping_id-0","sha256":"fc685ea2871b6a977f7b166527c93204e233308cb4bdef6b06cb2d802f59b48a","source":"SELECT GROUPING_ID() FROM dbo.t;"}
+{"id":"context/arity-grouping_id-1","sha256":"1ac4709d1c5831589882d7e6a4192d030999052a410afd27dfaffb0cb557c097","source":"SELECT GROUPING_ID(a) FROM dbo.t;"}
+{"id":"context/arity-grouping_id-2","sha256":"9496686f5ee9fd63ca29e9e9ebbdff5886c49afc15097b1b7baa2d8a66c94ea1","source":"SELECT GROUPING_ID(a, b) FROM dbo.t;"}
+{"id":"context/arity-grouping_id-3","sha256":"bf0b9315ebaa3d7a67697c7ca90a61b10b8eddae086a78807a0671d610686c57","source":"SELECT GROUPING_ID(a, b, c) FROM dbo.t;"}
+{"id":"context/arity-approx_count_distinct-0","sha256":"073cf9de4bd230a2017ebd3ea55219c8081e47a0a0163623405415a6149569a9","source":"SELECT APPROX_COUNT_DISTINCT() FROM dbo.t;"}
+{"id":"context/arity-approx_count_distinct-1","sha256":"455fc155434b879e735b580e68651d21f3467cdb312ffa32b23e1002d4a52534","source":"SELECT APPROX_COUNT_DISTINCT(a) FROM dbo.t;"}
+{"id":"context/arity-approx_count_distinct-2","sha256":"0ba24fcb7a52ece1bd45b36700b5dca1c7921df24dbe301a8014776b93a873ac","source":"SELECT APPROX_COUNT_DISTINCT(a, b) FROM dbo.t;"}
+{"id":"context/arity-approx_count_distinct-3","sha256":"ec06565fc757bc7fcc9881c2d4104db2ad13b04b74e35cf78ea7c0dea6295a3a","source":"SELECT APPROX_COUNT_DISTINCT(a, b, c) FROM dbo.t;"}
+{"id":"context/arity-string_agg-0","sha256":"8e1d10103eae23381701161e61b4f6109fae79e01c1d8202df15af8d4d53c5b1","source":"SELECT STRING_AGG() FROM dbo.t;"}
+{"id":"context/arity-string_agg-1","sha256":"b99031c2dd8a0955d452e5935225fa6bd02b1594f09443a3e0140ebc929bf1d4","source":"SELECT STRING_AGG(a) FROM dbo.t;"}
+{"id":"context/arity-string_agg-2","sha256":"1abbaf9c51cd3f7d10607a7981cf81fbaff9baedc26b847e813297dcf813335e","source":"SELECT STRING_AGG(a, b) FROM dbo.t;"}
+{"id":"context/arity-string_agg-3","sha256":"6e515315b3840e6309ad4596ddb1c69b53e9a6f55238f779a599dbdf373f174b","source":"SELECT STRING_AGG(a, b, c) FROM dbo.t;"}
+{"id":"context/arity-abs-0","sha256":"e724a3b353769c17c96d08177131fb8b8a8d46c7ff27726f8edd04c0dafd1808","source":"SELECT ABS() FROM dbo.t;"}
+{"id":"context/arity-abs-1","sha256":"edda3b04168dd0a51f8491a88ba319bfebe3b7ec82f6e37d4ece91d897fa834c","source":"SELECT ABS(a) FROM dbo.t;"}
+{"id":"context/arity-abs-2","sha256":"f66dc2b449463b9ec52b1b376a0af7300654887a6dbb5265091e7e18fc8c72ee","source":"SELECT ABS(a, b) FROM dbo.t;"}
+{"id":"context/arity-abs-3","sha256":"2db13976cff13022cd6e7e2c84ae477da368d42473a58bb4247971d39933feaf","source":"SELECT ABS(a, b, c) FROM dbo.t;"}
+{"id":"context/arity-len-0","sha256":"780636f77be91613cd013faaba3ff11f71cbfe5be2c4c2f63c315996fd69fc49","source":"SELECT LEN() FROM dbo.t;"}
+{"id":"context/arity-len-1","sha256":"d761ec596b5c7964e0f2c3495106fdc8edadcc1721c95670b1e5cecda7f3520c","source":"SELECT LEN(a) FROM dbo.t;"}
+{"id":"context/arity-len-2","sha256":"37e99d2ff8aa8a645fb342b0bdbcab98a6ca7e91fb8a6e30f45c9ba1d94d62db","source":"SELECT LEN(a, b) FROM dbo.t;"}
+{"id":"context/arity-len-3","sha256":"2f22064619719be5ed6a822d3a14565471d88651751fe1b03f219eb84bac3fec","source":"SELECT LEN(a, b, c) FROM dbo.t;"}
+{"id":"context/arity-isnull-0","sha256":"895c0545a7fb74d515178535a8ef6c6e3c715a98b87a55d7c723cdfa1825e25f","source":"SELECT ISNULL() FROM dbo.t;"}
+{"id":"context/arity-isnull-1","sha256":"91c3077433ac232d2d2dba65d9b746f341f92b612942fa83651572ef44674033","source":"SELECT ISNULL(a) FROM dbo.t;"}
+{"id":"context/arity-isnull-2","sha256":"7835e6c1597d8388c8dbe6e572fc314a3aae664b9488c357b0e91cb9367a80e2","source":"SELECT ISNULL(a, b) FROM dbo.t;"}
+{"id":"context/arity-isnull-3","sha256":"aaecb44a3eb759b9cb2aad3e6cf13c5c09d892ec600cdfeea61e5ea82b4c9f11","source":"SELECT ISNULL(a, b, c) FROM dbo.t;"}
+{"id":"context/arity-coalesce-0","sha256":"8094d8893a5fe9d939e502f600cee41f36e0823bf6da5fd5cb1f0f6912af8533","source":"SELECT COALESCE() FROM dbo.t;"}
+{"id":"context/arity-coalesce-1","sha256":"e357f11deb83c8e9eced311ce3f698654cd77b24e76c73a7a9ee6542b749bd36","source":"SELECT COALESCE(a) FROM dbo.t;"}
+{"id":"context/arity-coalesce-2","sha256":"b26813cb73b1341312a664dfdb287dbf3fbe5426acd5345f7849ca7ebc41a72c","source":"SELECT COALESCE(a, b) FROM dbo.t;"}
+{"id":"context/arity-coalesce-3","sha256":"df4d03eb13167b8c8bf8d36f69861bb40cd4e24a8b06fc2539259c493a18caa2","source":"SELECT COALESCE(a, b, c) FROM dbo.t;"}
+{"id":"context/return-scalar-value","sha256":"a9b634f585a1afc5b8e71e825772092af0c32a8a29c03a8688935d7c1db9dbaa","source":"CREATE FUNCTION dbo.f() RETURNS int AS BEGIN RETURN 1; END;"}
+{"id":"context/return-scalar-empty","sha256":"b0de4ec1c7c07055ccd85ba1732763337567a38584f8cb23c085cf91f2c23133","source":"CREATE FUNCTION dbo.f() RETURNS int AS BEGIN RETURN; END;"}
+{"id":"context/return-scalar-nested","sha256":"481da81995b421a59634136f4982ea3125bad0576cf3b37950eff38ffb46c4e2","source":"CREATE FUNCTION dbo.f() RETURNS int AS BEGIN WHILE 1=0 BEGIN RETURN; END RETURN 1; END;"}
+{"id":"context/return-alter-scalar-empty","sha256":"556f2813db9f9adba2c8b82d93f443c73ccb8a89ca8380f2f9ab5c0c767a07aa","source":"ALTER FUNCTION dbo.f() RETURNS int AS BEGIN RETURN; END;"}
+{"id":"context/return-multi-empty","sha256":"55a7a542743d95fe24ec600316be78dc7af387f118d47afefbe3765859220912","source":"CREATE FUNCTION dbo.f() RETURNS @r TABLE (a int) AS BEGIN RETURN; END;"}
+{"id":"context/return-proc-empty","sha256":"04769a3c56bc60b87f3029719f84a0010726dbabed78dfdac5bb2b7e0702177f","source":"CREATE PROCEDURE dbo.p AS BEGIN RETURN; END;"}
+{"id":"context/return-scalar-paren","sha256":"5122375236a336ec4e404e2ef574ce3b13ada2eb435e1766fdc71a1a299c3dc5","source":"CREATE FUNCTION dbo.f() RETURNS int AS BEGIN RETURN (1); END;"}
+{"id":"context/cte-no-from","sha256":"2a255a9998ca890ee8a3302796a2f612ef2606a38d4adaf3234dc589fb471777","source":"WITH c AS (SELECT 1 AS a) SELECT 1;"}
+{"id":"context/cte-from-cte","sha256":"360f4d98a3875d7c0a1c34cc0c73aaf4e9f57ffc8a7a174cbd6b398b52189e50","source":"WITH c AS (SELECT 1 AS a) SELECT a FROM c;"}
+{"id":"context/cte-from-other","sha256":"84d9eae5c0ace2861f511738d66ba1a04b5b5522c4c5950c139fdfa59adebf4d","source":"WITH c AS (SELECT 1 AS a) SELECT a FROM dbo.t;"}
+{"id":"context/cte-subquery","sha256":"879efc2bafbb9677cc697f1138df5a8e0d674795b9a633f484f67429dd0b4b1b","source":"WITH c AS (SELECT 1 AS a) SELECT (SELECT a FROM c);"}
+{"id":"context/cte-union-no-from","sha256":"989a303a887021f3490d0da6c9f00f9ead887006177076e089fa0c0304a8c7e0","source":"WITH c AS (SELECT 1 AS a) SELECT 1 UNION SELECT 2;"}
+{"id":"context/cte-union-one-from","sha256":"3058cd33b41749ac4f242fd95440acf51abd9beaa6940682e0704711e49e9bed","source":"WITH c AS (SELECT 1 AS a) SELECT 1 UNION SELECT a FROM c;"}
+{"id":"context/cte-exists","sha256":"0de3bbcfc0d3564510d0fc29fd8c68daa2d87d2a899e9eec0e18ea4bc3949512","source":"WITH c AS (SELECT 1 AS a) SELECT 1 WHERE EXISTS (SELECT 1 FROM c);"}
+{"id":"context/cte-insert-values","sha256":"f098c78922f28719d84e9eb293af8b10fed371fd7a67f1da392ce463474f8028","source":"WITH c AS (SELECT 1 AS a) INSERT INTO dbo.t VALUES (1);"}
+{"id":"context/cte-update-no-from","sha256":"f19f8af2c27b1e117f2c1b3e2760f1600d2f12d902d93f2b2fed3e8dca7aaee1","source":"WITH c AS (SELECT 1 AS a) UPDATE dbo.t SET a = 1;"}
+{"id":"context/cte-two-ctes","sha256":"944fd3497cc01ae4788ff6eca430a41d52c83e739ca9fb2699b477324116c1ca","source":"WITH c AS (SELECT 1 AS a), d AS (SELECT a FROM c) SELECT 1;"}
+{"id":"context/window-rows-order","sha256":"67d23172d5611870b9bcb507ecce36493f1e2b6e694c03bda96153b1af34c579","source":"SELECT MAX(a) OVER (ORDER BY a ROWS 1 PRECEDING) FROM dbo.t;"}
+{"id":"context/window-rows-no-order","sha256":"74a68edf96fbd23f3ff8e0746687e51790acdb2f687b5553fc6a2d568841f9da","source":"SELECT MAX(a) OVER (ROWS UNBOUNDED PRECEDING) FROM dbo.t;"}
+{"id":"context/window-range-no-order","sha256":"c699e59068d38fb7132f9d5fcc83a8c93ed35dc47bb87417b80b7ad230d3aa4a","source":"SELECT MAX(a) OVER (PARTITION BY a RANGE UNBOUNDED PRECEDING) FROM dbo.t;"}
+{"id":"context/window-between-no-order","sha256":"ae494c0307aae4a886edf8621ee9057bd8cdb040eb6b22cc1f7f34d32e5cf4bf","source":"SELECT MAX(a) OVER (ROWS BETWEEN 1 PRECEDING AND CURRENT ROW) FROM dbo.t;"}
+{"id":"context/window-named-base","sha256":"9c784d9d6cd26fb1adfaec0c3507841570afc5408e252514f3e2a8fb5502cc44","source":"SELECT MAX(a) OVER (w ROWS 1 PRECEDING) FROM dbo.t WINDOW w AS (ORDER BY a);"}
+{"id":"context/window-no-frame","sha256":"976f66cac6772771f0f8ed0b4c40b9b26526382c5654ec1cf5f3f9912778d79f","source":"SELECT MAX(a) OVER (PARTITION BY a) FROM dbo.t;"}
+{"id":"context/merge-block-unterminated","sha256":"d433ad0baaf89f76585315d051239c0b1ff66ae8f23c56f628992ef3cd6e4850","source":"BEGIN MERGE dbo.t USING dbo.s ON 1=1 WHEN MATCHED THEN DELETE END;"}
+{"id":"context/merge-block-terminated","sha256":"7f79b1bb31762cd8301c6580b04a1264a7c6a2bbbc7770d828c02182bb369356","source":"BEGIN MERGE dbo.t USING dbo.s ON 1=1 WHEN MATCHED THEN DELETE; END;"}
+{"id":"context/merge-if-unterminated","sha256":"9d5831b59b372db7a8546bdc918fff0cdb362a8d68740e6672c1fc69b98842d9","source":"IF 1=1 MERGE dbo.t USING dbo.s ON 1=1 WHEN MATCHED THEN DELETE"}
+{"id":"context/merge-if-terminated","sha256":"f8af89b3f83c25cba117e1e9a63f9cf5fcf35606a1005f3c3433490cc0e714e3","source":"IF 1=1 MERGE dbo.t USING dbo.s ON 1=1 WHEN MATCHED THEN DELETE;"}
+{"id":"context/merge-if-else","sha256":"198fcf8fe64b82e4b61841153d79de220a5dc28c25a6c3571a439909d2dfa93e","source":"IF 1=1 MERGE dbo.t USING dbo.s ON 1=1 WHEN MATCHED THEN DELETE; ELSE SELECT 1;"}
+{"id":"context/merge-if-else-unterminated","sha256":"e443e2576ee58bb961ae357b77b759dca2d3714a7343dd608d4094af6d8e18cd","source":"IF 1=1 MERGE dbo.t USING dbo.s ON 1=1 WHEN MATCHED THEN DELETE ELSE SELECT 1;"}
+{"id":"context/merge-comment-then-semicolon","sha256":"88f4364e57b2c3a2675dc242e8511f4df63572b83f813a71249eb26b9263aa10","source":"MERGE dbo.t USING dbo.s ON 1=1 WHEN MATCHED THEN DELETE /* c */ ;"}
+{"id":"context/merge-proc-unterminated","sha256":"af2ee15a9f2fb5db919ac914b302d6387258200af70829f5b344587814b3b587","source":"CREATE PROCEDURE dbo.p AS MERGE dbo.t USING dbo.s ON 1=1 WHEN MATCHED THEN DELETE"}
+{"id":"context/merge-output","sha256":"644fc4905a0206b7c8b473f959ef88daf2fc365a74125a3546e90042d3ebb9ef","source":"MERGE dbo.t USING dbo.s ON 1=1 WHEN MATCHED THEN DELETE OUTPUT $action;"}
+{"id":"context/merge-cte","sha256":"f9750137e39b229ec533d124118fa6932bdb2c6971d2c6856ec0f1107b6655ec","source":"WITH c AS (SELECT 1 AS a) MERGE dbo.t USING dbo.s ON 1=1 WHEN MATCHED THEN DELETE;"}
