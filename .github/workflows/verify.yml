@@ -5,7 +5,7 @@
 #  Workflow name       Verify
 #  Type                Entrypoint (runs in this repo only)
 #  Triggers            pull_request
-#                      push (dev, main)
+#                      push (main)
 #                      workflow_dispatch (manual re-run on any ref)
 #  Purpose             Regenerate the parser from grammar.js, fail on any
 #                      drift in the generated parser or the committed
@@ -28,7 +28,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
   push:
-    branches: [dev, main]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -177,7 +177,7 @@ jobs:
       - name: Check formatting of the grammar JS
         run: npm run format:check
 
-      - name: Test the release policy scripts
+      - name: Test the tools scripts
         run: node --test tools/*.test.mjs
 
       - name: Check Cargo.toml, package.json, and tree-sitter.json agree
@@ -336,8 +336,7 @@ jobs:
           PYEOF
 
   ci:
-    # A dispatched run must report as `Verify` too: it is how a
-    # GITHUB_TOKEN-pushed release or sync branch satisfies the required check.
+    # A dispatched run must report as `Verify` too, so a manual re-run satisfies the required check.
     name: ${{ github.event_name == 'push' && 'Verify (push)' || 'Verify' }}
     needs: [verify, node-binding, secret-scanning, pr-title, workflow-meta]
     if: always()

@@ -3,7 +3,6 @@ version: 2
 updates:
   - package-ecosystem: cargo
     directory: /
-    target-branch: dev
     versioning-strategy: auto
     schedule:
       interval: weekly
@@ -33,7 +32,6 @@ updates:
 
   - package-ecosystem: github-actions
     directory: /
-    target-branch: dev
     schedule:
       interval: weekly
       day: monday
@@ -62,7 +60,6 @@ updates:
 
   - package-ecosystem: npm
     directory: /
-    target-branch: dev
     schedule:
       interval: weekly
       day: monday
@@ -70,6 +67,10 @@ updates:
       timezone: America/New_York
     open-pull-requests-limit: 2
     versioning-strategy: increase-if-necessary
+    # The generator CLI stays pinned (go-treesitter regenerates with the same
+    # version); it moves only in a deliberate change. Alerts still report it.
+    ignore:
+      - dependency-name: "tree-sitter-cli"
     rebase-strategy: auto
     cooldown:
       default-days: 4
