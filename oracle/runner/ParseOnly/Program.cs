@@ -210,13 +210,16 @@ static class Program
     static int SelfTest(Dictionary<string, string?> opts)
     {
         using var admin = Open(opts, "master");
-        var db = NewDatabase(admin, 170);
+        // The engine's own default level: the highest it supports (2017: 140 … 2025: 170).
+        var level = Convert.ToInt32(Scalar(admin, "SELECT compatibility_level FROM sys.databases WHERE name = 'master'"));
+        var db = NewDatabase(admin, level);
         var failures = new List<string>();
+        Console.WriteLine($"self-test at compatibility level {level}");
         try
         {
             void Expect(string name, string source, Func<JsonNode, bool> ok)
             {
-                var verdict = Judge(opts, db, 170, source);
+                var verdict = Judge(opts, db, level, source);
                 Console.WriteLine($"{(ok(verdict) ? "ok  " : "FAIL")} {name}: {verdict.ToJsonString()}");
                 if (!ok(verdict)) failures.Add(name);
             }
