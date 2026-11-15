@@ -15092,6 +15092,10 @@
           "named": true
         },
         {
+          "type": "keyword_table",
+          "named": true
+        },
+        {
           "type": "keyword_unknown",
           "named": true
         },
@@ -15101,6 +15105,10 @@
         },
         {
           "type": "optimize_for_item",
+          "named": true
+        },
+        {
+          "type": "table_hint_item",
           "named": true
         }
       ]
@@ -17719,6 +17727,10 @@
         },
         {
           "type": "keyword_index",
+          "named": true
+        },
+        {
+          "type": "literal",
           "named": true
         }
       ]

@@ -538,16 +538,30 @@ export default {
   // parenthesized list as a hint list. The deprecated bare spelling,
   // `FROM t (NOLOCK)`, is `_bare_table_hint` below and lives inside
   // `relation`.
-  table_hint: ($) =>
-    seq($.keyword_with, wrapped_in_parenthesis(comma_list($.table_hint_item, true))),
+  table_hint: ($) => seq($.keyword_with, wrapped_in_parenthesis($._table_hint_list)),
 
-  table_hint_item: ($) => choice($._index_hint, $.identifier),
+  _table_hint_list: ($) => seq($.table_hint_item, repeat(seq(optional(','), $.table_hint_item))),
+
+  table_hint_item: ($) =>
+    choice($._bare_table_hint_item, $._forceseek_hint, $._spatial_hint, $.identifier),
+
+  _hint_index: ($) => choice($.identifier, alias($._hint_integer, $.literal)),
+
+  _forceseek_hint: ($) =>
+    seq(
+      alias($.keyword_forceseek, $.identifier),
+      wrapped_in_parenthesis(seq($._hint_index, paren_list($.identifier, true))),
+    ),
+
+  _spatial_hint: ($) =>
+    seq(
+      alias($.keyword_spatial_window_max_cells, $.identifier),
+      '=',
+      alias($._hint_numeric, $.literal),
+    ),
 
   _index_hint: ($) =>
-    seq(
-      $.keyword_index,
-      choice(wrapped_in_parenthesis(comma_list($.identifier, true)), seq('=', $.identifier)),
-    ),
+    seq($.keyword_index, choice(paren_list($._hint_index, true), seq('=', $._hint_index))),
 
   // The deprecated bare-parenthesis table hint, `FROM t (NOLOCK)` or
   // `JOIN t x (NOLOCK, INDEX(ix1))`, which pre-WITH vendor code still uses.

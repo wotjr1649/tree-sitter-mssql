@@ -217,13 +217,13 @@ export default {
   keyword_serializable: (_) => make_keyword('serializable'),
   keyword_snapshot: (_) => make_keyword('snapshot'),
 
-  // Table hint names. These are keywords only for the deprecated bare
-  // spelling `FROM t (NOLOCK)`, where the keyword is what separates a hint
-  // from a table-valued function call `f(col)`; in `WITH (NOLOCK)` they stay
-  // identifiers, and the bare form aliases them to `identifier` so both
-  // spellings produce the same tree.
+  // Table hint keywords distinguish bare hints from function arguments and
+  // space-separated WITH hints from rowset schemas. Both spellings alias
+  // parameterless hint names to identifier.
   keyword_forcescan: (_) => make_keyword('forcescan'),
+  keyword_hint: (_) => make_keyword('hint'),
   keyword_forceseek: (_) => make_keyword('forceseek'),
+  keyword_spatial_window_max_cells: (_) => make_keyword('spatial_window_max_cells'),
   keyword_holdlock: (_) => make_keyword('holdlock'),
   // sqlcmd's :on error [ exit | ignore ]
   keyword_error: (_) => make_keyword('error'),

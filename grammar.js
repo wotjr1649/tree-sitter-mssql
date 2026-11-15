@@ -27,12 +27,16 @@ export default grammar({
     $._sqlcmd_argument,
     $._sqlcmd_inline,
     $._sqlcmd_empty,
+    $._hint_integer,
+    $._hint_numeric,
   ],
 
   // Every entry arbitrates a real fork the parser must carry a few tokens
   // before it can settle; tree-sitter reports any that stop being needed
   // as "unnecessary conflicts" on generate, and those are removed.
   conflicts: ($) => [
+    // Space-separated hints and a rowset schema share the identifier prefix.
+    [$.table_hint_item, $.openjson_column],
     // `a.b` — the prefix of a qualified column vs. an object reference.
     [$.object_reference, $._qualified_field],
     // `a.b.c.d` — how many parts belong to the reference.

@@ -11,6 +11,10 @@ The reference for valid T-SQL is SQL Server's own parser under `SET PARSEONLY ON
 | `runner/ParseOnly/` | The runner that produces the verdicts (C#, .NET 10, Microsoft.Data.SqlClient pinned by `packages.lock.json`) |
 | `expected.json` | The grammar's current result per case (`clean` or `error`) and the edit histories whose incremental parse differs from a fresh one |
 
+The `table-hints` probe set adds 165 cases for INDEX/FORCESEEK arguments, numeric and token-length
+bounds, adjacent/space-separated hints, query TABLE HINT and UPDATE/DELETE targets. Its committed
+LocalDB verdicts cover levels 100–170; the matching corpus includes the documented context gaps.
+
 ## Reading the verdicts
 
 - A case is **positive** when SQL Server accepts it at any verified level. A case is a **negative** only when every level rejects it.

@@ -68,6 +68,39 @@ from NOEXEC Msg 196; compile-time rejection is not a syntax verdict.
 | `SELECT FROM;` (also with a leading `;`) | FROM is read as an identifier when the SELECT expression is absent; the new empty statement support exposes this existing SELECT gap. LocalDB 100–170 returns 156. | `semicolon/invalid-leading-select`; corpus `semicolon.txt` |
 | A statement-less BEGIN/END block followed by a CTE | LocalDB 100–170 returns 156 and 102; the grammar accepts the empty block; the CTE after it is now rejected by the `cte-terminator` constraint, so the input fails as SQL Server says, though for that reason rather than the empty block. | `semicolon/cte-after-empty-block`; corpus `semicolon.txt` |
 
+## Table hints: structure and deferred checks
+
+The R9 table-hint probes (`oracle/probes/table-hints.jsonl`, 165 cases) were measured with
+LocalDB 17.0.1000.7, PARSEONLY at compatibility levels 100–170. INDEX takes a name or
+0..2147483647 integer; FORCESEEK additionally takes a non-empty column list. Their numeric
+tokens allow up to 11 digits (including leading zeros); SPATIAL_WINDOW_MAX_CELLS allows
+up to 128 digits, still bounded by 2147483647. Value, sign, decimal/exponent/hex and length
+boundaries are corpus-tested. WITH accepts comma, space and mixed hint separators;
+TABLE HINT in OPTION requires commas and may omit its inner hint list.
+
+The grammar models hint structure; these rejected cases still have a clean tree. No new
+hint constraint rule is installed by this change.
+
+| Oracle cases | Engine verdict | Disposition |
+| --- | --- | --- |
+| `force-seek-and-index` | 10747 | ADR-0003: parameterized FORCESEEK and INDEX are mutually exclusive; pending constraint rule |
+| `query-hint-control-004`, `table-hints/conflict` | 1047 | ADR-0003: conflicting isolation hints; pending constraint rule |
+| `force-seek-zero`, `query-hint-control-006`, `table-hints/seek-zero` | 10749 | Context/value check: FORCESEEK cannot use heap index 0, although INDEX can; keep the shared integer shape |
+| `query-hint-control-005`, `table-hints/unknown`, `table-hints/spatial-double-zero-hex`, `table-hints/spatial-one-hex` | 321 | Context hint-name check; 00x1 and 1x1 are a decimal token followed by the unknown hint x1, unlike rejected hexadecimal 0x1 |
+| `table-hints/bare-index`, `table-hints/bare-index-alone` | 1018 | Unresolved deprecated-form restriction: INDEX needs WITH here. The existing bare INDEX structure is retained; not a name-binding error |
+| `table-hints/update-index`, `table-hints/delete-index` | 1069 | Pending statement/hint applicability check: the target cannot use INDEX |
+| `table-hints/update-seek`, `table-hints/delete-seek` | 10724 | Pending statement/hint applicability check: the target cannot use FORCESEEK |
+| `table-hints/update-scan`, `table-hints/delete-scan` | 10745 | Existing statement/hint applicability gap for FORCESCAN |
+| `table-hints/maxdop-32768`, `table-hints/maxdop-2147483647` | 304 | Existing query-hint value gap: MAXDOP range is 0..32767; the generic query-hint rule is unchanged |
+| `table-hints/maxdop-2147483648`, `table-hints/maxdop-1e0`, `table-hints/maxdop-0x1` | 102 | Existing query-hint syntax over-acceptance, outside the table-hint rule; not explained by ADR-0002 context |
+
+Five existing oracle negatives turn error to clean: `force-seek-zero`, `force-seek-and-index`,
+and `query-hint-control-004/005/006`. Eight new probes do so against the same main parser:
+`table-hints/seek-zero`, `bare-index`, `update-index`, `update-seek`, `delete-index`,
+`delete-seek`, `spatial-double-zero-hex` and `spatial-one-hex` (all share the `table-hints/`
+prefix). The other ten clean negative probes were already clean on main. Each probe is pinned
+in `test/corpus/table-hints.txt`; these are documented residual gaps, not syntax success claims.
+
 ## Adding an entry
 
 When a review or a probe finds a new gap, add a row here in the same pass as the corpus case (or

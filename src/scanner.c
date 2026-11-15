@@ -8,7 +8,8 @@
 // (`SQLCMD_BOUNDARY`), or spaces and then an argument on the same line
 // (`SQLCMD_ARGUMENT`; for `:!!`, which needs no space and may have an empty
 // command, `SQLCMD_INLINE` or `SQLCMD_EMPTY`).
-// Everything else in the grammar is lexed from grammar.js.
+// Hint numbers also need lookahead so 1ROWLOCK is accepted without splitting
+// a hexadecimal, decimal or exponent literal into a number and a hint.
 #include "tree_sitter/parser.h"
 
 enum TokenType {
@@ -18,6 +19,8 @@ enum TokenType {
   SQLCMD_ARGUMENT,
   SQLCMD_INLINE,
   SQLCMD_EMPTY,
+  HINT_INTEGER,
+  HINT_NUMERIC,
 };
 
 void *tree_sitter_mssql_external_scanner_create(void) { return NULL; }
@@ -81,6 +84,29 @@ bool tree_sitter_mssql_external_scanner_scan(void *payload, TSLexer *lexer, cons
     }
     // A command that needs an argument has none on its line.
     return false;
+  }
+  if ((valid_symbols[HINT_INTEGER] || valid_symbols[HINT_NUMERIC]) && !recovering) {
+    while (is_space(lexer->lookahead)) lexer->advance(lexer, true);
+    if (lexer->lookahead >= '0' && lexer->lookahead <= '9') {
+      unsigned digits = 0;
+      uint32_t value = 0;
+      while (lexer->lookahead >= '0' && lexer->lookahead <= '9') {
+        uint32_t digit = (uint32_t)(lexer->lookahead - '0');
+        if (value > 214748364 || (value == 214748364 && digit > 7)) return false;
+        value = value * 10 + digit;
+        digits++;
+        lexer->advance(lexer, false);
+      }
+      // LocalDB 17.0.1000.7: INDEX/FORCESEEK allow 11 digits; spatial allows 128.
+      if (digits > (valid_symbols[HINT_INTEGER] ? 11u : 128u)) return false;
+      if (lexer->lookahead == '.' || lexer->lookahead == 'e' || lexer->lookahead == 'E' ||
+          (digits == 1 && value == 0 && (lexer->lookahead == 'x' || lexer->lookahead == 'X'))) {
+        return false;
+      }
+      lexer->mark_end(lexer);
+      lexer->result_symbol = valid_symbols[HINT_INTEGER] ? HINT_INTEGER : HINT_NUMERIC;
+      return true;
+    }
   }
   if (!valid_symbols[MARGINALIA]) {
     return false;

@@ -447,7 +447,10 @@ INSERT INTO dbo.t WITH cte AS (SELECT 1 AS a) SELECT a FROM cte;
           (table_hint_item
             (identifier))
           (ERROR
-            (keyword_as)))
+            (literal)
+            (keyword_as))
+          (table_hint_item
+            (identifier)))
         (query_specification
           (select
             (keyword_select)

@@ -169,6 +169,59 @@ mod tests {
     }
 
     #[test]
+    fn hint_number_boundaries_match_fresh_parses() {
+        let long_good = format!("SPATIAL_WINDOW_MAX_CELLS={}1", "0".repeat(127));
+        let long_bad = format!("SPATIAL_WINDOW_MAX_CELLS={}1", "0".repeat(128));
+        for (good, bad) in [
+            (long_good.as_str(), long_bad.as_str()),
+            (
+                "SPATIAL_WINDOW_MAX_CELLS=1ROWLOCK",
+                "SPATIAL_WINDOW_MAX_CELLS=1e0ROWLOCK",
+            ),
+            (
+                "SPATIAL_WINDOW_MAX_CELLS=1ROWLOCK",
+                "SPATIAL_WINDOW_MAX_CELLS=1.0ROWLOCK",
+            ),
+            (
+                "SPATIAL_WINDOW_MAX_CELLS=00XLOCK",
+                "SPATIAL_WINDOW_MAX_CELLS=0XLOCK",
+            ),
+            ("SPATIAL_WINDOW_MAX_CELLS=1", "SPATIAL_WINDOW_MAX_CELLS=0x1"),
+            (
+                "SPATIAL_WINDOW_MAX_CELLS=2147483647",
+                "SPATIAL_WINDOW_MAX_CELLS=2147483648",
+            ),
+            (
+                "SPATIAL_WINDOW_MAX_CELLS=1/* outer /* inner */ end */ROWLOCK",
+                "SPATIAL_WINDOW_MAX_CELLS=1/* unterminated",
+            ),
+            ("INDEX(2147483647)", "INDEX(2147483648)"),
+            ("INDEX(00000000001)", "INDEX(000000000001)"),
+            ("INDEX=ix", "INDEX=(ix)"),
+            ("FORCESEEK(ix(a))", "FORCESEEK(ix())"),
+            ("FORCESEEK(2(a))", "FORCESEEK(-1(a))"),
+        ] {
+            let source = format!("SELECT N'한글' AS anchor;\nSELECT * FROM dbo.t WITH ({good});\n");
+            let mut p = parser();
+            assert!(
+                !p.parse(&source, None).unwrap().root_node().has_error(),
+                "{good}"
+            );
+            let invalid = source.replace(good, bad);
+            assert!(
+                p.parse(&invalid, None).unwrap().root_node().has_error(),
+                "{bad}"
+            );
+            let h = History {
+                id: good.into(),
+                source,
+                edits: vec![(good.into(), bad.into()), (bad.into(), good.into())],
+            };
+            assert!(check_history(&mut p, &h).unwrap().is_empty(), "{good}");
+        }
+    }
+
+    #[test]
     fn missing_edit_target_stops_without_a_verdict() {
         let h = History {
             id: "t".into(),

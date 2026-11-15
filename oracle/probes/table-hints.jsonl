@@ -1,0 +1,165 @@
+{"id":"table-hints/seek-name","sha256":"f33414590cbbf0b361d3a58a927cd2d8ef8144dbda04361b1335ce081b54a754","source":"SELECT * FROM dbo.t AS a WITH (FORCESEEK(ix(a)));"}
+{"id":"table-hints/seek-int","sha256":"1c2b74bbc49c84788468269c796ff725fa5beb181f598a975e04c0c2858ccc70","source":"SELECT * FROM dbo.t AS a WITH (FORCESEEK(2(a)));"}
+{"id":"table-hints/seek-max","sha256":"673fa40c1539610c090b6de15753e7e54892b37e1ad6d956fb302255d0007be2","source":"SELECT * FROM dbo.t AS a WITH (FORCESEEK(2147483647(a)));"}
+{"id":"table-hints/seek-next","sha256":"5881627a1adca1c850225f8a07a7c6860ef0483c63eea4db25b4d37cda5cb7b5","source":"SELECT * FROM dbo.t AS a WITH (FORCESEEK(ix(a)), NOWAIT);"}
+{"id":"table-hints/seek-zero","sha256":"a9328194cdb17d9a13081d44eb019b7abd12c13e14aff487483944de716c00a2","source":"SELECT * FROM dbo.t AS a WITH (FORCESEEK(0(a)));"}
+{"id":"table-hints/seek-leading-zero","sha256":"5df0950c848b05bb22b5b530f1bfc02490574cd40e81a04c6cfe2e34abdca6e1","source":"SELECT * FROM dbo.t AS a WITH (FORCESEEK(0000000002(a)));"}
+{"id":"table-hints/seek-too-many-digits","sha256":"bc45cd07d7666e73dad28b514088c3346075fd8072867f167c464b726c3466e7","source":"SELECT * FROM dbo.t AS a WITH (FORCESEEK(00000000002(a)));"}
+{"id":"table-hints/seek-overflow","sha256":"c7bbe72a8e2335387332ca1f734f7705d91c5241709390ecf4287c966bbe9439","source":"SELECT * FROM dbo.t AS a WITH (FORCESEEK(2147483648(a)));"}
+{"id":"table-hints/seek-negative","sha256":"acadf9d9203cf3d27a37657e15637f9a04f9fe1400bcc4a88b70fd472b214cd8","source":"SELECT * FROM dbo.t AS a WITH (FORCESEEK(-1(a)));"}
+{"id":"table-hints/seek-decimal","sha256":"9d6407e6b425576bf7d785e6d903950414e8de8d3da6be36f39b9e4687b4c334","source":"SELECT * FROM dbo.t AS a WITH (FORCESEEK(1.0(a)));"}
+{"id":"table-hints/seek-empty-columns","sha256":"7ebfa89c8b4b3c64f58a39634645c693533ae8b9f4fd26d9c7c5ec9c1f89b787","source":"SELECT * FROM dbo.t AS a WITH (FORCESEEK(ix()));"}
+{"id":"table-hints/seek-no-columns","sha256":"e3c081bcabe31a032e04adecdebfaeaa301ad7551be6910844bb9e9226b11464","source":"SELECT * FROM dbo.t AS a WITH (FORCESEEK(ix));"}
+{"id":"table-hints/seek-multiple-columns","sha256":"f8b6492919b24be9929aa63c87fd90cc96df2fafbc25684a07c275feed90da55","source":"SELECT * FROM dbo.t AS a WITH (FORCESEEK(ix(a,b)));"}
+{"id":"table-hints/seek-quoted","sha256":"464252aec9f0208dce17bcb5e1c39fb214fefb7c6e47b7bb4b7e27d2e0112740","source":"SELECT * FROM dbo.t AS a WITH (FORCESEEK([ix]([a])));"}
+{"id":"table-hints/seek-alone","sha256":"537a5f5aec167195e3269b48f9fb9075b9b35359bad4ae3f2000d29af6517a99","source":"SELECT * FROM dbo.t AS a WITH (FORCESEEK);"}
+{"id":"table-hints/scan","sha256":"2c0bc811a28f5e812519c3e059a406e78aa265bdba1d5d541feb2748e7a17e1f","source":"SELECT * FROM dbo.t AS a WITH (FORCESCAN);"}
+{"id":"table-hints/noexpand","sha256":"1ee2d332088fa1e84dc469bfc062381223f9f25c5c7eb7e582c849f0e94b90f7","source":"SELECT * FROM dbo.t AS a WITH (NOEXPAND);"}
+{"id":"table-hints/seek-noexpand","sha256":"f513cf1aebc8011b9c8da4b7ff00013d36dc9f9352be99248ee92179b25ed10c","source":"SELECT * FROM dbo.t AS a WITH (NOEXPAND FORCESEEK(ix(a)));"}
+{"id":"table-hints/index-zero","sha256":"c6f8f895b178643b5c5f5ebbe605c4d36423c803686b10eb4acb6f2e9be9c28d","source":"SELECT * FROM dbo.t AS a WITH (INDEX(0));"}
+{"id":"table-hints/index-one","sha256":"ba94db963ff348ec213897ba7cc872d4b1b9768e69003825c097da06bc7c7c0b","source":"SELECT * FROM dbo.t AS a WITH (INDEX(1));"}
+{"id":"table-hints/index-mixed-numbers","sha256":"964137c4b5a49269a9352f38d26dfb85312066705a95faa1e377326f3e5d9281","source":"SELECT * FROM dbo.t AS a WITH (INDEX(0,1));"}
+{"id":"table-hints/index-mixed-names","sha256":"20ac1584e04912f6b9895d87ba00560f3750414370f22b9c86378935e03dcdaf","source":"SELECT * FROM dbo.t AS a WITH (INDEX(0,ix,1,[other]));"}
+{"id":"table-hints/index-equals-zero","sha256":"b750141607b0f65445c64d3029c18a74590bcf997cc9b6ea1dbbf65f948ae8fe","source":"SELECT * FROM dbo.t AS a WITH (INDEX=0);"}
+{"id":"table-hints/index-max","sha256":"a8dc445eb8f183466686e050b1b99cfece24f8ce071c410339e46ff5e10637a9","source":"SELECT * FROM dbo.t AS a WITH (INDEX(2147483647));"}
+{"id":"table-hints/index-name","sha256":"c5cb7805020c9efd972d1baa7b0bb1d934b4dc7d1dcdad1a83216896ac02c3a1","source":"SELECT * FROM dbo.t AS a WITH (INDEX(ix));"}
+{"id":"table-hints/index-equals-name","sha256":"044905728370574d8c4d76e41360530077f9ed83a40ec86ff90bb4fcda816981","source":"SELECT * FROM dbo.t AS a WITH (INDEX=ix);"}
+{"id":"table-hints/index-equals-parenthesized","sha256":"64448ff8baddbf6bb801ff4dea3d0e9f37905ddbf77425b8031db48995571fc6","source":"SELECT * FROM dbo.t AS a WITH (INDEX=(ix));"}
+{"id":"table-hints/index-overflow","sha256":"f73880493dfe4ba254113b5f2ed6165aac8f55d7713b270d71a375c3ccd17108","source":"SELECT * FROM dbo.t AS a WITH (INDEX(2147483648));"}
+{"id":"table-hints/index-negative","sha256":"bf1e1fe88edc3aba9b773bbaab83dc443241c5e8dc5b320af6f294e8fc6d3dbf","source":"SELECT * FROM dbo.t AS a WITH (INDEX(-1));"}
+{"id":"table-hints/index-positive-sign","sha256":"e3f86907e87a3c2b14829339299b26cdb22df6844ec992eb418b0bb79e89ddb4","source":"SELECT * FROM dbo.t AS a WITH (INDEX(+1));"}
+{"id":"table-hints/index-decimal","sha256":"078285518810e6806ada81bee90ba4d739249c90e5a169dc3d50b3cc86ba86df","source":"SELECT * FROM dbo.t AS a WITH (INDEX(1.0));"}
+{"id":"table-hints/index-exponent","sha256":"9c0aa645c038280502699bdf0611cc0958358561671e0c843749a8d93c68562a","source":"SELECT * FROM dbo.t AS a WITH (INDEX(1e0));"}
+{"id":"table-hints/index-hex","sha256":"bd2a59cf990690c0ac6186e00912024d0d1f3d913da4c62895eaf58a758a1220","source":"SELECT * FROM dbo.t AS a WITH (INDEX(0x1));"}
+{"id":"table-hints/index-zeros","sha256":"bfb269a451ac7b50d4c6d373fc1f024f75ee6ccc2a145be55719e488f69beb7b","source":"SELECT * FROM dbo.t AS a WITH (INDEX(0000000001));"}
+{"id":"table-hints/index-many-zeros","sha256":"c7ac0876e2a670ee0befc6370a8067c3534f0e3cdee5cd5dc1f4d96e2987e173","source":"SELECT * FROM dbo.t AS a WITH (INDEX(00000000001));"}
+{"id":"table-hints/index-quoted-numeric","sha256":"7908675af11004d0cda877777735de1836790292e44857c762e8d5129e15bd34","source":"SELECT * FROM dbo.t AS a WITH (INDEX([2147483648]));"}
+{"id":"table-hints/index-nvarchar","sha256":"ecdc4f5aabd94e7032c7cd9840ee360a7ab335100d5835f321297353912c504e","source":"SELECT * FROM dbo.t AS a WITH (INDEX(N'ix'));"}
+{"id":"table-hints/index-string","sha256":"e7e348ae6a0aeb167d5ecf61a78c5f30f8e4a0f306e30265559731dacc1ef800","source":"SELECT * FROM dbo.t AS a WITH (INDEX('ix'));"}
+{"id":"table-hints/index-qualified","sha256":"1d54e6a2b3ebff12e4f8ddf3cab5010758a942208c6bcd265d09ae77a0961e30","source":"SELECT * FROM dbo.t AS a WITH (INDEX(dbo.ix));"}
+{"id":"table-hints/index-empty","sha256":"9b1211de99f2212674caa63e552173eb43b00dde519f6d175a4d2328ccdb83da","source":"SELECT * FROM dbo.t AS a WITH (INDEX());"}
+{"id":"table-hints/index-space","sha256":"6f3c09fa191bd36cf9dfc3a846fb2097cf1d4c1e9a2d545bc0c4f78a1d424d25","source":"SELECT * FROM dbo.t AS a WITH (INDEX(ix 1));"}
+{"id":"table-hints/space","sha256":"97e5e3ab099112e27837593bbe1d405fc311ec274ebf2a664be5db6a83759b95","source":"SELECT * FROM dbo.t AS a WITH (UPDLOCK ROWLOCK READPAST);"}
+{"id":"table-hints/mixed","sha256":"af240d756fa08bcdeffc86ee83107e1d8ecc25520dd0190dae81598b79382565","source":"SELECT * FROM dbo.t AS a WITH (UPDLOCK, ROWLOCK READPAST);"}
+{"id":"table-hints/leading-comma","sha256":"13b427e11400f40486c798696fa79f13220f13b085656e5970d011b99bbc31ee","source":"SELECT * FROM dbo.t AS a WITH (,ROWLOCK);"}
+{"id":"table-hints/trailing-comma","sha256":"2dc0d92a14768c722ad464549030baf96ba1c79cfb90273eb93394082603b474","source":"SELECT * FROM dbo.t AS a WITH (ROWLOCK,);"}
+{"id":"table-hints/double-comma","sha256":"3776c43cdab0b1eb0b13623ad44b1f7da5363ffeeabaf398b28394bfb2825fe9","source":"SELECT * FROM dbo.t AS a WITH (ROWLOCK,,READPAST);"}
+{"id":"table-hints/conflict","sha256":"4846f81654cd3bbb5bfbcc537a735e6e84606029dfd191465d4c25039a40f4f5","source":"SELECT * FROM dbo.t AS a WITH (NOLOCK HOLDLOCK);"}
+{"id":"table-hints/unknown","sha256":"a7f7c63eb198fc73d64b00697316770adb46e4362d3db9b1e0732c144a677051","source":"SELECT * FROM dbo.t AS a WITH (NO_SUCH_HINT);"}
+{"id":"table-hints/parameterless-args","sha256":"40e26fba44fc351bab76837aabd1cbe6b67643cd3061d1c4662ccb8a4ba1c7e7","source":"SELECT * FROM dbo.t AS a WITH (ROWLOCK(1));"}
+{"id":"table-hints/parameterless-equals","sha256":"e212a4e91591837d9e60ccc3db379fba0405cd37f86d7d671be8abf39759c64d","source":"SELECT * FROM dbo.t AS a WITH (ROWLOCK=1);"}
+{"id":"table-hints/spatial-one","sha256":"653fb8a1e1cb5e76e57fe10e3bb7ee44e4b59323130ffbca6760e903a5ccf49d","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1);"}
+{"id":"table-hints/spatial-zero","sha256":"ab1ec6f258dc576343085f9eb6adf93c6c4d55f22cedff3356fc68c3ab6b4f62","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=0);"}
+{"id":"table-hints/spatial-max","sha256":"0d34d763cd9a1598e06c6e6dd5e780380a275546711f8b59065b49afcebdd449","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=2147483647);"}
+{"id":"table-hints/spatial-overflow","sha256":"67f35dce261ff67ebddfc2cf6eac60d8fb84ed7941837434b247563e150f2d2d","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=2147483648);"}
+{"id":"table-hints/spatial-many-zeros","sha256":"9906c51f36ebc8955c80092dfc15f35551eaf59b0c02a55eb03309ad18b430b7","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=00000000000000000000000000000000000000001);"}
+{"id":"table-hints/spatial-adjacent","sha256":"ad726f491c95335d0589feb653736de32908e9ab9b3418871c483d913d237353","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1ROWLOCK);"}
+{"id":"table-hints/spatial-zero-adjacent","sha256":"f4b9bd002fca4b4bf65dfdc92bda554b9d3d862f6594560a8e7f079467ea35f1","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=00XLOCK);"}
+{"id":"table-hints/spatial-leading-adjacent","sha256":"6b80d69e725d9cd0aebdf631749b0c666564562b2a00792c591d6543bbb06313","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=01ROWLOCK);"}
+{"id":"table-hints/spatial-comment","sha256":"dffca579d34f1bdcf078e70d5cd585b5d2a7f85d37b19335eee9950db4eda308","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1/*c*/ROWLOCK);"}
+{"id":"table-hints/spatial-space","sha256":"5c49cf0777ecc0e07876fbb42c48b2fbea377eba79841fcb0b1e6b2dba104b92","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1 ROWLOCK);"}
+{"id":"table-hints/spatial-comma","sha256":"26738addd018093e3ee9783812e991060228ab117fbc4c59d9fa264bbd5f615f","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1,ROWLOCK);"}
+{"id":"table-hints/spatial-negative","sha256":"cf0c2c6872604930962f1a07d23931820cb5422f0c92933dbad653c01c7d8f53","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=-1);"}
+{"id":"table-hints/spatial-decimal","sha256":"6e3b5be2b52b98170158e80a3b3bbea650eab1a41d9f429aac94e3bd0b3e1870","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1.0);"}
+{"id":"table-hints/spatial-exponent","sha256":"344a79c19f3216ad70e8a5fc559ca2c090a919f1ac0bfe5081159c90e2dc9ce6","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1e0);"}
+{"id":"table-hints/spatial-hex","sha256":"84450f24ddbd26895b4bd6a91cf87d6e0801a3d0183a6a0d95a14fb2a7441d0e","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=0x1);"}
+{"id":"table-hints/spatial-overflow-adjacent","sha256":"def91b262a463fe4d6f6b639692ccf99b97149fcfd2c285a40752c8801e643e1","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=2147483648ROWLOCK);"}
+{"id":"table-hints/spatial-decimal-adjacent","sha256":"03ae31a74990505635e340c38c8fe8132c0d44602b0dd585f48431a57b3d9267","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1.0ROWLOCK);"}
+{"id":"table-hints/spatial-exponent-adjacent","sha256":"47e5826846cdacdb072285e13d7956291c7afff3934cb308f772a52f00377a24","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1e0ROWLOCK);"}
+{"id":"table-hints/spatial-hex-adjacent","sha256":"58f86fe11f1a12ab67eee1269a04732384ed08d6deebaac3662e82a8f5a9ee21","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=0x1ROWLOCK);"}
+{"id":"table-hints/spatial-parens","sha256":"5f814633938e6296661797659a037bfd089bd99b1328c1761c775030a15f285c","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS(1));"}
+{"id":"table-hints/bare-space","sha256":"69c8f345a4acdf86c3b98ffa724ce88ddf6b572cf9a9b09ecabde6527f72714b","source":"SELECT * FROM dbo.t AS a (UPDLOCK ROWLOCK READPAST);"}
+{"id":"table-hints/bare-mixed","sha256":"75b224ed35b3cccee8250354417a3768376a27f1333e6e266f1d524ee9456fad","source":"SELECT * FROM dbo.t AS a (UPDLOCK, ROWLOCK READPAST);"}
+{"id":"table-hints/bare-index","sha256":"55a40790ab3cf8ce6765f1b6206f7aa1229ac4eb80c3989417559b1cb51e3bc7","source":"SELECT * FROM dbo.t AS a (INDEX(0,ix));"}
+{"id":"table-hints/bare-seek","sha256":"334ace583e355811546d2f145ff064022ab24720073b345e841255749899456b","source":"SELECT * FROM dbo.t AS a (FORCESEEK(ix(a)));"}
+{"id":"table-hints/bare-spatial","sha256":"e5513ab1e4bfda336197d515544a517cea853200498664a3fe0305aad018d6b0","source":"SELECT * FROM dbo.t AS a (SPATIAL_WINDOW_MAX_CELLS=1ROWLOCK);"}
+{"id":"table-hints/query-table-index","sha256":"9685a596a942c1960f89e1b288684db88c6071392b14be16320b11ad75ea01ee","source":"SELECT * FROM dbo.t AS a OPTION (TABLE HINT (a, INDEX = ix));"}
+{"id":"table-hints/query-table-index-zero","sha256":"366a2eab3d1b97493c622b7c46430b7832ea3f9628df14cbe4bd47ed8d0c2b60","source":"SELECT * FROM dbo.t AS a OPTION (TABLE HINT (a, INDEX(0,ix)));"}
+{"id":"table-hints/query-table-seek","sha256":"c3c19f9a63c708092624e16601d76e3ae7e68451ed8324d1b3129d65ec450f94","source":"SELECT * FROM dbo.t AS a OPTION (TABLE HINT (a, FORCESEEK(ix(a))));"}
+{"id":"table-hints/query-table-spatial","sha256":"436de37f584cf076ca30b94b6bb8d1675512e08aa17ab9d5f5aa07aeb7b1bc5a","source":"SELECT * FROM dbo.t AS a OPTION (TABLE HINT (a, SPATIAL_WINDOW_MAX_CELLS=1));"}
+{"id":"table-hints/query-table-space","sha256":"84a5ef0376e8859ce8cc594cfad53e72ea6eeacb7eac84114d48c326167d9985","source":"SELECT * FROM dbo.t AS a OPTION (TABLE HINT (a, UPDLOCK ROWLOCK READPAST));"}
+{"id":"table-hints/query-table-bad-index","sha256":"825f04c29bd5602f7bec210f9afb004a7e97c7a4654051b6f425a3800c6fb257","source":"SELECT * FROM dbo.t AS a OPTION (TABLE HINT (a, INDEX=(ix)));"}
+{"id":"table-hints/maxdop-0","sha256":"f3c30ca88ff69c38e10a730e59a7fb9169540b2eaeb683638f63ab5e5de582ce","source":"SELECT * FROM dbo.t OPTION (MAXDOP 0);"}
+{"id":"table-hints/maxdop-1","sha256":"828ab91999a57ae61d89803fa3c7304603688ede4fd59c7aa61d9f90e86e4a67","source":"SELECT * FROM dbo.t OPTION (MAXDOP 1);"}
+{"id":"table-hints/maxdop-32767","sha256":"29908e2a913d8dce5b8a27c2e3cccb4925bf489ba777c54cb12771d8965ef328","source":"SELECT * FROM dbo.t OPTION (MAXDOP 32767);"}
+{"id":"table-hints/maxdop-32768","sha256":"1844c2f08e4cf83b581af31f43cc9a37dbe2be716189cd16abfa500c8b8557ad","source":"SELECT * FROM dbo.t OPTION (MAXDOP 32768);"}
+{"id":"table-hints/maxdop-2147483647","sha256":"081b9600ceb50787ff5282452ee4934698207b1f19d5c8c72d5e6ae8c6a6e209","source":"SELECT * FROM dbo.t OPTION (MAXDOP 2147483647);"}
+{"id":"table-hints/maxdop-2147483648","sha256":"9eedcc587001230cd90a90d9e2af00abc3f6ce468743589486145abdee6b9bbe","source":"SELECT * FROM dbo.t OPTION (MAXDOP 2147483648);"}
+{"id":"table-hints/maxdop-_1","sha256":"34260671d7f1e865e2792e4938d2305d4bdd3975ca4e8eed14d712081247ab7a","source":"SELECT * FROM dbo.t OPTION (MAXDOP -1);"}
+{"id":"table-hints/maxdop-1_0","sha256":"f814e73e34f8ed43bc6b7d6fa8ba814871165c93d02dfb55ff2a01cd98019e3a","source":"SELECT * FROM dbo.t OPTION (MAXDOP 1.0);"}
+{"id":"table-hints/maxdop-1e0","sha256":"12efa83a9d882792a4fae2223c782355cff199b31280e4bbf397d7b7e71d5034","source":"SELECT * FROM dbo.t OPTION (MAXDOP 1e0);"}
+{"id":"table-hints/maxdop-0x1","sha256":"5dbecbf54f59bb7b25a608c80b563ef64b34d813ba54142604ac547d50e44f87","source":"SELECT * FROM dbo.t OPTION (MAXDOP 0x1);"}
+{"id":"table-hints/update-space","sha256":"24894ee337a3e0f9ca24caffac0fd41c74fce122aa48e5a557237833762113d1","source":"UPDATE dbo.t WITH (UPDLOCK ROWLOCK READPAST) SET a=1;"}
+{"id":"table-hints/update-index","sha256":"dafd0e453ca474ef34d04779f76b636a31d3bf00a4ebbc035538c657fd291f21","source":"UPDATE dbo.t WITH (INDEX(0,ix)) SET a=1;"}
+{"id":"table-hints/update-seek","sha256":"fe769cd7fd2da4588270ca8e558ac15ec75417c23a5d4d2d2f63909d24ab5c03","source":"UPDATE dbo.t WITH (FORCESEEK(ix(a))) SET a=1;"}
+{"id":"table-hints/update-scan","sha256":"bf8315dc33a1f59bf829f35bd33ff2d29b0ec8caf7054425dd84deedc4c2bcc6","source":"UPDATE dbo.t WITH (FORCESCAN) SET a=1;"}
+{"id":"table-hints/update-spatial","sha256":"5a76340722426c07e7cf3d8a5c211852b8c801faf95b643d24d028a5b2d8880f","source":"UPDATE dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=1ROWLOCK) SET a=1;"}
+{"id":"table-hints/delete-space","sha256":"d674bbcfb933616693e9b51680c53a26ca235f410f02179996fa1661e6c18dd3","source":"DELETE FROM dbo.t WITH (UPDLOCK ROWLOCK READPAST);"}
+{"id":"table-hints/delete-index","sha256":"20b3ad2f57bfce695dc631181501754c3a64e2a71576f072559bff5b7460f49f","source":"DELETE FROM dbo.t WITH (INDEX(0,ix));"}
+{"id":"table-hints/delete-seek","sha256":"9fa422495c8557fde234f43c853494e00260f8bbf942df0d857ce670cbb56918","source":"DELETE FROM dbo.t WITH (FORCESEEK(ix(a)));"}
+{"id":"table-hints/delete-scan","sha256":"0b7ba3ec155a5cb006f714aecd076fe89ed98753f22ae963db15e9d3ec9889a0","source":"DELETE FROM dbo.t WITH (FORCESCAN);"}
+{"id":"table-hints/delete-spatial","sha256":"9f2bf66dcd9f17f4845d875fe04252ff86134cd89571d9937b2a9ab2037e569e","source":"DELETE FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=1ROWLOCK);"}
+{"id":"table-hints/spatial-single-zero-xlock","sha256":"3929628755a1eacef87c1b47983e9f419d462956a0a118551f9140cfecfb0cd7","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=0XLOCK);"}
+{"id":"table-hints/spatial-double-zero-hex","sha256":"cc28f6f280fc7f37cb36da95837dc43e75d3ef67f6471262f559ca7313b79d45","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=00x1);"}
+{"id":"table-hints/spatial-one-hex","sha256":"63a316af16f1b2db0e62a8471a3a4392622982399d8e6179f7f2fe03f69cabbf","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1x1);"}
+{"id":"table-hints/spatial-long-zero-overflow","sha256":"a553d2328b55eaa179b4c91735ed278189ee9b63ee64629f3dd4a5c548068fa7","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=0002147483648);"}
+{"id":"table-hints/index-long-zero-overflow","sha256":"66cddaee7512e680dd8ade862f90995afa50416e45fd378d3b0134d121ee6ec3","source":"SELECT * FROM dbo.t AS a WITH (INDEX(0002147483648));"}
+{"id":"table-hints/index-max-zeros","sha256":"8df1c339e99c7ff6ac754e4087ad8ea47675eae9d0c3e6d222a0a91d0166f74d","source":"SELECT * FROM dbo.t AS a WITH (INDEX(0002147483647));"}
+{"id":"table-hints/spatial-max-zeros","sha256":"f569bc793aace71966db397b2995a2ad8229c8adeb09dee3ffd6cd7d268d4b7d","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=0002147483647);"}
+{"id":"table-hints/spatial-overflow-long","sha256":"c2d73ebe8b944e8f9ffb08f5961f7c2ef92b6d777c0423df86d9161fb368dd15","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=99999999999999999999999999999999);"}
+{"id":"table-hints/index-lowercase-exp","sha256":"56ed35b3addf29922b7aa215bcd377b6fcd86013b3f1f3106c68667ac8071c1f","source":"SELECT * FROM dbo.t AS a WITH (INDEX(1e));"}
+{"id":"table-hints/spatial-lowercase-exp","sha256":"6d44f6aa9f25cd3fda65c4f3fb34456ba5b3acf2fa930c11bb8bb048d6bb0c30","source":"SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1e);"}
+{"id":"table-hints/bare-single","sha256":"2d71110e292fa815fa96036a1cc3b0651fe7d467f78873b56b1c68db2832bef3","source":"SELECT * FROM dbo.t AS a (NOLOCK);"}
+{"id":"table-hints/bare-index-alone","sha256":"1393e117b23e7b5728783d2a1d7855b36453266f2ae42dac6a748a917096d692","source":"SELECT * FROM dbo.t AS a (INDEX(ix));"}
+{"id":"table-hints/index-length-20","sha256":"c0b13c780906fc44d738f9e1b6fd30e93f3c118cefa724f868d7fff6328e8f4a","source":"SELECT * FROM dbo.t WITH (INDEX(00000000000000000001));"}
+{"id":"table-hints/forceseek-length-20","sha256":"144d9f9b6da40eccad6c58cbe2ffffe0a812a6426ad95014f4405949c7cc1f51","source":"SELECT * FROM dbo.t WITH (FORCESEEK(00000000000000000001(a)));"}
+{"id":"table-hints/index-length-30","sha256":"3a24e4082ebad8cda7d3d4efe89df8099f6cb5c8623aab1c92198f5cbf827a8a","source":"SELECT * FROM dbo.t WITH (INDEX(000000000000000000000000000001));"}
+{"id":"table-hints/forceseek-length-30","sha256":"f1686b27aa163acf1556b8b772ad88a5206591f285ddf52744ebfe556957c84c","source":"SELECT * FROM dbo.t WITH (FORCESEEK(000000000000000000000000000001(a)));"}
+{"id":"table-hints/index-length-31","sha256":"729efb3a2262d7518559dd74c4816724889e931f615bed85b981c588dd80ab52","source":"SELECT * FROM dbo.t WITH (INDEX(0000000000000000000000000000001));"}
+{"id":"table-hints/forceseek-length-31","sha256":"b7b795c996c5e0238ac1651c1046703eb2e075b68de44b1ae4afa4c039d25b03","source":"SELECT * FROM dbo.t WITH (FORCESEEK(0000000000000000000000000000001(a)));"}
+{"id":"table-hints/index-length-32","sha256":"2d263e78db4a0d1c2e1b1cfce4fbafe8c416fa890fc30b7288697b569dc3c72c","source":"SELECT * FROM dbo.t WITH (INDEX(00000000000000000000000000000001));"}
+{"id":"table-hints/forceseek-length-32","sha256":"6d17fef1ecf720b9a59e0481f1d67e03ae1040fcc0a9db98c6df83e6e7c14306","source":"SELECT * FROM dbo.t WITH (FORCESEEK(00000000000000000000000000000001(a)));"}
+{"id":"table-hints/index-length-33","sha256":"1ac1eab9b5a85635e31f2622ac5af71b7b76181f67626db06b672e23a92ce444","source":"SELECT * FROM dbo.t WITH (INDEX(000000000000000000000000000000001));"}
+{"id":"table-hints/forceseek-length-33","sha256":"97706f1889a81d4b479caeaddec442767ecf989e376941d2b98226f3b3b80573","source":"SELECT * FROM dbo.t WITH (FORCESEEK(000000000000000000000000000000001(a)));"}
+{"id":"table-hints/index-length-38","sha256":"3a97aa53d27adf667611a3697da176a58f30774fa13af063a0d82c25a08a03fe","source":"SELECT * FROM dbo.t WITH (INDEX(00000000000000000000000000000000000001));"}
+{"id":"table-hints/forceseek-length-38","sha256":"3d7fd1c6068d123f8d83d194cd271504b7f1b4368d703791b9a6bf98cd6e3348","source":"SELECT * FROM dbo.t WITH (FORCESEEK(00000000000000000000000000000000000001(a)));"}
+{"id":"table-hints/index-length-39","sha256":"64208cce66f5e4db43b4db60ef082a7d8e2db10061a455b4f7d70f4e6c10c9e8","source":"SELECT * FROM dbo.t WITH (INDEX(000000000000000000000000000000000000001));"}
+{"id":"table-hints/forceseek-length-39","sha256":"47ba164d053a0e0483103e1a65a721f6b5c4e68cc0a57fea6c321a609f626347","source":"SELECT * FROM dbo.t WITH (FORCESEEK(000000000000000000000000000000000000001(a)));"}
+{"id":"table-hints/index-length-40","sha256":"4d5a00232ea196ac1cb6616d16fc8f9203a038d2479d4e8a39d67d4db29fbbcb","source":"SELECT * FROM dbo.t WITH (INDEX(0000000000000000000000000000000000000001));"}
+{"id":"table-hints/forceseek-length-40","sha256":"bfe692edb318002cf32689f9faec684833a52ceae9dba8facad802288855fe91","source":"SELECT * FROM dbo.t WITH (FORCESEEK(0000000000000000000000000000000000000001(a)));"}
+{"id":"table-hints/index-length-68","sha256":"4d78031b216a2c3037bd4d8063ec75a91c0d12e22b811820c4ddebf78d3b390f","source":"SELECT * FROM dbo.t WITH (INDEX(00000000000000000000000000000000000000000000000000000000000000000001));"}
+{"id":"table-hints/forceseek-length-68","sha256":"b75e077fa2c1b5e917491a3ac282fcdb0f5fc3013dd95ff6de854db818d85ea8","source":"SELECT * FROM dbo.t WITH (FORCESEEK(00000000000000000000000000000000000000000000000000000000000000000001(a)));"}
+{"id":"table-hints/index-length-512","sha256":"45d69735492b7089ed8a6a02393930f509f32523fad99f22cfd3625c17d86062","source":"SELECT * FROM dbo.t WITH (INDEX(00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001));"}
+{"id":"table-hints/forceseek-length-512","sha256":"6283a8a2a4cb42b59ca774043ddd023667ef0e94b361e665732832ab8b68a680","source":"SELECT * FROM dbo.t WITH (FORCESEEK(00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001(a)));"}
+{"id":"table-hints/index-length-12","sha256":"63d47490abcbd628e3121eeca7a84aa47c3d41de7560df37c652138ee925ec5f","source":"SELECT * FROM dbo.t WITH (INDEX(000000000001));"}
+{"id":"table-hints/forceseek-length-12","sha256":"066cd0e618a71f78aaa818802a6eeebcd867c9ca9a2ca396e43a5779dbfd132d","source":"SELECT * FROM dbo.t WITH (FORCESEEK(000000000001(a)));"}
+{"id":"table-hints/index-length-13","sha256":"fd99d0e093a64bcfa1c136369d5d77b5ed579ea6ecdf37fb6456a6937981ab5d","source":"SELECT * FROM dbo.t WITH (INDEX(0000000000001));"}
+{"id":"table-hints/forceseek-length-13","sha256":"694c9b135ed43b9fc08e0d1454cfd9f1278d0946ddc15a5a5b9e78ed693d1056","source":"SELECT * FROM dbo.t WITH (FORCESEEK(0000000000001(a)));"}
+{"id":"table-hints/index-length-14","sha256":"72b40294cdca03cca18d63c42bcb040af9c6289d8d376efc95ce02ed127de141","source":"SELECT * FROM dbo.t WITH (INDEX(00000000000001));"}
+{"id":"table-hints/forceseek-length-14","sha256":"42f7984ed54432bfa36722ff39429572a45782b0753b95d33ab0d30094761f3b","source":"SELECT * FROM dbo.t WITH (FORCESEEK(00000000000001(a)));"}
+{"id":"table-hints/index-length-15","sha256":"715d7af67afbadcdad1b5e252e76b3469f3eaec94b638526cd787a211325eef4","source":"SELECT * FROM dbo.t WITH (INDEX(000000000000001));"}
+{"id":"table-hints/forceseek-length-15","sha256":"654cee0fecf574843f4f304e86c20d9286511bcef24f464c1129b8de94c5f644","source":"SELECT * FROM dbo.t WITH (FORCESEEK(000000000000001(a)));"}
+{"id":"table-hints/index-length-16","sha256":"98d0d58b29870cbaafbbc81b1f12b6b90bf5a28ae6f321e6d3e48cbd9b7ef6cb","source":"SELECT * FROM dbo.t WITH (INDEX(0000000000000001));"}
+{"id":"table-hints/forceseek-length-16","sha256":"207581d99e6d49683139fec39ccaf236bf96ff0df862f0cf275fbad56b72ceec","source":"SELECT * FROM dbo.t WITH (FORCESEEK(0000000000000001(a)));"}
+{"id":"table-hints/index-length-17","sha256":"b0f6463ddd5b2ccf62150e344ad1b4cf9108c73ed16067e163d70352ce1f375b","source":"SELECT * FROM dbo.t WITH (INDEX(00000000000000001));"}
+{"id":"table-hints/forceseek-length-17","sha256":"3d5fd060aa0f822650273b40db4174432d4fffa8d0c936573589fbd6dc97fd64","source":"SELECT * FROM dbo.t WITH (FORCESEEK(00000000000000001(a)));"}
+{"id":"table-hints/index-length-18","sha256":"d98c8a119afa6fb25a735d8227cc3a8a1b36f66333cf8cb846e29d88aa1aff2f","source":"SELECT * FROM dbo.t WITH (INDEX(000000000000000001));"}
+{"id":"table-hints/forceseek-length-18","sha256":"0b004453626e8c923c02b50e13f1d184316dce9731b400739f0bf445cadea7bd","source":"SELECT * FROM dbo.t WITH (FORCESEEK(000000000000000001(a)));"}
+{"id":"table-hints/index-length-19","sha256":"352d5043d0a586f706c1c7a935e3178fcbb01e67f99e3ac3123099fdab37bfb2","source":"SELECT * FROM dbo.t WITH (INDEX(0000000000000000001));"}
+{"id":"table-hints/forceseek-length-19","sha256":"47252b4b1a35d0d5bb9db5b5c8f96b094f9f3aee1af735b1d218e31a1e0bfc5d","source":"SELECT * FROM dbo.t WITH (FORCESEEK(0000000000000000001(a)));"}
+{"id":"table-hints/index-max-eleven","sha256":"eb8e99798a02ef21d1dfd04884b26e0026ad2ab5420f665a12fa09e4c7d22a68","source":"SELECT * FROM dbo.t WITH (INDEX(02147483647));"}
+{"id":"table-hints/seek-max-eleven","sha256":"5dd19811b19c94f979eaf5087dc6998cf4cc2a618220cecafa1e29d920d7a6f7","source":"SELECT * FROM dbo.t WITH (FORCESEEK(02147483647(a)));"}
+{"id":"table-hints/query-table-empty","sha256":"ad14ffc0513a64759f4ff6ac1a7663685f906284b6f307cce0419f0118620463","source":"SELECT * FROM dbo.t a OPTION (TABLE HINT (a));"}
+{"id":"table-hints/query-table-multiple","sha256":"9180cf592a1a320a936e3a6ceaf50ff04c2d92a8381e4cfe5987202948c77f5b","source":"SELECT * FROM dbo.t a OPTION (TABLE HINT (a, INDEX=ix, FORCESEEK));"}
+{"id":"table-hints/query-table-next","sha256":"0f0633d7302a8c647c6d446f6c53523ae2bd6397ae919f6d24b67629265e982e","source":"SELECT * FROM dbo.t a OPTION (TABLE HINT (a, INDEX=ix), MAXDOP 1);"}
+{"id":"table-hints/hint-udt-schema","sha256":"60878fda47c995ab1df23558bc143d0dbc1b16694355c039a55447caad1b5bab","source":"DECLARE @j nvarchar(max); SELECT * FROM OPENJSON(@j) WITH (a dbo.udt);"}
+{"id":"table-hints/hint-keyword-schema","sha256":"029ad79d3ad110306ded413c2dd4784689650cc60487f5d6866eb3de58096b5b","source":"DECLARE @j nvarchar(max); SELECT * FROM OPENJSON(@j) WITH (ROWLOCK int);"}
+{"id":"table-hints/hint-short-nolock-nowait","sha256":"045d6bd12ee21c4913caff87d0bf0ff270ca6456c53806781a268a13d9e733f0","source":"SELECT * FROM dbo.t WITH (NOLOCK NOWAIT);"}
+{"id":"table-hints/spatial-length-100","sha256":"4e90e2b0bfed607d77a5d08f07f1c997bceb75041d7c2b8de9c0338fa1c68d34","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001);"}
+{"id":"table-hints/spatial-length-127","sha256":"693864bbee3d85433993ef0e75cb4d989ed3682669e5218bfc896a310291adc9","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001);"}
+{"id":"table-hints/spatial-length-128","sha256":"843c39195b50dc56431dae1e3e867b8355a4d4c469ffcb22fabb5ccefdcd207c","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001);"}
+{"id":"table-hints/spatial-length-129","sha256":"001bbb9890e30561549b129a39e768470dcb44c2cffa2a31b3f9940aad495c95","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001);"}
+{"id":"table-hints/spatial-length-255","sha256":"9b9343e38792baa24567a00726bf41c15cd7357a098cbe343ff52b77909f5389","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001);"}
+{"id":"table-hints/spatial-length-256","sha256":"9fce988584f1122f3015d6022580230839d48aea71c7642aa9677188774fcf83","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001);"}
+{"id":"table-hints/spatial-length-257","sha256":"e28813418ef49e5b69c0594d8f5fa79854852c43fafa8b64e07bec6ec3180d2a","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001);"}
+{"id":"table-hints/spatial-length-512","sha256":"9fb21aaefbed796e83a82b4ded7d5d1184871c5d4573c2607d0fcb2762c22803","source":"SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001);"}
