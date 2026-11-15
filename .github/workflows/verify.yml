@@ -193,39 +193,13 @@ jobs:
       - name: Run corpus and highlight tests
         run: npx --yes --package=tree-sitter-cli@${{ env.TREE_SITTER_CLI_VERSION }} -- tree-sitter test
 
-      - name: Parse every fixture and fail on ERROR/MISSING or zero-width nodes
-        run: |
-          set -euo pipefail
-          if ! combined=$(npx --yes --package=tree-sitter-cli@${{ env.TREE_SITTER_CLI_VERSION }} -- tree-sitter parse test/fixtures/*.sql 2>&1); then
-            combined_failed=1
-          else
-            combined_failed=0
-          fi
-          combined_zero_width_count=$(printf '%s\n' "$combined" | grep -cE '\[([0-9]+), ([0-9]+)\] - \[\1, \2\]' || true)
-          if [ "$combined_failed" -eq 0 ] && [ "$combined_zero_width_count" -eq 0 ]; then
-            exit 0
-          fi
-
-          echo "::warning::Combined fixture parse found a problem — re-parsing each fixture individually to identify it."
-          fail=0
-          for f in test/fixtures/*.sql; do
-            if ! output=$(npx --yes --package=tree-sitter-cli@${{ env.TREE_SITTER_CLI_VERSION }} -- tree-sitter parse "$f" 2>&1); then
-              parse_failed=1
-            else
-              parse_failed=0
-            fi
-            error_count=$(printf '%s\n' "$output" | grep -c 'ERROR\|MISSING' || true)
-            zero_width_count=$(printf '%s\n' "$output" | grep -cE '\[([0-9]+), ([0-9]+)\] - \[\1, \2\]' || true)
-            if [ "$parse_failed" -eq 1 ] && [ "$error_count" -eq 0 ]; then
-              echo "::error file=$f::tree-sitter parse exited non-zero with no ERROR/MISSING node detected (possible crash)"
-              printf '%s\n' "$output"
-              fail=1
-            elif [ "$error_count" -ne 0 ] || [ "$zero_width_count" -ne 0 ]; then
-              echo "::error file=$f::$error_count ERROR/MISSING node(s), $zero_width_count zero-width node(s)"
-              fail=1
-            fi
-          done
-          exit "$fail"
+      - name: Parse every fixture and fail on any tree problem
+        # tools/tree-check judges each tree through the tree-sitter API (root has_error,
+        # ERROR, MISSING, zero-width nodes, root range); the CLI summary can miss these.
+        # The shared target directory keeps its build in the Rust cache.
+        env:
+          CARGO_TARGET_DIR: target
+        run: cargo run --quiet --manifest-path tools/tree-check/Cargo.toml -- test/fixtures/*.sql
 
       - name: Report fixture parse performance
         run: |
@@ -246,6 +220,14 @@ jobs:
 
       - name: Cargo build & test
         run: cargo test
+
+      - name: tree-check format, clippy and tests
+        env:
+          CARGO_TARGET_DIR: target
+        run: |
+          cargo fmt --check --manifest-path tools/tree-check/Cargo.toml
+          cargo clippy --all-targets --manifest-path tools/tree-check/Cargo.toml -- -D warnings
+          cargo test --manifest-path tools/tree-check/Cargo.toml
 
   node-binding:
     name: Node binding build/test

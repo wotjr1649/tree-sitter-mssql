@@ -22,16 +22,17 @@ npx --yes --package=tree-sitter-cli@0.27.2 -- tree-sitter test
 cargo test
 ```
 
-On a machine without MSVC, point the CLI at another C compiler:
+On a machine without MSVC, point the CLI at another C compiler, and run Cargo with the GNU toolchain (`rustup toolchain install stable-x86_64-pc-windows-gnu`, then `cargo +stable-x86_64-pc-windows-gnu …`), which links with MinGW `gcc`:
 
 ```sh
 CC=gcc CXX=g++ npx --yes --package=tree-sitter-cli@0.27.2 -- tree-sitter test
 ```
 
-`test/corpus/` holds the per-construct tree assertions. `test/corpus/errors.txt` deliberately pins error recovery on invalid input and is hand-written — `tree-sitter test --update` refuses to touch it. Every file under `test/fixtures/*.sql` should also parse with zero `ERROR`/`MISSING`/zero-width nodes:
+`test/corpus/` holds the per-construct tree assertions. `test/corpus/errors.txt` deliberately pins error recovery on invalid input and is hand-written — `tree-sitter test --update` refuses to touch it. Every file under `test/fixtures/*.sql` must also parse cleanly. `tools/tree-check` judges each tree through the tree-sitter API — root `has_error`, `ERROR`, `MISSING` and zero-width nodes, and whether the root spans the whole input — and prints one JSON line per file. The CLI's parse summary is not enough: it can report success for a tree that contains `ERROR` or only zero-width nodes.
 
 ```sh
-for f in test/fixtures/*.sql; do printf "%s: " "$f"; CC=gcc CXX=g++ npx --yes --package=tree-sitter-cli@0.27.2 -- tree-sitter parse "$f" 2>/dev/null | grep -c "ERROR\|MISSING"; done
+cargo run --manifest-path tools/tree-check/Cargo.toml -- test/fixtures/*.sql
+# exit 0: every tree is clean; 1: some tree has a problem; 2: a file could not be read or parsed (no verdict)
 ```
 
 Regenerate `test/node-kinds.txt` after any change to a node kind or field name:
