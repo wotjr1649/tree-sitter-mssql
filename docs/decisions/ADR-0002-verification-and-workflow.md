@@ -81,6 +81,12 @@ The goal is complete T-SQL support with zero defects (ADR-0001: SQL Server's par
    - More than 5 % growth warns, and more than 10 % needs the budget raised in the same pull request with the owner's
      approval.
    - Parse time is measured in alternating runs, and a median slowdown above 10 % is investigated.
+   - Runtime cost is also bounded against a milestone (owner decision, 2026-11-16): `tools/runtime-cost.mjs` compiles
+     the milestone commit's parser and the current one with the same compiler in the same CI job, and compares the
+     library size, the median time to parse every fixture and oracle case, and the peak memory of that parse. Each
+     ratio must stay within `max_ratio` of `test/runtime-cost.json` (1.5x of the M2 end, `e8a398e`). Per-change growth
+     is what the budget above limits; this bounds the sum. Passing the ratio needs a recorded decision and a new
+     milestone, normally after a refactor that pays the growth back.
 7. **grammar-kit patches.**
    - The patch chain is re-measured as an experiment and is not adopted wholesale.
    - Fixes land one defect class per pull request, re-implemented in this grammar with grammar-kit's reports and
