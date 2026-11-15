@@ -104,11 +104,24 @@ export default {
         optional($.keyword_external),
         $.keyword_table,
         field('name', $.object_reference),
-        $.column_definitions,
+        choice(
+          seq($.column_definitions, optional(alias($._graph_table_kind, $.table_data_placement))),
+          seq($.keyword_as, choice($.keyword_filetable, $.keyword_edge)),
+        ),
         optional($.on_filegroup),
         optional($.table_data_placement),
         optional($.table_data_placement),
         optional($.with_options),
+      ),
+    ),
+
+  // Keep the existing AS NODE/EDGE tree, originally recognized as data placement.
+  _graph_table_kind: ($) =>
+    seq(
+      field('option', alias($.keyword_as, $.identifier)),
+      field(
+        'filegroup',
+        choice(alias($.keyword_node, $.identifier), alias($.keyword_edge, $.identifier)),
       ),
     ),
 

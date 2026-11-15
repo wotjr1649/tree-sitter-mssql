@@ -26,6 +26,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Parse table/column/constraint and partitioned index DDL verified by the SQL Server oracle; preserve existing clean trees.
+
+### Added
+
+- Add `generated_always`, `selective_xml_path` and 20 keyword node kinds; no existing node kinds or fields are removed.
+
 ## [0.2.2](https://github.com/meloncholera/tree-sitter-mssql/compare/v0.2.1...v0.2.2) - 2026-10-04
 
 ### Other

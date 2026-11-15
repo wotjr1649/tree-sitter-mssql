@@ -889,11 +889,19 @@
           "named": true
         },
         {
+          "type": "keyword_content",
+          "named": true
+        },
+        {
           "type": "keyword_date",
           "named": true
         },
         {
           "type": "keyword_datetime",
+          "named": true
+        },
+        {
+          "type": "keyword_document",
           "named": true
         },
         {
@@ -981,6 +989,10 @@
           "named": true
         },
         {
+          "type": "literal",
+          "named": true
+        },
+        {
           "type": "nchar",
           "named": true
         },
@@ -990,6 +1002,10 @@
         },
         {
           "type": "nvarchar",
+          "named": true
+        },
+        {
+          "type": "object_reference",
           "named": true
         },
         {
@@ -1031,7 +1047,15 @@
       "required": true,
       "types": [
         {
+          "type": "identifier",
+          "named": true
+        },
+        {
           "type": "keyword_abort",
+          "named": true
+        },
+        {
+          "type": "keyword_add",
           "named": true
         },
         {
@@ -1047,6 +1071,10 @@
           "named": true
         },
         {
+          "type": "keyword_for",
+          "named": true
+        },
+        {
           "type": "keyword_index",
           "named": true
         },
@@ -1055,11 +1083,19 @@
           "named": true
         },
         {
+          "type": "keyword_partition",
+          "named": true
+        },
+        {
           "type": "keyword_pause",
           "named": true
         },
         {
           "type": "keyword_rebuild",
+          "named": true
+        },
+        {
+          "type": "keyword_remove",
           "named": true
         },
         {
@@ -1075,6 +1111,14 @@
           "named": true
         },
         {
+          "type": "keyword_with",
+          "named": true
+        },
+        {
+          "type": "literal",
+          "named": true
+        },
+        {
           "type": "object_reference",
           "named": true
         },
@@ -1083,7 +1127,19 @@
           "named": true
         },
         {
+          "type": "selective_xml_path",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
+          "named": true
+        },
+        {
           "type": "with_options",
+          "named": true
+        },
+        {
+          "type": "xmlnamespaces",
           "named": true
         }
       ]
@@ -1416,7 +1472,15 @@
       "required": true,
       "types": [
         {
+          "type": "keyword_all",
+          "named": true
+        },
+        {
           "type": "keyword_alter",
+          "named": true
+        },
+        {
+          "type": "keyword_partition",
           "named": true
         },
         {
@@ -1432,7 +1496,15 @@
           "named": true
         },
         {
+          "type": "literal",
+          "named": true
+        },
+        {
           "type": "object_reference",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
           "named": true
         },
         {
@@ -1937,9 +2009,17 @@
         ]
       },
       "type": {
-        "multiple": false,
+        "multiple": true,
         "required": false,
         "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
           {
             "type": "binary",
             "named": true
@@ -1981,11 +2061,19 @@
             "named": true
           },
           {
+            "type": "keyword_content",
+            "named": true
+          },
+          {
             "type": "keyword_date",
             "named": true
           },
           {
             "type": "keyword_datetime",
+            "named": true
+          },
+          {
+            "type": "keyword_document",
             "named": true
           },
           {
@@ -2061,6 +2149,10 @@
             "named": true
           },
           {
+            "type": "literal",
+            "named": true
+          },
+          {
             "type": "nchar",
             "named": true
           },
@@ -2070,6 +2162,10 @@
           },
           {
             "type": "nvarchar",
+            "named": true
+          },
+          {
+            "type": "object_reference",
             "named": true
           },
           {
@@ -2116,6 +2212,10 @@
           "named": true
         },
         {
+          "type": "keyword_change_tracking",
+          "named": true
+        },
+        {
           "type": "keyword_check",
           "named": true
         },
@@ -2148,7 +2248,19 @@
           "named": true
         },
         {
+          "type": "keyword_filetable_namespace",
+          "named": true
+        },
+        {
+          "type": "keyword_for",
+          "named": true
+        },
+        {
           "type": "keyword_if",
+          "named": true
+        },
+        {
+          "type": "keyword_index",
           "named": true
         },
         {
@@ -2176,7 +2288,15 @@
           "named": true
         },
         {
+          "type": "keyword_persisted",
+          "named": true
+        },
+        {
           "type": "keyword_rebuild",
+          "named": true
+        },
+        {
+          "type": "keyword_replication",
           "named": true
         },
         {
@@ -2204,6 +2324,10 @@
           "named": true
         },
         {
+          "type": "literal",
+          "named": true
+        },
+        {
           "type": "masked_with",
           "named": true
         },
@@ -2217,6 +2341,10 @@
         },
         {
           "type": "period_for_system_time",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
           "named": true
         },
         {
@@ -4120,11 +4248,19 @@
           "named": true
         },
         {
+          "type": "keyword_content",
+          "named": true
+        },
+        {
           "type": "keyword_date",
           "named": true
         },
         {
           "type": "keyword_datetime",
+          "named": true
+        },
+        {
+          "type": "keyword_document",
           "named": true
         },
         {
@@ -4200,6 +4336,10 @@
           "named": true
         },
         {
+          "type": "literal",
+          "named": true
+        },
+        {
           "type": "nchar",
           "named": true
         },
@@ -4209,6 +4349,10 @@
         },
         {
           "type": "nvarchar",
+          "named": true
+        },
+        {
+          "type": "object_reference",
           "named": true
         },
         {
@@ -4782,9 +4926,17 @@
         ]
       },
       "type": {
-        "multiple": false,
+        "multiple": true,
         "required": false,
         "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
           {
             "type": "binary",
             "named": true
@@ -4826,11 +4978,19 @@
             "named": true
           },
           {
+            "type": "keyword_content",
+            "named": true
+          },
+          {
             "type": "keyword_date",
             "named": true
           },
           {
             "type": "keyword_datetime",
+            "named": true
+          },
+          {
+            "type": "keyword_document",
             "named": true
           },
           {
@@ -4906,6 +5066,10 @@
             "named": true
           },
           {
+            "type": "literal",
+            "named": true
+          },
+          {
             "type": "nchar",
             "named": true
           },
@@ -4915,6 +5079,10 @@
           },
           {
             "type": "nvarchar",
+            "named": true
+          },
+          {
+            "type": "object_reference",
             "named": true
           },
           {
@@ -4969,6 +5137,10 @@
           "named": true
         },
         {
+          "type": "generated_always",
+          "named": true
+        },
+        {
           "type": "graph_match_predicate",
           "named": true
         },
@@ -4989,6 +5161,10 @@
           "named": true
         },
         {
+          "type": "keyword_all_sparse_columns",
+          "named": true
+        },
+        {
           "type": "keyword_as",
           "named": true
         },
@@ -5002,6 +5178,10 @@
         },
         {
           "type": "keyword_collate",
+          "named": true
+        },
+        {
+          "type": "keyword_column_set",
           "named": true
         },
         {
@@ -5021,7 +5201,15 @@
           "named": true
         },
         {
+          "type": "keyword_hash",
+          "named": true
+        },
+        {
           "type": "keyword_identity",
+          "named": true
+        },
+        {
+          "type": "keyword_index",
           "named": true
         },
         {
@@ -5061,6 +5249,14 @@
           "named": true
         },
         {
+          "type": "keyword_values",
+          "named": true
+        },
+        {
+          "type": "keyword_with",
+          "named": true
+        },
+        {
           "type": "list",
           "named": true
         },
@@ -5090,6 +5286,10 @@
         },
         {
           "type": "on_filegroup",
+          "named": true
+        },
+        {
+          "type": "option",
           "named": true
         },
         {
@@ -5234,6 +5434,10 @@
           "named": true
         },
         {
+          "type": "covering_columns",
+          "named": true
+        },
+        {
           "type": "exists",
           "named": true
         },
@@ -5262,11 +5466,27 @@
           "named": true
         },
         {
+          "type": "keyword_action",
+          "named": true
+        },
+        {
+          "type": "keyword_cascade",
+          "named": true
+        },
+        {
           "type": "keyword_check",
           "named": true
         },
         {
           "type": "keyword_clustered",
+          "named": true
+        },
+        {
+          "type": "keyword_columnstore",
+          "named": true
+        },
+        {
+          "type": "keyword_connection",
           "named": true
         },
         {
@@ -5278,11 +5498,19 @@
           "named": true
         },
         {
+          "type": "keyword_delete",
+          "named": true
+        },
+        {
           "type": "keyword_for",
           "named": true
         },
         {
           "type": "keyword_foreign",
+          "named": true
+        },
+        {
+          "type": "keyword_hash",
           "named": true
         },
         {
@@ -5294,11 +5522,23 @@
           "named": true
         },
         {
+          "type": "keyword_no",
+          "named": true
+        },
+        {
           "type": "keyword_nonclustered",
           "named": true
         },
         {
           "type": "keyword_not",
+          "named": true
+        },
+        {
+          "type": "keyword_on",
+          "named": true
+        },
+        {
+          "type": "keyword_order",
           "named": true
         },
         {
@@ -5314,7 +5554,19 @@
           "named": true
         },
         {
+          "type": "keyword_to",
+          "named": true
+        },
+        {
           "type": "keyword_unique",
+          "named": true
+        },
+        {
+          "type": "keyword_values",
+          "named": true
+        },
+        {
+          "type": "keyword_with",
           "named": true
         },
         {
@@ -5346,6 +5598,10 @@
           "named": true
         },
         {
+          "type": "option",
+          "named": true
+        },
+        {
           "type": "ordered_columns",
           "named": true
         },
@@ -5367,6 +5623,10 @@
         },
         {
           "type": "unary_expression",
+          "named": true
+        },
+        {
+          "type": "where",
           "named": true
         },
         {
@@ -6145,6 +6405,10 @@
           "named": true
         },
         {
+          "type": "keyword_content",
+          "named": true
+        },
+        {
           "type": "keyword_create",
           "named": true
         },
@@ -6154,6 +6418,10 @@
         },
         {
           "type": "keyword_datetime",
+          "named": true
+        },
+        {
+          "type": "keyword_document",
           "named": true
         },
         {
@@ -6245,6 +6513,10 @@
           "named": true
         },
         {
+          "type": "literal",
+          "named": true
+        },
+        {
           "type": "nchar",
           "named": true
         },
@@ -6254,6 +6526,10 @@
         },
         {
           "type": "nvarchar",
+          "named": true
+        },
+        {
+          "type": "object_reference",
           "named": true
         },
         {
@@ -6628,6 +6904,10 @@
           "named": true
         },
         {
+          "type": "keyword_content",
+          "named": true
+        },
+        {
           "type": "keyword_create",
           "named": true
         },
@@ -6637,6 +6917,10 @@
         },
         {
           "type": "keyword_datetime",
+          "named": true
+        },
+        {
+          "type": "keyword_document",
           "named": true
         },
         {
@@ -6765,6 +7049,10 @@
         },
         {
           "type": "nvarchar",
+          "named": true
+        },
+        {
+          "type": "object_reference",
           "named": true
         },
         {
@@ -7406,11 +7694,23 @@
           "named": true
         },
         {
+          "type": "keyword_as",
+          "named": true
+        },
+        {
           "type": "keyword_create",
           "named": true
         },
         {
+          "type": "keyword_edge",
+          "named": true
+        },
+        {
           "type": "keyword_external",
+          "named": true
+        },
+        {
+          "type": "keyword_filetable",
           "named": true
         },
         {
@@ -7614,6 +7914,10 @@
           "named": true
         },
         {
+          "type": "keyword_content",
+          "named": true
+        },
+        {
           "type": "keyword_create",
           "named": true
         },
@@ -7623,6 +7927,10 @@
         },
         {
           "type": "keyword_datetime",
+          "named": true
+        },
+        {
+          "type": "keyword_document",
           "named": true
         },
         {
@@ -7718,6 +8026,10 @@
           "named": true
         },
         {
+          "type": "literal",
+          "named": true
+        },
+        {
           "type": "nchar",
           "named": true
         },
@@ -7727,6 +8039,10 @@
         },
         {
           "type": "nvarchar",
+          "named": true
+        },
+        {
+          "type": "object_reference",
           "named": true
         },
         {
@@ -10861,11 +11177,19 @@
           "named": true
         },
         {
+          "type": "keyword_content",
+          "named": true
+        },
+        {
           "type": "keyword_date",
           "named": true
         },
         {
           "type": "keyword_datetime",
+          "named": true
+        },
+        {
+          "type": "keyword_document",
           "named": true
         },
         {
@@ -10978,6 +11302,10 @@
         },
         {
           "type": "nvarchar",
+          "named": true
+        },
+        {
+          "type": "object_reference",
           "named": true
         },
         {
@@ -11174,6 +11502,53 @@
         },
         {
           "type": "keyword_with",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "generated_always",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_always",
+          "named": true
+        },
+        {
+          "type": "keyword_as",
+          "named": true
+        },
+        {
+          "type": "keyword_end",
+          "named": true
+        },
+        {
+          "type": "keyword_generated",
+          "named": true
+        },
+        {
+          "type": "keyword_hidden",
+          "named": true
+        },
+        {
+          "type": "keyword_row",
+          "named": true
+        },
+        {
+          "type": "keyword_sequence_number",
+          "named": true
+        },
+        {
+          "type": "keyword_start",
+          "named": true
+        },
+        {
+          "type": "keyword_transaction_id",
           "named": true
         }
       ]
@@ -12669,6 +13044,29 @@
     "fields": {}
   },
   {
+    "type": "keyword_period_for_system_time",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "keyword_for",
+          "named": true
+        },
+        {
+          "type": "keyword_period",
+          "named": true
+        },
+        {
+          "type": "keyword_system_time",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "keyword_varchar",
     "named": true,
     "fields": {},
@@ -13945,9 +14343,17 @@
         ]
       },
       "type": {
-        "multiple": false,
+        "multiple": true,
         "required": true,
         "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
           {
             "type": "binary",
             "named": true
@@ -13989,11 +14395,19 @@
             "named": true
           },
           {
+            "type": "keyword_content",
+            "named": true
+          },
+          {
             "type": "keyword_date",
             "named": true
           },
           {
             "type": "keyword_datetime",
+            "named": true
+          },
+          {
+            "type": "keyword_document",
             "named": true
           },
           {
@@ -14069,6 +14483,10 @@
             "named": true
           },
           {
+            "type": "literal",
+            "named": true
+          },
+          {
             "type": "nchar",
             "named": true
           },
@@ -14078,6 +14496,10 @@
           },
           {
             "type": "nvarchar",
+            "named": true
+          },
+          {
+            "type": "object_reference",
             "named": true
           },
           {
@@ -14194,6 +14616,10 @@
             "named": true
           },
           {
+            "type": "invocation",
+            "named": true
+          },
+          {
             "type": "keyword_default",
             "named": true
           },
@@ -14229,11 +14655,31 @@
           "named": true
         },
         {
+          "type": "identifier",
+          "named": true
+        },
+        {
           "type": "keyword_drop",
           "named": true
         },
         {
+          "type": "keyword_on",
+          "named": true
+        },
+        {
+          "type": "keyword_partitions",
+          "named": true
+        },
+        {
+          "type": "keyword_to",
+          "named": true
+        },
+        {
           "type": "option",
+          "named": true
+        },
+        {
+          "type": "truncate_partition_range",
           "named": true
         }
       ]
@@ -15635,11 +16081,19 @@
           "named": true
         },
         {
+          "type": "keyword_content",
+          "named": true
+        },
+        {
           "type": "keyword_date",
           "named": true
         },
         {
           "type": "keyword_datetime",
+          "named": true
+        },
+        {
+          "type": "keyword_document",
           "named": true
         },
         {
@@ -15719,6 +16173,10 @@
           "named": true
         },
         {
+          "type": "literal",
+          "named": true
+        },
+        {
           "type": "nchar",
           "named": true
         },
@@ -15728,6 +16186,10 @@
         },
         {
           "type": "nvarchar",
+          "named": true
+        },
+        {
+          "type": "object_reference",
           "named": true
         },
         {
@@ -16047,6 +16509,208 @@
     }
   },
   {
+    "type": "selective_xml_path",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "binary",
+          "named": true
+        },
+        {
+          "type": "char",
+          "named": true
+        },
+        {
+          "type": "custom_type",
+          "named": true
+        },
+        {
+          "type": "datetime2",
+          "named": true
+        },
+        {
+          "type": "datetimeoffset",
+          "named": true
+        },
+        {
+          "type": "decimal",
+          "named": true
+        },
+        {
+          "type": "double",
+          "named": true
+        },
+        {
+          "type": "float",
+          "named": true
+        },
+        {
+          "type": "keyword_as",
+          "named": true
+        },
+        {
+          "type": "keyword_bigint",
+          "named": true
+        },
+        {
+          "type": "keyword_bit",
+          "named": true
+        },
+        {
+          "type": "keyword_content",
+          "named": true
+        },
+        {
+          "type": "keyword_date",
+          "named": true
+        },
+        {
+          "type": "keyword_datetime",
+          "named": true
+        },
+        {
+          "type": "keyword_document",
+          "named": true
+        },
+        {
+          "type": "keyword_geography",
+          "named": true
+        },
+        {
+          "type": "keyword_geometry",
+          "named": true
+        },
+        {
+          "type": "keyword_hierarchyid",
+          "named": true
+        },
+        {
+          "type": "keyword_image",
+          "named": true
+        },
+        {
+          "type": "keyword_int",
+          "named": true
+        },
+        {
+          "type": "keyword_json",
+          "named": true
+        },
+        {
+          "type": "keyword_maxlength",
+          "named": true
+        },
+        {
+          "type": "keyword_money",
+          "named": true
+        },
+        {
+          "type": "keyword_ntext",
+          "named": true
+        },
+        {
+          "type": "keyword_rowversion",
+          "named": true
+        },
+        {
+          "type": "keyword_singleton",
+          "named": true
+        },
+        {
+          "type": "keyword_smalldatetime",
+          "named": true
+        },
+        {
+          "type": "keyword_smallint",
+          "named": true
+        },
+        {
+          "type": "keyword_smallmoney",
+          "named": true
+        },
+        {
+          "type": "keyword_sql",
+          "named": true
+        },
+        {
+          "type": "keyword_sql_variant",
+          "named": true
+        },
+        {
+          "type": "keyword_text",
+          "named": true
+        },
+        {
+          "type": "keyword_timestamp",
+          "named": true
+        },
+        {
+          "type": "keyword_tinyint",
+          "named": true
+        },
+        {
+          "type": "keyword_uniqueidentifier",
+          "named": true
+        },
+        {
+          "type": "keyword_xml",
+          "named": true
+        },
+        {
+          "type": "keyword_xquery",
+          "named": true
+        },
+        {
+          "type": "literal",
+          "named": true
+        },
+        {
+          "type": "nchar",
+          "named": true
+        },
+        {
+          "type": "numeric",
+          "named": true
+        },
+        {
+          "type": "nvarchar",
+          "named": true
+        },
+        {
+          "type": "object_reference",
+          "named": true
+        },
+        {
+          "type": "time",
+          "named": true
+        },
+        {
+          "type": "varbinary",
+          "named": true
+        },
+        {
+          "type": "varchar",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "send_statement",
     "named": true,
     "fields": {
@@ -16293,6 +16957,10 @@
           "named": true
         },
         {
+          "type": "keyword_content",
+          "named": true
+        },
+        {
           "type": "keyword_cycle",
           "named": true
         },
@@ -16302,6 +16970,10 @@
         },
         {
           "type": "keyword_datetime",
+          "named": true
+        },
+        {
+          "type": "keyword_document",
           "named": true
         },
         {
@@ -16430,6 +17102,10 @@
         },
         {
           "type": "nvarchar",
+          "named": true
+        },
+        {
+          "type": "object_reference",
           "named": true
         },
         {
@@ -19072,11 +19748,19 @@
           "named": true
         },
         {
+          "type": "keyword_content",
+          "named": true
+        },
+        {
           "type": "keyword_date",
           "named": true
         },
         {
           "type": "keyword_datetime",
+          "named": true
+        },
+        {
+          "type": "keyword_document",
           "named": true
         },
         {
@@ -19177,6 +19861,10 @@
         },
         {
           "type": "nvarchar",
+          "named": true
+        },
+        {
+          "type": "object_reference",
           "named": true
         },
         {
@@ -20345,7 +21033,15 @@
     "named": true
   },
   {
+    "type": "keyword_all_sparse_columns",
+    "named": true
+  },
+  {
     "type": "keyword_alter",
+    "named": true
+  },
+  {
+    "type": "keyword_always",
     "named": true
   },
   {
@@ -20481,6 +21177,10 @@
     "named": true
   },
   {
+    "type": "keyword_change_tracking",
+    "named": true
+  },
+  {
     "type": "keyword_changes",
     "named": true
   },
@@ -20517,6 +21217,10 @@
     "named": true
   },
   {
+    "type": "keyword_column_set",
+    "named": true
+  },
+  {
     "type": "keyword_columnstore",
     "named": true
   },
@@ -20533,11 +21237,19 @@
     "named": true
   },
   {
+    "type": "keyword_connection",
+    "named": true
+  },
+  {
     "type": "keyword_constraint",
     "named": true
   },
   {
     "type": "keyword_contained",
+    "named": true
+  },
+  {
+    "type": "keyword_content",
     "named": true
   },
   {
@@ -20649,11 +21361,19 @@
     "named": true
   },
   {
+    "type": "keyword_document",
+    "named": true
+  },
+  {
     "type": "keyword_double",
     "named": true
   },
   {
     "type": "keyword_drop",
+    "named": true
+  },
+  {
+    "type": "keyword_edge",
     "named": true
   },
   {
@@ -20717,6 +21437,14 @@
     "named": true
   },
   {
+    "type": "keyword_filetable",
+    "named": true
+  },
+  {
+    "type": "keyword_filetable_namespace",
+    "named": true
+  },
+  {
     "type": "keyword_filter",
     "named": true
   },
@@ -20773,6 +21501,10 @@
     "named": true
   },
   {
+    "type": "keyword_generated",
+    "named": true
+  },
+  {
     "type": "keyword_geography",
     "named": true
   },
@@ -20814,6 +21546,10 @@
   },
   {
     "type": "keyword_having",
+    "named": true
+  },
+  {
+    "type": "keyword_hidden",
     "named": true
   },
   {
@@ -20974,6 +21710,10 @@
   },
   {
     "type": "keyword_max",
+    "named": true
+  },
+  {
+    "type": "keyword_maxlength",
     "named": true
   },
   {
@@ -21145,7 +21885,7 @@
     "named": true
   },
   {
-    "type": "keyword_period_for_system_time",
+    "type": "keyword_period",
     "named": true
   },
   {
@@ -21389,6 +22129,10 @@
     "named": true
   },
   {
+    "type": "keyword_sequence_number",
+    "named": true
+  },
+  {
     "type": "keyword_serializable",
     "named": true
   },
@@ -21421,6 +22165,10 @@
     "named": true
   },
   {
+    "type": "keyword_singleton",
+    "named": true
+  },
+  {
     "type": "keyword_smalldatetime",
     "named": true
   },
@@ -21446,6 +22194,10 @@
   },
   {
     "type": "keyword_split",
+    "named": true
+  },
+  {
+    "type": "keyword_sql",
     "named": true
   },
   {
@@ -21478,6 +22230,10 @@
   },
   {
     "type": "keyword_system",
+    "named": true
+  },
+  {
+    "type": "keyword_system_time",
     "named": true
   },
   {
@@ -21542,6 +22298,10 @@
   },
   {
     "type": "keyword_transaction",
+    "named": true
+  },
+  {
+    "type": "keyword_transaction_id",
     "named": true
   },
   {
@@ -21702,6 +22462,10 @@
   },
   {
     "type": "keyword_xmlnamespaces",
+    "named": true
+  },
+  {
+    "type": "keyword_xquery",
     "named": true
   },
   {

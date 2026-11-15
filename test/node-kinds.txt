@@ -163,6 +163,7 @@ function_arguments
 function_body
 function_option
 function_options
+generated_always
 get_conversation_group_statement{group,queue}
 go_statement
 goto_statement
@@ -197,7 +198,9 @@ keyword_add
 keyword_after
 keyword_ai_generate_embeddings
 keyword_all
+keyword_all_sparse_columns
 keyword_alter
+keyword_always
 keyword_and
 keyword_any
 keyword_append
@@ -231,6 +234,7 @@ keyword_cast
 keyword_catalog
 keyword_catch
 keyword_certificate
+keyword_change_tracking
 keyword_changes
 keyword_changetable
 keyword_char
@@ -241,12 +245,15 @@ keyword_clustered
 keyword_collate
 keyword_collection
 keyword_column
+keyword_column_set
 keyword_columnstore
 keyword_commit
 keyword_committed
 keyword_configuration
+keyword_connection
 keyword_constraint
 keyword_contained
+keyword_content
 keyword_continue
 keyword_contract
 keyword_conversation
@@ -275,8 +282,10 @@ keyword_dialog
 keyword_disable
 keyword_distinct
 keyword_distributed
+keyword_document
 keyword_double
 keyword_drop
+keyword_edge
 keyword_else
 keyword_enable
 keyword_encrypted
@@ -292,6 +301,8 @@ keyword_exit
 keyword_external
 keyword_fetch
 keyword_file
+keyword_filetable
+keyword_filetable_namespace
 keyword_filter
 keyword_first
 keyword_float
@@ -306,6 +317,7 @@ keyword_from
 keyword_full
 keyword_fulltext
 keyword_function
+keyword_generated
 keyword_geography
 keyword_geometry
 keyword_get
@@ -317,6 +329,7 @@ keyword_group
 keyword_grouping
 keyword_hash
 keyword_having
+keyword_hidden
 keyword_hierarchyid
 keyword_holdlock
 keyword_identity
@@ -358,6 +371,7 @@ keyword_master
 keyword_match
 keyword_matched
 keyword_max
+keyword_maxlength
 keyword_maxvalue
 keyword_member
 keyword_merge
@@ -400,6 +414,7 @@ keyword_partition
 keyword_partitions
 keyword_pause
 keyword_percent
+keyword_period
 keyword_period_for_system_time
 keyword_persisted
 keyword_pivot
@@ -461,6 +476,7 @@ keyword_self
 keyword_send
 keyword_sent
 keyword_sequence
+keyword_sequence_number
 keyword_serializable
 keyword_server
 keyword_service
@@ -469,6 +485,7 @@ keyword_set
 keyword_sets
 keyword_setuser
 keyword_shortest_path
+keyword_singleton
 keyword_smalldatetime
 keyword_smallint
 keyword_smallmoney
@@ -476,6 +493,7 @@ keyword_snapshot
 keyword_some
 keyword_source
 keyword_split
+keyword_sql
 keyword_sql_variant
 keyword_start
 keyword_statistics
@@ -484,6 +502,7 @@ keyword_switch
 keyword_symmetric
 keyword_synonym
 keyword_system
+keyword_system_time
 keyword_table
 keyword_tablesample
 keyword_target
@@ -500,6 +519,7 @@ keyword_top
 keyword_trailing
 keyword_tran
 keyword_transaction
+keyword_transaction_id
 keyword_transfer
 keyword_trigger
 keyword_trim
@@ -541,6 +561,7 @@ keyword_wrapper
 keyword_writetext
 keyword_xml
 keyword_xmlnamespaces
+keyword_xquery
 keyword_zone
 kill_statement
 label_statement
@@ -604,6 +625,7 @@ save_transaction_statement{name}
 security_predicate{function,table}
 select
 select_expression
+selective_xml_path{name}
 send_statement{body,handle,message_type}
 sequence_option
 set_operation{operation}
