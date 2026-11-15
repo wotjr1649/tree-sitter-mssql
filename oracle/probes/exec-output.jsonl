@@ -1,0 +1,18 @@
+{"id":"exec-output/exec-at-output","sha256":"67f2c298b671d98d506ad40ee738cf8a4396be56607863564117c5df5cf8e7aa","source":"DECLARE @v int; EXEC(N'SELECT ?', @v OUTPUT) AT [lnk];"}
+{"id":"exec-output/exec-at-out","sha256":"5452d77e98dc60a30b216dd72fd675de11d2a58170a6e26fb771f9a19a49986b","source":"DECLARE @v int; EXEC(N'SELECT ?', @v OUT) AT [lnk];"}
+{"id":"exec-output/exec-noat-output","sha256":"5ebdec03cd98fc9fc74631e8cc39166516f45850d6c2ba7ccc43ede085690e75","source":"DECLARE @v int; EXEC(N'SELECT ?', @v OUTPUT);"}
+{"id":"exec-output/exec-at-const-output","sha256":"eed2a270f6e3155558df1bce80bba376f4edaa3f6986f77d70cf46ab43f66f06","source":"EXEC(N'SELECT ?', 1 OUTPUT) AT [lnk];"}
+{"id":"exec-output/exec-at-plain","sha256":"848c9bb78beb434f0d468d857053182e39041ce791a34bea0bc9828452dbcfca","source":"DECLARE @v int; EXEC(N'SELECT ?', @v) AT [lnk];"}
+{"id":"exec-output/exec-at-two-output","sha256":"8d1011d293341196eaafe96566f9c00d2a8d70914963083109e3e9d3af7c16c1","source":"DECLARE @v int, @w int; EXEC(N'SELECT ?, ?', @v OUTPUT, @w OUTPUT) AT [lnk];"}
+{"id":"exec-output/proc-int","sha256":"88c6a3f29629302631dda132cc79e16f750b814a47d0a53bdfb10d5932571016","source":"EXEC dbo.p 1 OUTPUT;"}
+{"id":"exec-output/proc-string","sha256":"957cd26686fa51c3bbb75488ea3b3aecd3bd66674fd6392706e7aa6116056cc6","source":"EXEC dbo.p 'a' OUTPUT;"}
+{"id":"exec-output/proc-default","sha256":"376917f39fabb21ffaf6bd16b4bb9426afe0b96d710a3c8764e2d93e17a93b91","source":"EXEC dbo.p DEFAULT OUTPUT;"}
+{"id":"exec-output/proc-sysvar","sha256":"eb47950bbf2c9c06680dfb4d42616817fdada33c07551af065b52e1d47e607cc","source":"EXEC dbo.p @@ROWCOUNT OUTPUT;"}
+{"id":"exec-output/proc-bare-name","sha256":"b93d407c23ae6e69c034475dfd5a25a2b64f541ba7ead74984fee9014f6557b2","source":"EXEC dbo.p x OUTPUT;"}
+{"id":"exec-output/proc-var","sha256":"5549718279c87f6f50e462d93617e9747f6a93cec21d1c8885a839c283cb3115","source":"DECLARE @v int; EXEC dbo.p @v OUTPUT;"}
+{"id":"exec-output/proc-named-int","sha256":"bbf52bce79a3980d803b8a8b034a891454c28fbb90dbd5d8f69dcf950f826edc","source":"EXEC dbo.p @a = 1 OUTPUT;"}
+{"id":"exec-output/proc-named-var","sha256":"9a245dec4b8837684c5f7fff80467c55c4ec8184f14aa83172fac4fb42f13b30","source":"DECLARE @v int; EXEC dbo.p @a = @v OUTPUT;"}
+{"id":"exec-output/proc-var-out","sha256":"1e112e996554cf2a3a6aa67c2c77fd9bf22f074f4da2e54f7d49934c1330c9c4","source":"DECLARE @v int; EXEC dbo.p @v OUT;"}
+{"id":"exec-output/remote-string","sha256":"2a5a68e89eb930fe95fd2d8f03dbc6fa6adf28a03b759aabea6216ed7b6437cb","source":"EXEC(N'SELECT ?', 'a' OUTPUT) AT [lnk];"}
+{"id":"exec-output/remote-sysvar","sha256":"8517d61242b2abb82f14e4d47d34c8c3baa3f57279a00387f0140b099d0b4222","source":"EXEC(N'SELECT ?', @@ROWCOUNT OUTPUT) AT [lnk];"}
+{"id":"exec-output/remote-expr","sha256":"949d60211d3e9947db49027527e3c5c3e78ab762be6ecd3ec78d7250b479fedd","source":"DECLARE @v int; EXEC(N'SELECT ?', @v + 1 OUTPUT) AT [lnk];"}
