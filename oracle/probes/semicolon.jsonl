@@ -1,0 +1,70 @@
+{"id":"semicolon/leading-select","sha256":"3110346e4e1eaf3425ef1351a8d178c34fe315418c104b6851e8ca907ac46d79","source":";SELECT 1;"}
+{"id":"semicolon/leading-cte","sha256":"09d4eca80bf0fec0b92d0166624b3b5c5f7e068ac811330dfdb6a09fc8b3d580","source":";WITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/double-leading-cte","sha256":"e6506a77a4d4777a8b08bdf1ba16985fc30035a21d34b23a12f86519be77b8b3","source":";;WITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/empty-one","sha256":"41b805ea7ac014e23556e98bb374702a08344268f92489a02f0880849394a1e4","source":";"}
+{"id":"semicolon/empty-many","sha256":"8481755debfadbaf23751b5804ec02c51592c8cbafec8acbdaf7033678413229","source":";;;;"}
+{"id":"semicolon/trailing-empty","sha256":"e043684d9ebec9a2f469508a31cf0865836b78c85a8f3df4e61e0a4342183a48","source":"SELECT 1;;"}
+{"id":"semicolon/between-empty","sha256":"ec50f0c9e40692059178a6d74faa70fe2f19f7a16e39d27ef845a0456877e876","source":"SELECT 1;;;SELECT 2;;"}
+{"id":"semicolon/block-empty","sha256":"7d157bfc697d8ce0ab8c213636fc9d84aea3d6acd399c96818546d2a39ab1eb7","source":"BEGIN; END;"}
+{"id":"semicolon/block-many","sha256":"2dcd716b4802f23d2032f8ae2aeae9dfa95f5a00026e8dbe278db85cfe6be5e2","source":"BEGIN;;; SELECT 1;; END;;"}
+{"id":"semicolon/block-cte","sha256":"2f1c4d4dce55bdb8693d932d141f6a5f4721c283b97467a151b65bebf1d6c933","source":"BEGIN WITH c AS (SELECT 1 AS n) SELECT n FROM c; END;"}
+{"id":"semicolon/block-leading-cte","sha256":"ab2bb22773bf5bdf019de840fb3acaf8da2f2bd4577229a4e8d003c974dffb29","source":"BEGIN; WITH c AS (SELECT 1 AS n) SELECT n FROM c; END;"}
+{"id":"semicolon/label-cte","sha256":"fa4fef9f847c0ffe762ba9dfb13a0bc28ba893c9fc68d796913c84c815f2b40c","source":"here: WITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/label-leading-cte","sha256":"f9be3a9dec91bb108c7cd421238a2962e01ed7ac6de19a595ce7a7f2b1315182","source":"here:; WITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/after-select-cte","sha256":"cd07b2379579b3b4151f555d61dd91aa9ab16c941b9efe7cbb3f795afc9fe18d","source":"SELECT 1; WITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/after-select-no-terminator","sha256":"04441d287b9f90f467b8841b239941b0a3b011ece6c78b1f99a0872e7990f118","source":"SELECT 1\nWITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/after-label-reset","sha256":"3627595a4b44795caa6135b3a04a8b611d24593b330a1a3316e2e937518551f8","source":"SELECT 1\nhere:\nWITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/if-cte","sha256":"e4e1563ec7dbdfe147a40b8fec7f0aebdb37b2f623b922864b179e0c0d102c2a","source":"IF 1=1 WITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/while-cte","sha256":"d5e6c338d97192ab2a663e62b4416e972025846d74a5709fd27bc00ac2852a2f","source":"WHILE 1=0 WITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/if-leading","sha256":"3f5e3da9e4fb863a27d52bf9cacc559e884c9d40b0c9485587b1a61cb12c7742","source":"IF 1=1 ; SELECT 1;"}
+{"id":"semicolon/if-empty-else","sha256":"5eefad33b681f63337e1c09433c2101caa54b4cf11052fd72f2e951ff586e54b","source":"IF 1=1 ; ELSE SELECT 2;"}
+{"id":"semicolon/if-else-empty","sha256":"b1f3804a78b30776c79fa9c1090092ac18d70b6a239dc9d7b2a901644ad305ee","source":"IF 1=1 SELECT 1; ELSE; SELECT 2;"}
+{"id":"semicolon/if-both-empty","sha256":"fc735dbe23a9c9f62fd10d63b340f41153550f77e9e18a866eec6d618d314da1","source":"IF 1=1 ; ELSE;"}
+{"id":"semicolon/if-else-leading-cte","sha256":"744140b23d035373bb9ede5692f6ee66462e32c94b3957a64e2c67885e2ebfbc","source":"IF 1=1 SELECT 1; ELSE; WITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/if-else-cte","sha256":"e81d0e8f272679bcee04b9cb33c41db5cb43b82734856100d503417c4cd87483","source":"IF 1=1 WITH c AS (SELECT 1 AS n) SELECT n FROM c; ELSE WITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/if-block-cte","sha256":"1fa85284277482e0ee8c85dd6cf7b9124a2a417604cf859821333530768f54d0","source":"IF 1=1 BEGIN; WITH c AS (SELECT 1 AS n) SELECT n FROM c; END ELSE BEGIN;; WITH c AS (SELECT 1 AS n) SELECT n FROM c; END;"}
+{"id":"semicolon/while-empty","sha256":"753ffbf360f264b7709e0405b8da9fb21d11711acfce80ea107c5035e2ce86a0","source":"WHILE 1=0 ; SELECT 1;"}
+{"id":"semicolon/while-block","sha256":"022442397ae77da8de19273f1a3500f4a4b910b3294ea2b85526de93a2b30e87","source":"WHILE 1=0 BEGIN;; WITH c AS (SELECT 1 AS n) SELECT n FROM c; END;"}
+{"id":"semicolon/proc-leading","sha256":"38bacf57427a75700617912840e053d1a556a486b0595f4c184377b119eb47a1","source":"CREATE PROCEDURE dbo.p AS ; WITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/proc-block","sha256":"153eb3c0d7f8739f4349796b32a257e5df84cd5bfa2ae3199f4b792686e1e96c","source":"CREATE PROCEDURE dbo.p AS BEGIN;; WITH c AS (SELECT 1 AS n) SELECT n FROM c; END;;"}
+{"id":"semicolon/proc-empty","sha256":"7efb29bcf0e66aee88a942b0dfbc0a94a1bc36a02188eb44f64383f7e3b49f12","source":"CREATE PROCEDURE dbo.p AS ;;;"}
+{"id":"semicolon/proc-no-terminator","sha256":"fb8e2fd31e0e1f9bbe37563db3e037e314be35410c3e0850925fdaca1e9406ae","source":"CREATE PROCEDURE dbo.p AS SELECT 1\nWITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/try-catch","sha256":"4a4c88d0a125f6bd2c75c9eb54049e601b7f5ef2ecb9d109042803e2e043af9a","source":"BEGIN TRY; WITH c AS (SELECT 1 AS n) SELECT n FROM c; END TRY BEGIN CATCH;; WITH c AS (SELECT 1 AS n) SELECT n FROM c; END CATCH;"}
+{"id":"semicolon/try-empty","sha256":"1faf25e7bc96e832bf75ae5eef78e951ec7a8fc53af228b5c1c743b551501258","source":"BEGIN TRY;; END TRY BEGIN CATCH;; END CATCH;"}
+{"id":"semicolon/try-boundary-empty","sha256":"3f5004980b282a181e4c0a61dd91eb237da2235f973663e8b1a8ce09ecfe9192","source":"BEGIN TRY SELECT 1; END TRY; BEGIN CATCH SELECT 2; END CATCH;"}
+{"id":"semicolon/after-block-no-terminator","sha256":"45e5050d49ba1a71eb3b74381d858da9ae50d9a66d85e8ab936510b7ebea4295","source":"BEGIN SELECT 1; END\nWITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/after-block-terminated","sha256":"1f8b558e3c2dbc7c617e0d34fde86e43f8c3461758a229819a8c544065d98a45","source":"BEGIN SELECT 1; END; WITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/after-if-no-terminator","sha256":"1fe0e64935e3ec29943cd4f56c0a5d68bec7e59f6ee300ee5dd272ff10ad1ff4","source":"IF 1=1 SELECT 1\nWITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/after-if-terminated","sha256":"4497562c29141a13f18e67c1b43d088717543414d4d6bb447a9d2dcdad49e126","source":"IF 1=1 SELECT 1; WITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/after-while-no-terminator","sha256":"e3393e5857e73cc92fa4dc6d8a0a0c19de15f7c87b508e153b04ab4b5d23197d","source":"WHILE 1=0 SELECT 1\nWITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/after-while-terminated","sha256":"8bbf939cb9431eb4447d5d2595c6b47c2272f9d4df010bd40a432934443f60ae","source":"WHILE 1=0 SELECT 1; WITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/after-else-no-terminator","sha256":"c6cea2b9d81e956911521c0a1f3e430e1299f48d5611a3a26a48841506ae20e8","source":"IF 1=1 SELECT 1 ELSE SELECT 2\nWITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/after-else-terminated","sha256":"40e85a4e2ff5c293307fd9f18eb732286517dfa9e54eb2407682cd0ef6f39caf","source":"IF 1=1 SELECT 1 ELSE SELECT 2; WITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/table-hint","sha256":"31c636e1efd2476d010b7523eaa33586a1fd864058b1d103efc55dc06cdbf9f2","source":"SELECT * FROM dbo.t WITH (NOLOCK);;"}
+{"id":"semicolon/query-hint","sha256":"c8ce753b8195174cb7c7e2e32028148840598deb7204c74464cc8fdf9bb616d7","source":"SELECT 1 OPTION (RECOMPILE);;"}
+{"id":"semicolon/trigger-chain","sha256":"bd699cd521b484f026a2a8063177474ef764dc83be448d46b75c866fd21d4018","source":"ENABLE TRIGGER tr ON dbo.t DISABLE TRIGGER tr ON dbo.t;"}
+{"id":"semicolon/trigger-empty-chain","sha256":"f802a0d63ca6ce81d7ceb8ae13cd43d3757aa8af7ab5abd9af2fdf79882eb9d4","source":";ENABLE TRIGGER tr ON dbo.t;; DISABLE TRIGGER tr ON dbo.t;;"}
+{"id":"semicolon/empty-before-else","sha256":"0e316caa7acfa0d48044954bd07e8bec404a7bd49d0eaa1929b240c9ae541dee","source":"IF 1=1 SELECT 1;; ELSE SELECT 2;"}
+{"id":"semicolon/empty-before-end","sha256":"5911ae669fec84a4919fa5a9f4469c8611691c1deae2718b201280a5b76d51dc","source":"BEGIN SELECT 1;;; END;"}
+{"id":"semicolon/cte-after-empty-block","sha256":"7ba429ae15f0f9fe8107abb25f537609d8f31fa36e2a1db4afcb36cb8ebe9251","source":"BEGIN END\nWITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/label-only","sha256":"c18daca070ab94eacb42d1a776954f2bece4a6f846d81a1456bd29aab09c1038","source":"here:;;;"}
+{"id":"semicolon/label-in-block","sha256":"856651b83a0bde832311f9a3630abb52e688db3d585a76c22607bfd7252869d0","source":"BEGIN here:;; WITH c AS (SELECT 1 AS n) SELECT n FROM c; END;"}
+{"id":"semicolon/nested-if-empty","sha256":"25323920427cc8de637c2f680d6c3c32e90c495b3ce5ee67eed9f4dd05c422f3","source":"IF 1=1 IF 2=2 ; ELSE; ELSE;"}
+{"id":"semicolon/function-block","sha256":"bd44365d99239b2cf2aaae53eadb8eb83cd159192ee9d8b6cbdeb8a0386f5190","source":"CREATE FUNCTION dbo.f() RETURNS int AS BEGIN;; RETURN 1;; END;"}
+{"id":"semicolon/trigger-block","sha256":"375a58cfd277e54ed0f846c85197896928d818f6943e408fd8f555c119fca5b6","source":"CREATE TRIGGER dbo.tr ON dbo.t AFTER INSERT AS BEGIN;; SELECT 1;; END;"}
+{"id":"semicolon/invalid-cte-body","sha256":"e4469f0b36a6efd864eb5935a0403d0ebd4de02c595fb58a9cd561ea4f56dbb8","source":";WITH c AS () SELECT 1;"}
+{"id":"semicolon/invalid-leading-select","sha256":"5b309b318d825b670c78538cdf43973b7e3878da847d48c95a755a00138da53f","source":";SELECT FROM;"}
+{"id":"semicolon/cte-double-terminator","sha256":"f8db90b8128c7877df981f58dd79c862223f6881d66adc50b4f66b8cff661efd","source":"WITH c AS (SELECT 1 AS n) SELECT n FROM c;;"}
+{"id":"semicolon/cte-break","sha256":"55fd6fa9e61928c3e6d5b437d9e49ab49328b2870df165aad0f2850a0ea85b03","source":"WITH c AS (SELECT 1 AS n); SELECT n FROM c;"}
+{"id":"semicolon/merge-terminated","sha256":"d32e4676a2eb33a5f750fb5a4076490279dabed596a1ade88b5e9534cd266c39","source":"MERGE dbo.t AS t USING dbo.s AS s ON t.id=s.id WHEN MATCHED THEN DELETE;"}
+{"id":"semicolon/merge-unterminated","sha256":"82d6059279c1410e47a51cc31d08e3af7e6a786c37399c1a98f4263443812462","source":"MERGE dbo.t AS t USING dbo.s AS s ON t.id=s.id WHEN MATCHED THEN DELETE"}
+{"id":"semicolon/merge-leading-empty","sha256":"f6f9ea65f1c73a8c0065f7e7610f1aec409b5f12cf78b8f8c8741b76afb6b9bc","source":";MERGE dbo.t AS t USING dbo.s AS s ON t.id=s.id WHEN MATCHED THEN DELETE;;"}
+{"id":"semicolon/merge-followed","sha256":"7cd791fd27a33b8a40d58721112771e341a35a7b18eed338e838f430a92437b1","source":"MERGE dbo.t AS t USING dbo.s AS s ON t.id=s.id WHEN MATCHED THEN DELETE; SELECT 1;;"}
+{"id":"semicolon/merge-next-no-terminator","sha256":"3fe4089383064fecac694d5c68c4ee894e253ea4bee13ad999ee351b29a0429d","source":"MERGE dbo.t AS t USING dbo.s AS s ON t.id=s.id WHEN MATCHED THEN DELETE SELECT 1;"}
+{"id":"semicolon/go-batch-before","sha256":"17db4fd369edb9244b9f91d9aeed145c3d04ad8ba6e95d06247f07a63527d11a","source":"SELECT 1;"}
+{"id":"semicolon/go-batch-after","sha256":"09d4eca80bf0fec0b92d0166624b3b5c5f7e068ac811330dfdb6a09fc8b3d580","source":";WITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/go-batch-cte","sha256":"15578eb8709ee265288d7f7e108c3b25b6d58c9d21c2e783999b870b391abad5","source":"WITH c AS (SELECT 1 AS n) SELECT n FROM c;"}
+{"id":"semicolon/control-function-return","source":"CREATE FUNCTION dbo.f() RETURNS int AS BEGIN RETURN ; END;","sha256":"05d04e8f73915dc22aefb97085e6a3720314b0d7dc21dae7b7053ccb5b734e83"}
+{"id":"semicolon/control-select-from","source":"SELECT FROM;","sha256":"0ca426b35801f7720ee33d9e916ce69f210aadcfa8cf94f84a971fcb153ab9ed"}
+{"id":"semicolon/control-empty-block","source":"BEGIN END;","sha256":"4ba1f30a5bacdd00d413d2042f58c09fe4b22218eefa76a1d89d43543f3bcf62"}
+{"id":"semicolon/control-empty-try","source":"BEGIN TRY END TRY BEGIN CATCH END CATCH;","sha256":"d286f387ad1dcd0f4dbc2607f932e916ec3af2cb29ab1a334af070b325695448"}

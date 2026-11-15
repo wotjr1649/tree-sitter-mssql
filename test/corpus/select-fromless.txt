@@ -949,10 +949,10 @@ SELECT 1 GROUP BY 1 WHERE 1=1;
         (group_by
           (keyword_group)
           (keyword_by)
-          (literal)))))
-  (ERROR
-    (identifier)
-    (literal)))
+          (literal))))
+    (ERROR
+      (identifier)
+      (literal))))
 
 ================================================================================
 SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 156: wrong-having-where
@@ -975,10 +975,10 @@ SELECT 1 HAVING 1=1 WHERE 1=1;
           (keyword_having)
           (binary_expression
             left: (literal)
-            right: (literal))))))
-  (ERROR
-    (identifier)
-    (literal)))
+            right: (literal)))))
+    (ERROR
+      (identifier)
+      (literal))))
 
 ================================================================================
 SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 156: wrong-having-group
@@ -1001,10 +1001,10 @@ SELECT 1 HAVING 1=1 GROUP BY 1;
           (keyword_having)
           (binary_expression
             left: (literal)
-            right: (literal))))))
-  (ERROR
-    (identifier)
-    (literal)))
+            right: (literal)))))
+    (ERROR
+      (identifier)
+      (literal))))
 
 ================================================================================
 SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 156: wrong-where-from
@@ -1027,9 +1027,9 @@ SELECT 1 WHERE 1=1 FROM dbo.t;
           (keyword_where)
           predicate: (binary_expression
             left: (literal)
-            right: (literal))))))
-  (ERROR
-    (identifier)))
+            right: (literal)))))
+    (ERROR
+      (identifier))))
 
 ================================================================================
 SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 156: wrong-order-where
@@ -1052,10 +1052,10 @@ SELECT 1 ORDER BY 1 WHERE 1=1;
         (keyword_order)
         (keyword_by)
         (order_target
-          (literal)))))
-  (ERROR
-    (identifier)
-    (literal)))
+          (literal))))
+    (ERROR
+      (identifier)
+      (literal))))
 
 ================================================================================
 SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 156: wrong-option-where
@@ -1077,10 +1077,10 @@ SELECT 1 OPTION (RECOMPILE) WHERE 1=1;
       (option_clause
         (keyword_option)
         (query_hint
-          (keyword_recompile)))))
-  (ERROR
-    (identifier)
-    (literal)))
+          (keyword_recompile))))
+    (ERROR
+      (identifier)
+      (literal))))
 
 ================================================================================
 SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 156: wrong-where-into
@@ -1105,9 +1105,9 @@ SELECT 1 AS a WHERE 1=1 INTO #r7;
           (keyword_where)
           predicate: (binary_expression
             left: (literal)
-            right: (literal))))))
-  (ERROR
-    (identifier)))
+            right: (literal)))))
+    (ERROR
+      (identifier))))
 
 ================================================================================
 SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 156: wrong-order-union
@@ -1217,10 +1217,10 @@ SELECT 1 WHERE 1=1 WHERE 2=2;
           (keyword_where)
           predicate: (binary_expression
             left: (literal)
-            right: (literal))))))
-  (ERROR
-    (identifier)
-    (literal)))
+            right: (literal)))))
+    (ERROR
+      (identifier)
+      (literal))))
 
 ================================================================================
 SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 102: empty-where

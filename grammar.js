@@ -67,6 +67,8 @@ export default grammar({
     // `IF cond stmt ;` — the `;` may start a `; ELSE` clause or end the IF;
     // see else_clause.
     [$.if_statement],
+    // Keep an empty AS body open as a fork until a leading semicolon is disambiguated.
+    [$.procedure_body],
   ],
 
   precedences: (_) => [
@@ -102,6 +104,7 @@ export default grammar({
     // `go_statement` and slicing.
     program: ($) => repeat($.batch),
 
+    // Empty statements are anonymous `;` tokens, preserving existing statement ranges.
     // Each statement/block may be terminated by `;`; only the batch's last
     // one may instead (or additionally) be closed by `GO`, which is why the
     // trailing `go_statement` sits outside the `repeat1` rather than beside
@@ -116,6 +119,7 @@ export default grammar({
             repeat1(
               choice(
                 seq(choice($.statement, $.block), optional(';')),
+                ';',
                 $.sqlcmd_setvar,
                 $.sqlcmd_include,
                 $.sqlcmd_on_error,

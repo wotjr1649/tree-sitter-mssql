@@ -55,6 +55,10 @@
                       ]
                     },
                     {
+                      "type": "STRING",
+                      "value": ";"
+                    },
+                    {
                       "type": "SYMBOL",
                       "name": "sqlcmd_setvar"
                     },
@@ -8680,8 +8684,11 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": ";"
+              "type": "REPEAT1",
+              "content": {
+                "type": "STRING",
+                "value": ";"
+              }
             },
             {
               "type": "SYMBOL",
@@ -13015,8 +13022,8 @@
       ]
     },
     "procedure_body": {
-      "type": "PREC_RIGHT",
-      "value": 0,
+      "type": "PREC_DYNAMIC",
+      "value": 1,
       "content": {
         "type": "SEQ",
         "members": [
@@ -13032,11 +13039,44 @@
                 "name": "external_name"
               },
               {
-                "type": "REPEAT",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "_body_item"
-                }
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "REPEAT",
+                        "content": {
+                          "type": "STRING",
+                          "value": ";"
+                        }
+                      },
+                      {
+                        "type": "CHOICE",
+                        "members": [
+                          {
+                            "type": "SYMBOL",
+                            "name": "statement"
+                          },
+                          {
+                            "type": "SYMBOL",
+                            "name": "block"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "REPEAT",
+                        "content": {
+                          "type": "SYMBOL",
+                          "name": "_body_item"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
               }
             ]
           }
@@ -13044,38 +13084,47 @@
       }
     },
     "_body_item": {
-      "type": "PREC_RIGHT",
-      "value": 0,
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "CHOICE",
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PREC_RIGHT",
+          "value": 0,
+          "content": {
+            "type": "SEQ",
             "members": [
               {
-                "type": "SYMBOL",
-                "name": "statement"
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "statement"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "block"
+                  }
+                ]
               },
               {
-                "type": "SYMBOL",
-                "name": "block"
-              }
-            ]
-          },
-          {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "STRING",
-                "value": ";"
-              },
-              {
-                "type": "BLANK"
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": ";"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
               }
             ]
           }
-        ]
-      }
+        },
+        {
+          "type": "STRING",
+          "value": ";"
+        }
+      ]
     },
     "create_trigger": {
       "type": "SEQ",
@@ -27570,6 +27619,9 @@
     ],
     [
       "if_statement"
+    ],
+    [
+      "procedure_body"
     ]
   ],
   "precedences": [

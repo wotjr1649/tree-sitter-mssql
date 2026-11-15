@@ -54,8 +54,8 @@ export default {
   // way rather than as a separate alternative avoids an ambiguity between
   // "the wrapper block" and "a bare body starting with a block" — they are
   // the same tokens — and keeps the shape SSMS-scripted triggers use (bare
-  // statements after AS, no BEGIN/END) as a legitimate form. prec.right
-  // keeps consuming statements rather than handing them back to `program`,
+  // statements after AS, no BEGIN/END) as a legitimate form. Dynamic precedence
+  // prefers the full body after the leading-semicolon fork has been resolved,
   // which is T-SQL's own rule: the body runs to the next GO. The body may
   // be empty: `CREATE PROCEDURE dbo.p AS` followed by GO is the stub SSMS
   // scripts before the ALTER that carries the real body. Triggers share
@@ -65,11 +65,21 @@ export default {
   // A CLR procedure or trigger has `AS EXTERNAL NAME assembly.class.method`
   // in place of the statements.
   procedure_body: ($) =>
-    prec.right(seq($.keyword_as, choice($.external_name, repeat($._body_item)))),
+    prec.dynamic(
+      1,
+      seq(
+        $.keyword_as,
+        choice(
+          $.external_name,
+          optional(seq(repeat(';'), choice($.statement, $.block), repeat($._body_item))),
+        ),
+      ),
+    ),
 
-  // One statement of a module body: a statement or a nested BEGIN ... END
-  // block, with an optional `;`. prec.right so a trailing `;` binds to the
+  // A module body needs a real first item so AS ; GO keeps its existing ranges.
+  // Later empty statements are anonymous, as they are in a batch.
+  // prec.right keeps a real item's trailing `;` bound to the
   // body item it follows rather than to `program`'s own separator —
   // otherwise a bare body would end at its first semicolon.
-  _body_item: ($) => prec.right(seq(choice($.statement, $.block), optional(';'))),
+  _body_item: ($) => choice(prec.right(seq(choice($.statement, $.block), optional(';'))), ';'),
 };
