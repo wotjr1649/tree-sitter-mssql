@@ -68,9 +68,13 @@ updates:
     open-pull-requests-limit: 2
     versioning-strategy: increase-if-necessary
     # The generator CLI stays pinned (go-treesitter regenerates with the same
-    # version); it moves only in a deliberate change. Alerts still report it.
+    # version): no routine version bumps. Security updates and alerts still apply.
     ignore:
       - dependency-name: "tree-sitter-cli"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
     rebase-strategy: auto
     cooldown:
       default-days: 4
