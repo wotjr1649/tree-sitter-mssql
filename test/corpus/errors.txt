@@ -182,7 +182,8 @@ CREATE SECURITY POLICY p DROP FILTER PREDICATE ON t;
     (keyword_drop)
     (keyword_filter)
     (keyword_predicate)
-    (keyword_on)))
+    (keyword_on))
+  (batch))
 
 ==================
 ALTER SECURITY POLICY needs a clause
@@ -197,7 +198,8 @@ ALTER SECURITY POLICY p;
     (keyword_alter)
     (keyword_security)
     (keyword_policy)
-    (identifier)))
+    (identifier))
+  (batch))
 
 ==================
 An empty double-quoted identifier is not legal
@@ -314,9 +316,9 @@ CREATE SYMMETRIC KEY k WITH ALGORITHM = AES_256 PASSWORD = 'p';
           (keyword_with)
           (option
             name: (identifier)
-            value: (identifier))))))
-  (ERROR
-    (identifier)))
+            value: (identifier)))))
+    (ERROR
+      (identifier))))
 
 ==================
 TABLESAMPLE is not a valid UPDATE target modifier (ARCH-6)
@@ -490,7 +492,8 @@ MERGE INTO t USING s ON t.id = s.id WHEN MATCHED THEN INSERT (a) VALUES (1);
     (keyword_matched)
     (keyword_then)
     (keyword_values)
-    (literal)))
+    (literal))
+  (batch))
 
 ==================
 MERGE only accepts DELETE/UPDATE under MATCHED or NOT MATCHED BY SOURCE (ARCH-5)
@@ -524,7 +527,8 @@ MERGE INTO t USING s ON t.id = s.id WHEN NOT MATCHED BY TARGET THEN DELETE;
     (keyword_matched)
     (keyword_by)
     (keyword_target)
-    (keyword_then)))
+    (keyword_then))
+  (batch))
 
 ==================
 CLOSE master is a cursor-name/keyword collision (TEST-3)
@@ -563,9 +567,9 @@ SELECT * FROM t bulk;
           (keyword_from)
           (relation
             (object_reference
-              (identifier)))))))
-  (ERROR
-    (keyword_bulk)))
+              (identifier))))))
+    (ERROR
+      (keyword_bulk))))
 
 ==================
 FROM t tablesample is a documented alias/keyword collision (TEST-3)
@@ -685,11 +689,11 @@ CREATE QUEUE q ON fg WITH STATUS = ON;
           name: (identifier))
         (on_filegroup
           (keyword_on)
-          (identifier)))))
-  (ERROR
-    (keyword_with)
-    (identifier)
-    (keyword_on)))
+          (identifier))))
+    (ERROR
+      (keyword_with)
+      (identifier)
+      (keyword_on))))
 
 ================================================================================
 CREATE QUEUE rejects a repeated WITH after ON
@@ -714,11 +718,11 @@ CREATE QUEUE q WITH STATUS = ON ON fg2 WITH STATUS = OFF;
             value: (keyword_on)))
         (on_filegroup
           (keyword_on)
-          (identifier)))))
-  (ERROR
-    (keyword_with)
-    (identifier)
-    (keyword_off)))
+          (identifier))))
+    (ERROR
+      (keyword_with)
+      (identifier)
+      (keyword_off))))
 
 ================================================================================
 A CTE body cannot contain another CTE
@@ -870,10 +874,10 @@ SELECT a FROM t UNION SELECT b INTO #y FROM u;
               (term
                 (field
                   (identifier))
-                (identifier))))))))
-  (ERROR
-    (identifier)
-    (keyword_from)))
+                (identifier)))))))
+    (ERROR
+      (identifier)
+      (keyword_from))))
 
 ================================================================================
 An unterminated block comment is an error to end of input

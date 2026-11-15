@@ -98,7 +98,7 @@ export default {
   //
   // - The plain `ELSE ...` form carries prec 1 so a dangling ELSE binds to
   //   the nearest IF (the usual shift-over-reduce resolution).
-  // - T-SQL also allows `IF x stmt; ELSE stmt` — a terminator on the
+  // - T-SQL also allows `IF x stmt;; ELSE stmt` — terminators on the
   //   consequence before ELSE. That form is prec 0, the same as
   //   if_statement, so the parser cannot resolve "is this `;` the start of
   //   an ELSE clause or the end of the IF" by precedence and instead forks
@@ -108,7 +108,7 @@ export default {
   else_clause: ($) =>
     choice(
       prec(1, seq($.keyword_else, choice($.statement, $.block))),
-      seq(';', $.keyword_else, choice($.statement, $.block)),
+      seq(repeat1(';'), $.keyword_else, choice($.statement, $.block)),
     ),
 
   try_catch_statement: ($) => seq($.try_block, $.catch_block),

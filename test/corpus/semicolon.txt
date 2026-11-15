@@ -1,0 +1,2661 @@
+================================================================================
+Accepted: semicolon/leading-select (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+;SELECT 1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal))))))))
+
+================================================================================
+Accepted: semicolon/leading-cte (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+;WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+Accepted: semicolon/double-leading-cte (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+;;WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+Accepted: semicolon/empty-one (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch))
+
+================================================================================
+Accepted: semicolon/empty-many (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+;;;;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch))
+
+================================================================================
+Accepted: semicolon/trailing-empty (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+SELECT 1;;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal))))))))
+
+================================================================================
+Accepted: semicolon/between-empty (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+SELECT 1;;;SELECT 2;;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal))))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal))))))))
+
+================================================================================
+Known gap: semicolon/block-empty (LocalDB 17.0.1000.7, 100-170, Msg 102)
+================================================================================
+
+BEGIN; END;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (block
+      (keyword_begin)
+      (keyword_end))))
+
+================================================================================
+Accepted: semicolon/block-many (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+BEGIN;;; SELECT 1;; END;;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (block
+      (keyword_begin)
+      (statement
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                (literal))))))
+      (keyword_end))))
+
+================================================================================
+Accepted: semicolon/block-cte (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+BEGIN WITH c AS (SELECT 1 AS n) SELECT n FROM c; END;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (block
+      (keyword_begin)
+      (statement
+        (keyword_with)
+        (cte
+          (identifier)
+          (keyword_as)
+          (statement
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    (literal)
+                    (keyword_as)
+                    (identifier)))))))
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                (field
+                  (identifier)))))
+          (from
+            (keyword_from)
+            (relation
+              (object_reference
+                (identifier))))))
+      (keyword_end))))
+
+================================================================================
+Accepted: semicolon/block-leading-cte (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+BEGIN; WITH c AS (SELECT 1 AS n) SELECT n FROM c; END;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (block
+      (keyword_begin)
+      (statement
+        (keyword_with)
+        (cte
+          (identifier)
+          (keyword_as)
+          (statement
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    (literal)
+                    (keyword_as)
+                    (identifier)))))))
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                (field
+                  (identifier)))))
+          (from
+            (keyword_from)
+            (relation
+              (object_reference
+                (identifier))))))
+      (keyword_end))))
+
+================================================================================
+Accepted: semicolon/label-cte (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+here: WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (label_statement
+        (identifier)))
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+Accepted: semicolon/label-leading-cte (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+here:; WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (label_statement
+        (identifier)))
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+Accepted: semicolon/after-select-cte (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+SELECT 1; WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal))))))
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+Known gap: semicolon/after-select-no-terminator (LocalDB 17.0.1000.7, 100-170, Msg 319)
+================================================================================
+
+SELECT 1
+WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal))))))
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+Accepted: semicolon/after-label-reset (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+SELECT 1
+here:
+WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal))))))
+    (statement
+      (label_statement
+        (identifier)))
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+Accepted: semicolon/if-cte (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+IF 1=1 WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (if_statement
+        (keyword_if)
+        (binary_expression
+          (literal)
+          (literal))
+        (statement
+          (keyword_with)
+          (cte
+            (identifier)
+            (keyword_as)
+            (statement
+              (query_specification
+                (select
+                  (keyword_select)
+                  (select_expression
+                    (term
+                      (literal)
+                      (keyword_as)
+                      (identifier)))))))
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (field
+                    (identifier)))))
+            (from
+              (keyword_from)
+              (relation
+                (object_reference
+                  (identifier))))))))))
+
+================================================================================
+Accepted: semicolon/while-cte (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+WHILE 1=0 WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (while_statement
+        (keyword_while)
+        (binary_expression
+          (literal)
+          (literal))
+        (statement
+          (keyword_with)
+          (cte
+            (identifier)
+            (keyword_as)
+            (statement
+              (query_specification
+                (select
+                  (keyword_select)
+                  (select_expression
+                    (term
+                      (literal)
+                      (keyword_as)
+                      (identifier)))))))
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (field
+                    (identifier)))))
+            (from
+              (keyword_from)
+              (relation
+                (object_reference
+                  (identifier))))))))))
+
+================================================================================
+Rejected: semicolon/if-leading (LocalDB 17.0.1000.7, 100-170, Msg 102)
+================================================================================
+
+IF 1=1 ; SELECT 1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (if_statement
+        (keyword_if)
+        (binary_expression
+          (literal)
+          (literal))
+        (ERROR)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal))))))))))
+
+================================================================================
+Rejected: semicolon/if-empty-else (LocalDB 17.0.1000.7, 100-170, Msg 102)
+================================================================================
+
+IF 1=1 ; ELSE SELECT 2;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (if_statement
+        (keyword_if)
+        (binary_expression
+          (literal)
+          (literal))
+        (statement
+          (break_statement
+            (MISSING keyword_break)))
+        (else_clause
+          (keyword_else)
+          (statement
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    (literal)))))))))))
+
+================================================================================
+Rejected: semicolon/if-else-empty (LocalDB 17.0.1000.7, 100-170, Msg 102)
+================================================================================
+
+IF 1=1 SELECT 1; ELSE; SELECT 2;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (if_statement
+        (keyword_if)
+        (binary_expression
+          (literal)
+          (literal))
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal))))))
+        (else_clause
+          (keyword_else)
+          (ERROR)
+          (statement
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    (literal)))))))))))
+
+================================================================================
+Rejected: semicolon/if-both-empty (LocalDB 17.0.1000.7, 100-170, Msg 102)
+================================================================================
+
+IF 1=1 ; ELSE;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (if_statement
+        (keyword_if)
+        (binary_expression
+          (literal)
+          (literal))
+        (statement
+          (break_statement
+            (MISSING keyword_break)))
+        (else_clause
+          (keyword_else)
+          (statement
+            (break_statement
+              (MISSING keyword_break))))))))
+
+================================================================================
+Rejected: semicolon/if-else-leading-cte (LocalDB 17.0.1000.7, 100-170, Msg 102)
+================================================================================
+
+IF 1=1 SELECT 1; ELSE; WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (if_statement
+        (keyword_if)
+        (binary_expression
+          (literal)
+          (literal))
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal))))))
+        (else_clause
+          (keyword_else)
+          (ERROR)
+          (statement
+            (keyword_with)
+            (cte
+              (identifier)
+              (keyword_as)
+              (statement
+                (query_specification
+                  (select
+                    (keyword_select)
+                    (select_expression
+                      (term
+                        (literal)
+                        (keyword_as)
+                        (identifier)))))))
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    (field
+                      (identifier)))))
+              (from
+                (keyword_from)
+                (relation
+                  (object_reference
+                    (identifier)))))))))))
+
+================================================================================
+Accepted: semicolon/if-else-cte (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+IF 1=1 WITH c AS (SELECT 1 AS n) SELECT n FROM c; ELSE WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (if_statement
+        (keyword_if)
+        (binary_expression
+          (literal)
+          (literal))
+        (statement
+          (keyword_with)
+          (cte
+            (identifier)
+            (keyword_as)
+            (statement
+              (query_specification
+                (select
+                  (keyword_select)
+                  (select_expression
+                    (term
+                      (literal)
+                      (keyword_as)
+                      (identifier)))))))
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (field
+                    (identifier)))))
+            (from
+              (keyword_from)
+              (relation
+                (object_reference
+                  (identifier))))))
+        (else_clause
+          (keyword_else)
+          (statement
+            (keyword_with)
+            (cte
+              (identifier)
+              (keyword_as)
+              (statement
+                (query_specification
+                  (select
+                    (keyword_select)
+                    (select_expression
+                      (term
+                        (literal)
+                        (keyword_as)
+                        (identifier)))))))
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    (field
+                      (identifier)))))
+              (from
+                (keyword_from)
+                (relation
+                  (object_reference
+                    (identifier)))))))))))
+
+================================================================================
+Accepted: semicolon/if-block-cte (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+IF 1=1 BEGIN; WITH c AS (SELECT 1 AS n) SELECT n FROM c; END ELSE BEGIN;; WITH c AS (SELECT 1 AS n) SELECT n FROM c; END;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (if_statement
+        (keyword_if)
+        (binary_expression
+          (literal)
+          (literal))
+        (block
+          (keyword_begin)
+          (statement
+            (keyword_with)
+            (cte
+              (identifier)
+              (keyword_as)
+              (statement
+                (query_specification
+                  (select
+                    (keyword_select)
+                    (select_expression
+                      (term
+                        (literal)
+                        (keyword_as)
+                        (identifier)))))))
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    (field
+                      (identifier)))))
+              (from
+                (keyword_from)
+                (relation
+                  (object_reference
+                    (identifier))))))
+          (keyword_end))
+        (else_clause
+          (keyword_else)
+          (block
+            (keyword_begin)
+            (statement
+              (keyword_with)
+              (cte
+                (identifier)
+                (keyword_as)
+                (statement
+                  (query_specification
+                    (select
+                      (keyword_select)
+                      (select_expression
+                        (term
+                          (literal)
+                          (keyword_as)
+                          (identifier)))))))
+              (query_specification
+                (select
+                  (keyword_select)
+                  (select_expression
+                    (term
+                      (field
+                        (identifier)))))
+                (from
+                  (keyword_from)
+                  (relation
+                    (object_reference
+                      (identifier))))))
+            (keyword_end)))))))
+
+================================================================================
+Rejected: semicolon/while-empty (LocalDB 17.0.1000.7, 100-170, Msg 102)
+================================================================================
+
+WHILE 1=0 ; SELECT 1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (while_statement
+        (keyword_while)
+        (binary_expression
+          (literal)
+          (literal))
+        (ERROR)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal))))))))))
+
+================================================================================
+Accepted: semicolon/while-block (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+WHILE 1=0 BEGIN;; WITH c AS (SELECT 1 AS n) SELECT n FROM c; END;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (while_statement
+        (keyword_while)
+        (binary_expression
+          (literal)
+          (literal))
+        (block
+          (keyword_begin)
+          (statement
+            (keyword_with)
+            (cte
+              (identifier)
+              (keyword_as)
+              (statement
+                (query_specification
+                  (select
+                    (keyword_select)
+                    (select_expression
+                      (term
+                        (literal)
+                        (keyword_as)
+                        (identifier)))))))
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    (field
+                      (identifier)))))
+              (from
+                (keyword_from)
+                (relation
+                  (object_reference
+                    (identifier))))))
+          (keyword_end))))))
+
+================================================================================
+Accepted: semicolon/proc-leading (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+CREATE PROCEDURE dbo.p AS ; WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_procedure
+        (keyword_create)
+        (keyword_procedure)
+        (object_reference
+          (identifier)
+          (identifier))
+        (procedure_body
+          (keyword_as)
+          (statement
+            (keyword_with)
+            (cte
+              (identifier)
+              (keyword_as)
+              (statement
+                (query_specification
+                  (select
+                    (keyword_select)
+                    (select_expression
+                      (term
+                        (literal)
+                        (keyword_as)
+                        (identifier)))))))
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    (field
+                      (identifier)))))
+              (from
+                (keyword_from)
+                (relation
+                  (object_reference
+                    (identifier)))))))))))
+
+================================================================================
+Accepted: semicolon/proc-block (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+CREATE PROCEDURE dbo.p AS BEGIN;; WITH c AS (SELECT 1 AS n) SELECT n FROM c; END;;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_procedure
+        (keyword_create)
+        (keyword_procedure)
+        (object_reference
+          (identifier)
+          (identifier))
+        (procedure_body
+          (keyword_as)
+          (block
+            (keyword_begin)
+            (statement
+              (keyword_with)
+              (cte
+                (identifier)
+                (keyword_as)
+                (statement
+                  (query_specification
+                    (select
+                      (keyword_select)
+                      (select_expression
+                        (term
+                          (literal)
+                          (keyword_as)
+                          (identifier)))))))
+              (query_specification
+                (select
+                  (keyword_select)
+                  (select_expression
+                    (term
+                      (field
+                        (identifier)))))
+                (from
+                  (keyword_from)
+                  (relation
+                    (object_reference
+                      (identifier))))))
+            (keyword_end)))))))
+
+================================================================================
+Accepted: semicolon/proc-empty (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+CREATE PROCEDURE dbo.p AS ;;;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_procedure
+        (keyword_create)
+        (keyword_procedure)
+        (object_reference
+          (identifier)
+          (identifier))
+        (procedure_body
+          (keyword_as))))))
+
+================================================================================
+Known gap: semicolon/proc-no-terminator (LocalDB 17.0.1000.7, 100-170, Msg 319)
+================================================================================
+
+CREATE PROCEDURE dbo.p AS SELECT 1
+WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_procedure
+        (keyword_create)
+        (keyword_procedure)
+        (object_reference
+          (identifier)
+          (identifier))
+        (procedure_body
+          (keyword_as)
+          (statement
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    (literal))))))
+          (statement
+            (keyword_with)
+            (cte
+              (identifier)
+              (keyword_as)
+              (statement
+                (query_specification
+                  (select
+                    (keyword_select)
+                    (select_expression
+                      (term
+                        (literal)
+                        (keyword_as)
+                        (identifier)))))))
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    (field
+                      (identifier)))))
+              (from
+                (keyword_from)
+                (relation
+                  (object_reference
+                    (identifier)))))))))))
+
+================================================================================
+Accepted: semicolon/try-catch (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+BEGIN TRY; WITH c AS (SELECT 1 AS n) SELECT n FROM c; END TRY BEGIN CATCH;; WITH c AS (SELECT 1 AS n) SELECT n FROM c; END CATCH;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (try_catch_statement
+        (try_block
+          (keyword_begin)
+          (keyword_try)
+          (statement
+            (keyword_with)
+            (cte
+              (identifier)
+              (keyword_as)
+              (statement
+                (query_specification
+                  (select
+                    (keyword_select)
+                    (select_expression
+                      (term
+                        (literal)
+                        (keyword_as)
+                        (identifier)))))))
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    (field
+                      (identifier)))))
+              (from
+                (keyword_from)
+                (relation
+                  (object_reference
+                    (identifier))))))
+          (keyword_end)
+          (keyword_try))
+        (catch_block
+          (keyword_begin)
+          (keyword_catch)
+          (statement
+            (keyword_with)
+            (cte
+              (identifier)
+              (keyword_as)
+              (statement
+                (query_specification
+                  (select
+                    (keyword_select)
+                    (select_expression
+                      (term
+                        (literal)
+                        (keyword_as)
+                        (identifier)))))))
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    (field
+                      (identifier)))))
+              (from
+                (keyword_from)
+                (relation
+                  (object_reference
+                    (identifier))))))
+          (keyword_end)
+          (keyword_catch))))))
+
+================================================================================
+Known gap: semicolon/try-empty (LocalDB 17.0.1000.7, 100-170, Msg 102)
+================================================================================
+
+BEGIN TRY;; END TRY BEGIN CATCH;; END CATCH;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (try_catch_statement
+        (try_block
+          (keyword_begin)
+          (keyword_try)
+          (keyword_end)
+          (keyword_try))
+        (catch_block
+          (keyword_begin)
+          (keyword_catch)
+          (keyword_end)
+          (keyword_catch))))))
+
+================================================================================
+Rejected: semicolon/try-boundary-empty (LocalDB 17.0.1000.7, 100-170, Msg 102/102)
+================================================================================
+
+BEGIN TRY SELECT 1; END TRY; BEGIN CATCH SELECT 2; END CATCH;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (try_catch_statement
+        (try_block
+          (keyword_begin)
+          (keyword_try)
+          (statement
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    (literal))))))
+          (keyword_end)
+          (keyword_try))
+        (ERROR)
+        (catch_block
+          (keyword_begin)
+          (keyword_catch)
+          (statement
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    (literal))))))
+          (keyword_end)
+          (keyword_catch))))))
+
+================================================================================
+Known gap: semicolon/after-block-no-terminator (LocalDB 17.0.1000.7, 100-170, Msg 319)
+================================================================================
+
+BEGIN SELECT 1; END
+WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (block
+      (keyword_begin)
+      (statement
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                (literal))))))
+      (keyword_end))
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+Accepted: semicolon/after-block-terminated (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+BEGIN SELECT 1; END; WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (block
+      (keyword_begin)
+      (statement
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                (literal))))))
+      (keyword_end))
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+Known gap: semicolon/after-if-no-terminator (LocalDB 17.0.1000.7, 100-170, Msg 319)
+================================================================================
+
+IF 1=1 SELECT 1
+WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (if_statement
+        (keyword_if)
+        (binary_expression
+          (literal)
+          (literal))
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal))))))))
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+Accepted: semicolon/after-if-terminated (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+IF 1=1 SELECT 1; WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (if_statement
+        (keyword_if)
+        (binary_expression
+          (literal)
+          (literal))
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal))))))))
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+Known gap: semicolon/after-while-no-terminator (LocalDB 17.0.1000.7, 100-170, Msg 319)
+================================================================================
+
+WHILE 1=0 SELECT 1
+WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (while_statement
+        (keyword_while)
+        (binary_expression
+          (literal)
+          (literal))
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal))))))))
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+Accepted: semicolon/after-while-terminated (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+WHILE 1=0 SELECT 1; WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (while_statement
+        (keyword_while)
+        (binary_expression
+          (literal)
+          (literal))
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal))))))))
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+Known gap: semicolon/after-else-no-terminator (LocalDB 17.0.1000.7, 100-170, Msg 319)
+================================================================================
+
+IF 1=1 SELECT 1 ELSE SELECT 2
+WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (if_statement
+        (keyword_if)
+        (binary_expression
+          (literal)
+          (literal))
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal))))))
+        (else_clause
+          (keyword_else)
+          (statement
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    (literal)))))))))
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+Accepted: semicolon/after-else-terminated (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+IF 1=1 SELECT 1 ELSE SELECT 2; WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (if_statement
+        (keyword_if)
+        (binary_expression
+          (literal)
+          (literal))
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal))))))
+        (else_clause
+          (keyword_else)
+          (statement
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    (literal)))))))))
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+Accepted: semicolon/table-hint (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+SELECT * FROM dbo.t WITH (NOLOCK);;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier)
+              (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+Accepted: semicolon/query-hint (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+SELECT 1 OPTION (RECOMPILE);;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal)))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (keyword_recompile))))))
+
+================================================================================
+Known gap: semicolon/trigger-chain (LocalDB 17.0.1000.7, 100-170, Msg 102)
+================================================================================
+
+ENABLE TRIGGER tr ON dbo.t DISABLE TRIGGER tr ON dbo.t;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (enable_trigger_statement
+        (keyword_enable)
+        (keyword_trigger)
+        (object_reference
+          (identifier))
+        (keyword_on)
+        (object_reference
+          (identifier)
+          (identifier))))
+    (statement
+      (enable_trigger_statement
+        (keyword_disable)
+        (keyword_trigger)
+        (object_reference
+          (identifier))
+        (keyword_on)
+        (object_reference
+          (identifier)
+          (identifier))))))
+
+================================================================================
+Accepted: semicolon/trigger-empty-chain (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+;ENABLE TRIGGER tr ON dbo.t;; DISABLE TRIGGER tr ON dbo.t;;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (enable_trigger_statement
+        (keyword_enable)
+        (keyword_trigger)
+        (object_reference
+          (identifier))
+        (keyword_on)
+        (object_reference
+          (identifier)
+          (identifier))))
+    (statement
+      (enable_trigger_statement
+        (keyword_disable)
+        (keyword_trigger)
+        (object_reference
+          (identifier))
+        (keyword_on)
+        (object_reference
+          (identifier)
+          (identifier))))))
+
+================================================================================
+Accepted: semicolon/empty-before-else (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+IF 1=1 SELECT 1;; ELSE SELECT 2;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (if_statement
+        (keyword_if)
+        (binary_expression
+          (literal)
+          (literal))
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal))))))
+        (else_clause
+          (keyword_else)
+          (statement
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    (literal)))))))))))
+
+================================================================================
+Accepted: semicolon/empty-before-end (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+BEGIN SELECT 1;;; END;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (block
+      (keyword_begin)
+      (statement
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                (literal))))))
+      (keyword_end))))
+
+================================================================================
+Known gap: semicolon/cte-after-empty-block (LocalDB 17.0.1000.7, 100-170, Msg 156/102)
+================================================================================
+
+BEGIN END
+WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (block
+      (keyword_begin)
+      (keyword_end))
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+Accepted: semicolon/label-only (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+here:;;;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (label_statement
+        (identifier)))))
+
+================================================================================
+Accepted: semicolon/label-in-block (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+BEGIN here:;; WITH c AS (SELECT 1 AS n) SELECT n FROM c; END;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (block
+      (keyword_begin)
+      (statement
+        (label_statement
+          (identifier)))
+      (statement
+        (keyword_with)
+        (cte
+          (identifier)
+          (keyword_as)
+          (statement
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    (literal)
+                    (keyword_as)
+                    (identifier)))))))
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                (field
+                  (identifier)))))
+          (from
+            (keyword_from)
+            (relation
+              (object_reference
+                (identifier))))))
+      (keyword_end))))
+
+================================================================================
+Rejected: semicolon/nested-if-empty (LocalDB 17.0.1000.7, 100-170, Msg 102)
+================================================================================
+
+IF 1=1 IF 2=2 ; ELSE; ELSE;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (if_statement
+        (keyword_if)
+        (binary_expression
+          (literal)
+          (literal))
+        (statement
+          (if_statement
+            (keyword_if)
+            (binary_expression
+              (literal)
+              (literal))
+            (statement
+              (break_statement
+                (MISSING keyword_break)))
+            (else_clause
+              (ERROR
+                (keyword_else))
+              (keyword_else)
+              (statement
+                (break_statement
+                  (MISSING keyword_break))))))))))
+
+================================================================================
+Accepted: semicolon/function-block (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+CREATE FUNCTION dbo.f() RETURNS int AS BEGIN;; RETURN 1;; END;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_function
+        (keyword_create)
+        (keyword_function)
+        (object_reference
+          (identifier)
+          (identifier))
+        (function_arguments)
+        (keyword_returns)
+        (keyword_int)
+        (function_body
+          (keyword_as)
+          (keyword_begin)
+          (statement
+            (return_statement
+              (keyword_return)
+              (literal)))
+          (keyword_end))))))
+
+================================================================================
+Accepted: semicolon/trigger-block (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+CREATE TRIGGER dbo.tr ON dbo.t AFTER INSERT AS BEGIN;; SELECT 1;; END;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_trigger
+        (keyword_create)
+        (keyword_trigger)
+        (object_reference
+          (identifier)
+          (identifier))
+        (keyword_on)
+        (object_reference
+          (identifier)
+          (identifier))
+        (keyword_after)
+        (trigger_event
+          (keyword_insert))
+        (procedure_body
+          (keyword_as)
+          (block
+            (keyword_begin)
+            (statement
+              (query_specification
+                (select
+                  (keyword_select)
+                  (select_expression
+                    (term
+                      (literal))))))
+            (keyword_end)))))))
+
+================================================================================
+Rejected: semicolon/invalid-cte-body (LocalDB 17.0.1000.7, 100-170, Msg 102)
+================================================================================
+
+;WITH c AS () SELECT 1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (ERROR
+      (keyword_with)
+      (identifier)
+      (keyword_as)
+      (ERROR)
+      (select
+        (keyword_select)
+        (select_expression
+          (term
+            (literal)))))))
+
+================================================================================
+Known gap: semicolon/invalid-leading-select (LocalDB 17.0.1000.7, 100-170, Msg 156)
+================================================================================
+
+;SELECT FROM;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))))))
+
+================================================================================
+Accepted: semicolon/cte-double-terminator (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+WITH c AS (SELECT 1 AS n) SELECT n FROM c;;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+Rejected: semicolon/cte-break (LocalDB 17.0.1000.7, 100-170, Msg 102)
+================================================================================
+
+WITH c AS (SELECT 1 AS n); SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (ERROR)
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+Accepted: semicolon/merge-terminated (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+MERGE dbo.t AS t USING dbo.s AS s ON t.id=s.id WHEN MATCHED THEN DELETE;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (merge
+        (keyword_merge)
+        (object_reference
+          (identifier)
+          (identifier))
+        (keyword_as)
+        (identifier)
+        (keyword_using)
+        (object_reference
+          (identifier)
+          (identifier))
+        (keyword_as)
+        (identifier)
+        (keyword_on)
+        (binary_expression
+          (field
+            (object_reference
+              (identifier))
+            (identifier))
+          (field
+            (object_reference
+              (identifier))
+            (identifier)))
+        (merge_when_clause
+          (keyword_when)
+          (keyword_matched)
+          (keyword_then)
+          (keyword_delete))))))
+
+================================================================================
+Known gap: semicolon/merge-unterminated (LocalDB 17.0.1000.7, 100-170, Msg 10713)
+================================================================================
+
+MERGE dbo.t AS t USING dbo.s AS s ON t.id=s.id WHEN MATCHED THEN DELETE
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (merge
+        (keyword_merge)
+        (object_reference
+          (identifier)
+          (identifier))
+        (keyword_as)
+        (identifier)
+        (keyword_using)
+        (object_reference
+          (identifier)
+          (identifier))
+        (keyword_as)
+        (identifier)
+        (keyword_on)
+        (binary_expression
+          (field
+            (object_reference
+              (identifier))
+            (identifier))
+          (field
+            (object_reference
+              (identifier))
+            (identifier)))
+        (merge_when_clause
+          (keyword_when)
+          (keyword_matched)
+          (keyword_then)
+          (keyword_delete))))))
+
+================================================================================
+Accepted: semicolon/merge-leading-empty (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+;MERGE dbo.t AS t USING dbo.s AS s ON t.id=s.id WHEN MATCHED THEN DELETE;;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (merge
+        (keyword_merge)
+        (object_reference
+          (identifier)
+          (identifier))
+        (keyword_as)
+        (identifier)
+        (keyword_using)
+        (object_reference
+          (identifier)
+          (identifier))
+        (keyword_as)
+        (identifier)
+        (keyword_on)
+        (binary_expression
+          (field
+            (object_reference
+              (identifier))
+            (identifier))
+          (field
+            (object_reference
+              (identifier))
+            (identifier)))
+        (merge_when_clause
+          (keyword_when)
+          (keyword_matched)
+          (keyword_then)
+          (keyword_delete))))))
+
+================================================================================
+Accepted: semicolon/merge-followed (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+MERGE dbo.t AS t USING dbo.s AS s ON t.id=s.id WHEN MATCHED THEN DELETE; SELECT 1;;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (merge
+        (keyword_merge)
+        (object_reference
+          (identifier)
+          (identifier))
+        (keyword_as)
+        (identifier)
+        (keyword_using)
+        (object_reference
+          (identifier)
+          (identifier))
+        (keyword_as)
+        (identifier)
+        (keyword_on)
+        (binary_expression
+          (field
+            (object_reference
+              (identifier))
+            (identifier))
+          (field
+            (object_reference
+              (identifier))
+            (identifier)))
+        (merge_when_clause
+          (keyword_when)
+          (keyword_matched)
+          (keyword_then)
+          (keyword_delete))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal))))))))
+
+================================================================================
+Known gap: semicolon/merge-next-no-terminator (LocalDB 17.0.1000.7, 100-170, Msg 10713)
+================================================================================
+
+MERGE dbo.t AS t USING dbo.s AS s ON t.id=s.id WHEN MATCHED THEN DELETE SELECT 1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (merge
+        (keyword_merge)
+        (object_reference
+          (identifier)
+          (identifier))
+        (keyword_as)
+        (identifier)
+        (keyword_using)
+        (object_reference
+          (identifier)
+          (identifier))
+        (keyword_as)
+        (identifier)
+        (keyword_on)
+        (binary_expression
+          (field
+            (object_reference
+              (identifier))
+            (identifier))
+          (field
+            (object_reference
+              (identifier))
+            (identifier)))
+        (merge_when_clause
+          (keyword_when)
+          (keyword_matched)
+          (keyword_then)
+          (keyword_delete))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal))))))))
+
+================================================================================
+Accepted: semicolon/go-batch-before (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+SELECT 1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal))))))))
+
+================================================================================
+Accepted: semicolon/go-batch-after (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+;WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+Accepted: semicolon/go-batch-cte (LocalDB 17.0.1000.7, 100-170)
+================================================================================
+
+WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+Known gap: semicolon/control-function-return (LocalDB 17.0.1000.7, 100-170, Msg 1075)
+================================================================================
+
+CREATE FUNCTION dbo.f() RETURNS int AS BEGIN RETURN ; END;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_function
+        (keyword_create)
+        (keyword_function)
+        (object_reference
+          (identifier)
+          (identifier))
+        (function_arguments)
+        (keyword_returns)
+        (keyword_int)
+        (function_body
+          (keyword_as)
+          (keyword_begin)
+          (statement
+            (return_statement
+              (keyword_return)))
+          (keyword_end))))))
+
+================================================================================
+Known gap: semicolon/control-select-from (LocalDB 17.0.1000.7, 100-170, Msg 156)
+================================================================================
+
+SELECT FROM;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))))))
+
+================================================================================
+Known gap: semicolon/control-empty-block (LocalDB 17.0.1000.7, 100-170, Msg 102)
+================================================================================
+
+BEGIN END;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (block
+      (keyword_begin)
+      (keyword_end))))
+
+================================================================================
+Known gap: semicolon/control-empty-try (LocalDB 17.0.1000.7, 100-170, Msg 102)
+================================================================================
+
+BEGIN TRY END TRY BEGIN CATCH END CATCH;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (try_catch_statement
+        (try_block
+          (keyword_begin)
+          (keyword_try)
+          (keyword_end)
+          (keyword_try))
+        (catch_block
+          (keyword_begin)
+          (keyword_catch)
+          (keyword_end)
+          (keyword_catch))))))
+
+================================================================================
+go-boundaries (engine-verified batches)
+================================================================================
+
+SELECT 1
+GO
+;WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+GO
+;;
+GO
+WITH c AS (SELECT 1 AS n) SELECT n FROM c;
+
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal))))))
+    (go_statement
+      (keyword_go)))
+  (batch
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))
+    (go_statement
+      (keyword_go)))
+  (batch
+    (go_statement
+      (keyword_go)))
+  (batch
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (literal)
+                  (keyword_as)
+                  (identifier)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+empty-procedure-owner (engine-verified batches)
+================================================================================
+
+CREATE PROCEDURE dbo.sp
+AS
+;
+GO
+
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_procedure
+        (keyword_create)
+        (keyword_procedure)
+        (object_reference
+          (identifier)
+          (identifier))
+        (procedure_body
+          (keyword_as))))
+    (go_statement
+      (keyword_go))))
