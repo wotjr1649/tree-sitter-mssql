@@ -38,6 +38,31 @@ One further under-acceptance surfaced while consolidating this ledger, not yet i
 | `CREATE CERTIFICATE ... FROM PROVIDER name` | `CREATE CERTIFICATE` and `CREATE ASYMMETRIC KEY` share the same `_key_source` rule, but only `ASYMMETRIC KEY` accepts `PROVIDER` in real SQL Server | No corpus case exercises this combination yet — adding one needs a `tree-sitter generate` + `test --update` cycle; tracked here as a known gap in the pinning rather than fixed in this pass |
 | `CREATE FUNCTION ... RETURNS TABLE ( columns )` with an inline (`RETURN query`) or `BEGIN ... END` body | The column list is the result shape of a CLR table-valued function, whose body is `EXTERNAL NAME`; the `RETURNS` clause and the body are separate rules, and tying the column list to the CLR body would duplicate the function definition for one invalid combination | No corpus case exercises the invalid combination; "CLR scalar and table-valued functions with EXTERNAL NAME" in `test/corpus/create_function.txt` pins the valid CLR form |
 
+## FROM-less clauses: measured residual gaps
+
+WHERE, GROUP BY and HAVING do not require FROM. SQL Server 2025 LocalDB 17.0.1000.7,
+PARSEONLY at levels 100–170, accepts both upstream error tests `SELECT 1 WHERE 1=1;`
+and `SELECT 1 GROUP BY 1;`. They are positive cases in
+`test/corpus/select-fromless.txt` (ADR-0002 §9); the other existing error cases are unchanged.
+
+Making those clauses independent exposes the following existing expression/session gaps. All
+listed oracle cases now parse cleanly; no engine-accepted clean case becomes an error. This is
+not a claim of zero defects, and these are not option-set constraints covered by ADR-0003.
+
+| Cases | SQL Server verdict | Classification and disposition |
+| --- | --- | --- |
+| `count-empty`, `mut-02235`, `mut-02255` | Msg 174 on every committed engine/level | Contextual function arity (COUNT without an argument); outside this clause-order fix, per ADR-0002 §2 |
+| `regex-79` | Msg 4145 on SQL Server 2017–2022 and 2025 levels 100–160; Msg 156 on both 2025 engines at level 170 | Mixed: contextual scalar predicate at lower levels, unresolved qualified REGEXP_LIKE syntax at 170. The syntax rejection is not covered by ADR-0002 context or ADR-0003 option-set rules |
+| `regex-80` | Msg 4145 on 2025; 195 on older engines | Contextual scalar REGEXP_COUNT used as a predicate; older engines lack the function |
+| `qi-on-contains-search`, `qi-on-freetext-search`, `qi-on-property`, `qi-on-language` | Msg 102 on every committed engine/level | Unresolved syntax over-acceptance: with QUOTED_IDENTIFIER ON, these full-text arguments require strings rather than double-quoted identifiers. Requires session-aware lexical/argument rules, not an option-set constraint. Matching `qi-off-*` cases are accepted |
+| `SELECT NOT 1 WHERE 1=1;` | LocalDB Msg 156 at levels 100–170 | Unresolved SELECT expression over-acceptance. The corresponding FROM-bearing control is already clean in main; no corpus case pins this gap |
+| `SELECT 1 WHERE CURRENT OF c;` | LocalDB Msg 102 at levels 100–170 | Unresolved statement restriction: CURRENT OF belongs to positioned UPDATE/DELETE. The corresponding FROM-bearing SELECT is already clean in main; no corpus case pins this gap |
+
+The focused probes also leave the existing later-UNION-branch INTO restriction unchanged:
+`SELECT 1 UNION SELECT 2 INTO #r7 WHERE 2=2;` is accepted by LocalDB PARSEONLY at
+levels 100–170 but has a tree error. The grammar-kit issue-128 report distinguishes this
+from NOEXEC Msg 196; compile-time rejection is not a syntax verdict.
+
 ## Adding an entry
 
 When a review or a probe finds a new gap, add a row here in the same pass as the corpus case (or

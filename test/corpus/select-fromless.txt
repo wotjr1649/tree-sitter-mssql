@@ -1,0 +1,1369 @@
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: where
+================================================================================
+
+SELECT 1 WHERE 1=1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (literal)
+            right: (literal)))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: group
+================================================================================
+
+SELECT 1 GROUP BY 1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (group_by
+          (keyword_group)
+          (keyword_by)
+          (literal))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: having
+================================================================================
+
+SELECT COUNT(*) HAVING COUNT(*) > 0;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (all_fields))))))
+        (having
+          (keyword_having)
+          (binary_expression
+            left: (invocation
+              (object_reference
+                name: (identifier))
+              parameter: (term
+                value: (all_fields)))
+            right: (literal)))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: all
+================================================================================
+
+SELECT 1 WHERE 1=1 GROUP BY 1 HAVING COUNT(*) > 0;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (literal)
+            right: (literal)))
+        (group_by
+          (keyword_group)
+          (keyword_by)
+          (literal))
+        (having
+          (keyword_having)
+          (binary_expression
+            left: (invocation
+              (object_reference
+                name: (identifier))
+              parameter: (term
+                value: (all_fields)))
+            right: (literal)))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: where-having
+================================================================================
+
+SELECT 1 WHERE 1=1 HAVING COUNT(*) > 0;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (literal)
+            right: (literal)))
+        (having
+          (keyword_having)
+          (binary_expression
+            left: (invocation
+              (object_reference
+                name: (identifier))
+              parameter: (term
+                value: (all_fields)))
+            right: (literal)))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: group-having
+================================================================================
+
+SELECT 1 GROUP BY 1 HAVING COUNT(*) > 0;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (group_by
+          (keyword_group)
+          (keyword_by)
+          (literal))
+        (having
+          (keyword_having)
+          (binary_expression
+            left: (invocation
+              (object_reference
+                name: (identifier))
+              parameter: (term
+                value: (all_fields)))
+            right: (literal)))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: having-comparison
+================================================================================
+
+SELECT 1 HAVING 1=1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (having
+          (keyword_having)
+          (binary_expression
+            left: (literal)
+            right: (literal)))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: top-order
+================================================================================
+
+SELECT TOP (1) 1 WHERE 1=1 ORDER BY 1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (top_clause
+            (keyword_top)
+            (literal))
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (literal)
+            right: (literal))))
+      (order_by
+        (keyword_order)
+        (keyword_by)
+        (order_target
+          (literal))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: top-group-order-option
+================================================================================
+
+SELECT TOP (1) 1 WHERE 1=1 GROUP BY 1 HAVING COUNT(*) > 0 ORDER BY 1 OPTION (RECOMPILE);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (top_clause
+            (keyword_top)
+            (literal))
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (literal)
+            right: (literal)))
+        (group_by
+          (keyword_group)
+          (keyword_by)
+          (literal))
+        (having
+          (keyword_having)
+          (binary_expression
+            left: (invocation
+              (object_reference
+                name: (identifier))
+              parameter: (term
+                value: (all_fields)))
+            right: (literal))))
+      (order_by
+        (keyword_order)
+        (keyword_by)
+        (order_target
+          (literal)))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (keyword_recompile))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: into
+================================================================================
+
+SELECT 1 AS a INTO #r7 WHERE 1=1 GROUP BY 1 HAVING COUNT(*) > 0 ORDER BY 1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal)
+              (keyword_as)
+              alias: (identifier))))
+        (keyword_into)
+        (object_reference
+          name: (identifier))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (literal)
+            right: (literal)))
+        (group_by
+          (keyword_group)
+          (keyword_by)
+          (literal))
+        (having
+          (keyword_having)
+          (binary_expression
+            left: (invocation
+              (object_reference
+                name: (identifier))
+              parameter: (term
+                value: (all_fields)))
+            right: (literal))))
+      (order_by
+        (keyword_order)
+        (keyword_by)
+        (order_target
+          (literal))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: into-union
+================================================================================
+
+SELECT 1 AS a INTO #r7 WHERE 1=1 UNION ALL SELECT 2 WHERE 2=2 ORDER BY 1 OPTION (RECOMPILE);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (set_operation
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal)
+                (keyword_as)
+                alias: (identifier))))
+          (keyword_into)
+          (object_reference
+            name: (identifier))
+          (where
+            (keyword_where)
+            predicate: (binary_expression
+              left: (literal)
+              right: (literal))))
+        operation: (keyword_union)
+        operation: (keyword_all)
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))
+          (where
+            (keyword_where)
+            predicate: (binary_expression
+              left: (literal)
+              right: (literal))))
+        (order_by
+          (keyword_order)
+          (keyword_by)
+          (order_target
+            (literal)))
+        (option_clause
+          (keyword_option)
+          (query_hint
+            (keyword_recompile)))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: union-where
+================================================================================
+
+SELECT 1 UNION ALL SELECT 2 WHERE 2=2;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (set_operation
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal)))))
+        operation: (keyword_union)
+        operation: (keyword_all)
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))
+          (where
+            (keyword_where)
+            predicate: (binary_expression
+              left: (literal)
+              right: (literal))))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: union-all-clauses
+================================================================================
+
+SELECT 1 WHERE 1=1 GROUP BY 1 HAVING COUNT(*) > 0 UNION ALL SELECT 2 WHERE 2=2 GROUP BY 2 HAVING COUNT(*) > 0 ORDER BY 1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (set_operation
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))
+          (where
+            (keyword_where)
+            predicate: (binary_expression
+              left: (literal)
+              right: (literal)))
+          (group_by
+            (keyword_group)
+            (keyword_by)
+            (literal))
+          (having
+            (keyword_having)
+            (binary_expression
+              left: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (all_fields)))
+              right: (literal))))
+        operation: (keyword_union)
+        operation: (keyword_all)
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))
+          (where
+            (keyword_where)
+            predicate: (binary_expression
+              left: (literal)
+              right: (literal)))
+          (group_by
+            (keyword_group)
+            (keyword_by)
+            (literal))
+          (having
+            (keyword_having)
+            (binary_expression
+              left: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (all_fields)))
+              right: (literal))))
+        (order_by
+          (keyword_order)
+          (keyword_by)
+          (order_target
+            (literal)))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: except
+================================================================================
+
+SELECT 1 WHERE 1=1 EXCEPT SELECT 2 GROUP BY 2;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (set_operation
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))
+          (where
+            (keyword_where)
+            predicate: (binary_expression
+              left: (literal)
+              right: (literal))))
+        operation: (keyword_except)
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))
+          (group_by
+            (keyword_group)
+            (keyword_by)
+            (literal)))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: intersect
+================================================================================
+
+SELECT 1 HAVING 1=1 INTERSECT SELECT 1 WHERE 1=1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (set_operation
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))
+          (having
+            (keyword_having)
+            (binary_expression
+              left: (literal)
+              right: (literal))))
+        operation: (keyword_intersect)
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))
+          (where
+            (keyword_where)
+            predicate: (binary_expression
+              left: (literal)
+              right: (literal))))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: scalar-subquery
+================================================================================
+
+SELECT (SELECT 1 WHERE 1=1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (subquery
+                (query_specification
+                  (select
+                    (keyword_select)
+                    (select_expression
+                      (term
+                        value: (literal))))
+                  (where
+                    (keyword_where)
+                    predicate: (binary_expression
+                      left: (literal)
+                      right: (literal))))))))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: exists
+================================================================================
+
+SELECT 1 WHERE EXISTS (SELECT 1 WHERE 1=1 GROUP BY 1 HAVING COUNT(*) > 0);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (exists
+            (keyword_exists)
+            (subquery
+              (query_specification
+                (select
+                  (keyword_select)
+                  (select_expression
+                    (term
+                      value: (literal))))
+                (where
+                  (keyword_where)
+                  predicate: (binary_expression
+                    left: (literal)
+                    right: (literal)))
+                (group_by
+                  (keyword_group)
+                  (keyword_by)
+                  (literal))
+                (having
+                  (keyword_having)
+                  (binary_expression
+                    left: (invocation
+                      (object_reference
+                        name: (identifier))
+                      parameter: (term
+                        value: (all_fields)))
+                    right: (literal)))))))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: derived
+================================================================================
+
+SELECT d.a FROM (SELECT 1 AS a WHERE 1=1 GROUP BY 1 HAVING COUNT(*) > 0) AS d;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (field
+                (object_reference
+                  name: (identifier))
+                name: (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (subquery
+              (query_specification
+                (select
+                  (keyword_select)
+                  (select_expression
+                    (term
+                      value: (literal)
+                      (keyword_as)
+                      alias: (identifier))))
+                (where
+                  (keyword_where)
+                  predicate: (binary_expression
+                    left: (literal)
+                    right: (literal)))
+                (group_by
+                  (keyword_group)
+                  (keyword_by)
+                  (literal))
+                (having
+                  (keyword_having)
+                  (binary_expression
+                    left: (invocation
+                      (object_reference
+                        name: (identifier))
+                      parameter: (term
+                        value: (all_fields)))
+                    right: (literal)))))
+            (keyword_as)
+            alias: (identifier)))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: cte
+================================================================================
+
+WITH c AS (SELECT 1 AS a WHERE 1=1 GROUP BY 1 HAVING COUNT(*) > 0) SELECT a FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (keyword_with)
+      (cte
+        name: (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  value: (literal)
+                  (keyword_as)
+                  alias: (identifier))))
+            (where
+              (keyword_where)
+              predicate: (binary_expression
+                left: (literal)
+                right: (literal)))
+            (group_by
+              (keyword_group)
+              (keyword_by)
+              (literal))
+            (having
+              (keyword_having)
+              (binary_expression
+                left: (invocation
+                  (object_reference
+                    name: (identifier))
+                  parameter: (term
+                    value: (all_fields)))
+                right: (literal))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (field
+                name: (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: cte-union
+================================================================================
+
+WITH c AS (SELECT 1 AS a WHERE 1=1 UNION ALL SELECT 2 HAVING 2=2) SELECT a FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (keyword_with)
+      (cte
+        name: (identifier)
+        (keyword_as)
+        (statement
+          (set_operation
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    value: (literal)
+                    (keyword_as)
+                    alias: (identifier))))
+              (where
+                (keyword_where)
+                predicate: (binary_expression
+                  left: (literal)
+                  right: (literal))))
+            operation: (keyword_union)
+            operation: (keyword_all)
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    value: (literal))))
+              (having
+                (keyword_having)
+                (binary_expression
+                  left: (literal)
+                  right: (literal)))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (field
+                name: (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: insert-select
+================================================================================
+
+INSERT INTO dbo.t(a) SELECT 1 WHERE 1=1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (insert
+        (keyword_insert)
+        (keyword_into)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (list
+          (column
+            (identifier)))
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))
+          (where
+            (keyword_where)
+            predicate: (binary_expression
+              left: (literal)
+              right: (literal))))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: offset
+================================================================================
+
+SELECT 1 WHERE 1=1 ORDER BY 1 OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (literal)
+            right: (literal))))
+      (order_by
+        (keyword_order)
+        (keyword_by)
+        (order_target
+          (literal)))
+      (offset_fetch
+        (keyword_offset)
+        (literal)
+        (keyword_rows)
+        (keyword_fetch)
+        (keyword_next)
+        (literal)
+        (keyword_rows)
+        (keyword_only)))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170: for-json
+================================================================================
+
+SELECT 1 AS a WHERE 1=1 FOR JSON PATH;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal)
+              (keyword_as)
+              alias: (identifier))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (literal)
+            right: (literal))))
+      (for_clause
+        (keyword_for)
+        (keyword_json)
+        (for_option
+          (identifier))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 160-170: window
+================================================================================
+
+SELECT COUNT(*) OVER w WHERE 1=1 WINDOW w AS (ORDER BY (SELECT 1));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (window_function
+                (invocation
+                  (object_reference
+                    name: (identifier))
+                  parameter: (term
+                    value: (all_fields)))
+                (keyword_over)
+                window: (identifier)))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (literal)
+            right: (literal)))
+        (window_clause
+          (keyword_window)
+          (named_window
+            name: (identifier)
+            (keyword_as)
+            (window_specification
+              (order_by
+                (keyword_order)
+                (keyword_by)
+                (order_target
+                  (subquery
+                    (query_specification
+                      (select
+                        (keyword_select)
+                        (select_expression
+                          (term
+                            value: (literal)))))))))))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 156: wrong-group-where
+================================================================================
+
+SELECT 1 GROUP BY 1 WHERE 1=1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (group_by
+          (keyword_group)
+          (keyword_by)
+          (literal)))))
+  (ERROR
+    (identifier)
+    (literal)))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 156: wrong-having-where
+================================================================================
+
+SELECT 1 HAVING 1=1 WHERE 1=1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (having
+          (keyword_having)
+          (binary_expression
+            left: (literal)
+            right: (literal))))))
+  (ERROR
+    (identifier)
+    (literal)))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 156: wrong-having-group
+================================================================================
+
+SELECT 1 HAVING 1=1 GROUP BY 1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (having
+          (keyword_having)
+          (binary_expression
+            left: (literal)
+            right: (literal))))))
+  (ERROR
+    (identifier)
+    (literal)))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 156: wrong-where-from
+================================================================================
+
+SELECT 1 WHERE 1=1 FROM dbo.t;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (literal)
+            right: (literal))))))
+  (ERROR
+    (identifier)))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 156: wrong-order-where
+================================================================================
+
+SELECT 1 ORDER BY 1 WHERE 1=1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal)))))
+      (order_by
+        (keyword_order)
+        (keyword_by)
+        (order_target
+          (literal)))))
+  (ERROR
+    (identifier)
+    (literal)))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 156: wrong-option-where
+================================================================================
+
+SELECT 1 OPTION (RECOMPILE) WHERE 1=1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal)))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (keyword_recompile)))))
+  (ERROR
+    (identifier)
+    (literal)))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 156: wrong-where-into
+================================================================================
+
+SELECT 1 AS a WHERE 1=1 INTO #r7;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal)
+              (keyword_as)
+              alias: (identifier))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (literal)
+            right: (literal))))))
+  (ERROR
+    (identifier)))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 156: wrong-order-union
+================================================================================
+
+SELECT 1 WHERE 1=1 ORDER BY 1 UNION SELECT 2 WHERE 2=2;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (literal)
+            right: (literal))))
+      (order_by
+        (keyword_order)
+        (keyword_by)
+        (order_target
+          (literal))))
+    (statement
+      (label_statement
+        (identifier)
+        (MISSING ":")))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (literal)
+            right: (literal)))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 156: wrong-option-union
+================================================================================
+
+SELECT 1 WHERE 1=1 OPTION (RECOMPILE) UNION SELECT 2 WHERE 2=2;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (literal)
+            right: (literal))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (keyword_recompile))))
+    (statement
+      (label_statement
+        (identifier)
+        (MISSING ":")))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (literal)
+            right: (literal)))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 156: repeat-where
+================================================================================
+
+SELECT 1 WHERE 1=1 WHERE 2=2;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (literal)
+            right: (literal))))))
+  (ERROR
+    (identifier)
+    (literal)))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 102: empty-where
+================================================================================
+
+SELECT 1 WHERE;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))))
+    (ERROR
+      (keyword_where))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 102: empty-group
+================================================================================
+
+SELECT 1 GROUP BY;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (group_by
+          (keyword_group)
+          (keyword_by)
+          (field
+            name: (identifier
+              (MISSING _identifier))))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 102: empty-having
+================================================================================
+
+SELECT 1 HAVING;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))))
+    (ERROR
+      (keyword_having))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 156: wrong-subquery-order
+================================================================================
+
+SELECT (SELECT 1 GROUP BY 1 WHERE 1=1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (subquery
+                (query_specification
+                  (select
+                    (keyword_select)
+                    (select_expression
+                      (term
+                        value: (literal))))
+                  (ERROR
+                    (group_by
+                      (keyword_group)
+                      (keyword_by)
+                      (literal)))
+                  (where
+                    (keyword_where)
+                    predicate: (binary_expression
+                      left: (literal)
+                      right: (literal))))))))))))
+
+================================================================================
+SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 156: wrong-cte-order
+================================================================================
+
+WITH c AS (SELECT 1 AS a HAVING 1=1 WHERE 1=1) SELECT a FROM c;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (keyword_with)
+      (cte
+        name: (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  value: (literal)
+                  (keyword_as)
+                  alias: (identifier))))
+            (ERROR
+              (having
+                (keyword_having)
+                (binary_expression
+                  left: (literal)
+                  right: (literal))))
+            (where
+              (keyword_where)
+              predicate: (binary_expression
+                left: (literal)
+                right: (literal))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (field
+                name: (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))

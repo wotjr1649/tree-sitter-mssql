@@ -26,12 +26,14 @@ function trailing_sort_and_hint_clauses($) {
   );
 }
 
-// FROM/WHERE/GROUP BY/HAVING/WINDOW — shared by every query body. WHERE,
-// GROUP BY and HAVING stay nested under FROM: real T-SQL rejects all three
-// on a FROM-less SELECT.
+// FROM/WHERE/GROUP BY/HAVING/WINDOW — shared by every query body.
+// SQL Server accepts WHERE, GROUP BY and HAVING independently of FROM.
 function query_specification_rest($) {
   return seq(
-    optional(seq($.from, optional($.where), optional($.group_by), optional($.having))),
+    optional($.from),
+    optional($.where),
+    optional($.group_by),
+    optional($.having),
     optional($.window_clause),
   );
 }
@@ -129,14 +131,13 @@ export default {
 
   // One branch of a set_operation. A named rule, not an inline helper, so
   // the branch is one node rather than a flat list of its children.
-  // WHERE/GROUP BY/HAVING stay nested under FROM.
   query_specification: ($) => optional_parenthesis($._query_specification_core),
 
   // Later set-operation branches: identical tree, no INTO.
   _query_specification_later: ($) => optional_parenthesis(query_specification_body_no_into($)),
 
-  // SELECT ... [INTO new_table] [FROM ... [WHERE ...] [GROUP BY ...]
-  // [HAVING ...]] [WINDOW ...] [ORDER BY ...] [OFFSET ... FETCH ...]
+  // SELECT ... [INTO new_table] [FROM ...] [WHERE ...] [GROUP BY ...]
+  // [HAVING ...] [WINDOW ...] [ORDER BY ...] [OFFSET ... FETCH ...]
   // [OPTION (...)] [FOR XML ... | FOR JSON ... | FOR UPDATE]
   //
   // The trailing clauses sit here, and on `set_operation`, rather than on
