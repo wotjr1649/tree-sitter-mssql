@@ -34,6 +34,15 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
             "merge" => merge_terminator(node, &mut out),
             "table_hint" | "query_hint" => table_hints(node, source, &mut out),
             "option_clause" => table_hint_aliases(node, source, &mut out),
+            "database_file" => database_file_options(node, source, &mut out),
+            "availability_replica" => availability_replica_options(node, source, &mut out),
+            "server_buffer_pool_options" => buffer_pool_options(node, source, &mut out),
+            "alter_availability_group" => availability_set_options(node, &mut out),
+            "option" => nested_database_options(node, source, &mut out),
+            "alter_server_audit" => audit_clause_count(node, &mut out),
+            "create_database_encryption_key" | "alter_database_encryption_key" => {
+                encryption_algorithm(node, source, &mut out)
+            }
             _ => {}
         }
         if node.kind() == "execute_statement" {
@@ -785,6 +794,401 @@ fn queue_activation(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
     }
 }
 
+/// SQL Server 2025 LocalDB 17.0.1000.7, levels 100-170: FILENAME missing is Msg 1036
+/// in ddl-database/files/negative-suspected-003 and ddl-database/create/negative-suspected-001.
+/// NAME/SIZE/OFFLINE repeated is Msg 153 in ddl-database/files/negative-suspected-004/005/007.
+/// Do not require NAME: files/negative-suspected-002/006 are accepted, including MODIFY without it.
+fn database_file_options(file: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let mut parent = file.parent();
+    let mut required_filename = false;
+    while let Some(statement) = parent {
+        if matches!(statement.kind(), "create_database" | "alter_database") {
+            let mut c = statement.walk();
+            let kinds: Vec<&str> = statement.named_children(&mut c).map(|n| n.kind()).collect();
+            required_filename = if statement.kind() == "alter_database" {
+                kinds.contains(&"keyword_add")
+            } else {
+                // Missing options in ATTACH/SNAPSHOT have not been measured by these probes.
+                !kinds.iter().any(|k| {
+                    matches!(
+                        *k,
+                        "keyword_attach" | "keyword_attach_rebuild_log" | "keyword_snapshot"
+                    )
+                })
+            };
+            break;
+        }
+        parent = statement.parent();
+    }
+    option_set(
+        file,
+        source,
+        "database-file-required",
+        "database-file-duplicate",
+        if required_filename {
+            &["FILENAME"]
+        } else {
+            &[]
+        },
+        // ddl-database/extra-file-duplicates/case-001..006: Msg 153, levels 100-170.
+        &[
+            "NAME",
+            "SIZE",
+            "OFFLINE",
+            "FILENAME",
+            "MAXSIZE",
+            "FILEGROWTH",
+        ],
+        out,
+    );
+}
+
+/// SQL Server 2025 LocalDB 17.0.1000.7, levels 100-170: ddl-database/ag/negative-suspected-003,
+/// 004 and 005 reject ADD REPLICA without ENDPOINT_URL, AVAILABILITY_MODE and FAILOVER_MODE
+/// with Msg 35236, 41198 and 41197 respectively. Distributed JOIN has different required options.
+/// CREATE's required options: ddl-database/edge/3..5 (normal REPLICA, not distributed groups).
+/// ADD duplicates: ddl-database/extra-ag-option-sets/case-003..005, Msg 1039.
+fn availability_replica_options(replica: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let Some(statement) = replica.parent().filter(|n| {
+        matches!(
+            n.kind(),
+            "alter_availability_group" | "create_availability_group"
+        )
+    }) else {
+        return;
+    };
+    // kit-routes/alt-tsql-B03-r040 and ddl-database/distributed/listener: Msg 155;
+    // the corrected LISTENER_URL neighbour is accepted on LocalDB 17.0.1000.7, levels 100-170.
+    if !has_child(statement, "keyword_replica") {
+        for option in direct_options(replica) {
+            if !matches!(
+                option_name(option, source).as_str(),
+                "LISTENER_URL" | "AVAILABILITY_MODE" | "FAILOVER_MODE" | "SEEDING_MODE"
+            ) {
+                out.push(violation(
+                    "distributed-availability-option",
+                    "unknown distributed availability-group option".into(),
+                    option,
+                ));
+            }
+        }
+    }
+    let mut c = statement.walk();
+    if (statement.kind() == "create_availability_group" && has_child(statement, "keyword_replica"))
+        || statement
+            .named_children(&mut c)
+            .any(|n| n.kind() == "keyword_add")
+    {
+        option_set(
+            replica,
+            source,
+            "availability-replica-required",
+            "availability-replica-duplicate",
+            &["ENDPOINT_URL", "AVAILABILITY_MODE", "FAILOVER_MODE"],
+            &["ENDPOINT_URL", "AVAILABILITY_MODE", "FAILOVER_MODE"],
+            out,
+        );
+    }
+    // ddl-database/extra-ag-option-sets/case-010: MODIFY takes one outer option, Msg 102.
+    if statement.kind() == "alter_availability_group"
+        && has_child(statement, "keyword_modify")
+        && has_child(statement, "keyword_replica")
+        && direct_options(replica).len() != 1
+    {
+        out.push(violation(
+            "availability-modify-single-option",
+            "MODIFY REPLICA takes one outer option".into(),
+            replica,
+        ));
+    }
+    // ddl-database/extra-ag-option-sets/case-006/008: duplicate role settings, Msg 1039.
+    for role in direct_options(replica) {
+        let unique: &[&str] = match option_name(role, source).as_str() {
+            "SECONDARY_ROLE" => &["ALLOW_CONNECTIONS"],
+            "PRIMARY_ROLE" => &["READ_ONLY_ROUTING_LIST"],
+            _ => continue,
+        };
+        option_set(
+            role,
+            source,
+            "availability-role-required",
+            "availability-role-duplicate",
+            &[],
+            unique,
+            out,
+        );
+        // ddl-database/edge/6 accepts one role setting; edge/7/8 reject two distinct settings, Msg 10786.
+        if has_child(statement, "keyword_modify")
+            && has_child(statement, "keyword_replica")
+            && direct_options(role).len() != 1
+        {
+            out.push(violation(
+                "availability-modify-role-single-option",
+                "MODIFY REPLICA role takes one nested option".into(),
+                role,
+            ));
+        }
+    }
+}
+
+/// Only direct options count: a nested option cannot satisfy its container's requirements.
+/// BUFFER POOL evidence: ddl-database/server/negative-suspected-001/002, Msg 102 at levels 100-170
+/// on SQL Server 2025 LocalDB 17.0.1000.7; server/positive-011 accepts both FILENAME and SIZE.
+fn option_set(
+    container: Node,
+    source: &[u8],
+    required_rule: &'static str,
+    duplicate_rule: &'static str,
+    required: &[&str],
+    unique: &[&str],
+    out: &mut Vec<Violation>,
+) {
+    let mut seen = Vec::new();
+    let mut c = container.walk();
+    for option in container
+        .named_children(&mut c)
+        .filter(|n| n.kind() == "option")
+    {
+        let Some(name) = option.child_by_field_name("name") else {
+            continue;
+        };
+        let key = upper_text(name, source);
+        if unique.contains(&key.as_str()) && seen.contains(&key) {
+            out.push(violation(
+                duplicate_rule,
+                format!("{key} appears more than once in {}", container.kind()),
+                option,
+            ));
+        }
+        seen.push(key);
+    }
+    for key in required {
+        if !seen.iter().any(|name| name.as_str() == *key) {
+            out.push(violation(
+                required_rule,
+                format!("{} needs {key}", container.kind()),
+                container,
+            ));
+        }
+    }
+}
+
+fn direct_options(node: Node) -> Vec<Node> {
+    let mut c = node.walk();
+    node.named_children(&mut c)
+        .filter(|n| n.kind() == "option")
+        .collect()
+}
+
+fn has_child(node: Node, kind: &str) -> bool {
+    let mut c = node.walk();
+    node.children(&mut c).any(|n| n.kind() == kind)
+}
+
+fn next_option_unit(value: Node) -> Option<Node> {
+    let mut next = value.next_named_sibling();
+    while next.is_some_and(|n| n.is_extra()) {
+        next = next.and_then(|n| n.next_named_sibling());
+    }
+    next
+}
+
+fn option_name(option: Node, source: &[u8]) -> String {
+    option
+        .child_by_field_name("name")
+        .map(|n| upper_text(n, source))
+        .unwrap_or_default()
+}
+
+/// ddl-database/extra-ag-option-sets/case-001/002 reject two SET options, even distinct (Msg 102).
+fn availability_set_options(statement: Node, out: &mut Vec<Violation>) {
+    if has_child(statement, "keyword_set") && direct_options(statement).len() != 1 {
+        out.push(violation(
+            "availability-set-single-option",
+            "ALTER AVAILABILITY GROUP SET takes one option".into(),
+            statement,
+        ));
+    }
+}
+
+/// SQL Server 2025 LocalDB 17.0.1000.7, levels 100-170:
+/// ddl-database/extra-query-store/case-001..004: Msg 12401 for repeated nested settings;
+/// extra-database-set/case-003: FILESTREAM DIRECTORY_NAME Msg 102; case-004: AUTO_CLEANUP Msg 5091.
+/// Top-level AUTO_CLOSE/RECOVERY repeats (case-001/002) are accepted and intentionally not checked.
+fn nested_database_options(option: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let mut parent = Some(option);
+    let mut query_store = false;
+    let mut database = false;
+    while let Some(n) = parent {
+        query_store |= n.kind() == "option" && option_name(n, source) == "QUERY_STORE";
+        if matches!(n.kind(), "create_database" | "alter_database") {
+            database = true;
+            break;
+        }
+        parent = n.parent();
+    }
+    if !database {
+        return;
+    }
+    // extra-query-store/case-006/007: Msg 102 for MINUTES or an unknown policy key;
+    // edge/13 and extra-query-store/case-005 accept HOURS and DAYS at levels 100-170.
+    if query_store && option_name(option, source) == "QUERY_CAPTURE_POLICY" {
+        for setting in direct_options(option) {
+            let name = option_name(setting, source);
+            let valid = match name.as_str() {
+                "STALE_CAPTURE_POLICY_THRESHOLD" => setting
+                    .child_by_field_name("value")
+                    .and_then(next_option_unit)
+                    .is_some_and(|n| matches!(upper_text(n, source).as_str(), "HOURS" | "DAYS")),
+                "EXECUTION_COUNT" | "TOTAL_COMPILE_CPU_TIME_MS" | "TOTAL_EXECUTION_CPU_TIME_MS" => {
+                    true
+                }
+                _ => false,
+            };
+            if !valid {
+                out.push(violation(
+                    "query-capture-policy-option",
+                    format!("invalid QUERY_CAPTURE_POLICY setting {name}"),
+                    setting,
+                ));
+            }
+        }
+    }
+    let unique: &[&str] = if query_store {
+        &[
+            "OPERATION_MODE",
+            "CLEANUP_POLICY",
+            "STALE_QUERY_THRESHOLD_DAYS",
+            "EXECUTION_COUNT",
+        ]
+    } else {
+        match option_name(option, source).as_str() {
+            "FILESTREAM" => &["DIRECTORY_NAME"],
+            "CHANGE_TRACKING" => &["AUTO_CLEANUP"],
+            _ => return,
+        }
+    };
+    option_set(
+        option,
+        source,
+        "database-option-required",
+        "database-option-duplicate",
+        &[],
+        unique,
+        out,
+    );
+}
+
+/// ddl-database/extra-audit-clauses/case-002/003 reject repeated TO/WITH clauses (Msg 156/319).
+/// case-006 accepts repeated STATE inside one WITH list, so options inside it are not checked.
+fn audit_clause_count(statement: Node, out: &mut Vec<Violation>) {
+    let mut seen = Vec::new();
+    let mut c = statement.walk();
+    for child in statement.named_children(&mut c) {
+        if !matches!(child.kind(), "keyword_to" | "with_options") {
+            continue;
+        }
+        if seen.contains(&child.kind()) {
+            out.push(violation(
+                "server-audit-duplicate-clause",
+                format!("{} appears more than once", child.kind()),
+                child,
+            ));
+        }
+        seen.push(child.kind());
+    }
+}
+
+/// ddl-database/extra-buffer-pool/case-001..006: Msg 102 for duplicates, bare keys, reverse order
+/// and an identifier FILENAME. The accepted server/positive-011 has FILENAME then numeric SIZE.
+/// ddl-database/edge/9..11 reject missing unit, quoted size and TB, respectively (Msg 102).
+fn buffer_pool_options(options: Node, source: &[u8], out: &mut Vec<Violation>) {
+    option_set(
+        options,
+        source,
+        "server-buffer-pool-required",
+        "server-buffer-pool-duplicate",
+        &["FILENAME", "SIZE"],
+        &["FILENAME", "SIZE"],
+        out,
+    );
+    let settings = direct_options(options);
+    if settings.len() == 2
+        && option_name(settings[0], source) == "SIZE"
+        && option_name(settings[1], source) == "FILENAME"
+    {
+        out.push(violation(
+            "server-buffer-pool-order",
+            "FILENAME must precede SIZE".into(),
+            options,
+        ));
+    }
+    for setting in settings {
+        let name = option_name(setting, source);
+        let value = setting.child_by_field_name("value");
+        let valid = value.is_some_and(|v| {
+            let text = upper_text(v, source);
+            match name.as_str() {
+                "FILENAME" => {
+                    v.kind() == "literal" && (text.starts_with('\'') || text.starts_with("N'"))
+                }
+                "SIZE" => {
+                    v.kind() == "literal"
+                        && !text.is_empty()
+                        && text.bytes().all(|b| b.is_ascii_digit())
+                        && next_option_unit(v).is_some_and(|unit| {
+                            matches!(upper_text(unit, source).as_str(), "KB" | "MB" | "GB")
+                        })
+                }
+                _ => true,
+            }
+        });
+        if !has_child(setting, "=") || !valid {
+            out.push(violation(
+                "server-buffer-pool-value",
+                format!(
+                    "{name} needs an assigned {}",
+                    if name == "FILENAME" {
+                        "string"
+                    } else {
+                        "numeric value"
+                    }
+                ),
+                setting,
+            ));
+        }
+    }
+}
+
+/// ddl-database/extra-encryption-options/case-001..004/006..009: Msg 102 for bare, wrong-name,
+/// unknown or repeated ALGORITHM; security-ddl/positive-001..006 accept the four algorithms.
+fn encryption_algorithm(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let mut c = statement.walk();
+    for clause in statement
+        .named_children(&mut c)
+        .filter(|n| n.kind() == "with_clause")
+    {
+        let options = direct_options(clause);
+        let valid = options.len() == 1
+            && option_name(options[0], source) == "ALGORITHM"
+            && has_child(options[0], "=")
+            && options[0].child_by_field_name("value").is_some_and(|v| {
+                matches!(
+                    upper_text(v, source).as_str(),
+                    "AES_128" | "AES_192" | "AES_256" | "TRIPLE_DES_3KEY"
+                )
+            });
+        if !valid {
+            out.push(violation(
+                "database-encryption-algorithm",
+                "WITH needs one assigned ALGORITHM: AES_128, AES_192, AES_256 or TRIPLE_DES_3KEY"
+                    .into(),
+                clause,
+            ));
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -801,6 +1205,245 @@ mod tests {
     }
 
     const FULL: &str = "PROCEDURE_NAME = dbo.p, MAX_QUEUE_READERS = 1, EXECUTE AS OWNER";
+
+    #[test]
+    fn query_capture_policy_has_known_keys_and_hour_or_day_units() {
+        for unit in ["HOURS", "DAYS"] {
+            let sql = format!(
+                "ALTER DATABASE d SET QUERY_STORE = ON (QUERY_CAPTURE_POLICY = (STALE_CAPTURE_POLICY_THRESHOLD = 5 {unit}));"
+            );
+            assert!(rules(&sql).is_empty(), "{sql}");
+        }
+        for option in ["STALE_CAPTURE_POLICY_THRESHOLD = 5 MINUTES", "MYSTERY = 7"] {
+            let sql = format!(
+                "ALTER DATABASE d SET QUERY_STORE = ON (QUERY_CAPTURE_POLICY = ({option}));"
+            );
+            assert_eq!(rules(&sql), ["query-capture-policy-option"]);
+        }
+    }
+
+    #[test]
+    fn distributed_groups_use_listener_url_not_listener() {
+        let prefix = "ALTER AVAILABILITY GROUP a MODIFY AVAILABILITY GROUP ON 'east' WITH";
+        assert_eq!(
+            rules(&format!("{prefix} (LISTENER = 'TCP://east:5022');")),
+            ["distributed-availability-option"]
+        );
+        assert!(rules(&format!("{prefix} (LISTENER_URL = 'TCP://east:5022');")).is_empty());
+    }
+
+    #[test]
+    fn remaining_file_attributes_cannot_repeat() {
+        for repeated in [
+            "FILENAME = 'C:\\b.ndf'",
+            "MAXSIZE = 8 MB",
+            "FILEGROWTH = 2 MB",
+        ] {
+            let sql = format!(
+                "ALTER DATABASE d ADD FILE (FILENAME = 'C:\\a.ndf', MAXSIZE = 4 MB, FILEGROWTH = 1 MB, {repeated});"
+            );
+            assert_eq!(rules(&sql), ["database-file-duplicate"], "{sql}");
+        }
+    }
+
+    #[test]
+    fn availability_set_and_modify_have_one_option_per_level() {
+        assert_eq!(
+            rules(
+                "ALTER AVAILABILITY GROUP a SET (DB_FAILOVER = ON, HEALTH_CHECK_TIMEOUT = 30000);"
+            ),
+            ["availability-set-single-option"]
+        );
+        assert_eq!(
+            rules(
+                "ALTER AVAILABILITY GROUP a MODIFY REPLICA ON 'n' WITH (SESSION_TIMEOUT = 20, BACKUP_PRIORITY = 40);"
+            ),
+            ["availability-modify-single-option"]
+        );
+        assert_eq!(
+            rules(
+                "ALTER AVAILABILITY GROUP a MODIFY REPLICA ON 'n' WITH (PRIMARY_ROLE (ALLOW_CONNECTIONS = ALL, READ_ONLY_ROUTING_LIST = ('b')));"
+            ),
+            ["availability-modify-role-single-option"]
+        );
+        assert!(rules("ALTER AVAILABILITY GROUP a MODIFY REPLICA ON 'n' WITH (PRIMARY_ROLE (ALLOW_CONNECTIONS = ALL));").is_empty());
+        assert!(rules("ALTER AVAILABILITY GROUP a SET (DB_FAILOVER = ON);").is_empty());
+    }
+
+    #[test]
+    fn availability_required_and_duplicate_options_are_local_to_each_replica() {
+        let full = "ENDPOINT_URL = 'TCP://n:5022', AVAILABILITY_MODE = SYNCHRONOUS_COMMIT, FAILOVER_MODE = MANUAL";
+        assert_eq!(
+            rules(&format!(
+                "ALTER AVAILABILITY GROUP a ADD REPLICA ON 'n' WITH ({full}, ENDPOINT_URL = 'TCP://n:5023');"
+            )),
+            ["availability-replica-duplicate"]
+        );
+        assert_eq!(
+            rules(
+                "CREATE AVAILABILITY GROUP a FOR DATABASE d REPLICA ON 'n' WITH (AVAILABILITY_MODE = SYNCHRONOUS_COMMIT, FAILOVER_MODE = MANUAL);"
+            ),
+            ["availability-replica-required"]
+        );
+        for role in [
+            "PRIMARY_ROLE (READ_ONLY_ROUTING_LIST = ('b'), READ_ONLY_ROUTING_LIST = NONE)",
+            "SECONDARY_ROLE (ALLOW_CONNECTIONS = ALL, ALLOW_CONNECTIONS = READ_ONLY)",
+        ] {
+            let sql =
+                format!("ALTER AVAILABILITY GROUP a ADD REPLICA ON 'n' WITH ({full}, {role});");
+            assert_eq!(rules(&sql), ["availability-role-duplicate"], "{sql}");
+        }
+    }
+
+    #[test]
+    fn database_nested_duplicates_do_not_restrict_top_level_repeats() {
+        for option in [
+            "QUERY_STORE = ON (OPERATION_MODE = READ_WRITE, OPERATION_MODE = READ_ONLY)",
+            "QUERY_STORE = ON (CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 4, STALE_QUERY_THRESHOLD_DAYS = 5))",
+            "QUERY_STORE = ON (QUERY_CAPTURE_POLICY = (EXECUTION_COUNT = 4, EXECUTION_COUNT = 5))",
+            "QUERY_STORE = ON (CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 4), CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 5))",
+            "FILESTREAM (DIRECTORY_NAME = 'a', DIRECTORY_NAME = 'b')",
+            "CHANGE_TRACKING = ON (AUTO_CLEANUP = ON, AUTO_CLEANUP = OFF)",
+        ] {
+            let sql = format!("ALTER DATABASE d SET {option};");
+            assert_eq!(rules(&sql), ["database-option-duplicate"], "{sql}");
+        }
+        assert!(rules("ALTER DATABASE d SET AUTO_CLOSE ON, AUTO_CLOSE OFF, RECOVERY SIMPLE, RECOVERY FULL;").is_empty());
+    }
+
+    #[test]
+    fn audit_clauses_cannot_repeat_but_state_within_a_clause_can() {
+        for bad in [
+            "ALTER SERVER AUDIT a TO SECURITY_LOG TO APPLICATION_LOG;",
+            "ALTER SERVER AUDIT a WITH (STATE = OFF) WITH (QUEUE_DELAY = 900);",
+        ] {
+            assert_eq!(rules(bad), ["server-audit-duplicate-clause"], "{bad}");
+        }
+        assert!(rules("ALTER SERVER AUDIT a WITH (STATE = OFF, STATE = ON);").is_empty());
+    }
+
+    #[test]
+    fn buffer_pool_checks_order_duplicates_and_assigned_values() {
+        assert_eq!(
+            rules(
+                "ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION ON (SIZE = 12 GB, FILENAME = 'C:\\a.bpe');"
+            ),
+            ["server-buffer-pool-order"]
+        );
+        assert_eq!(
+            rules(
+                "ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION ON (FILENAME = 'C:\\a.bpe', SIZE = 12 GB, SIZE = 16 GB);"
+            ),
+            ["server-buffer-pool-duplicate"]
+        );
+        for options in [
+            "FILENAME, SIZE = 12 GB",
+            "FILENAME = path_name, SIZE = 12 GB",
+            "FILENAME = 'C:\\a.bpe', SIZE",
+            "FILENAME = 'C:\\a.bpe', SIZE = 12",
+            "FILENAME = 'C:\\a.bpe', SIZE = '12' GB",
+            "FILENAME = 'C:\\a.bpe', SIZE = 12 TB",
+        ] {
+            let sql =
+                format!("ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION ON ({options});");
+            assert_eq!(rules(&sql), ["server-buffer-pool-value"], "{sql}");
+        }
+    }
+
+    #[test]
+    fn encryption_has_one_assigned_known_algorithm() {
+        for options in [
+            "ALGORITHM",
+            "MYSTERY = AES_256",
+            "ALGORITHM = MYSTERY",
+            "ALGORITHM = AES_128, ALGORITHM = AES_256",
+        ] {
+            for sql in [
+                format!(
+                    "CREATE DATABASE ENCRYPTION KEY WITH {options} ENCRYPTION BY SERVER CERTIFICATE c;"
+                ),
+                format!("ALTER DATABASE ENCRYPTION KEY REGENERATE WITH {options};"),
+            ] {
+                assert_eq!(rules(&sql), ["database-encryption-algorithm"], "{sql}");
+            }
+        }
+        for algorithm in ["AES_128", "AES_192", "AES_256", "TRIPLE_DES_3KEY"] {
+            assert!(rules(&format!("CREATE DATABASE ENCRYPTION KEY WITH ALGORITHM = {algorithm} ENCRYPTION BY SERVER CERTIFICATE c;")).is_empty());
+        }
+        assert!(
+            rules("ALTER DATABASE ENCRYPTION KEY ENCRYPTION BY SERVER CERTIFICATE c;").is_empty()
+        );
+    }
+
+    #[test]
+    fn database_file_requirements_follow_the_measured_operation() {
+        for ok in [
+            "ALTER DATABASE d ADD FILE (FILENAME = 'C:\\probe.ndf');",
+            "ALTER DATABASE d MODIFY FILE (SIZE = 8 MB);",
+            "CREATE DATABASE d ON (FILENAME = 'C:\\probe.mdf') FOR ATTACH;",
+            "CREATE DATABASE d ON (NAME = f, FILENAME = 'C:\\probe.mdf');",
+        ] {
+            assert!(rules(ok).is_empty(), "{ok}");
+        }
+        for bad in [
+            "ALTER DATABASE d ADD FILE (NAME = f);",
+            "CREATE DATABASE d ON (NAME = f);",
+        ] {
+            assert_eq!(rules(bad), ["database-file-required"], "{bad}");
+        }
+    }
+
+    #[test]
+    fn measured_file_duplicates_are_rejected_case_insensitively() {
+        for bad in [
+            "ALTER DATABASE d ADD FILE (NAME = f, name = g, FILENAME = 'C:\\probe.ndf');",
+            "ALTER DATABASE d ADD FILE (FILENAME = 'C:\\probe.ndf', SIZE = 1 MB, size = 2 MB);",
+            "ALTER DATABASE d MODIFY FILE (NAME = f, OFFLINE, offline);",
+        ] {
+            assert_eq!(rules(bad), ["database-file-duplicate"], "{bad}");
+        }
+        assert!(rules("ALTER DATABASE d ADD FILE (NAME = f, FILENAME = 'C:\\a.ndf'), (NAME = g, FILENAME = 'C:\\b.ndf');").is_empty());
+    }
+
+    #[test]
+    fn add_replica_requires_each_measured_option_but_modify_does_not() {
+        let full = [
+            "ENDPOINT_URL = 'TCP://probe:5022'",
+            "AVAILABILITY_MODE = SYNCHRONOUS_COMMIT",
+            "FAILOVER_MODE = MANUAL",
+        ];
+        for missing in 0..full.len() {
+            let options = full
+                .iter()
+                .enumerate()
+                .filter(|(i, _)| *i != missing)
+                .map(|(_, s)| *s)
+                .collect::<Vec<_>>()
+                .join(", ");
+            let sql =
+                format!("ALTER AVAILABILITY GROUP a ADD REPLICA ON 'probe' WITH ({options});");
+            assert_eq!(rules(&sql), ["availability-replica-required"], "{sql}");
+        }
+        assert!(
+            rules(&format!(
+                "ALTER AVAILABILITY GROUP a ADD REPLICA ON 'probe' WITH ({});",
+                full.join(", ")
+            ))
+            .is_empty()
+        );
+        assert!(rules("ALTER AVAILABILITY GROUP a MODIFY REPLICA ON 'probe' WITH (FAILOVER_MODE = MANUAL);").is_empty());
+    }
+
+    #[test]
+    fn buffer_pool_extension_requires_filename_and_size() {
+        for options in ["FILENAME = 'C:\\probe.bpe'", "SIZE = 12 GB"] {
+            let sql =
+                format!("ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION ON ({options});");
+            assert_eq!(rules(&sql), ["server-buffer-pool-required"], "{sql}");
+        }
+        assert!(rules("ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION ON (FILENAME = 'C:\\probe.bpe', SIZE = 12 GB);").is_empty());
+        assert!(rules("ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION OFF;").is_empty());
+    }
 
     #[test]
     fn complete_activation_in_any_order_passes() {

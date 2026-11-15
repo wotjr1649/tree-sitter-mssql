@@ -19,6 +19,7 @@ import select_rules from './select.js';
 import set_rules from './set.js';
 import service_broker_rules from './service-broker.js';
 import security_rules from './security.js';
+import database_rules from './database.js';
 
 export default {
   // A bare BEGIN ... END grouping block. Body items are `;`-optional, as
@@ -645,4 +646,5 @@ export default {
   ...set_rules,
   ...service_broker_rules,
   ...security_rules,
+  ...database_rules,
 };

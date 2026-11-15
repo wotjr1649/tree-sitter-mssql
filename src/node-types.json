@@ -377,6 +377,14 @@
           "named": true
         },
         {
+          "type": "keyword_availability",
+          "named": true
+        },
+        {
+          "type": "keyword_group",
+          "named": true
+        },
+        {
           "type": "keyword_on",
           "named": true
         },
@@ -394,6 +402,144 @@
         },
         {
           "type": "object_reference",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "alter_availability_group",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "availability_listener",
+          "named": true
+        },
+        {
+          "type": "availability_replica",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_add",
+          "named": true
+        },
+        {
+          "type": "keyword_alter",
+          "named": true
+        },
+        {
+          "type": "keyword_any",
+          "named": true
+        },
+        {
+          "type": "keyword_availability",
+          "named": true
+        },
+        {
+          "type": "keyword_create",
+          "named": true
+        },
+        {
+          "type": "keyword_database",
+          "named": true
+        },
+        {
+          "type": "keyword_deny",
+          "named": true
+        },
+        {
+          "type": "keyword_failover",
+          "named": true
+        },
+        {
+          "type": "keyword_force_failover_allow_data_loss",
+          "named": true
+        },
+        {
+          "type": "keyword_grant",
+          "named": true
+        },
+        {
+          "type": "keyword_group",
+          "named": true
+        },
+        {
+          "type": "keyword_ip",
+          "named": true
+        },
+        {
+          "type": "keyword_join",
+          "named": true
+        },
+        {
+          "type": "keyword_listener",
+          "named": true
+        },
+        {
+          "type": "keyword_modify",
+          "named": true
+        },
+        {
+          "type": "keyword_offline",
+          "named": true
+        },
+        {
+          "type": "keyword_on",
+          "named": true
+        },
+        {
+          "type": "keyword_port",
+          "named": true
+        },
+        {
+          "type": "keyword_remove",
+          "named": true
+        },
+        {
+          "type": "keyword_replica",
+          "named": true
+        },
+        {
+          "type": "keyword_restart",
+          "named": true
+        },
+        {
+          "type": "keyword_set",
+          "named": true
+        },
+        {
+          "type": "listener_ip",
+          "named": true
+        },
+        {
+          "type": "literal",
+          "named": true
+        },
+        {
+          "type": "option",
+          "named": true
+        },
+        {
+          "type": "with_options",
           "named": true
         }
       ]
@@ -537,7 +683,15 @@
       "required": true,
       "types": [
         {
+          "type": "database_file",
+          "named": true
+        },
+        {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_add",
           "named": true
         },
         {
@@ -561,7 +715,27 @@
           "named": true
         },
         {
+          "type": "keyword_contains",
+          "named": true
+        },
+        {
           "type": "keyword_database",
+          "named": true
+        },
+        {
+          "type": "keyword_default",
+          "named": true
+        },
+        {
+          "type": "keyword_file",
+          "named": true
+        },
+        {
+          "type": "keyword_filegroup",
+          "named": true
+        },
+        {
+          "type": "keyword_filestream",
           "named": true
         },
         {
@@ -569,11 +743,31 @@
           "named": true
         },
         {
+          "type": "keyword_log",
+          "named": true
+        },
+        {
+          "type": "keyword_memory_optimized_data",
+          "named": true
+        },
+        {
           "type": "keyword_modify",
           "named": true
         },
         {
+          "type": "keyword_name",
+          "named": true
+        },
+        {
           "type": "keyword_procedure_cache",
+          "named": true
+        },
+        {
+          "type": "keyword_readonly",
+          "named": true
+        },
+        {
+          "type": "keyword_remove",
           "named": true
         },
         {
@@ -597,6 +791,10 @@
           "named": true
         },
         {
+          "type": "keyword_to",
+          "named": true
+        },
+        {
           "type": "keyword_with",
           "named": true
         },
@@ -606,6 +804,127 @@
         },
         {
           "type": "option",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "alter_database_audit_specification",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "audit_action",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_add",
+          "named": true
+        },
+        {
+          "type": "keyword_alter",
+          "named": true
+        },
+        {
+          "type": "keyword_audit",
+          "named": true
+        },
+        {
+          "type": "keyword_database",
+          "named": true
+        },
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_for",
+          "named": true
+        },
+        {
+          "type": "keyword_server",
+          "named": true
+        },
+        {
+          "type": "keyword_specification",
+          "named": true
+        },
+        {
+          "type": "with_options",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "alter_database_encryption_key",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_alter",
+          "named": true
+        },
+        {
+          "type": "keyword_asymmetric",
+          "named": true
+        },
+        {
+          "type": "keyword_by",
+          "named": true
+        },
+        {
+          "type": "keyword_certificate",
+          "named": true
+        },
+        {
+          "type": "keyword_database",
+          "named": true
+        },
+        {
+          "type": "keyword_encryption",
+          "named": true
+        },
+        {
+          "type": "keyword_key",
+          "named": true
+        },
+        {
+          "type": "keyword_regenerate",
+          "named": true
+        },
+        {
+          "type": "keyword_server",
+          "named": true
+        },
+        {
+          "type": "with_clause",
           "named": true
         }
       ]
@@ -1736,11 +2055,19 @@
           "named": true
         },
         {
+          "type": "keyword_remove",
+          "named": true
+        },
+        {
           "type": "keyword_server",
           "named": true
         },
         {
           "type": "keyword_to",
+          "named": true
+        },
+        {
+          "type": "keyword_where",
           "named": true
         },
         {
@@ -1753,6 +2080,203 @@
         },
         {
           "type": "with_options",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "alter_server_audit_specification",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "audit_action",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_add",
+          "named": true
+        },
+        {
+          "type": "keyword_alter",
+          "named": true
+        },
+        {
+          "type": "keyword_audit",
+          "named": true
+        },
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_for",
+          "named": true
+        },
+        {
+          "type": "keyword_server",
+          "named": true
+        },
+        {
+          "type": "keyword_specification",
+          "named": true
+        },
+        {
+          "type": "with_options",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "alter_server_configuration",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_affinity",
+          "named": true
+        },
+        {
+          "type": "keyword_alter",
+          "named": true
+        },
+        {
+          "type": "keyword_auto",
+          "named": true
+        },
+        {
+          "type": "keyword_buffer",
+          "named": true
+        },
+        {
+          "type": "keyword_cluster",
+          "named": true
+        },
+        {
+          "type": "keyword_configuration",
+          "named": true
+        },
+        {
+          "type": "keyword_context",
+          "named": true
+        },
+        {
+          "type": "keyword_cpu",
+          "named": true
+        },
+        {
+          "type": "keyword_diagnostics",
+          "named": true
+        },
+        {
+          "type": "keyword_extension",
+          "named": true
+        },
+        {
+          "type": "keyword_failover",
+          "named": true
+        },
+        {
+          "type": "keyword_hadr",
+          "named": true
+        },
+        {
+          "type": "keyword_hybrid_buffer_pool",
+          "named": true
+        },
+        {
+          "type": "keyword_local",
+          "named": true
+        },
+        {
+          "type": "keyword_log",
+          "named": true
+        },
+        {
+          "type": "keyword_memory_optimized",
+          "named": true
+        },
+        {
+          "type": "keyword_numanode",
+          "named": true
+        },
+        {
+          "type": "keyword_off",
+          "named": true
+        },
+        {
+          "type": "keyword_on",
+          "named": true
+        },
+        {
+          "type": "keyword_pool",
+          "named": true
+        },
+        {
+          "type": "keyword_process",
+          "named": true
+        },
+        {
+          "type": "keyword_property",
+          "named": true
+        },
+        {
+          "type": "keyword_server",
+          "named": true
+        },
+        {
+          "type": "keyword_set",
+          "named": true
+        },
+        {
+          "type": "keyword_softnuma",
+          "named": true
+        },
+        {
+          "type": "keyword_suspend_for_snapshot_backup",
+          "named": true
+        },
+        {
+          "type": "keyword_tempdb_metadata",
+          "named": true
+        },
+        {
+          "type": "literal",
+          "named": true
+        },
+        {
+          "type": "option",
+          "named": true
+        },
+        {
+          "type": "server_buffer_pool_options",
+          "named": true
+        },
+        {
+          "type": "server_cpu_range",
           "named": true
         }
       ]
@@ -2896,6 +3420,99 @@
         },
         {
           "type": "keyword_zone",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "audit_action",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_by",
+          "named": true
+        },
+        {
+          "type": "keyword_on",
+          "named": true
+        },
+        {
+          "type": "object_reference",
+          "named": true
+        },
+        {
+          "type": "permission",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "availability_listener",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_dhcp",
+          "named": true
+        },
+        {
+          "type": "keyword_ip",
+          "named": true
+        },
+        {
+          "type": "keyword_on",
+          "named": true
+        },
+        {
+          "type": "keyword_port",
+          "named": true
+        },
+        {
+          "type": "keyword_with",
+          "named": true
+        },
+        {
+          "type": "listener_ip",
+          "named": true
+        },
+        {
+          "type": "literal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "availability_replica",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_with",
+          "named": true
+        },
+        {
+          "type": "literal",
+          "named": true
+        },
+        {
+          "type": "option",
           "named": true
         }
       ]
@@ -5830,6 +6447,80 @@
     }
   },
   {
+    "type": "create_availability_group",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "availability_listener",
+          "named": true
+        },
+        {
+          "type": "availability_replica",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_availability",
+          "named": true
+        },
+        {
+          "type": "keyword_create",
+          "named": true
+        },
+        {
+          "type": "keyword_database",
+          "named": true
+        },
+        {
+          "type": "keyword_for",
+          "named": true
+        },
+        {
+          "type": "keyword_group",
+          "named": true
+        },
+        {
+          "type": "keyword_listener",
+          "named": true
+        },
+        {
+          "type": "keyword_on",
+          "named": true
+        },
+        {
+          "type": "keyword_replica",
+          "named": true
+        },
+        {
+          "type": "literal",
+          "named": true
+        },
+        {
+          "type": "with_options",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "create_certificate",
     "named": true,
     "fields": {
@@ -6045,11 +6736,35 @@
       "required": true,
       "types": [
         {
+          "type": "database_file",
+          "named": true
+        },
+        {
+          "type": "database_filegroup",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
         {
+          "type": "keyword_as",
+          "named": true
+        },
+        {
+          "type": "keyword_attach",
+          "named": true
+        },
+        {
+          "type": "keyword_attach_rebuild_log",
+          "named": true
+        },
+        {
           "type": "keyword_collate",
+          "named": true
+        },
+        {
+          "type": "keyword_containment",
           "named": true
         },
         {
@@ -6058,6 +6773,159 @@
         },
         {
           "type": "keyword_database",
+          "named": true
+        },
+        {
+          "type": "keyword_for",
+          "named": true
+        },
+        {
+          "type": "keyword_log",
+          "named": true
+        },
+        {
+          "type": "keyword_none",
+          "named": true
+        },
+        {
+          "type": "keyword_of",
+          "named": true
+        },
+        {
+          "type": "keyword_on",
+          "named": true
+        },
+        {
+          "type": "keyword_partial",
+          "named": true
+        },
+        {
+          "type": "keyword_primary",
+          "named": true
+        },
+        {
+          "type": "keyword_snapshot",
+          "named": true
+        },
+        {
+          "type": "keyword_with",
+          "named": true
+        },
+        {
+          "type": "option",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "create_database_audit_specification",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "audit_action",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_add",
+          "named": true
+        },
+        {
+          "type": "keyword_audit",
+          "named": true
+        },
+        {
+          "type": "keyword_create",
+          "named": true
+        },
+        {
+          "type": "keyword_database",
+          "named": true
+        },
+        {
+          "type": "keyword_for",
+          "named": true
+        },
+        {
+          "type": "keyword_server",
+          "named": true
+        },
+        {
+          "type": "keyword_specification",
+          "named": true
+        },
+        {
+          "type": "with_options",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "create_database_encryption_key",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_asymmetric",
+          "named": true
+        },
+        {
+          "type": "keyword_by",
+          "named": true
+        },
+        {
+          "type": "keyword_certificate",
+          "named": true
+        },
+        {
+          "type": "keyword_create",
+          "named": true
+        },
+        {
+          "type": "keyword_database",
+          "named": true
+        },
+        {
+          "type": "keyword_encryption",
+          "named": true
+        },
+        {
+          "type": "keyword_key",
+          "named": true
+        },
+        {
+          "type": "keyword_server",
+          "named": true
+        },
+        {
+          "type": "with_clause",
           "named": true
         }
       ]
@@ -7525,6 +8393,64 @@
     }
   },
   {
+    "type": "create_server_audit_specification",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "audit_action",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_add",
+          "named": true
+        },
+        {
+          "type": "keyword_audit",
+          "named": true
+        },
+        {
+          "type": "keyword_create",
+          "named": true
+        },
+        {
+          "type": "keyword_for",
+          "named": true
+        },
+        {
+          "type": "keyword_server",
+          "named": true
+        },
+        {
+          "type": "keyword_specification",
+          "named": true
+        },
+        {
+          "type": "with_options",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "create_statistics",
     "named": true,
     "fields": {
@@ -8504,6 +9430,67 @@
       "types": [
         {
           "type": "object_reference",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "database_file",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "option",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "database_filegroup",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "database_file",
+          "named": true
+        },
+        {
+          "type": "keyword_contains",
+          "named": true
+        },
+        {
+          "type": "keyword_default",
+          "named": true
+        },
+        {
+          "type": "keyword_filegroup",
+          "named": true
+        },
+        {
+          "type": "keyword_filestream",
+          "named": true
+        },
+        {
+          "type": "keyword_memory_optimized_data",
           "named": true
         }
       ]
@@ -13227,6 +14214,21 @@
     }
   },
   {
+    "type": "listener_ip",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "literal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "literal",
     "named": true,
     "fields": {},
@@ -14600,6 +15602,10 @@
         "required": false,
         "types": [
           {
+            "type": "%",
+            "named": false
+          },
+          {
             "type": "(",
             "named": false
           },
@@ -14617,6 +15623,10 @@
           },
           {
             "type": "invocation",
+            "named": true
+          },
+          {
+            "type": "keyword_all",
             "named": true
           },
           {
@@ -14659,7 +15669,27 @@
           "named": true
         },
         {
+          "type": "keyword_all",
+          "named": true
+        },
+        {
+          "type": "keyword_availability",
+          "named": true
+        },
+        {
           "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_full",
+          "named": true
+        },
+        {
+          "type": "keyword_group",
+          "named": true
+        },
+        {
+          "type": "keyword_off",
           "named": true
         },
         {
@@ -14671,7 +15701,19 @@
           "named": true
         },
         {
+          "type": "keyword_safety",
+          "named": true
+        },
+        {
+          "type": "keyword_timeout",
+          "named": true
+        },
+        {
           "type": "keyword_to",
+          "named": true
+        },
+        {
+          "type": "literal",
           "named": true
         },
         {
@@ -17148,6 +18190,40 @@
     }
   },
   {
+    "type": "server_buffer_pool_options",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "option",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "server_cpu_range",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_to",
+          "named": true
+        },
+        {
+          "type": "literal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "set_operation",
     "named": true,
     "fields": {
@@ -17584,6 +18660,10 @@
           "named": true
         },
         {
+          "type": "alter_availability_group",
+          "named": true
+        },
+        {
           "type": "alter_certificate",
           "named": true
         },
@@ -17593,6 +18673,14 @@
         },
         {
           "type": "alter_database",
+          "named": true
+        },
+        {
+          "type": "alter_database_audit_specification",
+          "named": true
+        },
+        {
+          "type": "alter_database_encryption_key",
           "named": true
         },
         {
@@ -17664,6 +18752,14 @@
           "named": true
         },
         {
+          "type": "alter_server_audit_specification",
+          "named": true
+        },
+        {
+          "type": "alter_server_configuration",
+          "named": true
+        },
+        {
           "type": "alter_symmetric_key",
           "named": true
         },
@@ -17732,6 +18828,10 @@
           "named": true
         },
         {
+          "type": "create_availability_group",
+          "named": true
+        },
+        {
           "type": "create_certificate",
           "named": true
         },
@@ -17749,6 +18849,14 @@
         },
         {
           "type": "create_database",
+          "named": true
+        },
+        {
+          "type": "create_database_audit_specification",
+          "named": true
+        },
+        {
+          "type": "create_database_encryption_key",
           "named": true
         },
         {
@@ -17829,6 +18937,10 @@
         },
         {
           "type": "create_server_audit",
+          "named": true
+        },
+        {
+          "type": "create_server_audit_specification",
           "named": true
         },
         {
@@ -21021,6 +22133,10 @@
     "named": true
   },
   {
+    "type": "keyword_affinity",
+    "named": true
+  },
+  {
     "type": "keyword_after",
     "named": true
   },
@@ -21085,11 +22201,27 @@
     "named": true
   },
   {
+    "type": "keyword_attach",
+    "named": true
+  },
+  {
+    "type": "keyword_attach_rebuild_log",
+    "named": true
+  },
+  {
     "type": "keyword_audit",
     "named": true
   },
   {
     "type": "keyword_authorization",
+    "named": true
+  },
+  {
+    "type": "keyword_auto",
+    "named": true
+  },
+  {
+    "type": "keyword_availability",
     "named": true
   },
   {
@@ -21130,6 +22262,10 @@
   },
   {
     "type": "keyword_break",
+    "named": true
+  },
+  {
+    "type": "keyword_buffer",
     "named": true
   },
   {
@@ -21201,6 +22337,10 @@
     "named": true
   },
   {
+    "type": "keyword_cluster",
+    "named": true
+  },
+  {
     "type": "keyword_clustered",
     "named": true
   },
@@ -21249,7 +22389,19 @@
     "named": true
   },
   {
+    "type": "keyword_containment",
+    "named": true
+  },
+  {
+    "type": "keyword_contains",
+    "named": true
+  },
+  {
     "type": "keyword_content",
+    "named": true
+  },
+  {
+    "type": "keyword_context",
     "named": true
   },
   {
@@ -21262,6 +22414,10 @@
   },
   {
     "type": "keyword_conversation",
+    "named": true
+  },
+  {
+    "type": "keyword_cpu",
     "named": true
   },
   {
@@ -21345,6 +22501,14 @@
     "named": true
   },
   {
+    "type": "keyword_dhcp",
+    "named": true
+  },
+  {
+    "type": "keyword_diagnostics",
+    "named": true
+  },
+  {
     "type": "keyword_dialog",
     "named": true
   },
@@ -21425,7 +22589,15 @@
     "named": true
   },
   {
+    "type": "keyword_extension",
+    "named": true
+  },
+  {
     "type": "keyword_external",
+    "named": true
+  },
+  {
+    "type": "keyword_failover",
     "named": true
   },
   {
@@ -21434,6 +22606,14 @@
   },
   {
     "type": "keyword_file",
+    "named": true
+  },
+  {
+    "type": "keyword_filegroup",
+    "named": true
+  },
+  {
+    "type": "keyword_filestream",
     "named": true
   },
   {
@@ -21474,6 +22654,10 @@
   },
   {
     "type": "keyword_force",
+    "named": true
+  },
+  {
+    "type": "keyword_force_failover_allow_data_loss",
     "named": true
   },
   {
@@ -21541,6 +22725,10 @@
     "named": true
   },
   {
+    "type": "keyword_hadr",
+    "named": true
+  },
+  {
     "type": "keyword_hash",
     "named": true
   },
@@ -21558,6 +22746,10 @@
   },
   {
     "type": "keyword_holdlock",
+    "named": true
+  },
+  {
+    "type": "keyword_hybrid_buffer_pool",
     "named": true
   },
   {
@@ -21621,6 +22813,10 @@
     "named": true
   },
   {
+    "type": "keyword_ip",
+    "named": true
+  },
+  {
     "type": "keyword_is",
     "named": true
   },
@@ -21677,6 +22873,14 @@
     "named": true
   },
   {
+    "type": "keyword_listener",
+    "named": true
+  },
+  {
+    "type": "keyword_local",
+    "named": true
+  },
+  {
     "type": "keyword_log",
     "named": true
   },
@@ -21722,6 +22926,14 @@
   },
   {
     "type": "keyword_member",
+    "named": true
+  },
+  {
+    "type": "keyword_memory_optimized",
+    "named": true
+  },
+  {
+    "type": "keyword_memory_optimized_data",
     "named": true
   },
   {
@@ -21777,6 +22989,10 @@
     "named": true
   },
   {
+    "type": "keyword_none",
+    "named": true
+  },
+  {
     "type": "keyword_not",
     "named": true
   },
@@ -21786,6 +23002,10 @@
   },
   {
     "type": "keyword_null",
+    "named": true
+  },
+  {
+    "type": "keyword_numanode",
     "named": true
   },
   {
@@ -21802,6 +23022,10 @@
   },
   {
     "type": "keyword_off",
+    "named": true
+  },
+  {
+    "type": "keyword_offline",
     "named": true
   },
   {
@@ -21869,6 +23093,10 @@
     "named": true
   },
   {
+    "type": "keyword_partial",
+    "named": true
+  },
+  {
     "type": "keyword_partition",
     "named": true
   },
@@ -21898,6 +23126,14 @@
   },
   {
     "type": "keyword_policy",
+    "named": true
+  },
+  {
+    "type": "keyword_pool",
+    "named": true
+  },
+  {
+    "type": "keyword_port",
     "named": true
   },
   {
@@ -21938,6 +23174,14 @@
   },
   {
     "type": "keyword_procedure_cache",
+    "named": true
+  },
+  {
+    "type": "keyword_process",
+    "named": true
+  },
+  {
+    "type": "keyword_property",
     "named": true
   },
   {
@@ -22017,6 +23261,10 @@
     "named": true
   },
   {
+    "type": "keyword_replica",
+    "named": true
+  },
+  {
     "type": "keyword_replication",
     "named": true
   },
@@ -22074,6 +23322,10 @@
   },
   {
     "type": "keyword_rowversion",
+    "named": true
+  },
+  {
+    "type": "keyword_safety",
     "named": true
   },
   {
@@ -22185,11 +23437,19 @@
     "named": true
   },
   {
+    "type": "keyword_softnuma",
+    "named": true
+  },
+  {
     "type": "keyword_some",
     "named": true
   },
   {
     "type": "keyword_source",
+    "named": true
+  },
+  {
+    "type": "keyword_specification",
     "named": true
   },
   {
@@ -22214,6 +23474,10 @@
   },
   {
     "type": "keyword_stop",
+    "named": true
+  },
+  {
+    "type": "keyword_suspend_for_snapshot_backup",
     "named": true
   },
   {
@@ -22246,6 +23510,10 @@
   },
   {
     "type": "keyword_target",
+    "named": true
+  },
+  {
+    "type": "keyword_tempdb_metadata",
     "named": true
   },
   {

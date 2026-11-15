@@ -71,6 +71,34 @@
       "minVersion": "2012",
       "note": "Available since SQL Server 2012 SP1; the local syntax oracle is SQL Server 2025.",
       "corpusCase": "test/corpus/ddl-table.txt — \"ddl-table/index-xml-add — LocalDB 17.0.1000.7 levels 100-170: accepted\""
+    },
+    "create_availability_group": {
+      "minVersion": "2012",
+      "corpusCase": "test/corpus/ddl-database.txt — \"ddl-database/extra-create-ag/case-002 — LocalDB 17.0.1000.7 levels 100-170: accepted\""
+    },
+    "alter_availability_group": {
+      "minVersion": "2012",
+      "corpusCase": "test/corpus/ddl-database.txt — \"ddl-database/ag/positive-001 — LocalDB 17.0.1000.7 levels 100-170: accepted\""
+    },
+    "availability_listener": {
+      "minVersion": "2012",
+      "corpusCase": "test/corpus/ddl-database.txt — \"ddl-database/ag/positive-021 — LocalDB 17.0.1000.7 levels 100-170: accepted\""
+    },
+    "keyword_suspend_for_snapshot_backup": {
+      "minVersion": "2022",
+      "corpusCase": "test/corpus/ddl-database.txt — \"ddl-database/server/positive-018 — LocalDB 17.0.1000.7 levels 100-170: accepted\""
+    },
+    "keyword_memory_optimized_data": {
+      "minVersion": "2014",
+      "corpusCase": "test/corpus/ddl-database.txt — \"ddl-database/files/positive-003 — LocalDB 17.0.1000.7 levels 100-170: accepted\""
+    },
+    "keyword_tempdb_metadata": {
+      "minVersion": "2019",
+      "corpusCase": "test/corpus/ddl-database.txt — \"ddl-database/server/positive-015 — LocalDB 17.0.1000.7 levels 100-170: rejected 534\""
+    },
+    "keyword_hybrid_buffer_pool": {
+      "minVersion": "2019",
+      "corpusCase": "test/corpus/ddl-database.txt — \"ddl-database/server/positive-016 — LocalDB 17.0.1000.7 levels 100-170: rejected 534\""
     }
   },
   "deprecated": {

@@ -314,4 +314,62 @@ mod tests {
             assert!(check_history(&mut p, &history).unwrap().is_empty(), "{id}");
         }
     }
+
+    #[test]
+    fn database_ddl_boundaries_recover_incrementally() {
+        let cases: Vec<Value> = include_str!("../../../oracle/probes/ddl-database.jsonl")
+            .lines()
+            .map(|line| serde_json::from_str(line).unwrap())
+            .collect();
+        let boundaries = [
+            ("files/positive-005", "15 %", "15"),
+            (
+                "database-set/positive-001",
+                "STALE_QUERY_THRESHOLD_DAYS = 14",
+                "STALE_QUERY_THRESHOLD_DAYS =",
+            ),
+            ("database-set/positive-019", "SAFETY FULL", "SAFETY"),
+            (
+                "create/positive-004",
+                "FILEGROUP probe_fg DEFAULT",
+                "FILEGROUP probe_fg",
+            ),
+            ("create/positive-009", "FOR ATTACH", "FOR"),
+            (
+                "create/positive-012",
+                "AS SNAPSHOT OF ProbeStore",
+                "AS SNAPSHOT OF",
+            ),
+            (
+                "security-ddl/positive-001",
+                "SERVER CERTIFICATE probe_cert",
+                "SERVER CERTIFICATE",
+            ),
+            ("security-ddl/positive-012", "STATE = OFF", "STATE ="),
+            (
+                "ag/positive-018",
+                "READ_ONLY_ROUTING_LIST = ('probe-other', 'probe-third')",
+                "READ_ONLY_ROUTING_LIST = ()",
+            ),
+            ("ag/positive-021", "PORT = 1444", "PORT ="),
+            ("server/positive-002", "4 TO 6", "4 TO"),
+            ("server/positive-011", "SIZE = 12 GB", "SIZE ="),
+            ("server/positive-020", "REMOVE WHERE", "REMOVE"),
+        ];
+        let mut p = parser();
+        for (id, find, replace) in boundaries {
+            let case = cases
+                .iter()
+                .find(|c| c["id"] == format!("ddl-database/{id}"))
+                .unwrap();
+            let source = format!("SELECT N'한글';\n{}", case["source"].as_str().unwrap());
+            assert!(source.contains(find), "{id}: edit target");
+            let h = History {
+                id: id.into(),
+                source,
+                edits: vec![(find.into(), replace.into()), (replace.into(), find.into())],
+            };
+            assert!(check_history(&mut p, &h).unwrap().is_empty(), "{id}");
+        }
+    }
 }

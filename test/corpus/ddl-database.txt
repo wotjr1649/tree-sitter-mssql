@@ -1,0 +1,2596 @@
+================================================================================
+ddl-database/files/positive-001 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore ADD FILEGROUP probe_fg;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_add) (keyword_filegroup) (identifier)))))
+
+================================================================================
+ddl-database/files/positive-002 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore ADD FILEGROUP probe_stream CONTAINS FILESTREAM;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_add) (keyword_filegroup) (identifier) (keyword_contains) (keyword_filestream)))))
+
+================================================================================
+ddl-database/files/positive-003 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore ADD FILEGROUP probe_memory CONTAINS MEMORY_OPTIMIZED_DATA;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_add) (keyword_filegroup) (identifier) (keyword_contains) (keyword_memory_optimized_data)))))
+
+================================================================================
+ddl-database/files/positive-004 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore ADD FILE (NAME = probe_data, FILENAME = 'C:\probe\data.ndf');
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_add) (keyword_file) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-database/files/positive-005 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore ADD FILE (NAME = probe_a, FILENAME = 'C:\probe\a.ndf', SIZE = 8 MB, MAXSIZE = 2 GB, FILEGROWTH = 15 %), (NAME = probe_b, FILENAME = 'C:\probe\b.ndf', MAXSIZE = UNLIMITED) TO FILEGROUP probe_fg;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_add) (keyword_file) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal) value: (identifier)) (option name: (identifier) value: (literal) value: (identifier)) (option name: (identifier) value: (literal))) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier))) (keyword_to) (keyword_filegroup) (identifier)))))
+
+================================================================================
+ddl-database/files/positive-006 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore ADD LOG FILE (NAME = probe_log, FILENAME = 'C:\probe\log.ldf', SIZE = 1024 KB, FILEGROWTH = 4 MB);
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_add) (keyword_log) (keyword_file) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal) value: (identifier)) (option name: (identifier) value: (literal) value: (identifier)))))))
+
+================================================================================
+ddl-database/files/positive-007 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore MODIFY FILE (NAME = probe_a, NEWNAME = probe_renamed);
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_modify) (keyword_file) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/files/positive-008 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore MODIFY FILE (NAME = probe_a, FILENAME = 'C:\probe\moved.ndf');
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_modify) (keyword_file) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-database/files/positive-009 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore MODIFY FILE (NAME = probe_a, SIZE = 16 MB);
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_modify) (keyword_file) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal) value: (identifier)))))))
+
+================================================================================
+ddl-database/files/positive-010 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore MODIFY FILE (NAME = probe_a, OFFLINE);
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_modify) (keyword_file) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier)))))))
+
+================================================================================
+ddl-database/files/positive-011 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore REMOVE FILE probe_b;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_remove) (keyword_file) (identifier)))))
+
+================================================================================
+ddl-database/files/positive-012 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore REMOVE FILEGROUP probe_fg;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_remove) (keyword_filegroup) (identifier)))))
+
+================================================================================
+ddl-database/files/positive-013 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore MODIFY FILEGROUP probe_fg READONLY;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_modify) (keyword_filegroup) (identifier) (keyword_readonly)))))
+
+================================================================================
+ddl-database/files/positive-014 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore MODIFY FILEGROUP probe_fg READWRITE;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_modify) (keyword_filegroup) (identifier) (identifier)))))
+
+================================================================================
+ddl-database/files/positive-015 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore MODIFY FILEGROUP probe_fg READ_ONLY;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_modify) (keyword_filegroup) (identifier) (identifier)))))
+
+================================================================================
+ddl-database/files/positive-016 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore MODIFY FILEGROUP probe_fg READ_WRITE;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_modify) (keyword_filegroup) (identifier) (identifier)))))
+
+================================================================================
+ddl-database/files/positive-017 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore MODIFY FILEGROUP probe_fg DEFAULT;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_modify) (keyword_filegroup) (identifier) (keyword_default)))))
+
+================================================================================
+ddl-database/files/positive-018 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore MODIFY FILEGROUP probe_fg NAME = probe_newfg;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_modify) (keyword_filegroup) (identifier) (keyword_name) (identifier)))))
+
+================================================================================
+ddl-database/files/positive-019 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore MODIFY FILEGROUP probe_fg AUTOGROW_SINGLE_FILE;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_modify) (keyword_filegroup) (identifier) (identifier)))))
+
+================================================================================
+ddl-database/files/positive-020 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore MODIFY FILEGROUP probe_fg AUTOGROW_ALL_FILES;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_modify) (keyword_filegroup) (identifier) (identifier)))))
+
+================================================================================
+ddl-database/files/negative-suspected-001 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER DATABASE ProbeStore ADD FILE ();
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_add) (keyword_file) (database_file (option name: (identifier (MISSING _identifier))))))))
+
+================================================================================
+ddl-database/files/negative-suspected-002 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore ADD FILE (FILENAME = 'C:\probe\missing.ndf');
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_add) (keyword_file) (database_file (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-database/files/negative-suspected-003 — LocalDB 17.0.1000.7 levels 100-170: rejected 1036
+================================================================================
+
+ALTER DATABASE ProbeStore ADD FILE (NAME = probe_a);
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_add) (keyword_file) (database_file (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/files/negative-suspected-004 — LocalDB 17.0.1000.7 levels 100-170: rejected 153
+================================================================================
+
+ALTER DATABASE ProbeStore ADD FILE (NAME = probe_a, NAME = probe_b, FILENAME = 'C:\probe\dup.ndf');
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_add) (keyword_file) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-database/files/negative-suspected-005 — LocalDB 17.0.1000.7 levels 100-170: rejected 153
+================================================================================
+
+ALTER DATABASE ProbeStore ADD FILE (NAME = probe_a, FILENAME = 'C:\probe\dup.ndf', SIZE = 1 MB, SIZE = 2 MB);
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_add) (keyword_file) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal) value: (identifier)) (option name: (identifier) value: (literal) value: (identifier)))))))
+
+================================================================================
+ddl-database/files/negative-suspected-006 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore MODIFY FILE (SIZE = 8 MB);
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_modify) (keyword_file) (database_file (option name: (identifier) value: (literal) value: (identifier)))))))
+
+================================================================================
+ddl-database/files/negative-suspected-007 — LocalDB 17.0.1000.7 levels 100-170: rejected 153
+================================================================================
+
+ALTER DATABASE ProbeStore MODIFY FILE (NAME = probe_a, OFFLINE, OFFLINE);
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_modify) (keyword_file) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier)) (option name: (identifier)))))))
+
+================================================================================
+ddl-database/files/negative-suspected-008 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore ADD LOG FILE (NAME = probe_log, FILENAME = 'C:\probe\log.ldf') TO FILEGROUP probe_fg;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_add) (keyword_log) (keyword_file) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal))) (keyword_to) (keyword_filegroup) (identifier)))))
+
+================================================================================
+ddl-database/files/negative-suspected-009 — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+ALTER DATABASE ProbeStore ADD FILEGROUP probe_fg CONTAINS FILESTREAM CONTAINS MEMORY_OPTIMIZED_DATA;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_add) (keyword_filegroup) (identifier) (keyword_contains) (keyword_filestream))) (ERROR (identifier))))
+
+================================================================================
+ddl-database/files/negative-suspected-010 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER DATABASE ProbeStore MODIFY FILEGROUP probe_fg DEFAULT READ_ONLY;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_modify) (keyword_filegroup) (identifier) (keyword_default))) (statement (label_statement (identifier) (MISSING ":")))))
+
+================================================================================
+ddl-database/database-set/positive-001 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET QUERY_STORE = ON (CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 14), QUERY_CAPTURE_MODE = CUSTOM, QUERY_CAPTURE_POLICY = (STALE_CAPTURE_POLICY_THRESHOLD = 2 HOURS, EXECUTION_COUNT = 12));
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) (option name: (identifier) value: (literal))) value: (option name: (identifier) value: (identifier)) value: (option name: (identifier) (option name: (identifier) value: (literal) value: (identifier)) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+ddl-database/database-set/positive-002 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET QUERY_STORE (OPERATION_MODE = READ_WRITE, QUERY_CAPTURE_POLICY = (TOTAL_COMPILE_CPU_TIME_MS = 50, TOTAL_EXECUTION_CPU_TIME_MS = 100));
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+ddl-database/database-set/positive-003 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET QUERY_STORE = OFF (FORCED);
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_off) value: (option name: (identifier)))))))
+
+================================================================================
+ddl-database/database-set/positive-004 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET QUERY_STORE CLEAR ALL;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (identifier) (keyword_all))))))
+
+================================================================================
+ddl-database/database-set/positive-005 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET CHANGE_TRACKING = ON (CHANGE_RETENTION = 3 DAYS, AUTO_CLEANUP = ON);
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) value: (literal) value: (identifier)) value: (option name: (identifier) value: (keyword_on)))))))
+
+================================================================================
+ddl-database/database-set/positive-006 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET AUTO_CREATE_STATISTICS ON (INCREMENTAL = ON);
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) value: (keyword_on)))))))
+
+================================================================================
+ddl-database/database-set/positive-007 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET ACCELERATED_DATABASE_RECOVERY = ON (PERSISTENT_VERSION_STORE_FILEGROUP = probe_pvs);
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/database-set/positive-008 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET TARGET_RECOVERY_TIME = 2 MINUTES;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (literal) value: (identifier))))))
+
+================================================================================
+ddl-database/database-set/positive-009 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET SUSPEND_FOR_SNAPSHOT_BACKUP = ON (MODE = COPY_ONLY);
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/database-set/positive-010 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET HADR AVAILABILITY GROUP = probe_ag;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) (keyword_availability) (keyword_group) (identifier))))))
+
+================================================================================
+ddl-database/database-set/positive-011 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET HADR OFF;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_off))))))
+
+================================================================================
+ddl-database/database-set/positive-012 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET HADR SUSPEND;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+ddl-database/database-set/positive-013 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET HADR RESUME;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+ddl-database/database-set/positive-014 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET PARTNER = 'TCP://probe-mirror.example:5022';
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (literal))))))
+
+================================================================================
+ddl-database/database-set/positive-015 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET PARTNER FAILOVER;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+ddl-database/database-set/positive-016 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET PARTNER FORCE_SERVICE_ALLOW_DATA_LOSS;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+ddl-database/database-set/positive-017 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET PARTNER OFF;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_off))))))
+
+================================================================================
+ddl-database/database-set/positive-018 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET PARTNER RESUME;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+ddl-database/database-set/positive-019 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET PARTNER SAFETY FULL;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) (keyword_safety) (keyword_full))))))
+
+================================================================================
+ddl-database/database-set/positive-020 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET PARTNER SAFETY OFF;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) (keyword_safety) (keyword_off))))))
+
+================================================================================
+ddl-database/database-set/positive-021 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET PARTNER SUSPEND;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+ddl-database/database-set/positive-022 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET PARTNER TIMEOUT 45;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) (keyword_timeout) (literal))))))
+
+================================================================================
+ddl-database/database-set/positive-023 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET WITNESS = 'TCP://probe-witness.example:5022';
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (literal))))))
+
+================================================================================
+ddl-database/database-set/positive-024 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET WITNESS OFF;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_off))))))
+
+================================================================================
+ddl-database/database-set/negative-suspected-001 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER DATABASE ProbeStore SET HADR;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (MISSING keyword_off))))))
+
+================================================================================
+ddl-database/database-set/negative-suspected-002 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER DATABASE ProbeStore SET HADR AVAILABILITY GROUP =;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) (keyword_availability) (keyword_group) (identifier (MISSING _identifier)))))))
+
+================================================================================
+ddl-database/database-set/negative-suspected-003 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET HADR OFF, HADR RESUME;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_off)) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+ddl-database/database-set/negative-suspected-004 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER DATABASE ProbeStore SET PARTNER SAFETY;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) (keyword_safety) (MISSING keyword_full))))))
+
+================================================================================
+ddl-database/database-set/negative-suspected-005 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore SET PARTNER OFF, WITNESS OFF;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_off)) (option name: (identifier) value: (keyword_off))))))
+
+================================================================================
+ddl-database/database-set/negative-suspected-006 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER DATABASE ProbeStore SET WITNESS RESUME;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (ERROR (identifier)) (option name: (identifier))))))
+
+================================================================================
+ddl-database/database-set/negative-suspected-007 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER DATABASE ProbeStore SET QUERY_STORE = ON (CLEANUP_POLICY = ());
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) (option name: (identifier (MISSING _identifier)))))))))
+
+================================================================================
+ddl-database/database-set/negative-suspected-008 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER DATABASE ProbeStore SET QUERY_STORE (QUERY_CAPTURE_POLICY = (EXECUTION_COUNT =));
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) (option name: (identifier) (option name: (identifier)) (ERROR)))))))
+
+================================================================================
+ddl-database/create/positive-001 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE ProbeNew WITH LEDGER = ON;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_with) (option name: (identifier) value: (keyword_on))))))
+
+================================================================================
+ddl-database/create/positive-002 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE ProbeNew CONTAINMENT = PARTIAL;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_containment) (keyword_partial)))))
+
+================================================================================
+ddl-database/create/positive-003 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE ProbeNew ON PRIMARY (NAME = probe_primary, FILENAME = 'C:\probe\primary.mdf', SIZE = 4 MB) LOG ON (NAME = probe_log, FILENAME = 'C:\probe\primary.ldf') COLLATE Latin1_General_CI_AS;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_on) (keyword_primary) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal) value: (identifier))) (keyword_log) (keyword_on) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal))) (keyword_collate) (identifier)))))
+
+================================================================================
+ddl-database/create/positive-004 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE ProbeNew ON (NAME = probe_primary, FILENAME = 'C:\probe\primary.mdf'), FILEGROUP probe_fg DEFAULT (NAME = probe_extra, FILENAME = 'C:\probe\extra.ndf'), (NAME = probe_extra2, FILENAME = 'C:\probe\extra2.ndf');
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_on) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal))) (database_filegroup (keyword_filegroup) name: (identifier) (keyword_default) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal))) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+ddl-database/create/positive-005 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE ProbeNew ON (NAME = probe_primary, FILENAME = 'C:\probe\primary.mdf'), FILEGROUP probe_fs CONTAINS FILESTREAM (NAME = probe_fs_file, FILENAME = 'C:\probe\stream');
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_on) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal))) (database_filegroup (keyword_filegroup) name: (identifier) (keyword_contains) (keyword_filestream) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+ddl-database/create/positive-006 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE ProbeNew ON (NAME = probe_primary, FILENAME = 'C:\probe\primary.mdf'), FILEGROUP probe_mem CONTAINS MEMORY_OPTIMIZED_DATA (NAME = probe_mem_file, FILENAME = 'C:\probe\memory');
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_on) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal))) (database_filegroup (keyword_filegroup) name: (identifier) (keyword_contains) (keyword_memory_optimized_data) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+ddl-database/create/positive-007 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE ProbeNew WITH FILESTREAM (DIRECTORY_NAME = 'ProbeDirectory', NON_TRANSACTED_ACCESS = FULL), DEFAULT_LANGUAGE = us_english, TRUSTWORTHY OFF;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_with) (option name: (identifier) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier))) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (keyword_off))))))
+
+================================================================================
+ddl-database/create/positive-008 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE ProbeAttached ON (FILENAME = 'C:\probe\attached.mdf') FOR ATTACH;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_on) (database_file (option name: (identifier) value: (literal))) (keyword_for) (keyword_attach)))))
+
+================================================================================
+ddl-database/create/positive-009 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE ProbeAttached ON (NAME = probe_data, FILENAME = 'C:\probe\attached.mdf') FOR ATTACH WITH ENABLE_BROKER, RESTRICTED_USER;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_on) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal))) (keyword_for) (keyword_attach) (keyword_with) (option name: (identifier)) (option name: (identifier))))))
+
+================================================================================
+ddl-database/create/positive-010 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE ProbeAttached ON (FILENAME = 'C:\probe\attached.mdf') FOR ATTACH WITH FILESTREAM (DIRECTORY_NAME = NULL);
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_on) (database_file (option name: (identifier) value: (literal))) (keyword_for) (keyword_attach) (keyword_with) (option name: (identifier) (option name: (identifier) value: (literal (keyword_null))))))))
+
+================================================================================
+ddl-database/create/positive-011 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE ProbeRebuilt ON (FILENAME = 'C:\probe\rebuilt.mdf') FOR ATTACH_REBUILD_LOG;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_on) (database_file (option name: (identifier) value: (literal))) (keyword_for) (keyword_attach_rebuild_log)))))
+
+================================================================================
+ddl-database/create/positive-012 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE ProbeSnapshot ON (NAME = probe_data, FILENAME = 'C:\probe\snapshot.ss') AS SNAPSHOT OF ProbeStore;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_on) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal))) (keyword_as) (keyword_snapshot) (keyword_of) (identifier)))))
+
+================================================================================
+ddl-database/create/negative-suspected-001 — LocalDB 17.0.1000.7 levels 100-170: rejected 1036
+================================================================================
+
+CREATE DATABASE ProbeNew ON (NAME = probe_primary);
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_on) (database_file (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/create/negative-suspected-002 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+CREATE DATABASE ProbeNew ON PRIMARY (NAME = probe_primary, FILENAME = 'C:\probe\primary.mdf'), FILEGROUP probe_empty;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_on) (keyword_primary) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal))))) (ERROR (keyword_filegroup) (identifier))))
+
+================================================================================
+ddl-database/create/negative-suspected-003 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+CREATE DATABASE ProbeNew CONTAINMENT = PARTIAL CONTAINMENT = NONE;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_containment) (keyword_partial))) (ERROR (identifier) (keyword_none))))
+
+================================================================================
+ddl-database/create/negative-suspected-004 — LocalDB 17.0.1000.7 levels 100-170: rejected 319
+================================================================================
+
+CREATE DATABASE ProbeNew WITH LEDGER = ON WITH TRUSTWORTHY OFF;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_with) (option name: (identifier) value: (keyword_on)))) (ERROR (keyword_with) (identifier))))
+
+================================================================================
+ddl-database/create/negative-suspected-005 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE ProbeAttached FOR ATTACH;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_for) (keyword_attach)))))
+
+================================================================================
+ddl-database/create/negative-suspected-006 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+CREATE DATABASE ProbeAttached ON (FILENAME = 'C:\probe\attached.mdf') FOR MYSTERY;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_on) (database_file (option name: (identifier) value: (literal))))) (ERROR (keyword_for))))
+
+================================================================================
+ddl-database/create/negative-suspected-007 — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+CREATE DATABASE ProbeAttached ON (FILENAME = 'C:\probe\attached.mdf') FOR ATTACH AS SNAPSHOT OF ProbeStore;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_on) (database_file (option name: (identifier) value: (literal))) (keyword_for) (keyword_attach))) (ERROR (identifier) (keyword_of))))
+
+================================================================================
+ddl-database/create/negative-suspected-008 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+CREATE DATABASE ProbeSnapshot ON (NAME = probe_data, FILENAME = 'C:\probe\snapshot.ss') AS SNAPSHOT OF;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_on) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal))) (keyword_as) (keyword_snapshot) (keyword_of) (identifier (MISSING _identifier))))))
+
+================================================================================
+ddl-database/security-ddl/positive-001 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE ENCRYPTION KEY WITH ALGORITHM = AES_128 ENCRYPTION BY SERVER CERTIFICATE probe_cert;
+
+---
+
+(program (batch (statement (create_database_encryption_key (keyword_create) (keyword_database) (keyword_encryption) (keyword_key) (with_clause (keyword_with) (option name: (identifier) value: (identifier))) (keyword_encryption) (keyword_by) (keyword_server) (keyword_certificate) (identifier)))))
+
+================================================================================
+ddl-database/security-ddl/positive-002 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE ENCRYPTION KEY WITH ALGORITHM = AES_192 ENCRYPTION BY SERVER CERTIFICATE probe_cert;
+
+---
+
+(program (batch (statement (create_database_encryption_key (keyword_create) (keyword_database) (keyword_encryption) (keyword_key) (with_clause (keyword_with) (option name: (identifier) value: (identifier))) (keyword_encryption) (keyword_by) (keyword_server) (keyword_certificate) (identifier)))))
+
+================================================================================
+ddl-database/security-ddl/positive-003 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE ENCRYPTION KEY WITH ALGORITHM = AES_256 ENCRYPTION BY SERVER CERTIFICATE probe_cert;
+
+---
+
+(program (batch (statement (create_database_encryption_key (keyword_create) (keyword_database) (keyword_encryption) (keyword_key) (with_clause (keyword_with) (option name: (identifier) value: (identifier))) (keyword_encryption) (keyword_by) (keyword_server) (keyword_certificate) (identifier)))))
+
+================================================================================
+ddl-database/security-ddl/positive-004 — LocalDB 17.0.1000.7 levels 100-170: accepted 100,110,120; rejected other levels 102
+================================================================================
+
+CREATE DATABASE ENCRYPTION KEY WITH ALGORITHM = TRIPLE_DES_3KEY ENCRYPTION BY SERVER CERTIFICATE probe_cert;
+
+---
+
+(program (batch (statement (create_database_encryption_key (keyword_create) (keyword_database) (keyword_encryption) (keyword_key) (with_clause (keyword_with) (option name: (identifier) value: (identifier))) (keyword_encryption) (keyword_by) (keyword_server) (keyword_certificate) (identifier)))))
+
+================================================================================
+ddl-database/security-ddl/positive-005 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE ENCRYPTION KEY WITH ALGORITHM = AES_256 ENCRYPTION BY SERVER ASYMMETRIC KEY probe_asym;
+
+---
+
+(program (batch (statement (create_database_encryption_key (keyword_create) (keyword_database) (keyword_encryption) (keyword_key) (with_clause (keyword_with) (option name: (identifier) value: (identifier))) (keyword_encryption) (keyword_by) (keyword_server) (keyword_asymmetric) (keyword_key) (identifier)))))
+
+================================================================================
+ddl-database/security-ddl/positive-006 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ENCRYPTION KEY REGENERATE WITH ALGORITHM = AES_256;
+
+---
+
+(program (batch (statement (alter_database_encryption_key (keyword_alter) (keyword_database) (keyword_encryption) (keyword_key) (keyword_regenerate) (with_clause (keyword_with) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/security-ddl/positive-007 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ENCRYPTION KEY ENCRYPTION BY SERVER CERTIFICATE probe_cert;
+
+---
+
+(program (batch (statement (alter_database_encryption_key (keyword_alter) (keyword_database) (keyword_encryption) (keyword_key) (keyword_encryption) (keyword_by) (keyword_server) (keyword_certificate) (identifier)))))
+
+================================================================================
+ddl-database/security-ddl/positive-008 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER DATABASE ENCRYPTION KEY REGENERATE WITH ALGORITHM = AES_128 ENCRYPTION BY SERVER CERTIFICATE probe_cert;
+
+---
+
+(program (batch (statement (alter_database_encryption_key (keyword_alter) (keyword_database) (keyword_encryption) (keyword_key) (keyword_regenerate) (with_clause (keyword_with) (option name: (identifier) value: (identifier))))) (ERROR (identifier) (keyword_by) (keyword_server) (keyword_certificate))))
+
+================================================================================
+ddl-database/security-ddl/positive-009 — LocalDB 17.0.1000.7 levels 100-170: rejected 15151
+================================================================================
+
+CREATE DATABASE AUDIT SPECIFICATION probe_das FOR SERVER AUDIT probe_audit ADD (SELECT ON OBJECT::dbo.ProbeTable BY public) WITH (STATE = OFF);
+
+---
+
+(program (batch (statement (create_database_audit_specification (keyword_create) (keyword_database) (keyword_audit) (keyword_specification) name: (identifier) (keyword_for) (keyword_server) (keyword_audit) (identifier) (keyword_add) (audit_action (permission (keyword_select)) (keyword_on) (identifier) (object_reference schema: (identifier) name: (identifier)) (keyword_by) (identifier)) (with_options (keyword_with) (option name: (identifier) value: (keyword_off)))))))
+
+================================================================================
+ddl-database/security-ddl/positive-010 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE AUDIT SPECIFICATION probe_das ADD (DATABASE_OBJECT_CHANGE_GROUP), DROP (DATABASE_PRINCIPAL_CHANGE_GROUP) WITH (STATE = ON);
+
+---
+
+(program (batch (statement (alter_database_audit_specification (keyword_alter) (keyword_database) (keyword_audit) (keyword_specification) name: (identifier) (keyword_add) (audit_action (permission (identifier))) (keyword_drop) (audit_action (permission (identifier))) (with_options (keyword_with) (option name: (identifier) value: (keyword_on)))))))
+
+================================================================================
+ddl-database/security-ddl/positive-011 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE SERVER AUDIT SPECIFICATION probe_sas FOR SERVER AUDIT probe_audit ADD (FAILED_LOGIN_GROUP) WITH (STATE = OFF);
+
+---
+
+(program (batch (statement (create_server_audit_specification (keyword_create) (keyword_server) (keyword_audit) (keyword_specification) name: (identifier) (keyword_for) (keyword_server) (keyword_audit) (identifier) (keyword_add) (audit_action (permission (identifier))) (with_options (keyword_with) (option name: (identifier) value: (keyword_off)))))))
+
+================================================================================
+ddl-database/security-ddl/positive-012 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER AUDIT SPECIFICATION probe_sas WITH (STATE = OFF);
+
+---
+
+(program (batch (statement (alter_server_audit_specification (keyword_alter) (keyword_server) (keyword_audit) (keyword_specification) name: (identifier) (with_options (keyword_with) (option name: (identifier) value: (keyword_off)))))))
+
+================================================================================
+ddl-database/security-ddl/negative-suspected-001 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+CREATE DATABASE ENCRYPTION KEY WITH ALGORITHM = AES_256;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier))) (ERROR (keyword_key) (with_clause (keyword_with) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+ddl-database/security-ddl/negative-suspected-002 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+CREATE DATABASE ENCRYPTION KEY ENCRYPTION BY SERVER CERTIFICATE probe_cert;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier))) (ERROR (keyword_key) (keyword_by) (keyword_server) (keyword_certificate))))
+
+================================================================================
+ddl-database/security-ddl/negative-suspected-003 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER DATABASE ENCRYPTION KEY REGENERATE;
+
+---
+
+(program (ERROR (keyword_alter) (keyword_database) (keyword_encryption) (keyword_key) (keyword_regenerate)) (batch))
+
+================================================================================
+ddl-database/security-ddl/negative-suspected-004 — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+CREATE DATABASE AUDIT SPECIFICATION FOR SERVER AUDIT probe_audit ADD (DATABASE_OBJECT_CHANGE_GROUP);
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier))) (ERROR (keyword_specification) (identifier) (keyword_audit) (keyword_add))))
+
+================================================================================
+ddl-database/security-ddl/negative-suspected-005 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER SERVER AUDIT SPECIFICATION probe_sas ADD ();
+
+---
+
+(program (batch (statement (alter_server_audit_specification (keyword_alter) (keyword_server) (keyword_audit) (keyword_specification) name: (identifier) (keyword_add) (audit_action (permission (identifier (MISSING _identifier))))))))
+
+================================================================================
+ddl-database/security-ddl/negative-suspected-006 — LocalDB 17.0.1000.7 levels 100-170: rejected 319
+================================================================================
+
+CREATE SERVER AUDIT SPECIFICATION probe_sas FOR SERVER AUDIT probe_audit ADD (FAILED_LOGIN_GROUP) WITH (STATE = ON) WITH (STATE = OFF);
+
+---
+
+(program (batch (statement (create_server_audit_specification (keyword_create) (keyword_server) (keyword_audit) (keyword_specification) name: (identifier) (keyword_for) (keyword_server) (keyword_audit) (identifier) (keyword_add) (audit_action (permission (identifier))) (with_options (keyword_with) (option name: (identifier) value: (keyword_on))))) (ERROR (keyword_with) (ERROR) (identifier) (keyword_off))))
+
+================================================================================
+ddl-database/ag/positive-001 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag SET (AUTOMATED_BACKUP_PREFERENCE = SECONDARY_ONLY);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_set) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+ddl-database/ag/positive-002 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag SET (FAILURE_CONDITION_LEVEL = 4);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_set) (option name: (identifier) value: (literal))))))
+
+================================================================================
+ddl-database/ag/positive-003 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag SET (HEALTH_CHECK_TIMEOUT = 42000);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_set) (option name: (identifier) value: (literal))))))
+
+================================================================================
+ddl-database/ag/positive-004 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag SET (DB_FAILOVER = ON);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_on))))))
+
+================================================================================
+ddl-database/ag/positive-005 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag SET (DTC_SUPPORT = NONE);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_set) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+ddl-database/ag/positive-006 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag SET (REQUIRED_SYNCHRONIZED_SECONDARIES_TO_COMMIT = 2);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_set) (option name: (identifier) value: (literal))))))
+
+================================================================================
+ddl-database/ag/positive-007 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag SET (ROLE = SECONDARY);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_set) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+ddl-database/ag/positive-008 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag SET (CLUSTER_CONNECTION_OPTIONS = 'Encrypt=Strict');
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_set) (option name: (identifier) value: (literal))))))
+
+================================================================================
+ddl-database/ag/positive-009 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag ADD DATABASE ProbeStore;
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_add) (keyword_database) (identifier)))))
+
+================================================================================
+ddl-database/ag/positive-010 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag REMOVE DATABASE ProbeStore;
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_remove) (keyword_database) (identifier)))))
+
+================================================================================
+ddl-database/ag/positive-011 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag REMOVE REPLICA ON 'probe-node';
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_remove) (keyword_replica) (keyword_on) (literal)))))
+
+================================================================================
+ddl-database/ag/positive-012 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag JOIN;
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_join)))))
+
+================================================================================
+ddl-database/ag/positive-013 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag GRANT CREATE ANY DATABASE;
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_grant) (keyword_create) (keyword_any) (keyword_database)))))
+
+================================================================================
+ddl-database/ag/positive-014 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag DENY CREATE ANY DATABASE;
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_deny) (keyword_create) (keyword_any) (keyword_database)))))
+
+================================================================================
+ddl-database/ag/positive-015 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag FAILOVER;
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_failover)))))
+
+================================================================================
+ddl-database/ag/positive-016 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag FORCE_FAILOVER_ALLOW_DATA_LOSS;
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_force_failover_allow_data_loss)))))
+
+================================================================================
+ddl-database/ag/positive-017 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag OFFLINE;
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_offline)))))
+
+================================================================================
+ddl-database/ag/positive-018 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag ADD REPLICA ON 'probe-node' WITH (ENDPOINT_URL = 'TCP://probe-node.example:5022', AVAILABILITY_MODE = SYNCHRONOUS_COMMIT, FAILOVER_MODE = MANUAL, SECONDARY_ROLE (ALLOW_CONNECTIONS = READ_ONLY), PRIMARY_ROLE (READ_ONLY_ROUTING_LIST = ('probe-other', 'probe-third')));
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_add) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)) (option name: (identifier) (option name: (identifier) value: (identifier))) (option name: (identifier) (option name: (identifier) (literal) (literal))))))))
+
+================================================================================
+ddl-database/ag/positive-019 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag MODIFY REPLICA ON 'probe-node' WITH (SECONDARY_ROLE (READ_ONLY_ROUTING_URL = NONE));
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_modify) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier))))))))
+
+================================================================================
+ddl-database/ag/positive-020 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag ADD LISTENER 'probe-listener' (WITH DHCP ON ('192.0.2.0', '255.255.255.0'));
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_add) (keyword_listener) (literal) (availability_listener (keyword_with) (keyword_dhcp) (keyword_on) (listener_ip (literal) (literal)))))))
+
+================================================================================
+ddl-database/ag/positive-021 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag ADD LISTENER 'probe-listener' (WITH IP (('192.0.2.4', '255.255.255.0'), ('2001:db8::5')), PORT = 1444);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_add) (keyword_listener) (literal) (availability_listener (keyword_with) (keyword_ip) (listener_ip (literal) (literal)) (listener_ip (literal)) (keyword_port) (literal))))))
+
+================================================================================
+ddl-database/ag/positive-022 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag MODIFY LISTENER 'probe-listener' (ADD IP ('192.0.2.5', '255.255.255.0'));
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_modify) (keyword_listener) (literal) (keyword_add) (keyword_ip) (listener_ip (literal) (literal))))))
+
+================================================================================
+ddl-database/ag/positive-023 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag MODIFY LISTENER 'probe-listener' (REMOVE IP ('192.0.2.5'));
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_modify) (keyword_listener) (literal) (keyword_remove) (keyword_ip) (listener_ip (literal))))))
+
+================================================================================
+ddl-database/ag/positive-024 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag MODIFY LISTENER 'probe-listener' (PORT = 1445);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_modify) (keyword_listener) (literal) (keyword_port) (literal)))))
+
+================================================================================
+ddl-database/ag/positive-025 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag RESTART LISTENER 'probe-listener';
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_restart) (keyword_listener) (literal)))))
+
+================================================================================
+ddl-database/ag/positive-026 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag REMOVE LISTENER 'probe-listener';
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_remove) (keyword_listener) (literal)))))
+
+================================================================================
+ddl-database/ag/positive-027 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_dist JOIN AVAILABILITY GROUP ON 'probe_east' WITH (LISTENER_URL = 'TCP://probe-east.example:5022', AVAILABILITY_MODE = SYNCHRONOUS_COMMIT, FAILOVER_MODE = MANUAL, SEEDING_MODE = AUTOMATIC), 'probe_west' WITH (LISTENER_URL = 'TCP://probe-west.example:5022', AVAILABILITY_MODE = ASYNCHRONOUS_COMMIT, FAILOVER_MODE = MANUAL, SEEDING_MODE = MANUAL);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_join) (keyword_availability) (keyword_group) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier))) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/ag/positive-028 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_dist MODIFY AVAILABILITY GROUP ON 'probe_east' WITH (SEEDING_MODE = MANUAL);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_modify) (keyword_availability) (keyword_group) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/ag/negative-suspected-001 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag SET ();
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_set) (option name: (identifier (MISSING _identifier)))))))
+
+================================================================================
+ddl-database/ag/negative-suspected-002 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag ADD DATABASE;
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_add) (keyword_database) (identifier (MISSING _identifier))))))
+
+================================================================================
+ddl-database/ag/negative-suspected-003 — LocalDB 17.0.1000.7 levels 100-170: rejected 35236
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag ADD REPLICA ON 'probe-node' WITH (AVAILABILITY_MODE = SYNCHRONOUS_COMMIT, FAILOVER_MODE = MANUAL);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_add) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/ag/negative-suspected-004 — LocalDB 17.0.1000.7 levels 100-170: rejected 41198
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag ADD REPLICA ON 'probe-node' WITH (ENDPOINT_URL = 'TCP://probe-node.example:5022', FAILOVER_MODE = MANUAL);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_add) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/ag/negative-suspected-005 — LocalDB 17.0.1000.7 levels 100-170: rejected 41197
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag ADD REPLICA ON 'probe-node' WITH (ENDPOINT_URL = 'TCP://probe-node.example:5022', AVAILABILITY_MODE = SYNCHRONOUS_COMMIT);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_add) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/ag/negative-suspected-006 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag ADD LISTENER 'probe-listener' ();
+
+---
+
+(program (ERROR (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_add) (keyword_listener) (literal)) (batch))
+
+================================================================================
+ddl-database/ag/negative-suspected-007 — LocalDB 17.0.1000.7 levels 100-170: rejected 19483
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag MODIFY LISTENER 'probe-listener' (ADD BANANA ('192.0.2.5'));
+
+---
+
+(program (ERROR (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_modify) (keyword_listener) (literal) (keyword_add)) (batch))
+
+================================================================================
+ddl-database/ag/negative-suspected-008 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag FAILOVER OFFLINE;
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_failover))) (statement (label_statement (identifier) (MISSING ":")))))
+
+================================================================================
+ddl-database/server/positive-001 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER CONFIGURATION SET PROCESS AFFINITY CPU = AUTO;
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_process) (keyword_affinity) (keyword_cpu) (keyword_auto)))))
+
+================================================================================
+ddl-database/server/positive-002 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER CONFIGURATION SET PROCESS AFFINITY CPU = 1, 4 TO 6;
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_process) (keyword_affinity) (keyword_cpu) (server_cpu_range (literal)) (server_cpu_range (literal) (keyword_to) (literal))))))
+
+================================================================================
+ddl-database/server/positive-003 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER CONFIGURATION SET PROCESS AFFINITY NUMANODE = 1 TO 2;
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_process) (keyword_affinity) (keyword_numanode) (server_cpu_range (literal) (keyword_to) (literal))))))
+
+================================================================================
+ddl-database/server/positive-004 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER CONFIGURATION SET DIAGNOSTICS LOG ON;
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_diagnostics) (keyword_log) (keyword_on)))))
+
+================================================================================
+ddl-database/server/positive-005 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER CONFIGURATION SET DIAGNOSTICS LOG PATH = DEFAULT;
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_diagnostics) (keyword_log) (option name: (identifier) value: (keyword_default))))))
+
+================================================================================
+ddl-database/server/positive-006 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER CONFIGURATION SET DIAGNOSTICS LOG MAX_SIZE = 12 MB;
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_diagnostics) (keyword_log) (option name: (identifier) value: (literal) value: (identifier))))))
+
+================================================================================
+ddl-database/server/positive-007 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER CONFIGURATION SET DIAGNOSTICS LOG MAX_FILES = 8;
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_diagnostics) (keyword_log) (option name: (identifier) value: (literal))))))
+
+================================================================================
+ddl-database/server/positive-008 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER CONFIGURATION SET FAILOVER CLUSTER PROPERTY HealthCheckTimeout = 45000;
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_failover) (keyword_cluster) (keyword_property) (option name: (identifier) value: (literal))))))
+
+================================================================================
+ddl-database/server/positive-009 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER CONFIGURATION SET HADR CLUSTER CONTEXT = 'probe-cluster';
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_hadr) (keyword_cluster) (keyword_context) (literal)))))
+
+================================================================================
+ddl-database/server/positive-010 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER CONFIGURATION SET HADR CLUSTER CONTEXT = LOCAL;
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_hadr) (keyword_cluster) (keyword_context) (keyword_local)))))
+
+================================================================================
+ddl-database/server/positive-011 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION ON (FILENAME = 'C:\probe\cache.bpe', SIZE = 12 GB);
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_buffer) (keyword_pool) (keyword_extension) (keyword_on) (server_buffer_pool_options (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal) value: (identifier)))))))
+
+================================================================================
+ddl-database/server/positive-012 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION OFF;
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_buffer) (keyword_pool) (keyword_extension) (keyword_off)))))
+
+================================================================================
+ddl-database/server/positive-013 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER CONFIGURATION SET SOFTNUMA ON;
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_softnuma) (keyword_on)))))
+
+================================================================================
+ddl-database/server/positive-014 — LocalDB 17.0.1000.7 levels 100-170: rejected 534
+================================================================================
+
+ALTER SERVER CONFIGURATION SET MEMORY_OPTIMIZED ON;
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_memory_optimized) (keyword_on)))))
+
+================================================================================
+ddl-database/server/positive-015 — LocalDB 17.0.1000.7 levels 100-170: rejected 534
+================================================================================
+
+ALTER SERVER CONFIGURATION SET MEMORY_OPTIMIZED TEMPDB_METADATA = ON (RESOURCE_POOL = 'probe_pool');
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_memory_optimized) (keyword_tempdb_metadata) (keyword_on) (option name: (identifier) value: (literal))))))
+
+================================================================================
+ddl-database/server/positive-016 — LocalDB 17.0.1000.7 levels 100-170: rejected 534
+================================================================================
+
+ALTER SERVER CONFIGURATION SET MEMORY_OPTIMIZED HYBRID_BUFFER_POOL = OFF;
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_memory_optimized) (keyword_hybrid_buffer_pool) (keyword_off)))))
+
+================================================================================
+ddl-database/server/positive-017 — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+ALTER SERVER CONFIGURATION SET HARDWARE_OFFLOAD OFF;
+
+---
+
+(program (ERROR (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_off)) (batch))
+
+================================================================================
+ddl-database/server/positive-018 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER CONFIGURATION SET SUSPEND_FOR_SNAPSHOT_BACKUP = ON (GROUP = (ProbeStore, ProbeOther), MODE = COPY_ONLY);
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_suspend_for_snapshot_backup) (keyword_on) (option name: (identifier) (option name: (identifier)) (option name: (identifier))) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+ddl-database/server/positive-019 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER CONFIGURATION SET SUSPEND_FOR_SNAPSHOT_BACKUP = OFF;
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_suspend_for_snapshot_backup) (keyword_off)))))
+
+================================================================================
+ddl-database/server/positive-020 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER AUDIT probe_audit REMOVE WHERE;
+
+---
+
+(program (batch (statement (alter_server_audit (keyword_alter) (keyword_server) (keyword_audit) name: (identifier) (keyword_remove) (keyword_where)))))
+
+================================================================================
+ddl-database/server/positive-021 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER AUDIT probe_audit MODIFY NAME = probe_renamed;
+
+---
+
+(program (batch (statement (alter_server_audit (keyword_alter) (keyword_server) (keyword_audit) name: (identifier) (keyword_modify) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+ddl-database/server/positive-022 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER AUDIT probe_audit TO FILE (MAXSIZE = 32 MB) WITH (STATE = OFF) WHERE database_id = 7;
+
+---
+
+(program (batch (statement (alter_server_audit (keyword_alter) (keyword_server) (keyword_audit) name: (identifier) (keyword_to) (identifier) (option name: (identifier) value: (literal) value: (identifier)) (with_options (keyword_with) (option name: (identifier) value: (keyword_off))) (where (keyword_where) predicate: (binary_expression left: (field name: (identifier)) right: (literal)))))))
+
+================================================================================
+ddl-database/server/negative-suspected-001 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION ON (SIZE = 12 GB);
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_buffer) (keyword_pool) (keyword_extension) (keyword_on) (server_buffer_pool_options (option name: (identifier) value: (literal) value: (identifier)))))))
+
+================================================================================
+ddl-database/server/negative-suspected-002 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION ON (FILENAME = 'C:\probe\cache.bpe');
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_buffer) (keyword_pool) (keyword_extension) (keyword_on) (server_buffer_pool_options (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-database/server/negative-suspected-003 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION OFF (SIZE = 12 GB);
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_buffer) (keyword_pool) (keyword_extension) (keyword_off))) (ERROR (literal))))
+
+================================================================================
+ddl-database/server/negative-suspected-004 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER SERVER CONFIGURATION SET PROCESS AFFINITY NUMANODE = AUTO;
+
+---
+
+(program (ERROR (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_process) (keyword_affinity) (keyword_numanode)) (batch))
+
+================================================================================
+ddl-database/server/negative-suspected-005 — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+ALTER SERVER CONFIGURATION SET DIAGNOSTICS LOG ON OFF;
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_diagnostics) (keyword_log) (keyword_on))) (statement (label_statement (identifier) (MISSING ":")))))
+
+================================================================================
+ddl-database/server/negative-suspected-006 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER SERVER CONFIGURATION SET MYSTERY ON;
+
+---
+
+(program (ERROR (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_on)) (batch))
+
+================================================================================
+ddl-database/server/negative-suspected-007 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER SERVER AUDIT probe_audit REMOVE WHERE REMOVE WHERE;
+
+---
+
+(program (batch (statement (alter_server_audit (keyword_alter) (keyword_server) (keyword_audit) name: (identifier) (keyword_remove) (keyword_where))) (ERROR (identifier) (keyword_where))))
+
+================================================================================
+ddl-database/boundaries/positive-001 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE [scoped] ADD FILEGROUP probe_fg;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_add) (keyword_filegroup) (identifier)))))
+
+================================================================================
+ddl-database/boundaries/positive-002 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE [encryption] WITH LEDGER = OFF;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_with) (option name: (identifier) value: (keyword_off))))))
+
+================================================================================
+ddl-database/boundaries/positive-003 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE [audit] SET HADR OFF;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_off))))))
+
+================================================================================
+ddl-database/boundaries/positive-004 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP probe_ag JOIN
+probe_label: SELECT 17 AS probe_value;
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_join))) (statement (label_statement (identifier))) (statement (query_specification (select (keyword_select) (select_expression (term value: (literal) (keyword_as) alias: (identifier))))))))
+
+================================================================================
+ddl-database/boundaries/positive-005 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ProbeStore ADD FILEGROUP probe_fg
+probe_label: SELECT 18 AS probe_value;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_add) (keyword_filegroup) (identifier))) (statement (label_statement (identifier))) (statement (query_specification (select (keyword_select) (select_expression (term value: (literal) (keyword_as) alias: (identifier))))))))
+
+================================================================================
+ddl-database/boundaries/positive-006 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE ProbeNew WITH LEDGER = OFF
+probe_label: SELECT 19 AS probe_value;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_with) (option name: (identifier) value: (keyword_off)))) (statement (label_statement (identifier))) (statement (query_specification (select (keyword_select) (select_expression (term value: (literal) (keyword_as) alias: (identifier))))))))
+
+================================================================================
+ddl-database/boundaries/positive-007 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER CONFIGURATION SET SOFTNUMA OFF
+probe_label: SELECT 20 AS probe_value;
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_softnuma) (keyword_off))) (statement (label_statement (identifier))) (statement (query_specification (select (keyword_select) (select_expression (term value: (literal) (keyword_as) alias: (identifier))))))))
+
+================================================================================
+ddl-database/extra-create-ag/case-001 — LocalDB 17.0.1000.7 levels 100-170: rejected 156,319
+================================================================================
+
+CREATE AVAILABILITY GROUP extra_ag REPLICA ON 'extra-node' WITH (ENDPOINT_URL = 'TCP://extra-node.example:5022', AVAILABILITY_MODE = SYNCHRONOUS_COMMIT, FAILOVER_MODE = MANUAL);
+
+---
+
+(program (ERROR (keyword_create) (keyword_availability) (keyword_group) name: (identifier) (ERROR (keyword_replica) (keyword_on)) (with_options (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))) (batch))
+
+================================================================================
+ddl-database/extra-create-ag/case-002 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE AVAILABILITY GROUP extra_ag FOR DATABASE ExtraStore REPLICA ON 'extra-node' WITH (ENDPOINT_URL = 'TCP://extra-node.example:5022', AVAILABILITY_MODE = SYNCHRONOUS_COMMIT, FAILOVER_MODE = MANUAL);
+
+---
+
+(program (batch (statement (create_availability_group (keyword_create) (keyword_availability) (keyword_group) name: (identifier) (keyword_for) (keyword_database) (identifier) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/extra-create-ag/case-003 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE AVAILABILITY GROUP extra_ag WITH (AUTOMATED_BACKUP_PREFERENCE = SECONDARY, DB_FAILOVER = ON) FOR DATABASE ExtraStore, ExtraOther REPLICA ON 'extra-node' WITH (ENDPOINT_URL = 'TCP://extra-node.example:5022', AVAILABILITY_MODE = SYNCHRONOUS_COMMIT, FAILOVER_MODE = MANUAL);
+
+---
+
+(program (batch (statement (create_availability_group (keyword_create) (keyword_availability) (keyword_group) name: (identifier) (with_options (keyword_with) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (keyword_on))) (keyword_for) (keyword_database) (identifier) (identifier) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/extra-create-ag/case-004 — LocalDB 17.0.1000.7 levels 100-170: rejected 156,319
+================================================================================
+
+CREATE AVAILABILITY GROUP extra_ag REPLICA ON 'extra-node' WITH (ENDPOINT_URL = 'TCP://extra-node.example:5022', AVAILABILITY_MODE = SYNCHRONOUS_COMMIT, FAILOVER_MODE = MANUAL) LISTENER 'extra-listener' (WITH IP (('192.0.2.70', '255.255.255.0')), PORT = 1451);
+
+---
+
+(program (ERROR (keyword_create) (keyword_availability) (keyword_group) name: (identifier) (ERROR (keyword_replica) (keyword_on) (with_options (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))) (keyword_with) (ERROR) (keyword_port) (literal)) (batch))
+
+================================================================================
+ddl-database/extra-create-ag/case-005 — LocalDB 17.0.1000.7 levels 100-170: rejected 156,319
+================================================================================
+
+CREATE AVAILABILITY GROUP extra_ag REPLICA ON 'extra-node' WITH (AVAILABILITY_MODE = SYNCHRONOUS_COMMIT, FAILOVER_MODE = MANUAL);
+
+---
+
+(program (ERROR (keyword_create) (keyword_availability) (keyword_group) name: (identifier) (ERROR (keyword_replica) (keyword_on)) (with_options (keyword_with) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))) (batch))
+
+================================================================================
+ddl-database/extra-create-ag/case-006 — LocalDB 17.0.1000.7 levels 100-170: rejected 156,319
+================================================================================
+
+CREATE AVAILABILITY GROUP extra_ag REPLICA ON 'extra-node' WITH (ENDPOINT_URL = 'TCP://extra-node.example:5022', FAILOVER_MODE = MANUAL);
+
+---
+
+(program (ERROR (keyword_create) (keyword_availability) (keyword_group) name: (identifier) (ERROR (keyword_replica) (keyword_on)) (with_options (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)))) (batch))
+
+================================================================================
+ddl-database/extra-create-ag/case-007 — LocalDB 17.0.1000.7 levels 100-170: rejected 156,319
+================================================================================
+
+CREATE AVAILABILITY GROUP extra_ag REPLICA ON 'extra-node' WITH (ENDPOINT_URL = 'TCP://extra-node.example:5022', AVAILABILITY_MODE = SYNCHRONOUS_COMMIT);
+
+---
+
+(program (ERROR (keyword_create) (keyword_availability) (keyword_group) name: (identifier) (ERROR (keyword_replica) (keyword_on)) (with_options (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)))) (batch))
+
+================================================================================
+ddl-database/extra-create-ag/case-008 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE AVAILABILITY GROUP extra_ag WITH (DISTRIBUTED) AVAILABILITY GROUP ON 'extra_east' WITH (LISTENER_URL = 'TCP://extra-east.example:5022', AVAILABILITY_MODE = SYNCHRONOUS_COMMIT, FAILOVER_MODE = MANUAL, SEEDING_MODE = AUTOMATIC), 'extra_west' WITH (LISTENER_URL = 'TCP://extra-west.example:5022', AVAILABILITY_MODE = ASYNCHRONOUS_COMMIT, FAILOVER_MODE = MANUAL, SEEDING_MODE = MANUAL);
+
+---
+
+(program (batch (statement (create_availability_group (keyword_create) (keyword_availability) (keyword_group) name: (identifier) (with_options (keyword_with) (option name: (identifier))) (keyword_availability) (keyword_group) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier))) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/extra-create-ag/case-009 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+CREATE AVAILABILITY GROUP extra_ag FOR DATABASE ExtraStore;
+
+---
+
+(program (ERROR (keyword_create) (keyword_availability) (keyword_group) name: (identifier) (keyword_for) (keyword_database) (identifier)) (batch))
+
+================================================================================
+ddl-database/extra-create-ag/case-010 — LocalDB 17.0.1000.7 levels 100-170: rejected 156,319
+================================================================================
+
+CREATE AVAILABILITY GROUP extra_ag REPLICA ON 'extra-node' WITH (ENDPOINT_URL = 'TCP://extra-node.example:5022', AVAILABILITY_MODE = SYNCHRONOUS_COMMIT, FAILOVER_MODE = MANUAL)
+extra_label: SELECT 61 AS extra_value;
+
+---
+
+(program (ERROR (keyword_create) (keyword_availability) (keyword_group) name: (identifier) (ERROR (keyword_replica) (keyword_on)) (with_options (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))) (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal) (keyword_as) alias: (identifier))))))))
+
+================================================================================
+ddl-database/extra-file-duplicates/case-001 — LocalDB 17.0.1000.7 levels 100-170: rejected 153
+================================================================================
+
+ALTER DATABASE ExtraStore ADD FILE (NAME = extra_data, FILENAME = 'C:\extra\a.ndf', FILENAME = 'C:\extra\b.ndf');
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_add) (keyword_file) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-database/extra-file-duplicates/case-002 — LocalDB 17.0.1000.7 levels 100-170: rejected 153
+================================================================================
+
+ALTER DATABASE ExtraStore ADD FILE (NAME = extra_data, FILENAME = 'C:\extra\a.ndf', MAXSIZE = 32 MB, MAXSIZE = 64 MB);
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_add) (keyword_file) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal) value: (identifier)) (option name: (identifier) value: (literal) value: (identifier)))))))
+
+================================================================================
+ddl-database/extra-file-duplicates/case-003 — LocalDB 17.0.1000.7 levels 100-170: rejected 153
+================================================================================
+
+ALTER DATABASE ExtraStore ADD FILE (NAME = extra_data, FILENAME = 'C:\extra\a.ndf', FILEGROWTH = 2 MB, FILEGROWTH = 3 MB);
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_add) (keyword_file) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal) value: (identifier)) (option name: (identifier) value: (literal) value: (identifier)))))))
+
+================================================================================
+ddl-database/extra-file-duplicates/case-004 — LocalDB 17.0.1000.7 levels 100-170: rejected 153
+================================================================================
+
+CREATE DATABASE ExtraNew ON (NAME = extra_data, FILENAME = 'C:\extra\a.mdf', FILENAME = 'C:\extra\b.mdf');
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_on) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-database/extra-file-duplicates/case-005 — LocalDB 17.0.1000.7 levels 100-170: rejected 153
+================================================================================
+
+CREATE DATABASE ExtraNew ON (NAME = extra_data, FILENAME = 'C:\extra\a.mdf', MAXSIZE = UNLIMITED, MAXSIZE = 64 MB);
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_on) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal) value: (identifier)))))))
+
+================================================================================
+ddl-database/extra-file-duplicates/case-006 — LocalDB 17.0.1000.7 levels 100-170: rejected 153
+================================================================================
+
+ALTER DATABASE ExtraStore MODIFY FILE (NAME = extra_data, FILEGROWTH = 2 MB, FILEGROWTH = 3 MB);
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_modify) (keyword_file) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal) value: (identifier)) (option name: (identifier) value: (literal) value: (identifier)))))))
+
+================================================================================
+ddl-database/extra-ag-option-sets/case-001 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER AVAILABILITY GROUP extra_ag SET (DB_FAILOVER = ON, DB_FAILOVER = OFF);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_on)) (option name: (identifier) value: (keyword_off))))))
+
+================================================================================
+ddl-database/extra-ag-option-sets/case-002 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER AVAILABILITY GROUP extra_ag SET (HEALTH_CHECK_TIMEOUT = 41000, AUTOMATED_BACKUP_PREFERENCE = PRIMARY);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_set) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+ddl-database/extra-ag-option-sets/case-003 — LocalDB 17.0.1000.7 levels 100-170: rejected 1039
+================================================================================
+
+ALTER AVAILABILITY GROUP extra_ag ADD REPLICA ON 'extra-node' WITH (ENDPOINT_URL = 'TCP://extra-node.example:5022', ENDPOINT_URL = 'TCP://extra-node.example:5023', AVAILABILITY_MODE = SYNCHRONOUS_COMMIT, FAILOVER_MODE = MANUAL);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_add) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/extra-ag-option-sets/case-004 — LocalDB 17.0.1000.7 levels 100-170: rejected 1039
+================================================================================
+
+ALTER AVAILABILITY GROUP extra_ag ADD REPLICA ON 'extra-node' WITH (ENDPOINT_URL = 'TCP://extra-node.example:5022', AVAILABILITY_MODE = SYNCHRONOUS_COMMIT, AVAILABILITY_MODE = ASYNCHRONOUS_COMMIT, FAILOVER_MODE = MANUAL);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_add) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/extra-ag-option-sets/case-005 — LocalDB 17.0.1000.7 levels 100-170: rejected 1039
+================================================================================
+
+ALTER AVAILABILITY GROUP extra_ag ADD REPLICA ON 'extra-node' WITH (ENDPOINT_URL = 'TCP://extra-node.example:5022', AVAILABILITY_MODE = SYNCHRONOUS_COMMIT, FAILOVER_MODE = MANUAL, FAILOVER_MODE = AUTOMATIC);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_add) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/extra-ag-option-sets/case-006 — LocalDB 17.0.1000.7 levels 100-170: rejected 1039,10786
+================================================================================
+
+ALTER AVAILABILITY GROUP extra_ag MODIFY REPLICA ON 'extra-node' WITH (SECONDARY_ROLE (ALLOW_CONNECTIONS = READ_ONLY, ALLOW_CONNECTIONS = ALL));
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_modify) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (keyword_all))))))))
+
+================================================================================
+ddl-database/extra-ag-option-sets/case-007 — LocalDB 17.0.1000.7 levels 100-170: rejected 10786
+================================================================================
+
+ALTER AVAILABILITY GROUP extra_ag MODIFY REPLICA ON 'extra-node' WITH (PRIMARY_ROLE (ALLOW_CONNECTIONS = ALL, READ_ONLY_ROUTING_LIST = (('extra-a', 'extra-b'), 'extra-c')));
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_modify) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) (option name: (identifier) value: (keyword_all)) (option name: (identifier) (literal) (literal) (literal))))))))
+
+================================================================================
+ddl-database/extra-ag-option-sets/case-008 — LocalDB 17.0.1000.7 levels 100-170: rejected 1039,10786
+================================================================================
+
+ALTER AVAILABILITY GROUP extra_ag MODIFY REPLICA ON 'extra-node' WITH (PRIMARY_ROLE (READ_ONLY_ROUTING_LIST = ('extra-a'), READ_ONLY_ROUTING_LIST = NONE));
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_modify) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) (option name: (identifier) (literal)) (option name: (identifier) value: (identifier))))))))
+
+================================================================================
+ddl-database/extra-ag-option-sets/case-009 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER AVAILABILITY GROUP extra_ag MODIFY REPLICA ON 'extra-node' WITH (SECONDARY_ROLE ());
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_modify) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) (option name: (identifier (MISSING _identifier)))))))))
+
+================================================================================
+ddl-database/extra-ag-option-sets/case-010 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER AVAILABILITY GROUP extra_ag MODIFY REPLICA ON 'extra-node' WITH (SESSION_TIMEOUT = 21, BACKUP_PRIORITY = 40);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_modify) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-database/extra-buffer-pool/case-001 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION ON (FILENAME = 'C:\extra\a.bpe', FILENAME = 'C:\extra\b.bpe', SIZE = 16 GB);
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_buffer) (keyword_pool) (keyword_extension) (keyword_on) (server_buffer_pool_options (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal) value: (identifier)))))))
+
+================================================================================
+ddl-database/extra-buffer-pool/case-002 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION ON (FILENAME = 'C:\extra\a.bpe', SIZE = 16 GB, SIZE = 20 GB);
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_buffer) (keyword_pool) (keyword_extension) (keyword_on) (server_buffer_pool_options (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal) value: (identifier)) (option name: (identifier) value: (literal) value: (identifier)))))))
+
+================================================================================
+ddl-database/extra-buffer-pool/case-003 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION ON (FILENAME, SIZE = 16 GB);
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_buffer) (keyword_pool) (keyword_extension) (keyword_on) (server_buffer_pool_options (option name: (identifier)) (option name: (identifier) value: (literal) value: (identifier)))))))
+
+================================================================================
+ddl-database/extra-buffer-pool/case-004 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION ON (FILENAME = 'C:\extra\a.bpe', SIZE);
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_buffer) (keyword_pool) (keyword_extension) (keyword_on) (server_buffer_pool_options (option name: (identifier) value: (literal)) (option name: (identifier)))))))
+
+================================================================================
+ddl-database/extra-buffer-pool/case-005 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION ON (SIZE = 16 GB, FILENAME = 'C:\extra\a.bpe');
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_buffer) (keyword_pool) (keyword_extension) (keyword_on) (server_buffer_pool_options (option name: (identifier) value: (literal) value: (identifier)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-database/extra-buffer-pool/case-006 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION ON (FILENAME = extra_path, SIZE = 16 GB);
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_buffer) (keyword_pool) (keyword_extension) (keyword_on) (server_buffer_pool_options (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal) value: (identifier)))))))
+
+================================================================================
+ddl-database/extra-query-store/case-001 — LocalDB 17.0.1000.7 levels 100-170: rejected 12401
+================================================================================
+
+ALTER DATABASE ExtraStore SET QUERY_STORE = ON (OPERATION_MODE = READ_WRITE, OPERATION_MODE = READ_ONLY);
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) value: (identifier)) value: (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/extra-query-store/case-002 — LocalDB 17.0.1000.7 levels 100-170: rejected 12401
+================================================================================
+
+ALTER DATABASE ExtraStore SET QUERY_STORE = ON (CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 9, STALE_QUERY_THRESHOLD_DAYS = 10));
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+ddl-database/extra-query-store/case-003 — LocalDB 17.0.1000.7 levels 100-170: rejected 12401
+================================================================================
+
+ALTER DATABASE ExtraStore SET QUERY_STORE = ON (QUERY_CAPTURE_MODE = CUSTOM, QUERY_CAPTURE_POLICY = (EXECUTION_COUNT = 7, EXECUTION_COUNT = 8));
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) value: (identifier)) value: (option name: (identifier) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+ddl-database/extra-query-store/case-004 — LocalDB 17.0.1000.7 levels 100-170: rejected 12401
+================================================================================
+
+ALTER DATABASE ExtraStore SET QUERY_STORE = ON (CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 9), CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 10));
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) (option name: (identifier) value: (literal))) value: (option name: (identifier) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+ddl-database/extra-query-store/case-005 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ExtraStore SET QUERY_STORE = ON (QUERY_CAPTURE_POLICY = (STALE_CAPTURE_POLICY_THRESHOLD = 5 DAYS, TOTAL_EXECUTION_CPU_TIME_MS = 180));
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) (option name: (identifier) value: (literal) value: (identifier)) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+ddl-database/extra-query-store/case-006 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER DATABASE ExtraStore SET QUERY_STORE = ON (QUERY_CAPTURE_POLICY = (STALE_CAPTURE_POLICY_THRESHOLD = 5 MINUTES));
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) (option name: (identifier) value: (literal) value: (identifier))))))))
+
+================================================================================
+ddl-database/extra-query-store/case-007 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER DATABASE ExtraStore SET QUERY_STORE = ON (QUERY_CAPTURE_POLICY = (MYSTERY = 7));
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+ddl-database/extra-query-store/case-008 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ExtraStore SET QUERY_STORE (QUERY_CAPTURE_MODE = AUTO)
+extra_label: SELECT 62 AS extra_value;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) (option name: (identifier) value: (identifier))))) (statement (label_statement (identifier))) (statement (query_specification (select (keyword_select) (select_expression (term value: (literal) (keyword_as) alias: (identifier))))))))
+
+================================================================================
+ddl-database/extra-database-set/case-001 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ExtraStore SET AUTO_CLOSE ON, AUTO_CLOSE OFF;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_on)) (option name: (identifier) value: (keyword_off))))))
+
+================================================================================
+ddl-database/extra-database-set/case-002 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE ExtraStore SET RECOVERY SIMPLE, RECOVERY FULL;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+ddl-database/extra-database-set/case-003 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER DATABASE ExtraStore SET FILESTREAM (DIRECTORY_NAME = 'ExtraOne', DIRECTORY_NAME = 'ExtraTwo');
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-database/extra-database-set/case-004 — LocalDB 17.0.1000.7 levels 100-170: rejected 5091
+================================================================================
+
+ALTER DATABASE ExtraStore SET CHANGE_TRACKING = ON (AUTO_CLEANUP = ON, AUTO_CLEANUP = OFF);
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) value: (keyword_on)) value: (option name: (identifier) value: (keyword_off)))))))
+
+================================================================================
+ddl-database/extra-audit-clauses/case-001 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER SERVER AUDIT extra_audit REMOVE WHERE REMOVE WHERE;
+
+---
+
+(program (batch (statement (alter_server_audit (keyword_alter) (keyword_server) (keyword_audit) name: (identifier) (keyword_remove) (keyword_where))) (ERROR (identifier) (keyword_where))))
+
+================================================================================
+ddl-database/extra-audit-clauses/case-002 — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+ALTER SERVER AUDIT extra_audit TO SECURITY_LOG TO APPLICATION_LOG;
+
+---
+
+(program (batch (statement (alter_server_audit (keyword_alter) (keyword_server) (keyword_audit) name: (identifier) (keyword_to) (identifier) (keyword_to) (identifier)))))
+
+================================================================================
+ddl-database/extra-audit-clauses/case-003 — LocalDB 17.0.1000.7 levels 100-170: rejected 319
+================================================================================
+
+ALTER SERVER AUDIT extra_audit WITH (STATE = OFF) WITH (QUEUE_DELAY = 900);
+
+---
+
+(program (batch (statement (alter_server_audit (keyword_alter) (keyword_server) (keyword_audit) name: (identifier) (with_options (keyword_with) (option name: (identifier) value: (keyword_off))) (with_options (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-database/extra-audit-clauses/case-004 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER SERVER AUDIT extra_audit WHERE database_id = 8 REMOVE WHERE;
+
+---
+
+(program (batch (statement (alter_server_audit (keyword_alter) (keyword_server) (keyword_audit) name: (identifier) (where (keyword_where) predicate: (binary_expression left: (field name: (identifier)) right: (literal))))) (ERROR (identifier) (keyword_where))))
+
+================================================================================
+ddl-database/extra-audit-clauses/case-005 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER AUDIT extra_audit TO FILE (FILEPATH = 'C:\extra\audit\') WITH (STATE = OFF) WHERE database_id = 8;
+
+---
+
+(program (batch (statement (alter_server_audit (keyword_alter) (keyword_server) (keyword_audit) name: (identifier) (keyword_to) (identifier) (option name: (identifier) value: (literal)) (with_options (keyword_with) (option name: (identifier) value: (keyword_off))) (where (keyword_where) predicate: (binary_expression left: (field name: (identifier)) right: (literal)))))))
+
+================================================================================
+ddl-database/extra-audit-clauses/case-006 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER AUDIT extra_audit WITH (STATE = OFF, STATE = ON);
+
+---
+
+(program (batch (statement (alter_server_audit (keyword_alter) (keyword_server) (keyword_audit) name: (identifier) (with_options (keyword_with) (option name: (identifier) value: (keyword_off)) (option name: (identifier) value: (keyword_on)))))))
+
+================================================================================
+ddl-database/extra-encryption-options/case-001 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+CREATE DATABASE ENCRYPTION KEY WITH ALGORITHM ENCRYPTION BY SERVER CERTIFICATE extra_cert;
+
+---
+
+(program (batch (statement (create_database_encryption_key (keyword_create) (keyword_database) (keyword_encryption) (keyword_key) (with_clause (keyword_with) (option name: (identifier))) (keyword_encryption) (keyword_by) (keyword_server) (keyword_certificate) (identifier)))))
+
+================================================================================
+ddl-database/extra-encryption-options/case-002 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+CREATE DATABASE ENCRYPTION KEY WITH MYSTERY = AES_256 ENCRYPTION BY SERVER CERTIFICATE extra_cert;
+
+---
+
+(program (batch (statement (create_database_encryption_key (keyword_create) (keyword_database) (keyword_encryption) (keyword_key) (with_clause (keyword_with) (option name: (identifier) value: (identifier))) (keyword_encryption) (keyword_by) (keyword_server) (keyword_certificate) (identifier)))))
+
+================================================================================
+ddl-database/extra-encryption-options/case-003 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+CREATE DATABASE ENCRYPTION KEY WITH ALGORITHM = MYSTERY ENCRYPTION BY SERVER CERTIFICATE extra_cert;
+
+---
+
+(program (batch (statement (create_database_encryption_key (keyword_create) (keyword_database) (keyword_encryption) (keyword_key) (with_clause (keyword_with) (option name: (identifier) value: (identifier))) (keyword_encryption) (keyword_by) (keyword_server) (keyword_certificate) (identifier)))))
+
+================================================================================
+ddl-database/extra-encryption-options/case-004 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+CREATE DATABASE ENCRYPTION KEY WITH ALGORITHM = AES_128, ALGORITHM = AES_256 ENCRYPTION BY SERVER CERTIFICATE extra_cert;
+
+---
+
+(program (batch (statement (create_database_encryption_key (keyword_create) (keyword_database) (keyword_encryption) (keyword_key) (with_clause (keyword_with) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier))) (keyword_encryption) (keyword_by) (keyword_server) (keyword_certificate) (identifier)))))
+
+================================================================================
+ddl-database/extra-encryption-options/case-005 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+CREATE DATABASE ENCRYPTION KEY WITH ALGORITHM = AES_256 ENCRYPTION BY SERVER CERTIFICATE;
+
+---
+
+(program (batch (statement (create_database_encryption_key (keyword_create) (keyword_database) (keyword_encryption) (keyword_key) (with_clause (keyword_with) (option name: (identifier) value: (identifier))) (keyword_encryption) (keyword_by) (keyword_server) (keyword_certificate) (identifier (MISSING _identifier))))))
+
+================================================================================
+ddl-database/extra-encryption-options/case-006 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER DATABASE ENCRYPTION KEY REGENERATE WITH ALGORITHM;
+
+---
+
+(program (batch (statement (alter_database_encryption_key (keyword_alter) (keyword_database) (keyword_encryption) (keyword_key) (keyword_regenerate) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+ddl-database/extra-encryption-options/case-007 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER DATABASE ENCRYPTION KEY REGENERATE WITH MYSTERY = AES_256;
+
+---
+
+(program (batch (statement (alter_database_encryption_key (keyword_alter) (keyword_database) (keyword_encryption) (keyword_key) (keyword_regenerate) (with_clause (keyword_with) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/extra-encryption-options/case-008 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER DATABASE ENCRYPTION KEY REGENERATE WITH ALGORITHM = MYSTERY;
+
+---
+
+(program (batch (statement (alter_database_encryption_key (keyword_alter) (keyword_database) (keyword_encryption) (keyword_key) (keyword_regenerate) (with_clause (keyword_with) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/extra-encryption-options/case-009 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER DATABASE ENCRYPTION KEY REGENERATE WITH ALGORITHM = AES_128, ALGORITHM = AES_256;
+
+---
+
+(program (batch (statement (alter_database_encryption_key (keyword_alter) (keyword_database) (keyword_encryption) (keyword_key) (keyword_regenerate) (with_clause (keyword_with) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/extra-encryption-options/case-010 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER DATABASE ENCRYPTION KEY REGENERATE WITH ALGORITHM = AES_192 ENCRYPTION BY SERVER ASYMMETRIC KEY extra_asym;
+
+---
+
+(program (batch (statement (alter_database_encryption_key (keyword_alter) (keyword_database) (keyword_encryption) (keyword_key) (keyword_regenerate) (with_clause (keyword_with) (option name: (identifier) value: (identifier))))) (ERROR (identifier) (keyword_by) (keyword_server) (keyword_asymmetric) (keyword_key))))
+
+================================================================================
+ddl-database/extra-hardware-offload/case-001 — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+ALTER SERVER CONFIGURATION SET HARDWARE_OFFLOAD ON;
+
+---
+
+(program (ERROR (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_on)) (batch))
+
+================================================================================
+ddl-database/extra-hardware-offload/case-002 — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+ALTER SERVER CONFIGURATION SET HARDWARE_OFFLOAD OFF;
+
+---
+
+(program (ERROR (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_off)) (batch))
+
+================================================================================
+ddl-database/extra-hardware-offload/case-003 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER SERVER CONFIGURATION SET HARDWARE_OFFLOAD = ON;
+
+---
+
+(program (ERROR (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_on)) (batch))
+
+================================================================================
+ddl-database/extra-hardware-offload/case-004 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER SERVER CONFIGURATION SET HARDWARE_OFFLOAD = OFF;
+
+---
+
+(program (ERROR (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_off)) (batch))
+
+================================================================================
+ddl-database/extra-keyword-boundaries/case-001 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE scoped SET RECOVERY SIMPLE;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+ddl-database/extra-keyword-boundaries/case-002 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE encryption WITH LEDGER = OFF;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_with) (option name: (identifier) value: (keyword_off))))))
+
+================================================================================
+ddl-database/extra-keyword-boundaries/case-003 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE audit ADD FILEGROUP extra_fg;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_add) (keyword_filegroup) (identifier)))))
+
+================================================================================
+ddl-database/extra-keyword-boundaries/case-004 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE availability
+extra_label: SELECT 63 AS extra_value;
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier))) (statement (label_statement (identifier))) (statement (query_specification (select (keyword_select) (select_expression (term value: (literal) (keyword_as) alias: (identifier))))))))
+
+================================================================================
+ddl-database/edge/1 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE AVAILABILITY GROUP edge_ag FOR REPLICA ON 'edge-node' WITH (ENDPOINT_URL = 'TCP://edge.example:5022', AVAILABILITY_MODE = SYNCHRONOUS_COMMIT, FAILOVER_MODE = MANUAL);
+
+---
+
+(program (batch (statement (create_availability_group (keyword_create) (keyword_availability) (keyword_group) name: (identifier) (keyword_for) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/edge/2 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE AVAILABILITY GROUP edge_ag FOR DATABASE EdgeStore REPLICA ON 'edge-node' WITH (ENDPOINT_URL = 'TCP://edge.example:5022', AVAILABILITY_MODE = SYNCHRONOUS_COMMIT, FAILOVER_MODE = MANUAL) LISTENER 'edge-listener' (WITH DHCP);
+
+---
+
+(program (batch (statement (create_availability_group (keyword_create) (keyword_availability) (keyword_group) name: (identifier) (keyword_for) (keyword_database) (identifier) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier))) (keyword_listener) (literal) (availability_listener (keyword_with) (keyword_dhcp))))))
+
+================================================================================
+ddl-database/edge/3 — LocalDB 17.0.1000.7 levels 100-170: rejected 35236
+================================================================================
+
+CREATE AVAILABILITY GROUP edge_ag FOR DATABASE EdgeStore REPLICA ON 'edge-node' WITH (AVAILABILITY_MODE = SYNCHRONOUS_COMMIT, FAILOVER_MODE = MANUAL);
+
+---
+
+(program (batch (statement (create_availability_group (keyword_create) (keyword_availability) (keyword_group) name: (identifier) (keyword_for) (keyword_database) (identifier) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/edge/4 — LocalDB 17.0.1000.7 levels 100-170: rejected 41198
+================================================================================
+
+CREATE AVAILABILITY GROUP edge_ag FOR DATABASE EdgeStore REPLICA ON 'edge-node' WITH (ENDPOINT_URL = 'TCP://edge.example:5022', FAILOVER_MODE = MANUAL);
+
+---
+
+(program (batch (statement (create_availability_group (keyword_create) (keyword_availability) (keyword_group) name: (identifier) (keyword_for) (keyword_database) (identifier) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/edge/5 — LocalDB 17.0.1000.7 levels 100-170: rejected 41197
+================================================================================
+
+CREATE AVAILABILITY GROUP edge_ag FOR DATABASE EdgeStore REPLICA ON 'edge-node' WITH (ENDPOINT_URL = 'TCP://edge.example:5022', AVAILABILITY_MODE = SYNCHRONOUS_COMMIT);
+
+---
+
+(program (batch (statement (create_availability_group (keyword_create) (keyword_availability) (keyword_group) name: (identifier) (keyword_for) (keyword_database) (identifier) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+ddl-database/edge/6 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP edge_ag MODIFY REPLICA ON 'edge-node' WITH (PRIMARY_ROLE (ALLOW_CONNECTIONS = ALL));
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_modify) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) (option name: (identifier) value: (keyword_all))))))))
+
+================================================================================
+ddl-database/edge/7 — LocalDB 17.0.1000.7 levels 100-170: rejected 10786
+================================================================================
+
+ALTER AVAILABILITY GROUP edge_ag MODIFY REPLICA ON 'edge-node' WITH (PRIMARY_ROLE (ALLOW_CONNECTIONS = ALL, READ_ONLY_ROUTING_LIST = ('edge-a')));
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_modify) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) (option name: (identifier) value: (keyword_all)) (option name: (identifier) (literal))))))))
+
+================================================================================
+ddl-database/edge/8 — LocalDB 17.0.1000.7 levels 100-170: rejected 10786
+================================================================================
+
+ALTER AVAILABILITY GROUP edge_ag MODIFY REPLICA ON 'edge-node' WITH (SECONDARY_ROLE (ALLOW_CONNECTIONS = READ_ONLY, READ_ONLY_ROUTING_URL = 'TCP://edge.example:1433'));
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_modify) (keyword_replica) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+ddl-database/edge/9 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION ON (FILENAME = 'C:\edge.bpe', SIZE = 100);
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_buffer) (keyword_pool) (keyword_extension) (keyword_on) (server_buffer_pool_options (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-database/edge/10 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION ON (FILENAME = 'C:\edge.bpe', SIZE = '12' GB);
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_buffer) (keyword_pool) (keyword_extension) (keyword_on) (server_buffer_pool_options (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal) value: (identifier)))))))
+
+================================================================================
+ddl-database/edge/11 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION ON (FILENAME = 'C:\edge.bpe', SIZE = 12 TB);
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_buffer) (keyword_pool) (keyword_extension) (keyword_on) (server_buffer_pool_options (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal) value: (identifier)))))))
+
+================================================================================
+ddl-database/edge/12 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE EdgeStore SET QUERY_STORE CLEAR;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+ddl-database/edge/13 — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE EdgeStore SET QUERY_STORE = ON (QUERY_CAPTURE_POLICY = (STALE_CAPTURE_POLICY_THRESHOLD = 7 HOURS));
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) (option name: (identifier) value: (literal) value: (identifier))))))))
+
+================================================================================
+ddl-database/comments/buffer-unit — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION ON (FILENAME = N'C:\probe\comment.bpe', SIZE = 12 /* unit */ GB);
+
+---
+
+(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_buffer) (keyword_pool) (keyword_extension) (keyword_on) (server_buffer_pool_options (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal) (marginalia) value: (identifier)))))))
+
+================================================================================
+ddl-database/comments/capture-unit — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER DATABASE d SET QUERY_STORE = ON (QUERY_CAPTURE_POLICY = (STALE_CAPTURE_POLICY_THRESHOLD = 7 /* unit */ HOURS));
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_set) (option name: (identifier) value: (keyword_on) value: (option name: (identifier) (option name: (identifier) value: (literal) (marginalia) value: (identifier))))))))
+
+================================================================================
+ddl-database/comments/group-comma — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE DATABASE d ON (NAME = f, FILENAME = 'C:\probe\a.mdf'), FILEGROUP fg (NAME = g, FILENAME = 'C:\probe\b.ndf'), /* next */ FILEGROUP fh (NAME = h, FILENAME = 'C:\probe\c.ndf');
+
+---
+
+(program (batch (statement (create_database (keyword_create) (keyword_database) name: (identifier) (keyword_on) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal))) (database_filegroup (keyword_filegroup) name: (identifier) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal)))) (marginalia) (database_filegroup (keyword_filegroup) name: (identifier) (database_file (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+ddl-database/comments/listener-ip — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP a ADD LISTENER 'l' (WITH IP (('192.0.2.3' /* address */, '255.255.255.0')), PORT = 1433);
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_add) (keyword_listener) (literal) (availability_listener (keyword_with) (keyword_ip) (listener_ip (literal) (marginalia) (literal)) (keyword_port) (literal))))))
+
+================================================================================
+ddl-database/distributed/listener — LocalDB 17.0.1000.7 levels 100-170: rejected 155
+================================================================================
+
+ALTER AVAILABILITY GROUP edge_dist MODIFY AVAILABILITY GROUP ON 'edge_east' WITH (LISTENER = 'TCP://edge.example:5022');
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_modify) (keyword_availability) (keyword_group) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+ddl-database/distributed/listener_url — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+ALTER AVAILABILITY GROUP edge_dist MODIFY AVAILABILITY GROUP ON 'edge_east' WITH (LISTENER_URL = 'TCP://edge.example:5022');
+
+---
+
+(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_modify) (keyword_availability) (keyword_group) (keyword_on) (availability_replica (literal) (keyword_with) (option name: (identifier) value: (literal)))))))
