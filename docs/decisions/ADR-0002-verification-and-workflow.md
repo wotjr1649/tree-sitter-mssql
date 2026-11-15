@@ -42,11 +42,15 @@ The goal is complete T-SQL support with zero defects (ADR-0001: SQL Server's par
    A known exception that remains is reported as "no new regressions, N known exceptions", not as zero.
    Context-dependent rejections (conflicting hints, boolean versus scalar, names, permissions) are not grammar
    defects. grammar-kit's `CheckTSQLContext` diagnoses them, and this repository classifies them as `contextual`.
-3. **Verified engine profile.** SQL Server 2025 (17.x) at compatibility levels 110 and 170.
+3. **Verified engine profile.** SQL Server 2025 (17.x) at every compatibility level it supports: 100, 110, 120,
+   130, 140, 150, 160 and 170 (owner decision, 2026-11-15; first measured the same day on LocalDB 17.0.1000.7: levels
+   100 to 120 gave identical verdicts on the 726 cases, and 15 cases change verdict between levels).
    - A case is positive if any verified level accepts it, and a syntax negative only if every level rejects it on
      syntax grounds.
    - Other engine versions and Azure are marked unverified rather than claimed.
-   - Verdicts record engine build, edition, platform, level, initial `SET` state, mode and case hash.
+   - Verdicts record engine build, edition, platform, level, initial `SET` state, mode and case hash. Only
+     `PARSEONLY` verdicts count; errors obtained by compiling (for example 4193, 4194, 4406 in grammar-kit's data)
+     are context, not syntax.
 4. **Oracle mechanics.**
    - CI replays committed verdicts on every pull request; verdicts depend on the case and the engine, not on the
      grammar.
@@ -78,7 +82,7 @@ The goal is complete T-SQL support with zero defects (ADR-0001: SQL Server's par
    - Dependabot targets `main`. The tree-sitter CLI is excluded from automatic version updates because consumers
      regenerate with the same pinned version.
 9. **Upstream's deliberate error tests.** `test/corpus/errors.txt` pins `SELECT 1 WHERE 1=1;` and
-   `SELECT 1 GROUP BY 1;` as errors, while SQL Server accepts both at levels 110 and 170. They are rewritten as
+   `SELECT 1 GROUP BY 1;` as errors, while SQL Server accepts both (measured at levels 110 and 170 on 2026-11-15). They are rewritten as
    positive cases in the change that fixes the grammar, and the divergence is recorded for upstream merges.
 10. **`docs/accepted-gaps.md`** stays as the ledger, rewritten against engine verdicts. Each row carries a case ID,
     direction, profile and issue, and rows not yet measured are marked `UNVERIFIED`.
