@@ -8,5 +8,6 @@ license = "MIT"
 publish = false
 
 [dependencies]
-tree-sitter = "~0.27.0"
+# Exact: the checker must run the same runtime as the pinned CLI (0.27.2) and go-treesitter.
+tree-sitter = "=0.27.2"
 tree-sitter-mssql = { path = "../.." }

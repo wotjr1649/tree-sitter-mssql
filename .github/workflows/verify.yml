@@ -199,7 +199,7 @@ jobs:
         # The shared target directory keeps its build in the Rust cache.
         env:
           CARGO_TARGET_DIR: target
-        run: cargo run --quiet --manifest-path tools/tree-check/Cargo.toml -- test/fixtures/*.sql
+        run: cargo run --quiet --locked --manifest-path tools/tree-check/Cargo.toml -- test/fixtures/*.sql
 
       - name: Report fixture parse performance
         run: |
@@ -226,8 +226,8 @@ jobs:
           CARGO_TARGET_DIR: target
         run: |
           cargo fmt --check --manifest-path tools/tree-check/Cargo.toml
-          cargo clippy --all-targets --manifest-path tools/tree-check/Cargo.toml -- -D warnings
-          cargo test --manifest-path tools/tree-check/Cargo.toml
+          cargo clippy --locked --all-targets --manifest-path tools/tree-check/Cargo.toml -- -D warnings
+          cargo test --locked --manifest-path tools/tree-check/Cargo.toml
 
   node-binding:
     name: Node binding build/test
