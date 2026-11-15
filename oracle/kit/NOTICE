@@ -29,3 +29,39 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+oracle/probes/kit-routes.jsonl and oracle/kit/route-edits.jsonl are derived, under the same terms, from
+grammar-kit's src/testdata/native/routes/tsql.json (sha256
+7ab8ee7ce3fc7898fac6d646e4becc61dcb0b1c4a5e5cb7f9d7ec4f8ca6faaf4, same commit): 640 case sources and the
+edit steps of 19 of them. grammar-kit's expectations were not imported; the verdicts come from this
+repository's runner.
+
+Two of those cases, kit-routes/w-tsql-B01-1 and kit-routes/w-tsql-B02-1, are the sample scripts
+Index-Information/view_HypObjects.sql and Waits-and-Latches/view_Waits.sql of
+microsoft/tigertoolbox@fe47c31ec2f7979a994520d546c7abf0b246c832, licensed as follows:
+
+Microsoft SQL Server Sample Code
+
+Copyright (c) Microsoft Corporation
+
+All rights reserved.
+
+MIT License.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
