@@ -25,6 +25,17 @@ export default {
 
   merge: ($) =>
     seq(
+      $._merge_prefix,
+      $.keyword_on,
+      field('predicate', $._expression),
+      repeat1($._merge_when_clause),
+      optional($.output_clause),
+      optional($.option_clause),
+    ),
+
+  // Reduce the optional source/target forms before expanding the ON expression.
+  _merge_prefix: ($) =>
+    seq(
       $.keyword_merge,
       optional($.top_clause),
       optional($.keyword_into),
@@ -34,11 +45,6 @@ export default {
       choice($.subquery, $.invocation, $.object_reference),
       optional($.table_hint),
       aliased_with_columns($),
-      $.keyword_on,
-      field('predicate', $._expression),
-      repeat1($._merge_when_clause),
-      optional($.output_clause),
-      optional($.option_clause),
     ),
 
   // SQL Server allows INSERT only under NOT MATCHED [BY TARGET], and
