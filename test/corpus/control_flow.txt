@@ -910,3 +910,75 @@ SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
         (keyword_isolation)
         (keyword_level)
         (keyword_serializable)))))
+
+================================================================================
+A parenthesized IF, WHILE or MERGE condition is a parenthesized expression
+================================================================================
+
+IF (1 = 1) PRINT 1;
+WHILE (1 = 0) BREAK;
+MERGE dbo.t AS t USING dbo.s AS s ON (t.id = s.id) WHEN MATCHED AND (s.a > 0) THEN DELETE;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (if_statement
+        (keyword_if)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (literal)
+            right: (literal)))
+        consequence: (statement
+          (print_statement
+            (keyword_print)
+            (literal)))))
+    (statement
+      (while_statement
+        (keyword_while)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (literal)
+            right: (literal)))
+        body: (statement
+          (break_statement
+            (keyword_break)))))
+    (statement
+      (merge
+        (keyword_merge)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_as)
+        alias: (identifier)
+        (keyword_using)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_as)
+        alias: (identifier)
+        (keyword_on)
+        predicate: (parenthesized_expression
+          (binary_expression
+            left: (field
+              (object_reference
+                name: (identifier))
+              name: (identifier))
+            right: (field
+              (object_reference
+                name: (identifier))
+              name: (identifier))))
+        (merge_when_clause
+          (keyword_when)
+          (keyword_matched)
+          (keyword_and)
+          predicate: (parenthesized_expression
+            (binary_expression
+              left: (field
+                (object_reference
+                  name: (identifier))
+                name: (identifier))
+              right: (literal)))
+          (keyword_then)
+          (keyword_delete))))))

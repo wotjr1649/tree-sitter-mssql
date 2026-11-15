@@ -83,7 +83,7 @@ export default {
   while_statement: ($) =>
     seq(
       $.keyword_while,
-      optional_parenthesis(field('condition', $._expression)),
+      field('condition', $._expression),
       field('body', choice($.statement, $.block)),
     ),
 
@@ -93,7 +93,7 @@ export default {
   if_statement: ($) =>
     seq(
       $.keyword_if,
-      optional_parenthesis(field('condition', $._expression)),
+      field('condition', $._expression),
       field('consequence', choice($.statement, $.block)),
       optional(field('alternative', $.else_clause)),
     ),

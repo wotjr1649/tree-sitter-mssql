@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- A parenthesized `IF`, `WHILE`, `MERGE ... ON` or `WHEN [NOT] MATCHED ... AND` condition is now one `parenthesized_expression` in the `condition`/`predicate` field (for example `IF (a = 1)` gives `condition: (parenthesized_expression (binary_expression ...))`), instead of the statement owning the parentheses. No node kind or field is added or removed. This removes a duplicated copy of the expression grammar: `parser.c` -11 %, parse states -8.5 %, large states -15 %.
+
 ### Fixed
 
 - Parse EXTERNAL object, FULLTEXT and TCP ENDPOINT DDL sub-forms; enforce engine-verified option sets in tree-check without changing existing clean trees.

@@ -9872,41 +9872,11 @@
           "name": "keyword_while"
         },
         {
-          "type": "PREC_RIGHT",
-          "value": 0,
+          "type": "FIELD",
+          "name": "condition",
           "content": {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "FIELD",
-                "name": "condition",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "_expression"
-                }
-              },
-              {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "STRING",
-                    "value": "("
-                  },
-                  {
-                    "type": "FIELD",
-                    "name": "condition",
-                    "content": {
-                      "type": "SYMBOL",
-                      "name": "_expression"
-                    }
-                  },
-                  {
-                    "type": "STRING",
-                    "value": ")"
-                  }
-                ]
-              }
-            ]
+            "type": "SYMBOL",
+            "name": "_expression"
           }
         },
         {
@@ -9949,41 +9919,11 @@
           "name": "keyword_if"
         },
         {
-          "type": "PREC_RIGHT",
-          "value": 0,
+          "type": "FIELD",
+          "name": "condition",
           "content": {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "FIELD",
-                "name": "condition",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "_expression"
-                }
-              },
-              {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "STRING",
-                    "value": "("
-                  },
-                  {
-                    "type": "FIELD",
-                    "name": "condition",
-                    "content": {
-                      "type": "SYMBOL",
-                      "name": "_expression"
-                    }
-                  },
-                  {
-                    "type": "STRING",
-                    "value": ")"
-                  }
-                ]
-              }
-            ]
+            "type": "SYMBOL",
+            "name": "_expression"
           }
         },
         {
@@ -23071,41 +23011,11 @@
           "name": "keyword_on"
         },
         {
-          "type": "PREC_RIGHT",
-          "value": 0,
+          "type": "FIELD",
+          "name": "predicate",
           "content": {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "FIELD",
-                "name": "predicate",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "_expression"
-                }
-              },
-              {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "STRING",
-                    "value": "("
-                  },
-                  {
-                    "type": "FIELD",
-                    "name": "predicate",
-                    "content": {
-                      "type": "SYMBOL",
-                      "name": "_expression"
-                    }
-                  },
-                  {
-                    "type": "STRING",
-                    "value": ")"
-                  }
-                ]
-              }
-            ]
+            "type": "SYMBOL",
+            "name": "_expression"
           }
         },
         {
@@ -23198,41 +23108,11 @@
                     "name": "keyword_and"
                   },
                   {
-                    "type": "PREC_RIGHT",
-                    "value": 0,
+                    "type": "FIELD",
+                    "name": "predicate",
                     "content": {
-                      "type": "CHOICE",
-                      "members": [
-                        {
-                          "type": "FIELD",
-                          "name": "predicate",
-                          "content": {
-                            "type": "SYMBOL",
-                            "name": "_expression"
-                          }
-                        },
-                        {
-                          "type": "SEQ",
-                          "members": [
-                            {
-                              "type": "STRING",
-                              "value": "("
-                            },
-                            {
-                              "type": "FIELD",
-                              "name": "predicate",
-                              "content": {
-                                "type": "SYMBOL",
-                                "name": "_expression"
-                              }
-                            },
-                            {
-                              "type": "STRING",
-                              "value": ")"
-                            }
-                          ]
-                        }
-                      ]
+                      "type": "SYMBOL",
+                      "name": "_expression"
                     }
                   }
                 ]
@@ -23321,41 +23201,11 @@
                     "name": "keyword_and"
                   },
                   {
-                    "type": "PREC_RIGHT",
-                    "value": 0,
+                    "type": "FIELD",
+                    "name": "predicate",
                     "content": {
-                      "type": "CHOICE",
-                      "members": [
-                        {
-                          "type": "FIELD",
-                          "name": "predicate",
-                          "content": {
-                            "type": "SYMBOL",
-                            "name": "_expression"
-                          }
-                        },
-                        {
-                          "type": "SEQ",
-                          "members": [
-                            {
-                              "type": "STRING",
-                              "value": "("
-                            },
-                            {
-                              "type": "FIELD",
-                              "name": "predicate",
-                              "content": {
-                                "type": "SYMBOL",
-                                "name": "_expression"
-                              }
-                            },
-                            {
-                              "type": "STRING",
-                              "value": ")"
-                            }
-                          ]
-                        }
-                      ]
+                      "type": "SYMBOL",
+                      "name": "_expression"
                     }
                   }
                 ]
@@ -23487,41 +23337,11 @@
                     "name": "keyword_and"
                   },
                   {
-                    "type": "PREC_RIGHT",
-                    "value": 0,
+                    "type": "FIELD",
+                    "name": "predicate",
                     "content": {
-                      "type": "CHOICE",
-                      "members": [
-                        {
-                          "type": "FIELD",
-                          "name": "predicate",
-                          "content": {
-                            "type": "SYMBOL",
-                            "name": "_expression"
-                          }
-                        },
-                        {
-                          "type": "SEQ",
-                          "members": [
-                            {
-                              "type": "STRING",
-                              "value": "("
-                            },
-                            {
-                              "type": "FIELD",
-                              "name": "predicate",
-                              "content": {
-                                "type": "SYMBOL",
-                                "name": "_expression"
-                              }
-                            },
-                            {
-                              "type": "STRING",
-                              "value": ")"
-                            }
-                          ]
-                        }
-                      ]
+                      "type": "SYMBOL",
+                      "name": "_expression"
                     }
                   }
                 ]
