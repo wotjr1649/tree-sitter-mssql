@@ -267,19 +267,20 @@ export default {
       1,
       seq(
         $.object_reference,
-        wrapped_in_parenthesis(
-          seq(
-            comma_list(
-              seq(
-                optional($.keyword_distinct),
-                field('parameter', choice($.term, $.keyword_default)),
-              ),
-            ),
-            optional($.returning_clause),
-            optional($.json_wrapper_clause),
-          ),
-        ),
+        $._invocation_arguments,
         optional(seq($.keyword_within, $.keyword_group, wrapped_in_parenthesis($.order_by))),
+      ),
+    ),
+
+  // Reduce the argument list before the optional suffix to share expression states.
+  _invocation_arguments: ($) =>
+    wrapped_in_parenthesis(
+      seq(
+        comma_list(
+          seq(optional($.keyword_distinct), field('parameter', choice($.term, $.keyword_default))),
+        ),
+        optional($.returning_clause),
+        optional($.json_wrapper_clause),
       ),
     ),
 
