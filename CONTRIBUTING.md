@@ -23,6 +23,7 @@ cargo build
 npx --yes --package=tree-sitter-cli@0.27.2 -- tree-sitter test
 node test/generate-node-kinds.mjs
 node test/check-registries.mjs
+node tools/parser-cost.mjs
 npm run lint
 npm run format:check
 cargo fmt --check
