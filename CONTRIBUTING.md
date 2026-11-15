@@ -49,3 +49,24 @@ cargo test
 | [docs/consuming.md](docs/consuming.md) | Symbol, ABI, query files, node-kind stability |
 | [docs/development.md](docs/development.md) | Building, testing, linting, fuzzing |
 | [docs/accepted-gaps.md](docs/accepted-gaps.md) | Known differences from SQL Server |
+
+## Fixing a defect
+
+1. **Issue.** Open one issue per defect with the `defect` template: the minimal T-SQL input, SQL Server's verdict under `SET PARSEONLY ON` with compatibility level and engine version, and the current tree or `ERROR` excerpt.
+2. **Failing case.** Add a corpus case under `test/corpus/` or an oracle case that fails before the change. SQL Server's verdict decides what is valid; where an upstream test or [docs/accepted-gaps.md](docs/accepted-gaps.md) disagrees, the change names the case and the compatibility level.
+3. **Grammar change.** Edit `grammar.js` or `grammar/**/*.js` (or `src/scanner.c`), never the generated files.
+4. **Regenerate.** Run `tree-sitter generate` with CLI 0.27.2 and commit `src/parser.c`, `src/grammar.json`, `src/node-types.json` and `test/node-kinds.txt` with the grammar change.
+5. **Gates.** Run the checks in "Validation before a pull request". Existing corpus cases and fixtures keep passing unless the change alters them on purpose and says why.
+
+Errors that need context (conflicting hints, boolean versus scalar, names, permissions) are not grammar defects; label them `contextual` instead of bending the grammar.
+
+Issue labels:
+
+| Label | Meaning |
+| --- | --- |
+| `under-accept` | SQL Server accepts the input; the tree has `ERROR` or `MISSING` |
+| `over-accept` | SQL Server rejects the input with a syntax error; the tree is clean |
+| `contextual` | SQL Server rejects the input for a reason that needs context, outside the grammar |
+| `oracle` | The SQL Server oracle runner, its cases or its verdict files |
+| `upstream-sync` | Merging changes from `alfpricot/tree-sitter-mssql` |
+| `breaking` | Removes or renames a node kind or field name |

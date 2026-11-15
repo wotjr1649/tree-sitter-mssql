@@ -1,0 +1,49 @@
+name: Grammar defect
+description: The tree disagrees with SQL Server's parser on a T-SQL input
+title: "defect: "
+body:
+  - type: textarea
+    id: input
+    attributes:
+      label: Minimal T-SQL input
+      description: The smallest input that shows the defect.
+      render: sql
+    validations:
+      required: true
+  - type: input
+    id: verdict
+    attributes:
+      label: SQL Server verdict
+      description: Under SET PARSEONLY ON, "accepted" or the error number(s), e.g. "Msg 102".
+    validations:
+      required: true
+  - type: input
+    id: level
+    attributes:
+      label: Compatibility level and engine version
+      description: e.g. "170, SQL Server 2025 LocalDB 17.0.1000.7".
+    validations:
+      required: true
+  - type: textarea
+    id: tree
+    attributes:
+      label: Current tree or ERROR excerpt
+      description: Output of tree-sitter parse, trimmed to the relevant part.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected shape (if known)
+  - type: dropdown
+    id: source
+    attributes:
+      label: Source
+      options:
+        - oracle
+        - kit
+        - user
+        - upstream
+    validations:
+      required: true
