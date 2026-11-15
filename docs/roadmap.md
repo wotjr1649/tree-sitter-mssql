@@ -23,8 +23,8 @@ Done when the foundation is merged into `main` by merge commit and the full `Ver
   failures reported as failures.
 - Gates: offline verdict replay on every pull request, per-case regression gates, and the cost report.
 
-Done when the counts 726 / 681 judged / 45 unknown and 708 / 665 distinct sources are reproduced, the levels 110
-and 170 are both recorded, and an injected regression makes CI fail.
+Done when the counts 726 / 681 judged / 45 unknown and 708 / 665 distinct sources are reproduced, every level from 100
+to 170 is recorded, and an injected regression makes CI fail.
 
 ## M2: Defect classes
 
