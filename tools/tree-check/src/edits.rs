@@ -242,4 +242,76 @@ mod tests {
         assert_eq!((h.len(), h[0].edits[0].1.as_str()), (1, "2"));
         assert!(read_histories("{\"id\":1}").is_err());
     }
+    #[test]
+    fn ddl_table_boundaries_recover_incrementally() {
+        let cases: Vec<Value> = include_str!("../../../oracle/probes/ddl-table.jsonl")
+            .lines()
+            .map(|line| serde_json::from_str(line).unwrap())
+            .collect();
+        let boundaries = [
+            ("column-online-off", "ONLINE = OFF", "ONLINE ="),
+            ("column-xml-content", "CONTENT dbo.schemas", "CONTENT"),
+            ("drop-mixed", "COLUMN IF EXISTS c", "COLUMN IF EXISTS"),
+            ("period-add", "vf,vt", "vf"),
+            ("period-nested-comment", " c*/", " c"),
+            ("switch-wait", "TO dbo.archive", "TO"),
+            (
+                "system-versioning",
+                "HISTORY_TABLE = dbo.hist",
+                "HISTORY_TABLE = dbo.",
+            ),
+            ("index-rebuild-all", "3 TO 5", "3 TO"),
+            ("index-rebuild-one", "PARTITION = 2", "PARTITION ="),
+            ("column-default-values", "WITH VALUES", "WITH"),
+            ("constraint-fillfactor", "FILLFACTOR = 90", "FILLFACTOR ="),
+            ("computed-foreign", "REFERENCES dbo.p(id)", "REFERENCES"),
+            ("create-temporal", "GENERATED ALWAYS AS", "GENERATED ALWAYS"),
+            (
+                "create-column-set",
+                "COLUMN_SET FOR ALL_SPARSE_COLUMNS",
+                "COLUMN_SET FOR",
+            ),
+            (
+                "memory-add-inline-hash",
+                "BUCKET_COUNT = 256",
+                "BUCKET_COUNT =",
+            ),
+            ("index-xml-add", "MAXLENGTH (20)", "MAXLENGTH ()"),
+            ("create-connection", "dbo.p TO dbo.q", "dbo.p TO"),
+            (
+                "create-filetable",
+                "FILETABLE_DIRECTORY = 'docs'",
+                "FILETABLE_DIRECTORY =",
+            ),
+            (
+                "filter-null",
+                "FILTER_PREDICATE = NULL",
+                "FILTER_PREDICATE =",
+            ),
+        ];
+        let mut p = parser();
+        for (id, find, replace) in boundaries {
+            let case = cases
+                .iter()
+                .find(|c| c["id"] == format!("ddl-table/{id}"))
+                .unwrap();
+            let source = format!("SELECT N'한글';\n{}", case["source"].as_str().unwrap());
+            assert!(
+                !p.parse(&source, None).unwrap().root_node().has_error(),
+                "{id}: initial"
+            );
+            let broken = source.replacen(find, replace, 1);
+            assert!(
+                p.parse(&broken, None).unwrap().root_node().has_error(),
+                "{id}: broken"
+            );
+            assert_eq!(broken.replacen(replace, find, 1), source, "{id}: restored");
+            let history = History {
+                id: id.into(),
+                source,
+                edits: vec![(find.into(), replace.into()), (replace.into(), find.into())],
+            };
+            assert!(check_history(&mut p, &history).unwrap().is_empty(), "{id}");
+        }
+    }
 }

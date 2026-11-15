@@ -88,6 +88,36 @@ cases still have a clean tree:
 | `table-hints/maxdop-2147483648`, `table-hints/maxdop-1e0`, `table-hints/maxdop-0x1` | 102 | Query-hint number syntax over-acceptance, outside the table-hint rule |
 | `hint-rules/merge-source-nolock`, `hint-rules/merge-source-index` | 156 | `MERGE ... USING src WITH (...) AS s`: the grammar takes hints before the source alias, where SQL Server does not |
 
+## Table and index DDL: measured residual gaps (R10)
+
+The table/index forms in `oracle/probes/ddl-table.jsonl` were measured with the committed
+PARSEONLY runner on LocalDB 17.0.1000.7 at levels 100–170. All 90 engine-accepted probes
+parse cleanly. Ten rejected probes still parse cleanly; the five existing route rejections
+that become clean are also listed below. These are not claims of syntax validity.
+
+| Cases | Engine error | Remaining check |
+| --- | --- | --- |
+| `ddl-table/column-online-on`, `drop-constraint-online`; routes `alt-tsql-V22-r004`, `alt-tsql-B03-r118`, `r165`, `r166` | 1712; resumable routes also 11905 | Express edition does not support ONLINE/resumable operations. Environment-dependent, outside the grammar. |
+| `ddl-table/index-resume` (already clean before this change) | 11905 | Same edition limit. |
+| `ddl-table/system-versioning-year` | 13539 | HISTORY_TABLE requires a two-part name; the shared option rule also accepts three parts. A decidable name-shape constraint remains. |
+| `ddl-table/index-partition-range`, `index-partition-reverse` | 10737 | These single DATA_COMPRESSION clauses need REBUILD PARTITION=ALL. Do not infer that the descending range itself caused the error. The accepted route r111 also uses XML_COMPRESSION without PARTITION=ALL, so a blanket restriction would contradict the oracle. |
+| `ddl-table/index-wrong-partition-option` | 156 | ON PARTITIONS is currently a shared option suffix; restrict its applicability to the compression options in the constraint layer (ADR-0003). |
+| `ddl-table/xml-null-schema` | 156 | The shared object-reference rule accepts the reserved word NULL as a schema-collection name. This is a syntax/name-token gap, not a catalog lookup. |
+| `ddl-table/plain-keyword-names` (already clean) | 156 | Unquoted reserved-name acceptance in the existing identifier rule; separate identifier/keyword work. |
+| `ddl-table/create-duplicate-online` (already clean) | 102 | Duplicate SYSTEM_VERSIONING options; an ADR-0003 uniqueness check remains. |
+| `kit-routes/alt-tsql-B04-r040` | 35310 | Columnstore indexes are forbidden on table variables/types. The shared column-definition rule intentionally models their syntax; applicability is decidable by the check layer. |
+
+The selective XML index reference documents a trailing WITH option list, but LocalDB rejects
+`FOR (ADD p='/x') WITH (PAD_INDEX=ON)`, the MAXDOP and DROP_EXISTING controls, and route
+`alt-tsql-B03-r120` with 319 at every measured level. They stay errors. Conversely, XQUERY
+without a type is accepted when followed by MAXLENGTH or SINGLETON, but bare AS XQUERY is
+102. Each is pinned in the new corpus. This follows engine evidence, not the broader diagram:
+[ALTER INDEX (Selective XML Indexes)](https://learn.microsoft.com/en-us/sql/t-sql/statements/alter-index-selective-xml-indexes?view=sql-server-ver17).
+
+Only LocalDB 2025 was run for these new probes; the committed verdicts from other engines
+were replayed, not remeasured. The remaining 309 engine-accepted errors in the complete oracle
+are outside this defect family.
+
 ## Adding an entry
 
 When a review or a probe finds a new gap, add a row here in the same pass as the corpus case (or

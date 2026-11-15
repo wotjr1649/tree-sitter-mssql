@@ -66,23 +66,17 @@ export default {
           seq(
             optional(seq($.keyword_with, choice($.keyword_check, $.keyword_nocheck))),
             $.keyword_add,
-            comma_list(choice($.column_definition, $.constraint, $.period_for_system_time), true),
-          ),
-          seq(
-            $.keyword_drop,
-            choice(
-              seq($.keyword_column, optional($._if_exists), comma_list($.identifier, true)),
-              // DROP PERIOD FOR SYSTEM_TIME takes no column list — unlike the
-              // ADD form (`period_for_system_time` in column-lists.js), the
-              // columns are already known from the existing period definition.
-              $.keyword_period_for_system_time,
-              seq(
-                optional($.keyword_constraint),
-                optional($._if_exists),
-                comma_list($.identifier, true),
+            comma_list(
+              choice(
+                $.column_definition,
+                $.constraint,
+                $.period_for_system_time,
+                alias($._alter_add_index, $.constraint),
               ),
+              true,
             ),
           ),
+          seq($.keyword_drop, comma_list($._table_drop_item, true)),
           seq(
             $.keyword_alter,
             $.keyword_column,
@@ -92,6 +86,7 @@ export default {
                 field('type', $._type),
                 optional(seq($.keyword_collate, $.identifier)),
                 optional(choice($.keyword_null, $._not_null)),
+                optional($.with_options),
               ),
               // ADD MASKED WITH (...) / DROP MASKED applies or removes Dynamic
               // Data Masking on an existing column — the form maintenance
@@ -100,7 +95,10 @@ export default {
               // alternative below, which still covers ADD/DROP ROWGUIDCOL etc.
               seq($.keyword_add, $.masked_with),
               seq($.keyword_drop, $.keyword_masked),
-              seq(choice($.keyword_add, $.keyword_drop), $.identifier),
+              seq(
+                choice($.keyword_add, $.keyword_drop),
+                choice($.identifier, $.keyword_persisted, $._not_for_replication),
+              ),
             ),
           ),
           seq(
@@ -114,17 +112,60 @@ export default {
             $.keyword_trigger,
             choice($.keyword_all, comma_list($.identifier, true)),
           ),
+          seq($.keyword_enable, $.keyword_change_tracking, optional($.with_options)),
+          seq($.keyword_disable, $.keyword_change_tracking),
+          seq(choice($.keyword_enable, $.keyword_disable), $.keyword_filetable_namespace),
+          seq(
+            $.keyword_alter,
+            $.keyword_index,
+            $.identifier,
+            $.keyword_rebuild,
+            optional($.with_options),
+          ),
           seq($.keyword_set, paren_list($.option, true)),
-          seq($.keyword_rebuild, optional($.with_options)),
+          seq($.keyword_rebuild, optional($._rebuild_partition), optional($.with_options)),
           seq(
             $.keyword_switch,
             optional(seq($.keyword_partition, field('from_partition', $._expression))),
             $.keyword_to,
             field('target', $.object_reference),
             optional(seq($.keyword_partition, field('to_partition', $._expression))),
+            optional($.with_options),
           ),
         ),
       ),
+    ),
+
+  _table_drop_item: ($) =>
+    prec.right(
+      choice(
+        seq($.keyword_column, optional($._if_exists), $.identifier),
+        seq($.keyword_index, $.identifier),
+        $._period_phrase,
+        seq(
+          optional($.keyword_constraint),
+          optional($._if_exists),
+          $.identifier,
+          optional($.with_options),
+        ),
+      ),
+    ),
+
+  _alter_add_index: ($) =>
+    prec.right(
+      seq(
+        $.keyword_index,
+        field('name', $.identifier),
+        $._constraint_index_kind,
+        optional($.with_options),
+      ),
+    ),
+
+  _rebuild_partition: ($) =>
+    seq(
+      $.keyword_partition,
+      '=',
+      choice($.keyword_all, $.literal, alias($._signed_literal, $.unary_expression)),
     ),
 
   // ALTER INDEX { name | ALL } ON table { REBUILD [WITH (options)] | REORGANIZE [WITH (options)]
@@ -141,16 +182,47 @@ export default {
         $.keyword_on,
         $.object_reference,
         choice(
-          seq($.keyword_rebuild, optional($.with_options)),
-          seq($.keyword_reorganize, optional($.with_options)),
+          seq($.keyword_rebuild, optional($._rebuild_partition), optional($.with_options)),
+          seq($.keyword_reorganize, optional($._rebuild_partition), optional($.with_options)),
           $.keyword_disable,
           seq($.keyword_set, paren_list($.option, true)),
           seq($.keyword_resume, optional($.with_options)),
           $.keyword_pause,
           $.keyword_abort,
+          seq(
+            optional(seq($.keyword_with, $.xmlnamespaces)),
+            $.keyword_for,
+            paren_list(
+              choice(seq($.keyword_add, $.selective_xml_path), seq($.keyword_remove, $.identifier)),
+              true,
+            ),
+          ),
         ),
       ),
     ),
+
+  selective_xml_path: ($) =>
+    seq(
+      field('name', $.identifier),
+      '=',
+      $.literal,
+      optional(
+        choice(
+          seq(
+            $.keyword_as,
+            $.keyword_xquery,
+            choice(
+              seq($.literal, optional($._xml_path_length), optional($.keyword_singleton)),
+              seq($._xml_path_length, optional($.keyword_singleton)),
+              $.keyword_singleton,
+            ),
+          ),
+          seq($.keyword_as, $.keyword_sql, $._type, optional($.keyword_singleton)),
+        ),
+      ),
+    ),
+
+  _xml_path_length: ($) => seq($.keyword_maxlength, wrapped_in_parenthesis($.literal)),
 
   // ALTER DATABASE name { SET option [, ...] [WITH termination] | MODIFY NAME = name | COLLATE name }
   // Options are identifiers with an optional value: RECOVERY SIMPLE,
@@ -331,7 +403,7 @@ export default {
       $.object_reference,
       choice(
         alias($._alter_queue_with_clause, $.with_clause),
-        seq($.keyword_rebuild, optional($.with_options)),
+        seq($.keyword_rebuild, optional($._rebuild_partition), optional($.with_options)),
         seq($.keyword_reorganize, optional($.with_clause)),
       ),
     ),
