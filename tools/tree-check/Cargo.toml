@@ -1,0 +1,12 @@
+[package]
+name = "tree-check"
+description = "Checks T-SQL parse trees through the tree-sitter API: errors, missing nodes, zero-width nodes, coverage"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT"
+publish = false
+
+[dependencies]
+tree-sitter = "~0.27.0"
+tree-sitter-mssql = { path = "../.." }

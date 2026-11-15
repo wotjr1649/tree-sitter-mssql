@@ -34,7 +34,7 @@ Tree-sitter query files for editors: `highlights.scm`, `indents.scm`, `injection
 
 ### [tools/](tools)
 
-Verification scripts: `release-policy.mjs versions` checks that `Cargo.toml`, `package.json`, and `tree-sitter.json` carry the same version (the generated parser embeds it), and `package-check.mjs` verifies that the crate and npm package file lists are complete and tracked, so a consumer vendoring the sources gets every file.
+Verification tools: `tree-check` (a Rust tool) judges parse trees through the tree-sitter API, and is the fixture gate and the basis of the SQL Server oracle checks; `release-policy.mjs versions` checks that `Cargo.toml`, `package.json`, and `tree-sitter.json` carry the same version (the generated parser embeds it), and `package-check.mjs` verifies that the crate and npm package file lists are complete and tracked, so a consumer vendoring the sources gets every file.
 
 ### [fuzz/](fuzz)
 
