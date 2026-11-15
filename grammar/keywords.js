@@ -8,6 +8,21 @@ import { make_keyword } from './helpers.js';
 // names (SET options, index options, DBCC commands, query and table hints)
 // are deliberately not keywords; they are identifiers.
 export default {
+  keyword_resource: (_) => make_keyword('resource'),
+  keyword_pool: (_) => make_keyword('pool'),
+  keyword_language: (_) => make_keyword('language'),
+  keyword_library: (_) => make_keyword('library'),
+  keyword_affinity: (_) => make_keyword('affinity'),
+  keyword_cpu: (_) => make_keyword('cpu'),
+  keyword_numanode: (_) => make_keyword('numanode'),
+  keyword_platform: (_) => make_keyword('platform'),
+  keyword_endpoint: (_) => make_keyword('endpoint'),
+  keyword_stoplist: (_) => make_keyword('stoplist'),
+  keyword_search: (_) => make_keyword('search'),
+  keyword_property: (_) => make_keyword('property'),
+  keyword_list: (_) => make_keyword('list'),
+  keyword_statistical_semantics: (_) => make_keyword('statistical_semantics'),
+  keyword_filegroup: (_) => make_keyword('filegroup'),
   // DML
   keyword_select: (_) => make_keyword('select'),
   keyword_delete: (_) => make_keyword('delete'),
@@ -504,7 +519,6 @@ export default {
   keyword_system_time: (_) => make_keyword('system_time'),
 
   keyword_filter_predicate: (_) => make_keyword('filter_predicate'),
-  keyword_filegroup: (_) => make_keyword('filegroup'),
 
   keyword_contains: (_) => make_keyword('contains'),
 
@@ -554,27 +568,17 @@ export default {
 
   keyword_process: (_) => make_keyword('process'),
 
-  keyword_affinity: (_) => make_keyword('affinity'),
-
-  keyword_cpu: (_) => make_keyword('cpu'),
-
   keyword_auto: (_) => make_keyword('auto'),
-
-  keyword_numanode: (_) => make_keyword('numanode'),
 
   keyword_diagnostics: (_) => make_keyword('diagnostics'),
 
   keyword_cluster: (_) => make_keyword('cluster'),
-
-  keyword_property: (_) => make_keyword('property'),
 
   keyword_context: (_) => make_keyword('context'),
 
   keyword_local: (_) => make_keyword('local'),
 
   keyword_buffer: (_) => make_keyword('buffer'),
-
-  keyword_pool: (_) => make_keyword('pool'),
 
   keyword_extension: (_) => make_keyword('extension'),
 

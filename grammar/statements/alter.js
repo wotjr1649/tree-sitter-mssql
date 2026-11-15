@@ -5,6 +5,13 @@ export default {
   _alter_statement: ($) =>
     choice(
       $.alter_table,
+      $.alter_external_data_source,
+      $.alter_external_model,
+      $.alter_external_language,
+      $.alter_external_library,
+      $.alter_external_resource_pool,
+      $.alter_endpoint,
+      $.alter_fulltext_stoplist,
       $.alter_view,
       $.alter_index,
       $.alter_database,
@@ -475,7 +482,8 @@ export default {
   //   | ADD (column [, ...]) [WITH NO POPULATION]
   //   | DROP (column [, ...]) [WITH NO POPULATION]
   //   | START { FULL | INCREMENTAL | UPDATE } POPULATION
-  //   | STOP POPULATION }
+  //   | { STOP | PAUSE | RESUME } POPULATION
+  //   | ALTER COLUMN column { ADD | DROP } STATISTICAL_SEMANTICS [WITH NO POPULATION] }
   // FULL/INCREMENTAL/UPDATE/POPULATION and the SET target words are bare
   // identifiers, the same treatment every other DDL option word gets.
   // SET's target is bounded to the two real shapes (a two-word target like
@@ -506,8 +514,8 @@ export default {
         seq(
           $.keyword_set,
           choice(
-            seq($.identifier, $.identifier, $.identifier, $.identifier),
-            seq($.identifier, $.identifier),
+            seq($.identifier, $.identifier, $.identifier, optional('='), $.identifier),
+            seq($.identifier, optional('='), $.identifier),
           ),
           optional($.with_clause),
         ),
@@ -515,6 +523,15 @@ export default {
         seq($.keyword_drop, paren_list($.identifier, true), optional($.with_clause)),
         seq($.keyword_start, $.identifier, $.identifier),
         seq($.keyword_stop, $.identifier),
+        seq(choice($.keyword_pause, $.keyword_resume), alias($._fulltext_population, $.identifier)),
+        seq(
+          $.keyword_alter,
+          $.keyword_column,
+          $.identifier,
+          choice($.keyword_add, $.keyword_drop),
+          $.keyword_statistical_semantics,
+          optional($.with_clause),
+        ),
       ),
     ),
 

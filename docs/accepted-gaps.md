@@ -118,6 +118,19 @@ Only LocalDB 2025 was run for these new probes; the committed verdicts from othe
 were replayed, not remeasured. The remaining 309 engine-accepted errors in the complete oracle
 are outside this defect family.
 
+## EXTERNAL/FULLTEXT/ENDPOINT probes (R12)
+
+The 184 cases in `oracle/probes/ddl-external.jsonl` were measured on LocalDB 17.0.1000.7,
+compatibility levels 100–170. Tree-check applies the option-set rules of ADR-0003; the raw
+corpus trees in `test/corpus/ddl-external.txt` also pin the structural trees of constraint
+negatives, whose case titles name the constraint. Full-Text component error 7609 and endpoint
+edition error 7878 are contextual and do not make valid structure a tree error.
+
+| Construct | Remaining difference | Pinned by |
+| --- | --- | --- |
+| `DROP EVENT NOTIFICATION ... ON SERVER/DATABASE` after a valid `DROP EXTERNAL TABLE` | The external drop now parses; the following notification DDL is outside the R12 family and remains unmodeled. The whole script is still an engine-accepted tree error. | `kit-routes/alt-tsql-B03-r308` |
+| `ALTER EXTERNAL DATA SOURCE ... RESOURCE_MANAGER_LOCATION = ...` for Hadoop | SQL Server 2025 rejects this older documented form with 102. Keep the earlier SQL Server syntax; new probes do not claim older-engine verification. | `kit-routes/alt-tsql-B03-r095` |
+
 ## Adding an entry
 
 When a review or a probe finds a new gap, add a row here in the same pass as the corpus case (or

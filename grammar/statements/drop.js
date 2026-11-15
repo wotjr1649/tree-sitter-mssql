@@ -6,6 +6,17 @@ export default {
   _drop_statement: ($) =>
     choice(
       $.drop_table,
+      $.drop_endpoint,
+      $.drop_external_data_source,
+      $.drop_external_model,
+      $.drop_external_language,
+      $.drop_external_library,
+      $.drop_external_resource_pool,
+      $.drop_external_file_format,
+      $.drop_external_table,
+      $.drop_fulltext_catalog,
+      $.drop_fulltext_index,
+      $.drop_fulltext_stoplist,
       $.drop_view,
       $.drop_index,
       $.drop_procedure,

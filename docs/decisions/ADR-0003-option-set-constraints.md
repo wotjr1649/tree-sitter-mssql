@@ -55,6 +55,10 @@ A context-free grammar can express "each of n options at most once, in any order
 | `merge-terminator`: MERGE ends with `;` | `MERGE` anywhere | Msg 10713 (`context/merge-*`, `semicolon/merge-*`); a comment before the `;` is fine |
 | `table-hint`: known names; at most one hint of each conflict group; FORCESEEK with an index next to INDEX or another FORCESEEK; FORCESEEK on index 0; one SPATIAL_WINDOW_MAX_CELLS; no NOLOCK/READUNCOMMITTED on a DML target, no INDEX/FORCESEEK/FORCESCAN on an UPDATE/DELETE/INSERT target, no READPAST/READCOMMITTEDLOCK on an INSERT target; each TABLE HINT alias once | `WITH ( ... )` on a table, `OPTION (TABLE HINT ...)` | Msg 321, 1047, 10746–10749, 1017, 1065, 1069, 10724, 10745, 4102, 4140, 8720 (`hint-rules`: every hint alone, all 406 pairs, every hint on each DML target; kit `hint-*`, `pair-*`; `table-hints/*`) |
 
+| `external-option-*`, `external-platform`, `external-affinity` | EXTERNAL data sources, models, languages, libraries and resource pools: option names, assignment, uniqueness, required CREATE file options, platform and affinity shapes | `ddl-external/external-*`, LocalDB 17.0.1000.7 levels 100–170, 102/1039/39123/319; ALTER file specs may omit CONTENT |
+| `fulltext-option-duplicate`, `fulltext-change-tracking`, `fulltext-no-population` | CREATE FULLTEXT CATALOG/INDEX: unique options, tracking mode, NO POPULATION with tracking OFF | `ddl-external/fulltext-*`, 102/7663 |
+| `endpoint-*` | CREATE/ALTER ENDPOINT: option sets, uniqueness, CREATE port/mirroring role requirements, protocols/algorithms/roles, forwarding, IPv4 octets, CREATE STATE restriction | `ddl-external/endpoint-*`, 7816/7801/102/156/7810/7871; 7609/7878 environment errors remain contextual |
+
 ## Consequences
 
 - Grammar changes for option lists stay within the cost budget (ADR-0002 §6), and public node shapes stay stable.

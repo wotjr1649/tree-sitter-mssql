@@ -99,6 +99,82 @@
     "keyword_hybrid_buffer_pool": {
       "minVersion": "2019",
       "corpusCase": "test/corpus/ddl-database.txt — \"ddl-database/server/positive-016 — LocalDB 17.0.1000.7 levels 100-170: rejected 534\""
+    },
+    "create_external_language": {
+      "minVersion": "2019",
+      "corpusCase": "test/corpus/ddl-external.txt — \"ddl-external/external-language-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)\""
+    },
+    "alter_external_language": {
+      "minVersion": "2019",
+      "corpusCase": "test/corpus/ddl-external.txt — \"ddl-external/external-language-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)\""
+    },
+    "drop_external_language": {
+      "minVersion": "2019",
+      "corpusCase": "test/corpus/ddl-external.txt — \"ddl-external/external-language-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)\""
+    },
+    "create_external_library": {
+      "minVersion": "2017",
+      "corpusCase": "test/corpus/ddl-external.txt — \"ddl-external/external-library-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)\""
+    },
+    "alter_external_library": {
+      "minVersion": "2017",
+      "corpusCase": "test/corpus/ddl-external.txt — \"ddl-external/external-library-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)\""
+    },
+    "drop_external_library": {
+      "minVersion": "2017",
+      "corpusCase": "test/corpus/ddl-external.txt — \"ddl-external/external-library-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)\""
+    },
+    "create_external_resource_pool": {
+      "minVersion": "2016",
+      "corpusCase": "test/corpus/ddl-external.txt — \"ddl-external/external-pool-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)\""
+    },
+    "alter_external_resource_pool": {
+      "minVersion": "2016",
+      "corpusCase": "test/corpus/ddl-external.txt — \"ddl-external/external-pool-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)\""
+    },
+    "drop_external_resource_pool": {
+      "minVersion": "2016",
+      "corpusCase": "test/corpus/ddl-external.txt — \"ddl-external/external-pool-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)\""
+    },
+    "create_external_model": {
+      "minVersion": "2025",
+      "corpusCase": "test/corpus/ddl-external.txt — \"ddl-external/external-model-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)\""
+    },
+    "alter_external_model": {
+      "minVersion": "2025",
+      "corpusCase": "test/corpus/ddl-external.txt — \"ddl-external/external-model-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)\""
+    },
+    "drop_external_model": {
+      "minVersion": "2025",
+      "corpusCase": "test/corpus/ddl-external.txt — \"ddl-external/external-model-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)\""
+    },
+    "alter_external_data_source": {
+      "minVersion": "2016",
+      "corpusCase": "test/corpus/ddl-external.txt — \"ddl-external/external-data-source-alter (engine accepts; LocalDB 17.0.1000.7 levels 100-170)\""
+    },
+    "drop_external_data_source": {
+      "minVersion": "2016",
+      "corpusCase": "test/corpus/ddl-external.txt — \"ddl-external/external-data-source-drop (engine accepts; LocalDB 17.0.1000.7 levels 100-170)\""
+    },
+    "drop_external_file_format": {
+      "minVersion": "2016",
+      "corpusCase": "test/corpus/ddl-external.txt — \"ddl-external/external-file-format-drop (engine accepts; LocalDB 17.0.1000.7 levels 100-170)\""
+    },
+    "drop_external_table": {
+      "minVersion": "2016",
+      "corpusCase": "test/corpus/ddl-external.txt — \"ddl-external/external-table-drop-qualified (engine accepts; LocalDB 17.0.1000.7 levels 100-170)\""
+    },
+    "create_search_property_list": {
+      "minVersion": "2012",
+      "corpusCase": "test/corpus/ddl-external.txt — \"ddl-external/fulltext-search-list-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)\""
+    },
+    "external_file_spec": {
+      "minVersion": "2017",
+      "corpusCase": "test/corpus/ddl-external.txt — \"ddl-external/external-library-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)\""
+    },
+    "external_cpu_range": {
+      "minVersion": "2016",
+      "corpusCase": "test/corpus/ddl-external.txt — \"ddl-external/external-pool-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)\""
     }
   },
   "deprecated": {
