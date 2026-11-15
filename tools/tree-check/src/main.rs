@@ -1,7 +1,8 @@
 //! Checks each T-SQL file's parse tree through the tree-sitter API and prints one JSON line per file.
 //!
 //! A tree passes when its root does not report `has_error` and it has no `ERROR` node, no `MISSING` node, no zero-width node, and its root
-//! spans the whole input. The CLI's parse summary is not used: it can report success for trees that
+//! spans the whole input, and it breaks none of the option-set constraints of ADR-0003
+//! (`constraints.rs`), which SQL Server enforces while parsing. The CLI's parse summary is not used: it can report success for trees that
 //! contain `ERROR` or only zero-width nodes.
 //!
 //! Usage: `tree-check [--paths LIST] [FILE...]`. Exit code 0: every tree passes; 1: some tree has a
@@ -10,6 +11,7 @@
 //! `tree-check --edits HISTORIES.jsonl` instead replays edit histories and compares every
 //! incremental reparse with a fresh parse (see `edits.rs`). Exit code 1: some step differs.
 
+mod constraints;
 mod edits;
 
 use std::fmt::Write as _;
@@ -28,6 +30,8 @@ struct Report {
     len: usize,
     /// Kind, row and column (0-based) of the first problem node in document order.
     first_problem: Option<(String, usize, usize)>,
+    /// Option-set constraint violations (ADR-0003).
+    violations: Vec<constraints::Violation>,
 }
 
 impl Report {
@@ -37,6 +41,7 @@ impl Report {
             && self.missing_nodes == 0
             && self.zero_width_nodes == 0
             && self.root_end == self.len
+            && self.violations.is_empty()
     }
 }
 
@@ -46,12 +51,14 @@ fn parse(parser: &mut Parser, source: &[u8]) -> Result<Tree, String> {
         .ok_or_else(|| "tree-sitter returned no tree".to_string())
 }
 
-fn inspect(tree: &Tree, len: usize) -> Report {
+fn inspect(tree: &Tree, source: &[u8]) -> Report {
+    let len = source.len();
     let root = tree.root_node();
     let mut report = Report {
         root_has_error: root.has_error(),
         root_end: root.end_byte(),
         len,
+        violations: constraints::check(tree, source),
         ..Report::default()
     };
     let mut cursor = root.walk();
@@ -110,8 +117,21 @@ fn json_line(path: &str, r: &Report) -> String {
         }
         None => "null".into(),
     };
+    let violations: Vec<String> = r
+        .violations
+        .iter()
+        .map(|v| {
+            format!(
+                r#"{{"rule":{},"detail":{},"row":{},"column":{}}}"#,
+                json_string(v.rule),
+                json_string(&v.detail),
+                v.row,
+                v.column
+            )
+        })
+        .collect();
     format!(
-        r#"{{"path":{},"ok":{},"root_has_error":{},"error_nodes":{},"missing_nodes":{},"zero_width_nodes":{},"root_end":{},"len":{},"first_problem":{first}}}"#,
+        r#"{{"path":{},"ok":{},"root_has_error":{},"error_nodes":{},"missing_nodes":{},"zero_width_nodes":{},"root_end":{},"len":{},"first_problem":{first},"constraint_violations":[{}]}}"#,
         json_string(path),
         r.ok(),
         r.root_has_error,
@@ -119,7 +139,8 @@ fn json_line(path: &str, r: &Report) -> String {
         r.missing_nodes,
         r.zero_width_nodes,
         r.root_end,
-        r.len
+        r.len,
+        violations.join(",")
     )
 }
 
@@ -180,7 +201,7 @@ fn run(args: &[String]) -> Result<bool, String> {
     for path in &paths {
         let source = fs::read(path).map_err(|e| format!("{path}: {e}"))?;
         let tree = parse(&mut parser, &source).map_err(|e| format!("{path}: {e}"))?;
-        let report = inspect(&tree, source.len());
+        let report = inspect(&tree, &source);
         all_ok &= report.ok();
         println!("{}", json_line(path, &report));
     }
@@ -209,7 +230,7 @@ mod tests {
             .set_language(&tree_sitter_mssql::LANGUAGE.into())
             .unwrap();
         let tree = parse(&mut parser, sql.as_bytes()).unwrap();
-        inspect(&tree, sql.len())
+        inspect(&tree, sql.as_bytes())
     }
 
     #[test]
