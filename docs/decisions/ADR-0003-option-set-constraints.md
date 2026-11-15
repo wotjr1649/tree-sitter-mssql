@@ -43,6 +43,8 @@ A context-free grammar can express "each of n options at most once, in any order
 | `queue-activation-duplicate`: each ACTIVATION setting at most once | `CREATE QUEUE`, `ALTER QUEUE` | LocalDB 17.0.1000.7, levels 100–170, Msg 102: `queue-duplicate-create/alter`, 8 probes |
 | `queue-activation-required`: CREATE needs PROCEDURE_NAME, MAX_QUEUE_READERS and EXECUTE AS | `CREATE QUEUE` | Msg 102: `queue-missing-48/49/50`, `queue-29`, 13 probes; accepted: `queue-missing-51` |
 
+| `cte-terminator`: a statement that starts with a CTE must not directly follow another statement or block without `;` (it may come first in a batch, block or module body, or after `;`, a label, IF, ELSE or WHILE) | any statement list | Msg 319 for the `semicolon/*-no-terminator` probes (after SELECT, END, IF, IF ... ELSE, WHILE, inside a procedure body); every terminated, leading, label and control-body form accepted |
+
 ## Consequences
 
 - Grammar changes for option lists stay within the cost budget (ADR-0002 §6), and public node shapes stay stable.
