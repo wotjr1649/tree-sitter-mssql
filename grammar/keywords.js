@@ -23,6 +23,31 @@ export default {
   keyword_list: (_) => make_keyword('list'),
   keyword_statistical_semantics: (_) => make_keyword('statistical_semantics'),
   keyword_filegroup: (_) => make_keyword('filegroup'),
+  keyword_offsets: (_) => make_keyword('offsets'),
+  keyword_none: (_) => make_keyword('none'),
+  keyword_result: (_) => make_keyword('result'),
+  keyword_undefined: (_) => make_keyword('undefined'),
+  keyword_object: (_) => make_keyword('object'),
+  keyword_data_source: (_) => make_keyword('data_source'),
+  keyword_checkpoint: (_) => make_keyword('checkpoint'),
+  keyword_shutdown: (_) => make_keyword('shutdown'),
+  keyword_timer: (_) => make_keyword('timer'),
+
+  keyword_openquery: (_) => make_keyword('openquery'),
+  keyword_atomic: (_) => make_keyword('atomic'),
+  keyword_native_compilation: (_) => make_keyword('native_compilation'),
+
+  keyword_parse: (_) => make_keyword('parse'),
+  keyword_try_parse: (_) => make_keyword('try_parse'),
+  keyword_browse: (_) => make_keyword('browse'),
+  keyword_cube: (_) => make_keyword('cube'),
+  keyword_rollup: (_) => make_keyword('rollup'),
+  keyword_reduce: (_) => make_keyword('reduce'),
+  keyword_replicate: (_) => make_keyword('replicate'),
+  keyword_national: (_) => make_keyword('national'),
+  keyword_insensitive: (_) => make_keyword('insensitive'),
+  keyword_scroll: (_) => make_keyword('scroll'),
+
   // DML
   keyword_select: (_) => make_keyword('select'),
   keyword_delete: (_) => make_keyword('delete'),
@@ -525,8 +550,6 @@ export default {
   keyword_memory_optimized_data: (_) => make_keyword('memory_optimized_data'),
 
   keyword_containment: (_) => make_keyword('containment'),
-
-  keyword_none: (_) => make_keyword('none'),
 
   keyword_partial: (_) => make_keyword('partial'),
 

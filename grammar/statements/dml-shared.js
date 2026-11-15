@@ -18,7 +18,7 @@ export default {
     seq(
       field('left', alias($._qualified_field, $.field)),
       $.assignment_operator,
-      field('right', $._expression),
+      field('right', choice($._expression, $.keyword_default, $.assignment)),
     ),
 
   // An item is an assignment or a bare method call with no `=`, which is

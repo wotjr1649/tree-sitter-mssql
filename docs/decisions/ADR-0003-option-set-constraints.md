@@ -58,6 +58,23 @@ A context-free grammar can express "each of n options at most once, in any order
 | `external-option-*`, `external-platform`, `external-affinity` | EXTERNAL data sources, models, languages, libraries and resource pools: option names, assignment, uniqueness, required CREATE file options, platform and affinity shapes | `ddl-external/external-*`, LocalDB 17.0.1000.7 levels 100–170, 102/1039/39123/319; ALTER file specs may omit CONTENT |
 | `fulltext-option-duplicate`, `fulltext-change-tracking`, `fulltext-no-population` | CREATE FULLTEXT CATALOG/INDEX: unique options, tracking mode, NO POPULATION with tracking OFF | `ddl-external/fulltext-*`, 102/7663 |
 | `endpoint-*` | CREATE/ALTER ENDPOINT: option sets, uniqueness, CREATE port/mirroring role requirements, protocols/algorithms/roles, forwarding, IPv4 octets, CREATE STATE restriction | `ddl-external/endpoint-*`, 7816/7801/102/156/7810/7871; 7609/7878 environment errors remain contextual |
+All following evidence is query-forms on LocalDB 17.0.1000.7, levels 100–170.
+
+| Rule | Scope | Check | Evidence |
+| --- | --- | --- | --- |
+| query-cursor-options | DECLARE/SET CURSOR | supported flags and incompatible option groups; identical repeats remain accepted | cursor-iso, cursor-bogus, cursor-two-scope, cursor-fast-scroll, cursor-read-optimistic, cursor-static-keyset; 153/155/1048 |
+| query-atomic-options | BEGIN ATOMIC | required ISOLATION/LANGUAGE, uniqueness, supported options and value shapes, module scope | atomic-no-*, atomic-repeat-*, atomic-unknown, atomic-*-var, atomic-durability-bad, plain-atomic; 10784/1039/195/102 |
+| query-native-atomic | native modules | NATIVE_COMPILATION requires BEGIN ATOMIC | function-native-missing-atomic; 10783 |
+| query-cast-using | CAST/PARSE | USING belongs only to PARSE/TRY_PARSE | cast-using, try-cast-using; 102 |
+| query-exec-options | EXEC | RECOMPILE and RESULT SETS occur at most once | exec-repeat-*; 102 |
+| query-rowset-schema | rowset schema | nullable/collated columns belong to PREDICT; a table schema reference belongs to OPENXML | predict-schema accepted; openjson-not-null/openxml-not-null; 156/319 |
+| query-dml-source | DML row source | OUTPUT and an enclosing INSERT are required | select-delete-source/insert-delete-no-output; 156/10716 |
+| query-assignment-chain | UPDATE assignment | only a variable can capture a column assignment | update-column-chain; 102 |
+| query-offsets-options | SET OFFSETS | known statement types; identical repeats accepted | offsets-bogus; 195 |
+| query-select-quantifier | SELECT DISTINCT | DISTINCT and ALL are mutually exclusive | select-distinct-all; 156 |
+| query-cursor-parameter | module parameters | CURSOR parameters belong to procedures | function-cursor-param; 10725/178 |
+
+| query-native-null-input | native functions | RETURNS NULL ON NULL INPUT is unsupported; CALLED ON NULL INPUT is accepted | query-forms/function-native-returns-null, kit B04-r052/r089; 10794 |
 
 ## Consequences
 

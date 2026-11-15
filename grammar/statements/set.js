@@ -11,6 +11,8 @@
 //
 // Option names are ordinary identifiers here rather than one keyword each:
 // SQL Server has several dozen and nothing downstream distinguishes them.
+import { comma_list } from '../helpers.js';
+
 export default {
   set_statement: ($) =>
     prec.right(
@@ -18,9 +20,27 @@ export default {
         $.keyword_set,
         choice(
           seq(
+            alias($._offsets_name, $.object_reference),
+            comma_list(alias($._offsets_statement, $.field), true),
+            choice($.keyword_on, $.keyword_off),
+          ),
+          seq(
             $.object_reference,
             choice(
               seq($.assignment_operator, $._expression),
+              seq(
+                '=',
+                $.keyword_cursor,
+                repeat(
+                  choice(
+                    $.identifier,
+                    alias($.keyword_global, $.identifier),
+                    alias($.keyword_scroll, $.identifier),
+                  ),
+                ),
+                $.keyword_for,
+                $._dml_read,
+              ),
               seq(repeat(seq(',', $.object_reference)), choice($.keyword_on, $.keyword_off)),
               seq($._expression, optional(choice($.keyword_on, $.keyword_off))),
             ),
@@ -41,5 +61,18 @@ export default {
       ),
     ),
 
-  assignment_operator: (_) => choice('=', '+=', '-=', '*=', '/=', '%=', '&=', '^=', '|='),
+  _offsets_name: ($) => field('name', alias($.keyword_offsets, $.identifier)),
+
+  _offsets_statement: ($) =>
+    field(
+      'name',
+      choice(
+        $.identifier,
+        alias($.keyword_select, $.identifier),
+        alias($.keyword_from, $.identifier),
+        alias($.keyword_order, $.identifier),
+      ),
+    ),
+
+  assignment_operator: (_) => choice('=', '+=', '-=', '*=', '/=', '%=', '&=', '^=', '|=', '||='),
 };

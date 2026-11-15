@@ -89,11 +89,15 @@ export default {
             ),
           ),
         ),
-        seq(
-          optional(seq($.keyword_constraint, field('name', $.identifier))),
-          $.keyword_default,
-          $._expression,
-          optional(seq($.keyword_with, $.keyword_values)),
+        // End a DEFAULT scalar before NOT NULL, while retaining arithmetic and WITH VALUES.
+        prec.right(
+          'default_value',
+          seq(
+            optional(seq($.keyword_constraint, field('name', $.identifier))),
+            $.keyword_default,
+            $._expression,
+            optional(seq($.keyword_with, $.keyword_values)),
+          ),
         ),
         $._column_key_constraint,
         seq(

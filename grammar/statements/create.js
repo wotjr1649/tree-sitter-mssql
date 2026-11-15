@@ -235,7 +235,13 @@ export default {
 
   trigger_options: ($) => seq($.keyword_with, comma_list($.trigger_option, true)),
 
-  trigger_option: ($) => choice($.keyword_encryption, $.execute_as_clause),
+  trigger_option: ($) =>
+    choice(
+      $.keyword_encryption,
+      $.keyword_native_compilation,
+      $.keyword_schemabinding,
+      $.execute_as_clause,
+    ),
 
   trigger_event: ($) => choice($.keyword_insert, $.keyword_update, $.keyword_delete, $.identifier),
 

@@ -44,7 +44,7 @@ function query_specification_rest($) {
 function query_specification_body($) {
   return seq(
     $.select,
-    optional(seq($.keyword_into, $.object_reference)),
+    optional(seq($.keyword_into, $.object_reference, optional($.on_filegroup))),
     query_specification_rest($),
   );
 }
@@ -154,8 +154,6 @@ export default {
   select: ($) =>
     seq(
       $.keyword_select,
-      // `SELECT ALL` is not accepted: ALL is also a unary operator
-      // (`= ALL (subquery)`), and `SELECT ALL x` is ambiguous between the two.
       optional($.keyword_distinct),
       optional($.top_clause),
       $.select_expression,
@@ -172,7 +170,17 @@ export default {
       optional(seq($.keyword_with, $.keyword_ties)),
     ),
 
-  select_expression: ($) => comma_list($.term, true),
+  select_expression: ($) =>
+    comma_list(choice($.term, alias($._select_assignment, $.assignment)), true),
+
+  _select_assignment: ($) =>
+    seq(
+      field('left', alias($._variable_field, $.field)),
+      choice('+=', '-=', '*=', '/=', '%=', '&=', '^=', '|=', '||='),
+      field('right', $._expression),
+    ),
+
+  _variable_field: ($) => field('name', alias($._tsql_parameter, $.identifier)),
 
   term: ($) => seq(field('value', choice($.all_fields, $._expression)), optional($._column_alias)),
 
@@ -190,6 +198,7 @@ export default {
         choice(
           seq($.keyword_xml, comma_list($.for_option, true)),
           seq($.keyword_json, comma_list($.for_option, true)),
+          $.keyword_browse,
           seq($.keyword_update, optional(seq($.keyword_of, comma_list($.identifier, true)))),
           seq($.keyword_read, $.keyword_only),
         ),
@@ -245,7 +254,7 @@ export default {
   // clause (SQL Server 2022) instead of repeating a window_specification.
   window_function: ($) =>
     seq(
-      $.invocation,
+      choice($.invocation, $.next_value_for),
       $.keyword_over,
       choice($.window_specification, field('window', $.identifier)),
     ),
@@ -332,8 +341,14 @@ export default {
           ),
         ),
         seq(
+          alias($.keyword_use, $.identifier),
+          $.identifier,
+          choice($.literal, paren_list($.literal, true)),
+        ),
+        seq(
           $.identifier,
           repeat(choice($.identifier, alias($._natural_number, $.literal))),
+          optional(seq('=', $.literal)),
           optional(paren_list($.literal, true)),
         ),
       ),
@@ -362,11 +377,11 @@ export default {
           $.invocation,
           $.object_reference,
           wrapped_in_parenthesis($.values),
-          // A MERGE with an OUTPUT clause is a legal row source: INSERT
-          // ... SELECT ... FROM (MERGE ... OUTPUT ...) AS changes.
-          wrapped_in_parenthesis($.merge),
+          // DML OUTPUT row sources belong to INSERT; the constraint layer checks scope and OUTPUT.
+          wrapped_in_parenthesis(choice($.merge, $.delete, $.update, $.insert)),
           $.opendatasource_reference,
           $.changetable,
+          wrapped_in_parenthesis(seq($._relation_with_hint, repeat1(choice($.join, $.cross_join)))),
         ),
         // FOR SYSTEM_TIME sits between the table reference and its alias
         // (`FROM t FOR SYSTEM_TIME AS OF x AS t1`), per the documented
@@ -455,11 +470,20 @@ export default {
       // own optional slot ahead of the table_hint/openjson_schema choice,
       // not one more alternative inside that choice's mutual exclusion.
       optional($.tablesample_clause),
-      optional(choice($.table_hint, seq($.openjson_schema, aliased_with_columns($)))),
+      optional(
+        choice(
+          $.table_hint,
+          seq($.openjson_schema, aliased_with_columns($)),
+          seq($.openxml_table_schema, aliased_with_columns($)),
+        ),
+      ),
     ),
 
   // OPENJSON(...) WITH (name type ['path'] [AS JSON] [, ...]) — the
-  // explicit schema of OPENJSON's result.
+  // explicit schema of OPENJSON's result. PREDICT shares it with nullable/collated columns;
+  // the constraint layer keeps those additions and OPENXML's table schema on their own functions.
+  openxml_table_schema: ($) => seq($.keyword_with, $.object_reference),
+
   openjson_schema: ($) => seq($.keyword_with, paren_list($.openjson_column, true)),
 
   openjson_column: ($) =>
@@ -467,6 +491,8 @@ export default {
       field('name', $.identifier),
       field('type', $._type),
       optional(field('path', $.literal)),
+      optional(seq($.keyword_collate, $.identifier)),
+      optional(choice($.keyword_null, seq($.keyword_not, $.keyword_null))),
       optional(seq($.keyword_as, $.keyword_json)),
     ),
 
@@ -524,7 +550,15 @@ export default {
   // FROM, which a `conflicts` entry on `from` resolves at triple the
   // generate time. The untyped spellings are the join forms the grammar
   // does not parse.
-  join_hint: ($) => choice($.keyword_hash, $.keyword_loop, $.keyword_merge, $.keyword_remote),
+  join_hint: ($) =>
+    choice(
+      $.keyword_hash,
+      $.keyword_loop,
+      $.keyword_merge,
+      $.keyword_remote,
+      $.keyword_reduce,
+      $.keyword_replicate,
+    ),
 
   cross_join: ($) => seq($.keyword_cross, $.keyword_join, $._relation_with_hint),
 
@@ -595,7 +629,14 @@ export default {
   // GROUP BY expression [, ...], where an expression may be ROLLUP(...),
   // CUBE(...) — ordinary invocations — or GROUPING SETS (...).
   group_by: ($) =>
-    seq($.keyword_group, $.keyword_by, comma_list(choice($._expression, $.grouping_sets), true)),
+    prec.right(
+      seq(
+        $.keyword_group,
+        $.keyword_by,
+        comma_list(choice($._expression, $.grouping_sets), true),
+        optional(seq($.keyword_with, choice($.keyword_cube, $.keyword_rollup))),
+      ),
+    ),
 
   grouping_sets: ($) => seq($.keyword_grouping, $.keyword_sets, paren_list($._expression, true)),
 

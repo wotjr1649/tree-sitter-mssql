@@ -1,0 +1,1757 @@
+==================
+query-forms/shift-left - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT 8 << 2 + 1 AS n;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (binary_expression (binary_expression (literal) (literal)) (literal)) (keyword_as) (identifier))))))))
+
+==================
+query-forms/shift-right - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT -32 >> 2 AS n;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (binary_expression (unary_expression (literal)) (literal)) (keyword_as) (identifier))))))))
+
+==================
+query-forms/shift-missing - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+SELECT 1 << ;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (ERROR)))
+
+==================
+query-forms/concat - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT N'가' || N'나' || NULL;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (binary_expression (binary_expression (literal) (literal)) (literal (keyword_null))))))))))
+
+==================
+query-forms/concat-assignment - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE @s nvarchar(20)=N'가'; SET @s ||= N'나';
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) (literal)) (literal)))) (statement (set_statement (keyword_set) (object_reference (identifier)) (assignment_operator) (literal)))))
+
+==================
+query-forms/concat-missing - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+SELECT N'a' || ;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (ERROR)))
+
+==================
+query-forms/select-all-top - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT ALL TOP (2) WITH TIES c INTO dbo.t2 ON [PRIMARY] FROM dbo.t ORDER BY c;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (unary_expression (keyword_all) (invocation (object_reference (identifier)) (term (literal))))))))) (ERROR (keyword_with) (identifier) (keyword_into) (keyword_on) (keyword_from) (identifier) (keyword_order) (keyword_by))))
+
+==================
+query-forms/select-all - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT ALL 1;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (unary_expression (keyword_all) (literal)))))))))
+
+==================
+query-forms/select-distinct-all - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 156
+==================
+
+SELECT DISTINCT ALL 1;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (keyword_distinct) (select_expression (term (unary_expression (keyword_all) (literal)))))))))
+
+==================
+query-forms/select-into-no-filegroup - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+SELECT 1 INTO dbo.t2 ON;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (literal)))) (keyword_into) (object_reference (identifier) (identifier)))) (ERROR (keyword_on))))
+
+==================
+query-forms/select-into-later-branch - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT 1 UNION SELECT 2 INTO dbo.t;
+
+---
+
+(program (batch (statement (set_operation (query_specification (select (keyword_select) (select_expression (term (literal))))) (keyword_union) (query_specification (select (keyword_select) (select_expression (term (literal) (identifier))))))) (ERROR (identifier) (identifier))))
+
+==================
+query-forms/parse-using - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT PARSE(N'2020-01-02' AS date USING 'en-US');
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (cast (keyword_parse) (literal) (keyword_as) (keyword_date) (keyword_using) (literal)))))))))
+
+==================
+query-forms/try-parse - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT TRY_PARSE(N'12' AS int);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (cast (keyword_try_parse) (literal) (keyword_as) (keyword_int)))))))))
+
+==================
+query-forms/parse-no-as - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+SELECT PARSE(N'1' int);
+
+---
+
+(program (ERROR (keyword_select) (keyword_parse) (literal)) (batch))
+
+==================
+query-forms/parse-no-culture - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+SELECT PARSE(N'1' AS int USING);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (cast (keyword_parse) (literal) (keyword_as) (keyword_int) (ERROR (keyword_using))))))))))
+
+==================
+query-forms/cast-using - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 156
+==================
+
+SELECT CAST(N'1' AS int USING 'en-US');
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (cast (keyword_cast) (literal) (keyword_as) (keyword_int) (keyword_using) (literal)))))))))
+
+==================
+query-forms/try-cast-using - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 156
+==================
+
+SELECT TRY_CAST(N'1' AS int USING 'en-US');
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (cast (keyword_try_cast) (literal) (keyword_as) (keyword_int) (keyword_using) (literal)))))))))
+
+==================
+query-forms/next-value-over - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT NEXT VALUE FOR dbo.seq OVER (ORDER BY c) FROM dbo.t;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (window_function (next_value_for (keyword_next) (keyword_value) (keyword_for) (object_reference (identifier) (identifier))) (keyword_over) (window_specification (order_by (keyword_order) (keyword_by) (order_target (field (identifier))))))))) (from (keyword_from) (relation (object_reference (identifier) (identifier))))))))
+
+==================
+query-forms/next-value-over-missing - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+SELECT NEXT VALUE FOR dbo.seq OVER;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (next_value_for (keyword_next) (keyword_value) (keyword_for) (object_reference (identifier) (identifier)))))))) (ERROR (keyword_over))))
+
+==================
+query-forms/odbc-date - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT {d '2024-01-01'}, {t '12:34:56'}, {ts '2024-01-01 12:34:56'};
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (literal (identifier) (literal))) (term (literal (identifier) (literal))) (term (literal (identifier) (literal)))))))))
+
+==================
+query-forms/odbc-case - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT {D '2024-01-01'}, {Ts '2024-01-01 12:34:56'};
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (literal (identifier) (literal))) (term (literal (identifier) (literal)))))))))
+
+==================
+query-forms/odbc-bad-kind - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 155
+==================
+
+SELECT {dt '2024-01-01'};
+
+---
+
+(program (ERROR (keyword_select)) (batch))
+
+==================
+query-forms/odbc-missing-brace - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+SELECT {d '2024-01-01';
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (literal (identifier) (literal) (MISSING "}")))))))))
+
+==================
+query-forms/national-types - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE @n national char varying(8), @c national character(3), @v character varying(10), @d dec(5,1), @i integer;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_national) (keyword_char) (keyword_varying) (literal))) (var_declaration (identifier) (nchar (keyword_national) (keyword_char) (literal))) (var_declaration (identifier) (varchar (keyword_varchar (keyword_varying)) (literal))) (var_declaration (identifier) (decimal (keyword_decimal) (literal) (literal))) (var_declaration (identifier) (keyword_int))))))
+
+==================
+query-forms/national-type-missing - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+DECLARE @n national;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nchar (keyword_national) (keyword_char (MISSING "keyword_char_token1"))))))))
+
+==================
+query-forms/cursor-variable - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE @c CURSOR, @d AS CURSOR, @i int; OPEN @c; FETCH NEXT FROM @c INTO @i; CLOSE @c; DEALLOCATE @c;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_cursor)) (var_declaration (identifier) (keyword_as) (keyword_cursor)) (var_declaration (identifier) (keyword_int)))) (statement (open_cursor_statement (keyword_open) (identifier))) (statement (fetch_cursor_statement (keyword_fetch) (keyword_next) (keyword_from) (identifier) (keyword_into) (identifier))) (statement (close_cursor_statement (keyword_close) (identifier))) (statement (deallocate_cursor_statement (keyword_deallocate) (identifier)))))
+
+==================
+query-forms/cursor-iso - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 1048
+==================
+
+DECLARE c INSENSITIVE SCROLL CURSOR FOR SELECT a FROM dbo.t FOR UPDATE OF a;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_insensitive) (keyword_scroll) (keyword_cursor) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier))))) (for_clause (keyword_for) (keyword_update) (keyword_of) (identifier))))))
+
+==================
+query-forms/cursor-iso-reverse - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE c SCROLL INSENSITIVE CURSOR FOR SELECT a FROM dbo.t;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_scroll) (keyword_insensitive) (keyword_cursor) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))))))))
+
+==================
+query-forms/cursor-iso-repeat - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE c INSENSITIVE INSENSITIVE CURSOR FOR SELECT a FROM dbo.t;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_insensitive) (keyword_insensitive) (keyword_cursor) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))))))))
+
+==================
+query-forms/cursor-iso-after - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 153
+==================
+
+DECLARE c CURSOR INSENSITIVE FOR SELECT a FROM dbo.t;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_cursor) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))))))))
+
+==================
+query-forms/cursor-no-query - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+DECLARE c CURSOR LOCAL FOR;
+
+---
+
+(program (ERROR (keyword_declare) (identifier) (keyword_cursor) (identifier) (keyword_for)) (batch))
+
+==================
+query-forms/cursor-bogus - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 155
+==================
+
+DECLARE c CURSOR BANANAS FOR SELECT 1;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_cursor) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (literal)))))))))
+
+==================
+query-forms/cursor-set - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE @c CURSOR; SET @c = CURSOR LOCAL FORWARD_ONLY STATIC READ_ONLY TYPE_WARNING FOR SELECT a FROM dbo.t;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_cursor)))) (statement (set_statement (keyword_set) (object_reference (identifier)) (keyword_cursor) (identifier) (identifier) (identifier) (identifier) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))))))))
+
+==================
+query-forms/cursor-set-global - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE @c CURSOR; SET @c = CURSOR GLOBAL SCROLL KEYSET SCROLL_LOCKS FOR SELECT a FROM dbo.t;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_cursor)))) (statement (set_statement (keyword_set) (object_reference (identifier)) (keyword_cursor) (identifier) (identifier) (identifier) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))))))))
+
+==================
+query-forms/cursor-set-fast - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE @c CURSOR; SET @c = CURSOR FAST_FORWARD FOR SELECT 1 FOR READ ONLY;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_cursor)))) (statement (set_statement (keyword_set) (object_reference (identifier)) (keyword_cursor) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (literal))))) (for_clause (keyword_for) (keyword_read) (keyword_only))))))
+
+==================
+query-forms/cursor-set-no-for - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 156
+==================
+
+DECLARE @c CURSOR; SET @c = CURSOR LOCAL SELECT 1;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_cursor)))) (ERROR (keyword_set) (object_reference (identifier)) (keyword_cursor) (identifier) (identifier) (literal))))
+
+==================
+query-forms/cursor-set-repeat - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE @c CURSOR; SET @c = CURSOR LOCAL LOCAL FOR SELECT 1;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_cursor)))) (statement (set_statement (keyword_set) (object_reference (identifier)) (keyword_cursor) (identifier) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (literal)))))))))
+
+==================
+query-forms/cursor-duplicate-local - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE c CURSOR LOCAL LOCAL FOR SELECT 1;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_cursor) (identifier) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (literal)))))))))
+
+==================
+query-forms/cursor-two-scope - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 1048
+==================
+
+DECLARE c CURSOR LOCAL GLOBAL FOR SELECT 1;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_cursor) (identifier) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (literal)))))))))
+
+==================
+query-forms/cursor-fast-scroll - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 1048
+==================
+
+DECLARE c CURSOR SCROLL FAST_FORWARD FOR SELECT 1;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_cursor) (identifier) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (literal)))))))))
+
+==================
+query-forms/cursor-read-optimistic - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 1048
+==================
+
+DECLARE c CURSOR READ_ONLY OPTIMISTIC FOR SELECT 1;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_cursor) (identifier) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (literal)))))))))
+
+==================
+query-forms/cursor-static-keyset - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 1048
+==================
+
+DECLARE c CURSOR STATIC KEYSET FOR SELECT 1;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_cursor) (identifier) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (literal)))))))))
+
+==================
+query-forms/select-compound - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE @n int=0; SELECT @n += c, @n -= 1, @n *= 2, @n /= 2, @n %= 3, @n &= 1, @n ^= 1, @n |= 2 FROM dbo.t;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int) (literal)))) (statement (query_specification (select (keyword_select) (select_expression (assignment (field (identifier)) (field (identifier))) (assignment (field (identifier)) (literal)) (assignment (field (identifier)) (literal)) (assignment (field (identifier)) (literal)) (assignment (field (identifier)) (literal)) (assignment (field (identifier)) (literal)) (assignment (field (identifier)) (literal)) (assignment (field (identifier)) (literal)))) (from (keyword_from) (relation (object_reference (identifier) (identifier))))))))
+
+==================
+query-forms/select-compound-column - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+SELECT c += 1 FROM dbo.t;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (ERROR (literal)) (from (keyword_from) (relation (object_reference (identifier) (identifier))))))))
+
+==================
+query-forms/select-compound-alias - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 156
+==================
+
+DECLARE @n int; SELECT @n += 1 AS n;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (query_specification (select (keyword_select) (select_expression (assignment (field (identifier)) (literal)))))) (ERROR (identifier))))
+
+==================
+query-forms/select-compound-missing - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+DECLARE @n int; SELECT @n += ;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (query_specification (select (keyword_select) (select_expression (assignment (field (identifier)) (field (identifier (MISSING _identifier))))))))))
+
+==================
+query-forms/update-default - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+UPDATE dbo.t SET c=DEFAULT, n=NULL;
+
+---
+
+(program (batch (statement (update (keyword_update) (object_reference (identifier) (identifier)) (keyword_set) (assignment (field (identifier)) (assignment_operator) (keyword_default)) (assignment (field (identifier)) (assignment_operator) (literal (keyword_null)))))))
+
+==================
+query-forms/update-variable-chain - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE @n int; UPDATE dbo.t SET @n = c += 1;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (update (keyword_update) (object_reference (identifier) (identifier)) (keyword_set) (assignment (field (identifier)) (assignment_operator) (assignment (field (identifier)) (assignment_operator) (literal)))))))
+
+==================
+query-forms/update-compound-chain - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE @n int; UPDATE dbo.t SET @n = c -= 1;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (update (keyword_update) (object_reference (identifier) (identifier)) (keyword_set) (assignment (field (identifier)) (assignment_operator) (assignment (field (identifier)) (assignment_operator) (literal)))))))
+
+==================
+query-forms/update-column-chain - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+UPDATE dbo.t SET a = b = 1;
+
+---
+
+(program (batch (statement (update (keyword_update) (object_reference (identifier) (identifier)) (keyword_set) (assignment (field (identifier)) (assignment_operator) (binary_expression (field (identifier)) (literal)))))))
+
+==================
+query-forms/insert-openquery - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+INSERT INTO OPENQUERY(srv, 'SELECT a FROM dbo.t') VALUES (1);
+
+---
+
+(program (batch (statement (insert (keyword_insert) (keyword_into) (insert_rowset (keyword_openquery) (identifier) (literal)) (keyword_values) (list (literal))))))
+
+==================
+query-forms/insert-openquery-missing - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+INSERT OPENQUERY(srv) VALUES (1);
+
+---
+
+(program (ERROR (keyword_insert) (keyword_openquery) (identifier) (keyword_values) (literal)) (batch))
+
+==================
+query-forms/insert-column-nolock - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+INSERT dbo.t (nolock) VALUES (1);
+
+---
+
+(program (batch (statement (insert (keyword_insert) (object_reference (identifier) (identifier)) (list (column (identifier))) (keyword_values) (list (literal))))))
+
+==================
+query-forms/insert-delete-output - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+INSERT dbo.audit SELECT d.a FROM (DELETE dbo.t OUTPUT deleted.a WHERE a < 0) AS d;
+
+---
+
+(program (batch (statement (insert (keyword_insert) (object_reference (identifier) (identifier)) (query_specification (select (keyword_select) (select_expression (term (field (object_reference (identifier)) (identifier))))) (from (keyword_from) (relation (delete (keyword_delete) (object_reference (identifier) (identifier)) (output_clause (keyword_output) (term (field (object_reference (identifier)) (identifier)))) (where (keyword_where) (binary_expression (field (identifier)) (literal)))) (keyword_as) (identifier))))))))
+
+==================
+query-forms/insert-update-output - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+INSERT dbo.audit SELECT d.a FROM (UPDATE dbo.t SET a=1 OUTPUT inserted.a) AS d;
+
+---
+
+(program (batch (statement (insert (keyword_insert) (object_reference (identifier) (identifier)) (query_specification (select (keyword_select) (select_expression (term (field (object_reference (identifier)) (identifier))))) (from (keyword_from) (relation (update (keyword_update) (object_reference (identifier) (identifier)) (keyword_set) (assignment (field (identifier)) (assignment_operator) (literal)) (output_clause (keyword_output) (term (field (object_reference (identifier)) (identifier))))) (keyword_as) (identifier))))))))
+
+==================
+query-forms/insert-insert-output - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+INSERT dbo.audit SELECT d.a FROM (INSERT dbo.t OUTPUT inserted.a VALUES (1)) AS d;
+
+---
+
+(program (batch (statement (insert (keyword_insert) (object_reference (identifier) (identifier)) (query_specification (select (keyword_select) (select_expression (term (field (object_reference (identifier)) (identifier))))) (from (keyword_from) (relation (insert (keyword_insert) (object_reference (identifier) (identifier)) (output_clause (keyword_output) (term (field (object_reference (identifier)) (identifier)))) (keyword_values) (list (literal))) (keyword_as) (identifier))))))))
+
+==================
+query-forms/select-delete-source - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 10729
+==================
+
+SELECT d.a FROM (DELETE dbo.t OUTPUT deleted.a) AS d;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (field (object_reference (identifier)) (identifier))))) (from (keyword_from) (relation (delete (keyword_delete) (object_reference (identifier) (identifier)) (output_clause (keyword_output) (term (field (object_reference (identifier)) (identifier))))) (keyword_as) (identifier)))))))
+
+==================
+query-forms/insert-delete-no-output - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 10716
+==================
+
+INSERT dbo.audit SELECT * FROM (DELETE dbo.t) AS d;
+
+---
+
+(program (batch (statement (insert (keyword_insert) (object_reference (identifier) (identifier)) (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (delete (keyword_delete) (object_reference (identifier) (identifier))) (keyword_as) (identifier))))))))
+
+==================
+query-forms/table-as - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE @t AS TABLE (a int NOT NULL PRIMARY KEY, b AS a*2);
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (table_var_declaration (identifier) (keyword_as) (keyword_table) (column_definitions (column_definition (identifier) (keyword_int) (keyword_not) (keyword_null) (keyword_primary) (keyword_key)) (column_definition (identifier) (keyword_as) (binary_expression (field (identifier)) (literal)))))))))
+
+==================
+query-forms/table-default-not-null - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE @t TABLE (a int DEFAULT 1 NOT NULL, b nvarchar(8) DEFAULT N'가' NOT NULL);
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (table_var_declaration (identifier) (keyword_table) (column_definitions (column_definition (identifier) (keyword_int) (keyword_default) (literal) (keyword_not) (keyword_null)) (column_definition (identifier) (nvarchar (keyword_nvarchar) (literal)) (keyword_default) (literal) (keyword_not) (keyword_null))))))))
+
+==================
+query-forms/create-default-not-null - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+CREATE TABLE dbo.t (a int DEFAULT (1+2) NOT NULL, b int DEFAULT ABS(-1) NOT NULL);
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) (object_reference (identifier) (identifier)) (column_definitions (column_definition (identifier) (keyword_int) (keyword_default) (parenthesized_expression (binary_expression (literal) (literal))) (keyword_not) (keyword_null)) (column_definition (identifier) (keyword_int) (keyword_default) (invocation (object_reference (identifier)) (term (unary_expression (literal)))) (keyword_not) (keyword_null)))))))
+
+==================
+query-forms/alter-default-with-values - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+ALTER TABLE dbo.t ADD a int CONSTRAINT df DEFAULT 1 WITH VALUES;
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference (identifier) (identifier)) (keyword_add) (column_definition (identifier) (keyword_int) (keyword_constraint) (identifier) (keyword_default) (literal) (keyword_with) (keyword_values))))))
+
+==================
+query-forms/default-bare-arithmetic - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+CREATE TABLE dbo.t (a int DEFAULT 1+2 NOT NULL);
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) (object_reference (identifier) (identifier)) (column_definitions (column_definition (identifier) (keyword_int) (keyword_default) (binary_expression (literal) (literal)) (keyword_not) (keyword_null)))))))
+
+==================
+query-forms/default-parenthesized-arithmetic - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+CREATE TABLE dbo.t (a int DEFAULT (1+2) NOT NULL);
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) (object_reference (identifier) (identifier)) (column_definitions (column_definition (identifier) (keyword_int) (keyword_default) (parenthesized_expression (binary_expression (literal) (literal))) (keyword_not) (keyword_null)))))))
+
+==================
+query-forms/default-unary - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+CREATE TABLE dbo.t (a int DEFAULT -1 NOT NULL);
+
+---
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) (object_reference (identifier) (identifier)) (column_definitions (column_definition (identifier) (keyword_int) (keyword_default) (unary_expression (literal)) (keyword_not) (keyword_null)))))))
+
+==================
+query-forms/for-browse - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT a FROM dbo.t FOR BROWSE;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier))))) (for_clause (keyword_for) (keyword_browse)))))
+
+==================
+query-forms/for-browse-options - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+SELECT a FROM dbo.t FOR BROWSE, TYPE;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier))))) (for_clause (keyword_for) (keyword_browse))) (ERROR (keyword_type))))
+
+==================
+query-forms/group-cube - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT a,COUNT(*) FROM dbo.t GROUP BY a WITH CUBE;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (field (identifier))) (term (invocation (object_reference (identifier)) (term (all_fields)))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))) (group_by (keyword_group) (keyword_by) (field (identifier)) (keyword_with) (keyword_cube))))))
+
+==================
+query-forms/group-rollup-having - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT a,SUM(b) FROM dbo.t GROUP BY a WITH ROLLUP HAVING SUM(b)>0;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (field (identifier))) (term (invocation (object_reference (identifier)) (term (field (identifier))))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))) (group_by (keyword_group) (keyword_by) (field (identifier)) (keyword_with) (keyword_rollup)) (having (keyword_having) (binary_expression (invocation (object_reference (identifier)) (term (field (identifier)))) (literal)))))))
+
+==================
+query-forms/group-missing - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+SELECT a FROM dbo.t GROUP BY a WITH;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))) (group_by (keyword_group) (keyword_by) (field (identifier))))) (ERROR (keyword_with))))
+
+==================
+query-forms/group-double - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 319
+==================
+
+SELECT a FROM dbo.t GROUP BY a WITH CUBE WITH ROLLUP;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))) (group_by (keyword_group) (keyword_by) (field (identifier)) (keyword_with) (keyword_cube)))) (ERROR (keyword_with) (identifier))))
+
+==================
+query-forms/join-reduce - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT a.c FROM dbo.a AS a INNER REDUCE JOIN dbo.b AS b ON a.c=b.c;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (field (object_reference (identifier)) (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)) (keyword_as) (identifier)) (join (keyword_inner) (join_hint (keyword_reduce)) (keyword_join) (relation (object_reference (identifier) (identifier)) (keyword_as) (identifier)) (keyword_on) (binary_expression (field (object_reference (identifier)) (identifier)) (field (object_reference (identifier)) (identifier)))))))))
+
+==================
+query-forms/join-replicate - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT a.c FROM dbo.a AS a INNER REPLICATE JOIN dbo.b AS b ON a.c=b.c;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (field (object_reference (identifier)) (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)) (keyword_as) (identifier)) (join (keyword_inner) (join_hint (keyword_replicate)) (keyword_join) (relation (object_reference (identifier) (identifier)) (keyword_as) (identifier)) (keyword_on) (binary_expression (field (object_reference (identifier)) (identifier)) (field (object_reference (identifier)) (identifier)))))))))
+
+==================
+query-forms/join-hint-no-on - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+SELECT * FROM dbo.a INNER REDUCE JOIN dbo.b;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))))) (ERROR (keyword_inner) (join_hint (keyword_reduce)) (keyword_join) (object_reference (identifier) (identifier)))))
+
+==================
+query-forms/query-grants - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT a FROM dbo.t OPTION (MAX_GRANT_PERCENT = 50, MIN_GRANT_PERCENT = 1);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier))))) (option_clause (keyword_option) (query_hint (identifier) (literal)) (query_hint (identifier) (literal))))))
+
+==================
+query-forms/query-use-plan - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT 1 OPTION (USE PLAN N'<ShowPlanXML/>');
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (literal))))) (option_clause (keyword_option) (query_hint (identifier) (identifier) (literal))))))
+
+==================
+query-forms/query-use-hint - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT 1 OPTION (USE HINT ('DISABLE_OPTIMIZED_NESTED_LOOP'));
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (literal))))) (option_clause (keyword_option) (query_hint (identifier) (identifier) (literal))))))
+
+==================
+query-forms/query-use-missing - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+SELECT 1 OPTION (USE PLAN);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (literal))))) (option_clause (keyword_option) (query_hint (identifier) (identifier) (literal (MISSING keyword_null)))))))
+
+==================
+query-forms/query-missing-value - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+SELECT 1 OPTION (MAX_GRANT_PERCENT =);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (literal))))) (option_clause (keyword_option) (query_hint (identifier)) (ERROR)))))
+
+==================
+query-forms/predict-schema - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE @m varbinary(max); SELECT * FROM PREDICT(MODEL=@m,DATA=dbo.t AS d) WITH (Score float NULL, Label nvarchar(10) COLLATE Latin1_General_CI_AS NOT NULL) AS p;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (varbinary (keyword_varbinary) (keyword_max))))) (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (invocation (object_reference (identifier)) (term (binary_expression (field (identifier)) (field (identifier)))) (term (binary_expression (field (identifier)) (field (object_reference (identifier)) (identifier))) (keyword_as) (identifier)))) (openjson_schema (keyword_with) (openjson_column (identifier) (float (keyword_float)) (literal (keyword_null))) (openjson_column (identifier) (nvarchar (keyword_nvarchar) (literal)) (keyword_collate) (identifier) (keyword_not) (keyword_null))) (keyword_as) (identifier))))))
+
+==================
+query-forms/openjson-not-null - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 156,319
+==================
+
+DECLARE @j nvarchar(max); SELECT * FROM OPENJSON(@j) WITH (a int NOT NULL);
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) (keyword_max))))) (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (invocation (object_reference (identifier)) (term (field (identifier))))) (openjson_schema (keyword_with) (openjson_column (identifier) (keyword_int) (keyword_not) (keyword_null))))))))
+
+==================
+query-forms/openxml-not-null - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 156
+==================
+
+DECLARE @h int; SELECT * FROM OPENXML(@h,'/r') WITH (a int NOT NULL);
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (invocation (object_reference (identifier)) (term (field (identifier))) (term (literal)))) (openjson_schema (keyword_with) (openjson_column (identifier) (keyword_int) (keyword_not) (keyword_null))))))))
+
+==================
+query-forms/exec-number - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+EXEC dbo.p;1 42 WITH RECOMPILE;
+
+---
+
+(program (batch (statement (execute_statement (keyword_exec) (object_reference (identifier) (identifier)) (literal) (exec_argument (literal)) (keyword_with) (keyword_recompile)))))
+
+==================
+query-forms/exec-number-comment - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+EXEC dbo.p; /* 번호 */ 1 42;
+
+---
+
+(program (batch (statement (execute_statement (keyword_exec) (object_reference (identifier) (identifier)))) (marginalia) (ERROR (literal) (literal))))
+
+==================
+query-forms/exec-terminator - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+EXEC dbo.p;
+GO
+INSERT dbo.t EXEC dbo.p;
+GO
+
+
+---
+
+(program (batch (statement (execute_statement (keyword_exec) (object_reference (identifier) (identifier)))) (go_statement (keyword_go))) (batch (statement (insert (keyword_insert) (object_reference (identifier) (identifier)) (execute_statement (keyword_exec) (object_reference (identifier) (identifier))))) (go_statement (keyword_go))))
+
+==================
+query-forms/exec-none - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+EXEC dbo.p WITH RESULT SETS NONE;
+
+---
+
+(program (batch (statement (execute_statement (keyword_exec) (object_reference (identifier) (identifier)) (keyword_with) (exec_result_sets (keyword_result) (keyword_sets) (keyword_none))))))
+
+==================
+query-forms/exec-undefined - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+EXEC dbo.p WITH RESULT SETS UNDEFINED;
+
+---
+
+(program (batch (statement (execute_statement (keyword_exec) (object_reference (identifier) (identifier)) (keyword_with) (exec_result_sets (keyword_result) (keyword_sets) (keyword_undefined))))))
+
+==================
+query-forms/exec-columns - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+EXEC dbo.p WITH RESULT SETS ((a int NOT NULL, b nvarchar(20) COLLATE Latin1_General_CI_AS NULL),(c money));
+
+---
+
+(program (batch (statement (execute_statement (keyword_exec) (object_reference (identifier) (identifier)) (keyword_with) (exec_result_sets (keyword_result) (keyword_sets) (exec_result_column (identifier) (keyword_int) (keyword_not) (keyword_null)) (exec_result_column (identifier) (nvarchar (keyword_nvarchar) (literal)) (keyword_collate) (identifier) (keyword_null)) (exec_result_column (identifier) (keyword_money)))))))
+
+==================
+query-forms/exec-object - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+EXEC dbo.p WITH RESULT SETS (AS OBJECT db1..v, AS TYPE dbo.t, AS FOR XML);
+
+---
+
+(program (batch (statement (execute_statement (keyword_exec) (object_reference (identifier) (identifier)) (keyword_with) (exec_result_sets (keyword_result) (keyword_sets) (keyword_as) (keyword_object) (object_reference (identifier) (identifier)) (keyword_as) (keyword_type) (object_reference (identifier) (identifier)) (keyword_as) (keyword_for) (keyword_xml))))))
+
+==================
+query-forms/exec-recompile-result - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+EXEC dbo.p WITH RECOMPILE, RESULT SETS ((a int));
+
+---
+
+(program (batch (statement (execute_statement (keyword_exec) (object_reference (identifier) (identifier)) (keyword_with) (keyword_recompile) (exec_result_sets (keyword_result) (keyword_sets) (exec_result_column (identifier) (keyword_int)))))))
+
+==================
+query-forms/exec-repeat-recompile - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+EXEC dbo.p WITH RECOMPILE, RECOMPILE;
+
+---
+
+(program (batch (statement (execute_statement (keyword_exec) (object_reference (identifier) (identifier)) (keyword_with) (keyword_recompile) (keyword_recompile)))))
+
+==================
+query-forms/exec-repeat-results - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+EXEC dbo.p WITH RESULT SETS NONE, RESULT SETS UNDEFINED;
+
+---
+
+(program (batch (statement (execute_statement (keyword_exec) (object_reference (identifier) (identifier)) (keyword_with) (exec_result_sets (keyword_result) (keyword_sets) (keyword_none)) (exec_result_sets (keyword_result) (keyword_sets) (keyword_undefined))))))
+
+==================
+query-forms/exec-no-set - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+EXEC dbo.p WITH RESULT SETS ();
+
+---
+
+(program (batch (statement (execute_statement (keyword_exec) (object_reference (identifier) (identifier)))) (ERROR (keyword_with) (keyword_result) (keyword_sets))))
+
+==================
+query-forms/exec-bad-set-column - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+EXEC dbo.p WITH RESULT SETS ((a));
+
+---
+
+(program (batch (statement (execute_statement (keyword_exec) (object_reference (identifier) (identifier)) (keyword_with) (exec_result_sets (keyword_result) (keyword_sets) (exec_result_column (identifier) (custom_type (object_reference (identifier (MISSING _identifier))))))))))
+
+==================
+query-forms/exec-dynamic-login-at - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE @o int; EXEC (N'SELECT ?', @o OUTPUT) AS LOGIN = 'app' AT srv;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (execute_statement (keyword_exec) (literal) (field (identifier)) (keyword_output) (keyword_as) (keyword_login) (literal) (keyword_at) (identifier)))))
+
+==================
+query-forms/exec-dynamic-user-source - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+EXEC (N'SELECT 1') AS USER = 'app' AT DATA_SOURCE ds;
+
+---
+
+(program (batch (statement (execute_statement (keyword_exec) (literal) (keyword_as) (keyword_user) (literal) (keyword_at) (keyword_data_source) (identifier)))))
+
+==================
+query-forms/exec-dynamic-output-no-at - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+DECLARE @o int; EXEC (N'SELECT ?', @o OUTPUT) AS LOGIN = 'app';
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (execute_statement (keyword_exec) (literal) (field (identifier)) (keyword_output) (keyword_as) (keyword_login) (literal)))))
+
+==================
+query-forms/exec-dynamic-at-as - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 156
+==================
+
+EXEC (N'SELECT 1') AT srv AS LOGIN = 'app';
+
+---
+
+(program (batch (statement (execute_statement (keyword_exec) (literal) (keyword_at) (identifier))) (ERROR (identifier))))
+
+==================
+query-forms/checkpoint - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+CHECKPOINT 10; CHECKPOINT;
+
+---
+
+(program (batch (statement (checkpoint_statement (keyword_checkpoint) (literal))) (statement (checkpoint_statement (keyword_checkpoint)))))
+
+==================
+query-forms/checkpoint-variable - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+DECLARE @n int=10; CHECKPOINT @n;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int) (literal)))) (statement (checkpoint_statement (keyword_checkpoint))) (statement (label_statement (identifier) (MISSING ":")))))
+
+==================
+query-forms/shutdown - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SHUTDOWN WITH NOWAIT;
+
+---
+
+(program (batch (statement (shutdown_statement (keyword_shutdown) (keyword_with) (keyword_nowait)))))
+
+==================
+query-forms/shutdown-option - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+SHUTDOWN WITH NOREVERT;
+
+---
+
+(program (batch (statement (shutdown_statement (keyword_shutdown))) (ERROR (keyword_with))))
+
+==================
+query-forms/conversation-timer - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE @h uniqueidentifier; BEGIN CONVERSATION TIMER (@h) TIMEOUT = 120;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_uniqueidentifier)))) (statement (conversation_timer_statement (keyword_begin) (keyword_conversation) (keyword_timer) (identifier) (keyword_timeout) (literal)))))
+
+==================
+query-forms/conversation-timer-no-parens - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+DECLARE @h uniqueidentifier; BEGIN CONVERSATION TIMER @h TIMEOUT=120;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_uniqueidentifier))))) (ERROR (keyword_begin) (keyword_conversation) (keyword_timer) (keyword_timeout) (literal)))
+
+==================
+query-forms/conversation-timer-no-value - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+DECLARE @h uniqueidentifier; BEGIN CONVERSATION TIMER (@h) TIMEOUT=;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_uniqueidentifier)))) (statement (conversation_timer_statement (keyword_begin) (keyword_conversation) (keyword_timer) (identifier) (keyword_timeout) (field (identifier (MISSING _identifier)))))))
+
+==================
+query-forms/function-nullable - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+CREATE FUNCTION dbo.f (@a int NOT NULL, @b int NULL=0) RETURNS int AS BEGIN RETURN @a+@b; END;
+
+---
+
+(program (batch (statement (create_function (keyword_create) (keyword_function) (object_reference (identifier) (identifier)) (function_arguments (function_argument (identifier) (keyword_int) (keyword_not) (keyword_null)) (function_argument (identifier) (keyword_int) (keyword_null) (literal))) (keyword_returns) (keyword_int) (function_body (keyword_as) (keyword_begin) (statement (return_statement (keyword_return) (binary_expression (field (identifier)) (field (identifier))))) (keyword_end))))))
+
+==================
+query-forms/function-order - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+CREATE FUNCTION dbo.f (@a int) RETURNS TABLE (c int) ORDER(c DESC) AS EXTERNAL NAME a.[N.C].M;
+
+---
+
+(program (batch (statement (create_function (keyword_create) (keyword_function) (object_reference (identifier) (identifier)) (function_arguments (function_argument (identifier) (keyword_int))) (keyword_returns) (keyword_table) (column_definitions (column_definition (identifier) (keyword_int))) (keyword_order) (order_target (field (identifier)) (direction (keyword_desc))) (function_body (keyword_as) (external_name (keyword_external) (keyword_name) (object_reference (identifier) (identifier) (identifier))))))))
+
+==================
+query-forms/procedure-cursor-param - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+CREATE PROC dbo.p @c CURSOR VARYING OUTPUT AS SELECT 1;
+
+---
+
+(program (batch (statement (create_procedure (keyword_create) (keyword_proc) (object_reference (identifier) (identifier)) (function_arguments (function_argument (identifier) (keyword_cursor) (keyword_varying) (keyword_output))) (procedure_body (keyword_as) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))))))))
+
+==================
+query-forms/function-cursor-param - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 178,10725
+==================
+
+CREATE FUNCTION dbo.f (@c CURSOR VARYING OUTPUT) RETURNS int AS BEGIN RETURN 1; END;
+
+---
+
+(program (batch (statement (create_function (keyword_create) (keyword_function) (object_reference (identifier) (identifier)) (function_arguments (function_argument (identifier) (keyword_cursor) (keyword_varying) (keyword_output))) (keyword_returns) (keyword_int) (function_body (keyword_as) (keyword_begin) (statement (return_statement (keyword_return) (literal))) (keyword_end))))))
+
+==================
+query-forms/procedure-native - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+CREATE PROC dbo.p @a int NOT NULL WITH NATIVE_COMPILATION, SCHEMABINDING AS BEGIN ATOMIC WITH (TRANSACTION ISOLATION LEVEL=SNAPSHOT, LANGUAGE=N'us_english') SELECT @a; END;
+
+---
+
+(program (batch (statement (create_procedure (keyword_create) (keyword_proc) (object_reference (identifier) (identifier)) (function_arguments (function_argument (identifier) (keyword_int) (keyword_not) (keyword_null))) (procedure_options (keyword_with) (procedure_option (keyword_native_compilation)) (procedure_option (keyword_schemabinding))) (procedure_body (keyword_as) (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (atomic_option (keyword_transaction) (keyword_isolation) (keyword_level) (keyword_snapshot)) (atomic_option (option (identifier) (literal)))) (statement (query_specification (select (keyword_select) (select_expression (term (field (identifier))))))) (keyword_end)))))))
+
+==================
+query-forms/trigger-native - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+CREATE TRIGGER dbo.tr ON dbo.t WITH NATIVE_COMPILATION, SCHEMABINDING AFTER INSERT AS BEGIN ATOMIC WITH (LANGUAGE=N'us_english', TRANSACTION ISOLATION LEVEL=SNAPSHOT) SELECT 1; END;
+
+---
+
+(program (batch (statement (create_trigger (keyword_create) (keyword_trigger) (object_reference (identifier) (identifier)) (keyword_on) (object_reference (identifier) (identifier)) (trigger_options (keyword_with) (trigger_option (keyword_native_compilation)) (trigger_option (keyword_schemabinding))) (keyword_after) (trigger_event (keyword_insert)) (procedure_body (keyword_as) (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (atomic_option (option (identifier) (literal))) (atomic_option (keyword_transaction) (keyword_isolation) (keyword_level) (keyword_snapshot))) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end)))))))
+
+==================
+query-forms/function-native - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+CREATE FUNCTION dbo.f (@a int) RETURNS int WITH NATIVE_COMPILATION, SCHEMABINDING AS BEGIN ATOMIC WITH (TRANSACTION ISOLATION LEVEL=SNAPSHOT, LANGUAGE=N'us_english') RETURN @a; END;
+
+---
+
+(program (batch (statement (create_function (keyword_create) (keyword_function) (object_reference (identifier) (identifier)) (function_arguments (function_argument (identifier) (keyword_int))) (keyword_returns) (keyword_int) (function_options (keyword_with) (function_option (keyword_native_compilation)) (function_option (keyword_schemabinding))) (function_body (keyword_as) (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (atomic_option (keyword_transaction) (keyword_isolation) (keyword_level) (keyword_snapshot)) (atomic_option (option (identifier) (literal)))) (statement (return_statement (keyword_return) (field (identifier)))) (keyword_end))))))
+
+==================
+query-forms/plain-atomic - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+BEGIN ATOMIC WITH (TRANSACTION ISOLATION LEVEL=SNAPSHOT, LANGUAGE=N'us_english') SELECT 1; END;
+
+---
+
+(program (batch (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (atomic_option (keyword_transaction) (keyword_isolation) (keyword_level) (keyword_snapshot)) (atomic_option (option (identifier) (literal)))) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end))))
+
+==================
+query-forms/function-native-missing-atomic - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 10783
+==================
+
+CREATE FUNCTION dbo.f (@a int) RETURNS int WITH NATIVE_COMPILATION, SCHEMABINDING AS BEGIN RETURN @a; END;
+
+---
+
+(program (batch (statement (create_function (keyword_create) (keyword_function) (object_reference (identifier) (identifier)) (function_arguments (function_argument (identifier) (keyword_int))) (keyword_returns) (keyword_int) (function_options (keyword_with) (function_option (keyword_native_compilation)) (function_option (keyword_schemabinding))) (function_body (keyword_as) (keyword_begin) (statement (return_statement (keyword_return) (field (identifier)))) (keyword_end))))))
+
+==================
+query-forms/open-like-escape - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT 1 WHERE N'a_b' LIKE N'a!_b' ESCAPE N'!';
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (literal)))) (where (keyword_where) (binary_expression (literal) (keyword_like) (literal))))) (ERROR (identifier))))
+
+==================
+query-forms/open-static - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT hierarchyid::GetRoot(), geometry::Point(1,2,0);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (field (identifier)) (ERROR) (identifier)))))) (ERROR (ERROR (keyword_geometry)) (literal) (literal) (literal))))
+
+==================
+query-forms/open-json-arrayagg - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT JSON_ARRAYAGG(a ORDER BY b NULL ON NULL RETURNING json) FROM dbo.t;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (invocation (object_reference (identifier)) (ERROR (term (field (identifier)) (identifier)) (term (literal (keyword_null)) (identifier))) (term (literal (keyword_null))) (returning_clause (keyword_returning) (keyword_json)))))) (from (keyword_from) (relation (object_reference (identifier) (identifier))))))))
+
+==================
+query-forms/open-json-objectagg - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT JSON_OBJECTAGG(a:b ABSENT ON NULL) FROM dbo.t;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (invocation (object_reference (identifier)) (ERROR (term (field (identifier)) (ERROR) (identifier)) (term (field (identifier)) (identifier))) (term (literal (keyword_null))))))) (from (keyword_from) (relation (object_reference (identifier) (identifier))))))))
+
+==================
+query-forms/open-nested-set - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+(SELECT 1 UNION SELECT 2) INTERSECT SELECT 3;
+
+---
+
+(program (batch (statement (set_operation (query_specification (select (keyword_select) (select_expression (term (literal))))) (keyword_union) (query_specification (select (keyword_select) (select_expression (term (literal))))))) (statement (label_statement (identifier) (MISSING ":"))) (statement (query_specification (select (keyword_select) (select_expression (term (literal))))))))
+
+==================
+query-forms/open-rowset-semicolon - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT * FROM OPENROWSET('MSOLEDBSQL','srv';'user';'dummy','SELECT 1') AS t;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (invocation (object_reference (identifier)) (term (literal)) (term (literal) (ERROR) (literal)) (ERROR) (term (literal))) (keyword_as) (identifier)))))))
+
+==================
+query-forms/open-xml-table - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE @h int; SELECT * FROM OPENXML(@h,'/r') WITH dbo.t AS x;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (invocation (object_reference (identifier)) (term (field (identifier))) (term (literal)))) (openxml_table_schema (keyword_with) (object_reference (identifier) (identifier))) (keyword_as) (identifier))))))
+
+==================
+query-forms/open-join-group - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT * FROM dbo.a AS a JOIN (dbo.b AS b LEFT JOIN dbo.c AS c ON b.id=c.id) ON a.id=b.id;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (object_reference (identifier) (identifier)) (keyword_as) (identifier)) (join (keyword_join) (relation (relation (object_reference (identifier) (identifier)) (keyword_as) (identifier)) (join (keyword_left) (keyword_join) (relation (object_reference (identifier) (identifier)) (keyword_as) (identifier)) (keyword_on) (binary_expression (field (object_reference (identifier)) (identifier)) (field (object_reference (identifier)) (identifier))))) (keyword_on) (binary_expression (field (object_reference (identifier)) (identifier)) (field (object_reference (identifier)) (identifier)))))))))
+
+==================
+query-forms/open-fulltext-language - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT * FROM dbo.t WHERE CONTAINS(c,'apple',LANGUAGE 1033);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))) (where (keyword_where) (invocation (object_reference (identifier)) (term (field (identifier))) (term (literal)) (term (field (identifier))) (ERROR)))))))
+
+==================
+query-forms/open-graph-columns - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT $node_id,$edge_id,$from_id,$to_id FROM dbo.t;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (ERROR (UNEXPECTED 'n')) (select_expression (term (field (identifier))) (ERROR (UNEXPECTED 'e')) (term (field (identifier))) (ERROR (UNEXPECTED 'f')) (term (field (identifier))) (ERROR (UNEXPECTED 't')) (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier))))))))
+
+==================
+query-forms/open-graph-path - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT * FROM dbo.a AS a, dbo.e FOR PATH AS e, dbo.b FOR PATH AS b WHERE MATCH(SHORTEST_PATH(a(-(e)->b)+));
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (object_reference (identifier) (identifier)) (keyword_as) (identifier)) (relation (object_reference (identifier) (identifier)))))) (ERROR (keyword_for) (keyword_as) (keyword_for) (keyword_as) (keyword_where) (keyword_match) (keyword_shortest_path))))
+
+==================
+query-forms/open-kill-query - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+KILL QUERY NOTIFICATION SUBSCRIPTION ALL;
+
+---
+
+(program (ERROR (keyword_kill) (keyword_all)) (batch))
+
+==================
+query-forms/open-stats-partitions - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+UPDATE STATISTICS dbo.t WITH RESAMPLE ON PARTITIONS (1,3 TO 5), COLUMNS;
+
+---
+
+(program (batch (statement (update_statistics_statement (keyword_update) (keyword_statistics) (object_reference (identifier) (identifier)) (with_clause (keyword_with) (option (identifier) (keyword_on))))) (ERROR (identifier) (literal) (literal) (keyword_to) (literal))))
+
+==================
+query-forms/open-offsets - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SET OFFSETS SELECT, FROM ON;
+
+---
+
+(program (batch (statement (set_statement (keyword_set) (object_reference (identifier)) (field (identifier)) (field (identifier)) (keyword_on)))))
+
+==================
+query-forms/open-implicit-exec - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+dbo.p;
+GO
+
+---
+
+(program (ERROR (identifier)) (batch (go_statement (keyword_go))))
+
+==================
+query-forms/open-signature - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+ADD SIGNATURE TO OBJECT::dbo.p BY CERTIFICATE c;
+
+---
+
+(program
+  (batch
+    (statement
+      (label_statement
+        (identifier)
+        (ERROR
+          (keyword_to)
+          (keyword_object)))))
+  (ERROR
+    (identifier)
+    (identifier)
+    (keyword_by)
+    (keyword_certificate)
+    (identifier)))
+
+==================
+query-forms/open-spaced-comparison - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT 1 WHERE 1 < > 2 AND 1 ! > 2 AND 2 ! < 1;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (literal)))) (where (keyword_where) (binary_expression (binary_expression (binary_expression (binary_expression (literal) (field (identifier (MISSING _identifier)))) (literal)) (keyword_and) (binary_expression (literal) (ERROR (UNEXPECTED ' ')) (literal))) (keyword_and) (binary_expression (literal) (ERROR (UNEXPECTED ' ')) (literal))))))))
+
+==================
+query-forms/atomic-minimal - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+CREATE PROC dbo.p WITH NATIVE_COMPILATION, SCHEMABINDING AS BEGIN ATOMIC WITH (TRANSACTION ISOLATION LEVEL=SNAPSHOT, LANGUAGE=N'us_english') SELECT 1; END;
+
+---
+
+(program (batch (statement (create_procedure (keyword_create) (keyword_proc) (object_reference (identifier) (identifier)) (procedure_options (keyword_with) (procedure_option (keyword_native_compilation)) (procedure_option (keyword_schemabinding))) (procedure_body (keyword_as) (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (atomic_option (keyword_transaction) (keyword_isolation) (keyword_level) (keyword_snapshot)) (atomic_option (option (identifier) (literal)))) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end)))))))
+
+==================
+query-forms/atomic-all - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+CREATE PROC dbo.p WITH NATIVE_COMPILATION, SCHEMABINDING AS BEGIN ATOMIC WITH (TRANSACTION ISOLATION LEVEL=REPEATABLE READ, LANGUAGE='us_english', DATEFIRST=1, DATEFORMAT=dmy, DELAYED_DURABILITY=ON) SELECT 1; END;
+
+---
+
+(program (batch (statement (create_procedure (keyword_create) (keyword_proc) (object_reference (identifier) (identifier)) (procedure_options (keyword_with) (procedure_option (keyword_native_compilation)) (procedure_option (keyword_schemabinding))) (procedure_body (keyword_as) (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (atomic_option (keyword_transaction) (keyword_isolation) (keyword_level) (keyword_repeatable) (keyword_read)) (atomic_option (option (identifier) (literal))) (atomic_option (option (identifier) (literal))) (atomic_option (option (identifier) (identifier))) (atomic_option (option (identifier) (keyword_on)))) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end)))))))
+
+==================
+query-forms/atomic-serializable - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+CREATE PROC dbo.p WITH NATIVE_COMPILATION, SCHEMABINDING AS BEGIN ATOMIC WITH (LANGUAGE='us_english', TRANSACTION ISOLATION LEVEL=SERIALIZABLE) SELECT 1; END;
+
+---
+
+(program (batch (statement (create_procedure (keyword_create) (keyword_proc) (object_reference (identifier) (identifier)) (procedure_options (keyword_with) (procedure_option (keyword_native_compilation)) (procedure_option (keyword_schemabinding))) (procedure_body (keyword_as) (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (atomic_option (option (identifier) (literal))) (atomic_option (keyword_transaction) (keyword_isolation) (keyword_level) (keyword_serializable))) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end)))))))
+
+==================
+query-forms/atomic-no-language - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102,10783,10784
+==================
+
+CREATE PROC dbo.p WITH NATIVE_COMPILATION, SCHEMABINDING AS BEGIN ATOMIC WITH (TRANSACTION ISOLATION LEVEL=SNAPSHOT) SELECT 1; END;
+
+---
+
+(program (batch (statement (create_procedure (keyword_create) (keyword_proc) (object_reference (identifier) (identifier)) (procedure_options (keyword_with) (procedure_option (keyword_native_compilation)) (procedure_option (keyword_schemabinding))) (procedure_body (keyword_as) (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (atomic_option (keyword_transaction) (keyword_isolation) (keyword_level) (keyword_snapshot))) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end)))))))
+
+==================
+query-forms/atomic-no-isolation - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102,10783,10784
+==================
+
+CREATE PROC dbo.p WITH NATIVE_COMPILATION, SCHEMABINDING AS BEGIN ATOMIC WITH (LANGUAGE='us_english') SELECT 1; END;
+
+---
+
+(program (batch (statement (create_procedure (keyword_create) (keyword_proc) (object_reference (identifier) (identifier)) (procedure_options (keyword_with) (procedure_option (keyword_native_compilation)) (procedure_option (keyword_schemabinding))) (procedure_body (keyword_as) (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (atomic_option (option (identifier) (literal)))) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end)))))))
+
+==================
+query-forms/atomic-repeat-language - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102,1039,10783
+==================
+
+CREATE PROC dbo.p WITH NATIVE_COMPILATION, SCHEMABINDING AS BEGIN ATOMIC WITH (TRANSACTION ISOLATION LEVEL=SNAPSHOT, LANGUAGE='us_english', LANGUAGE='us_english') SELECT 1; END;
+
+---
+
+(program (batch (statement (create_procedure (keyword_create) (keyword_proc) (object_reference (identifier) (identifier)) (procedure_options (keyword_with) (procedure_option (keyword_native_compilation)) (procedure_option (keyword_schemabinding))) (procedure_body (keyword_as) (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (atomic_option (keyword_transaction) (keyword_isolation) (keyword_level) (keyword_snapshot)) (atomic_option (option (identifier) (literal))) (atomic_option (option (identifier) (literal)))) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end)))))))
+
+==================
+query-forms/atomic-repeat-isolation - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102,1039,10783
+==================
+
+CREATE PROC dbo.p WITH NATIVE_COMPILATION, SCHEMABINDING AS BEGIN ATOMIC WITH (TRANSACTION ISOLATION LEVEL=SNAPSHOT, TRANSACTION ISOLATION LEVEL=SERIALIZABLE, LANGUAGE='us_english') SELECT 1; END;
+
+---
+
+(program (batch (statement (create_procedure (keyword_create) (keyword_proc) (object_reference (identifier) (identifier)) (procedure_options (keyword_with) (procedure_option (keyword_native_compilation)) (procedure_option (keyword_schemabinding))) (procedure_body (keyword_as) (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (atomic_option (keyword_transaction) (keyword_isolation) (keyword_level) (keyword_snapshot)) (atomic_option (keyword_transaction) (keyword_isolation) (keyword_level) (keyword_serializable)) (atomic_option (option (identifier) (literal)))) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end)))))))
+
+==================
+query-forms/atomic-bad-isolation - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 10794
+==================
+
+CREATE PROC dbo.p WITH NATIVE_COMPILATION, SCHEMABINDING AS BEGIN ATOMIC WITH (TRANSACTION ISOLATION LEVEL=READ COMMITTED, LANGUAGE='us_english') SELECT 1; END;
+
+---
+
+(program (batch (statement (create_procedure (keyword_create) (keyword_proc) (object_reference (identifier) (identifier)) (procedure_options (keyword_with) (procedure_option (keyword_native_compilation)) (procedure_option (keyword_schemabinding))) (procedure_body (keyword_as) (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (ERROR (keyword_transaction) (keyword_isolation) (keyword_level)) (atomic_option (option (identifier) (identifier))) (atomic_option (option (identifier) (literal)))) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end)))))))
+
+==================
+query-forms/atomic-unknown - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102,195,10783
+==================
+
+CREATE PROC dbo.p WITH NATIVE_COMPILATION, SCHEMABINDING AS BEGIN ATOMIC WITH (TRANSACTION ISOLATION LEVEL=SNAPSHOT, LANGUAGE='us_english', BANANAS=1) SELECT 1; END;
+
+---
+
+(program (batch (statement (create_procedure (keyword_create) (keyword_proc) (object_reference (identifier) (identifier)) (procedure_options (keyword_with) (procedure_option (keyword_native_compilation)) (procedure_option (keyword_schemabinding))) (procedure_body (keyword_as) (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (atomic_option (keyword_transaction) (keyword_isolation) (keyword_level) (keyword_snapshot)) (atomic_option (option (identifier) (literal))) (atomic_option (option (identifier) (literal)))) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end)))))))
+
+==================
+query-forms/atomic-datefirst-eight - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+CREATE PROC dbo.p WITH NATIVE_COMPILATION, SCHEMABINDING AS BEGIN ATOMIC WITH (TRANSACTION ISOLATION LEVEL=SNAPSHOT, LANGUAGE='us_english', DATEFIRST=8) SELECT 1; END;
+
+---
+
+(program (batch (statement (create_procedure (keyword_create) (keyword_proc) (object_reference (identifier) (identifier)) (procedure_options (keyword_with) (procedure_option (keyword_native_compilation)) (procedure_option (keyword_schemabinding))) (procedure_body (keyword_as) (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (atomic_option (keyword_transaction) (keyword_isolation) (keyword_level) (keyword_snapshot)) (atomic_option (option (identifier) (literal))) (atomic_option (option (identifier) (literal)))) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end)))))))
+
+==================
+query-forms/atomic-datefirst-var - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102,137,10783
+==================
+
+CREATE PROC dbo.p WITH NATIVE_COMPILATION, SCHEMABINDING AS BEGIN ATOMIC WITH (TRANSACTION ISOLATION LEVEL=SNAPSHOT, LANGUAGE='us_english', DATEFIRST=@d) SELECT 1; END;
+
+---
+
+(program (batch (statement (create_procedure (keyword_create) (keyword_proc) (object_reference (identifier) (identifier)) (procedure_options (keyword_with) (procedure_option (keyword_native_compilation)) (procedure_option (keyword_schemabinding))) (procedure_body (keyword_as) (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (atomic_option (keyword_transaction) (keyword_isolation) (keyword_level) (keyword_snapshot)) (atomic_option (option (identifier) (literal))) (atomic_option (option (identifier) (identifier)))) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end)))))))
+
+==================
+query-forms/atomic-format-bad - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+CREATE PROC dbo.p WITH NATIVE_COMPILATION, SCHEMABINDING AS BEGIN ATOMIC WITH (TRANSACTION ISOLATION LEVEL=SNAPSHOT, LANGUAGE='us_english', DATEFORMAT=zzz) SELECT 1; END;
+
+---
+
+(program (batch (statement (create_procedure (keyword_create) (keyword_proc) (object_reference (identifier) (identifier)) (procedure_options (keyword_with) (procedure_option (keyword_native_compilation)) (procedure_option (keyword_schemabinding))) (procedure_body (keyword_as) (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (atomic_option (keyword_transaction) (keyword_isolation) (keyword_level) (keyword_snapshot)) (atomic_option (option (identifier) (literal))) (atomic_option (option (identifier) (identifier)))) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end)))))))
+
+==================
+query-forms/atomic-language-var - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102,137,10783
+==================
+
+CREATE PROC dbo.p WITH NATIVE_COMPILATION, SCHEMABINDING AS BEGIN ATOMIC WITH (TRANSACTION ISOLATION LEVEL=SNAPSHOT, LANGUAGE=@l) SELECT 1; END;
+
+---
+
+(program (batch (statement (create_procedure (keyword_create) (keyword_proc) (object_reference (identifier) (identifier)) (procedure_options (keyword_with) (procedure_option (keyword_native_compilation)) (procedure_option (keyword_schemabinding))) (procedure_body (keyword_as) (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (atomic_option (keyword_transaction) (keyword_isolation) (keyword_level) (keyword_snapshot)) (atomic_option (option (identifier) (identifier)))) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end)))))))
+
+==================
+query-forms/atomic-durability-bad - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102,10783
+==================
+
+CREATE PROC dbo.p WITH NATIVE_COMPILATION, SCHEMABINDING AS BEGIN ATOMIC WITH (TRANSACTION ISOLATION LEVEL=SNAPSHOT, LANGUAGE='us_english', DELAYED_DURABILITY=maybe) SELECT 1; END;
+
+---
+
+(program (batch (statement (create_procedure (keyword_create) (keyword_proc) (object_reference (identifier) (identifier)) (procedure_options (keyword_with) (procedure_option (keyword_native_compilation)) (procedure_option (keyword_schemabinding))) (procedure_body (keyword_as) (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (atomic_option (keyword_transaction) (keyword_isolation) (keyword_level) (keyword_snapshot)) (atomic_option (option (identifier) (literal))) (atomic_option (option (identifier) (identifier)))) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end)))))))
+
+==================
+query-forms/atomic-language-no-equals - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102,10783
+==================
+
+CREATE PROC dbo.p WITH NATIVE_COMPILATION, SCHEMABINDING AS BEGIN ATOMIC WITH (TRANSACTION ISOLATION LEVEL=SNAPSHOT, LANGUAGE 'us_english') SELECT 1; END;
+
+---
+
+(program (batch (statement (create_procedure (keyword_create) (keyword_proc) (object_reference (identifier) (identifier)) (procedure_options (keyword_with) (procedure_option (keyword_native_compilation)) (procedure_option (keyword_schemabinding))) (procedure_body (keyword_as) (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (atomic_option (keyword_transaction) (keyword_isolation) (keyword_level) (keyword_snapshot)) (atomic_option (option (identifier) (literal)))) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end)))))))
+
+==================
+query-forms/cursor-option-local - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE c CURSOR LOCAL FOR SELECT a FROM dbo.t;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_cursor) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))))))))
+
+==================
+query-forms/cursor-option-global - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE c CURSOR GLOBAL FOR SELECT a FROM dbo.t;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_cursor) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))))))))
+
+==================
+query-forms/cursor-option-forward_only - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE c CURSOR FORWARD_ONLY FOR SELECT a FROM dbo.t;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_cursor) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))))))))
+
+==================
+query-forms/cursor-option-scroll - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE c CURSOR SCROLL FOR SELECT a FROM dbo.t;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_cursor) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))))))))
+
+==================
+query-forms/cursor-option-static - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE c CURSOR STATIC FOR SELECT a FROM dbo.t;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_cursor) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))))))))
+
+==================
+query-forms/cursor-option-keyset - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE c CURSOR KEYSET FOR SELECT a FROM dbo.t;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_cursor) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))))))))
+
+==================
+query-forms/cursor-option-dynamic - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE c CURSOR DYNAMIC FOR SELECT a FROM dbo.t;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_cursor) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))))))))
+
+==================
+query-forms/cursor-option-fast_forward - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE c CURSOR FAST_FORWARD FOR SELECT a FROM dbo.t;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_cursor) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))))))))
+
+==================
+query-forms/cursor-option-read_only - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE c CURSOR READ_ONLY FOR SELECT a FROM dbo.t;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_cursor) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))))))))
+
+==================
+query-forms/cursor-option-scroll_locks - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE c CURSOR SCROLL_LOCKS FOR SELECT a FROM dbo.t;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_cursor) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))))))))
+
+==================
+query-forms/cursor-option-optimistic - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE c CURSOR OPTIMISTIC FOR SELECT a FROM dbo.t;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_cursor) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))))))))
+
+==================
+query-forms/cursor-option-type_warning - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE c CURSOR TYPE_WARNING FOR SELECT a FROM dbo.t;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_cursor) (identifier) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))))))))
+
+==================
+query-forms/offsets-valid - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SET OFFSETS SELECT, FROM, ORDER ON; SET OFFSETS EXECUTE, PROCEDURE, STATEMENT, PARAM, TABLE OFF;
+
+---
+
+(program (batch (statement (set_statement (keyword_set) (object_reference (identifier)) (field (identifier)) (field (identifier)) (field (identifier)) (keyword_on))) (statement (set_statement (keyword_set) (object_reference (identifier)) (field (identifier)) (field (identifier)) (field (identifier)) (field (identifier)) (field (identifier)) (keyword_off)))))
+
+==================
+query-forms/offsets-bogus - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 195
+==================
+
+SET OFFSETS BANANAS ON;
+
+---
+
+(program (batch (statement (set_statement (keyword_set) (object_reference (identifier)) (field (identifier)) (keyword_on)))))
+
+==================
+query-forms/offsets-repeat - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SET OFFSETS SELECT, SELECT ON;
+
+---
+
+(program (batch (statement (set_statement (keyword_set) (object_reference (identifier)) (field (identifier)) (field (identifier)) (keyword_on)))))
+
+==================
+query-forms/join-group-cross - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT * FROM dbo.a a JOIN (dbo.b b CROSS JOIN dbo.c c) ON a.id=b.id;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (object_reference (identifier) (identifier)) (identifier)) (join (keyword_join) (relation (relation (object_reference (identifier) (identifier)) (identifier)) (cross_join (keyword_cross) (keyword_join) (relation (object_reference (identifier) (identifier)) (identifier)))) (keyword_on) (binary_expression (field (object_reference (identifier)) (identifier)) (field (object_reference (identifier)) (identifier)))))))))
+
+==================
+query-forms/join-group-missing-on - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+SELECT * FROM dbo.a a JOIN (dbo.b b LEFT JOIN dbo.c c ON b.id=c.id);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (object_reference (identifier) (identifier)) (identifier))))) (ERROR (keyword_join) (relation (relation (object_reference (identifier) (identifier)) (identifier)) (join (keyword_left) (keyword_join) (relation (object_reference (identifier) (identifier)) (identifier)) (keyword_on) (binary_expression (field (object_reference (identifier)) (identifier)) (field (object_reference (identifier)) (identifier))))))))
+
+==================
+query-forms/join-group-empty - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+SELECT * FROM ();
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))))) (ERROR (keyword_from))))
+
+==================
+query-forms/openxml-table-qualified - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE @h int; SELECT * FROM OPENXML(@h,'/r',2) WITH db1..t AS x;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (invocation (object_reference (identifier)) (term (field (identifier))) (term (literal)) (term (literal)))) (openxml_table_schema (keyword_with) (object_reference (identifier) (identifier))) (keyword_as) (identifier))))))
+
+==================
+query-forms/openjson-table-schema - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+DECLARE @j nvarchar(max); SELECT * FROM OPENJSON(@j) WITH dbo.t;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) (keyword_max))))) (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (invocation (object_reference (identifier)) (term (field (identifier))))) (openxml_table_schema (keyword_with) (object_reference (identifier) (identifier))))))))
+
+==================
+query-forms/predict-collate - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE @m varbinary(max); SELECT * FROM PREDICT(MODEL=@m,DATA=dbo.t AS d) WITH (s nvarchar(10) COLLATE Latin1_General_CI_AS) p;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (varbinary (keyword_varbinary) (keyword_max))))) (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (invocation (object_reference (identifier)) (term (binary_expression (field (identifier)) (field (identifier)))) (term (binary_expression (field (identifier)) (field (object_reference (identifier)) (identifier))) (keyword_as) (identifier)))) (openjson_schema (keyword_with) (openjson_column (identifier) (nvarchar (keyword_nvarchar) (literal)) (keyword_collate) (identifier))) (identifier))))))
+
+==================
+query-forms/cursor-comment-literal - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE c INSENSITIVE CURSOR FOR SELECT 'FOR UPDATE' AS msg;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_insensitive) (keyword_cursor) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (literal) (keyword_as) (identifier)))))))))
+
+==================
+query-forms/cursor-global-comment - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+DECLARE c CURSOR LOCAL /* GLOBAL */ FOR SELECT 1;
+
+---
+
+(program (batch (statement (declare_cursor_statement (keyword_declare) (identifier) (keyword_cursor) (identifier) (marginalia) (keyword_for) (query_specification (select (keyword_select) (select_expression (term (literal)))))))))
+
+==================
+query-forms/exec-repeat-comment - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+EXEC dbo.p WITH RECOMPILE /* RECOMPILE */;
+
+---
+
+(program (batch (statement (execute_statement (keyword_exec) (object_reference (identifier) (identifier)) (keyword_with) (keyword_recompile))) (marginalia)))
+
+==================
+query-forms/atomic-language-literal-keyword - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+CREATE PROC dbo.p WITH NATIVE_COMPILATION,SCHEMABINDING AS BEGIN ATOMIC WITH (LANGUAGE='TRANSACTION ISOLATION LEVEL',TRANSACTION ISOLATION LEVEL=SNAPSHOT) SELECT 1; END;
+
+---
+
+(program (batch (statement (create_procedure (keyword_create) (keyword_proc) (object_reference (identifier) (identifier)) (procedure_options (keyword_with) (procedure_option (keyword_native_compilation)) (procedure_option (keyword_schemabinding))) (procedure_body (keyword_as) (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (atomic_option (option (identifier) (literal))) (atomic_option (keyword_transaction) (keyword_isolation) (keyword_level) (keyword_snapshot))) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end)))))))
+
+==================
+query-forms/concat-backslashes - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
+==================
+
+SELECT N'C:\임시\문서' || N'\a' AS 경로;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (binary_expression (literal) (literal)) (keyword_as) (identifier))))))))
+
+==================
+query-forms/odbc-brace-missing-value - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102
+==================
+
+SELECT {d};
+
+---
+
+(program (ERROR (keyword_select) (identifier)) (batch))
+
+==================
+query-forms/function-native-returns-null - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 10794
+==================
+
+CREATE FUNCTION dbo.f (@a int) RETURNS int WITH NATIVE_COMPILATION, SCHEMABINDING, RETURNS NULL ON NULL INPUT AS BEGIN ATOMIC WITH (TRANSACTION ISOLATION LEVEL=SNAPSHOT, LANGUAGE=N'us_english') RETURN @a; END;
+
+---
+
+(program (batch (statement (create_function (keyword_create) (keyword_function) (object_reference (identifier) (identifier)) (function_arguments (function_argument (identifier) (keyword_int))) (keyword_returns) (keyword_int) (function_options (keyword_with) (function_option (keyword_native_compilation)) (function_option (keyword_schemabinding)) (function_option (keyword_returns) (keyword_null) (keyword_on) (keyword_null) (keyword_input))) (function_body (keyword_as) (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (atomic_option (keyword_transaction) (keyword_isolation) (keyword_level) (keyword_snapshot)) (atomic_option (option (identifier) (literal)))) (statement (return_statement (keyword_return) (field (identifier)))) (keyword_end))))))

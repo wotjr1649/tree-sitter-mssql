@@ -43,7 +43,14 @@ export default {
 
   procedure_options: ($) => seq($.keyword_with, comma_list($.procedure_option, true)),
 
-  procedure_option: ($) => choice($.keyword_encryption, $.keyword_recompile, $.execute_as_clause),
+  procedure_option: ($) =>
+    choice(
+      $.keyword_encryption,
+      $.keyword_recompile,
+      $.keyword_native_compilation,
+      $.keyword_schemabinding,
+      $.execute_as_clause,
+    ),
 
   // execute_as_clause moved to module-shared.js — create-function.js's
   // function_option and create.js's trigger_option use it too.

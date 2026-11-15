@@ -175,6 +175,31 @@
     "external_cpu_range": {
       "minVersion": "2016",
       "corpusCase": "test/corpus/ddl-external.txt — \"ddl-external/external-pool-create (engine accepts; LocalDB 17.0.1000.7 levels 100-170)\""
+    },
+    "atomic_clause": {
+      "minVersion": "2014",
+      "note": "Native procedure/function/trigger BEGIN ATOMIC; options validated by tree-check.",
+      "corpusCase": "test/corpus/query-forms.txt — \"query-forms/procedure-native - LocalDB 17.0.1000.7 levels 100-170 - engine accepts\""
+    },
+    "atomic_option": {
+      "minVersion": "2014",
+      "note": "Shares generic option nodes; PARSEONLY defines accepted values.",
+      "corpusCase": "test/corpus/query-forms.txt — \"query-forms/atomic-all - LocalDB 17.0.1000.7 levels 100-170 - engine accepts\""
+    },
+    "exec_result_sets": {
+      "minVersion": "2012",
+      "note": "EXEC WITH RESULT SETS; no node kinds or fields removed.",
+      "corpusCase": "test/corpus/query-forms.txt — \"query-forms/exec-columns - LocalDB 17.0.1000.7 levels 100-170 - engine accepts\""
+    },
+    "exec_result_column": {
+      "minVersion": "2012",
+      "note": "Column definition in an EXEC result-set declaration.",
+      "corpusCase": "test/corpus/query-forms.txt — \"query-forms/exec-columns - LocalDB 17.0.1000.7 levels 100-170 - engine accepts\""
+    },
+    "conversation_timer_statement": {
+      "minVersion": "2008",
+      "note": "Service Broker conversation timer.",
+      "corpusCase": "test/corpus/query-forms.txt — \"query-forms/conversation-timer - LocalDB 17.0.1000.7 levels 100-170 - engine accepts\""
     }
   },
   "deprecated": {

@@ -173,17 +173,7 @@ CREATE SECURITY POLICY p DROP FILTER PREDICATE ON t;
 
 ---
 
-(program
-  (ERROR
-    (keyword_create)
-    (keyword_security)
-    (keyword_policy)
-    (identifier)
-    (keyword_drop)
-    (keyword_filter)
-    (keyword_predicate)
-    (keyword_on))
-  (batch))
+(program (ERROR (keyword_create) (keyword_security) (keyword_policy) (identifier) (keyword_drop) (keyword_filter) (keyword_predicate) (keyword_on) (identifier)) (batch))
 
 ==================
 ALTER SECURITY POLICY needs a clause
@@ -209,19 +199,7 @@ SELECT "" FROM t;
 
 ---
 
-(program
-  (batch
-    (statement
-      (query_specification
-        (select
-          (keyword_select)
-          (ERROR
-            (UNEXPECTED ' ')
-            (keyword_from))
-          (select_expression
-            (term
-              (field
-                (identifier)))))))))
+(program (ERROR (keyword_select) (UNEXPECTED ' ') (keyword_from) (identifier)) (batch))
 
 ==================
 A string literal is not a valid table alias (ARCH-11)
@@ -282,19 +260,7 @@ SELECT × FROM t;
 
 ---
 
-(program
-  (batch
-    (statement
-      (query_specification
-        (select
-          (keyword_select)
-          (ERROR
-            (UNEXPECTED 215)
-            (keyword_from))
-          (select_expression
-            (term
-              (field
-                (identifier)))))))))
+(program (ERROR (keyword_select) (UNEXPECTED 215) (keyword_from) (identifier)) (batch))
 
 ==================
 The head element of a CREATE SYMMETRIC KEY encryptor list requires ENCRYPTION BY (ARCH-13)
@@ -800,50 +766,7 @@ SELECT * FROM (WITH c AS (SELECT 1 AS a) SELECT a FROM c) d;
 
 ---
 
-(program
-  (batch
-    (statement
-      (query_specification
-        (select
-          (keyword_select)
-          (select_expression
-            (term
-              (all_fields))))
-        (from
-          (keyword_from)
-          (ERROR)
-          (relation
-            (object_reference
-              (identifier))
-            (identifier)))))
-    (statement
-      (label_statement
-        (identifier)
-        (MISSING ":")))
-    (statement
-      (query_specification
-        (select
-          (keyword_select)
-          (select_expression
-            (term
-              (literal)
-              (keyword_as)
-              (identifier))))))
-    (statement
-      (query_specification
-        (select
-          (keyword_select)
-          (select_expression
-            (term
-              (field
-                (identifier)))))
-        (from
-          (keyword_from)
-          (relation
-            (object_reference
-              (identifier))
-            (ERROR)
-            (identifier)))))))
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (subquery (ERROR (relation (object_reference (identifier)) (identifier) (ERROR) (list (column (identifier)) (ERROR (keyword_as))))) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier)))))) (identifier)))))))
 
 ================================================================================
 SELECT INTO is not legal on a later set-operation branch

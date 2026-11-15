@@ -454,4 +454,69 @@ mod tests {
             );
         }
     }
+
+    #[test]
+    fn query_form_boundaries_recover_incrementally() {
+        let cases: Vec<Value> = include_str!("../../../oracle/probes/query-forms.jsonl")
+            .lines()
+            .map(|line| serde_json::from_str(line).unwrap())
+            .collect();
+        let mut p = parser();
+        for (id, find, replace, syntax_error) in [
+            ("concat", "||", "| |", true),
+            ("parse-using", "AS date", "AS", true),
+            ("next-value-over", "ORDER BY c", "ORDER BY", true),
+            ("odbc-date", "{d '2024-01-01'}", "{d}", true),
+            ("cursor-set", "FOR SELECT", "SELECT", true),
+            ("select-compound", "@n += c", "@n +=", true),
+            ("insert-openquery", "srv, 'SELECT", "srv 'SELECT", true),
+            ("insert-delete-output", "OUTPUT deleted.a", "OUTPUT", true),
+            ("table-default-not-null", "DEFAULT 1", "DEFAULT (1", true),
+            ("for-browse", "FOR BROWSE", "FOR", true),
+            ("group-cube", "WITH CUBE", "WITH", true),
+            ("exec-columns", "a int NOT NULL", "a int NOT", true),
+            ("exec-number", ";1", ";x", true),
+            ("procedure-native", "ATOMIC WITH", "ATOMIC", true),
+            ("function-nullable", "@a int NOT NULL", "@a int NOT", true),
+            (
+                "atomic-minimal",
+                "LANGUAGE=N'us_english'",
+                "LANGUAGE=N'us_english', LANGUAGE=N'us_english'",
+                false,
+            ),
+            ("cursor-set", "LOCAL", "LOCAL GLOBAL", false),
+        ] {
+            let case = cases
+                .iter()
+                .find(|c| c["id"] == format!("query-forms/{id}"))
+                .unwrap();
+            let source = format!(
+                "-- 한글 경로 C:\\임시\n{}",
+                case["source"].as_str().unwrap()
+            );
+            let initial = p.parse(&source, None).unwrap();
+            assert!(!initial.root_node().has_error(), "{id}: initial");
+            assert!(
+                crate::constraints::check(&initial, source.as_bytes()).is_empty(),
+                "{id}: initial constraints"
+            );
+            let broken = source.replacen(find, replace, 1);
+            let tree = p.parse(&broken, None).unwrap();
+            if syntax_error {
+                assert!(tree.root_node().has_error(), "{id}: broken");
+            } else {
+                assert!(
+                    !crate::constraints::check(&tree, broken.as_bytes()).is_empty(),
+                    "{id}: constraint"
+                );
+            }
+            assert_eq!(broken.replacen(replace, find, 1), source, "{id}: restored");
+            let h = History {
+                id: id.into(),
+                source,
+                edits: vec![(find.into(), replace.into()), (replace.into(), find.into())],
+            };
+            assert!(check_history(&mut p, &h).unwrap().is_empty(), "{id}");
+        }
+    }
 }
