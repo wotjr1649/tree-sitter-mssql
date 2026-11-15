@@ -32,6 +32,8 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
             "create_function" | "alter_function" => scalar_function_return(node, &mut out),
             "window_specification" => window_frame_order(node, &mut out),
             "merge" => merge_terminator(node, &mut out),
+            "table_hint" | "query_hint" => table_hints(node, source, &mut out),
+            "option_clause" => table_hint_aliases(node, source, &mut out),
             _ => {}
         }
         if node.kind() == "execute_statement" {
@@ -505,6 +507,210 @@ fn merge_terminator(merge: Node, out: &mut Vec<Violation>) {
     }
 }
 
+/// Table hint names SQL Server knows (`hint-rules/one-*`; FASTFIRSTROW and other names are Msg 321).
+const TABLE_HINTS: &[&str] = &[
+    "NOLOCK",
+    "READUNCOMMITTED",
+    "UPDLOCK",
+    "REPEATABLEREAD",
+    "SERIALIZABLE",
+    "HOLDLOCK",
+    "READCOMMITTED",
+    "READCOMMITTEDLOCK",
+    "READPAST",
+    "ROWLOCK",
+    "PAGLOCK",
+    "TABLOCK",
+    "TABLOCKX",
+    "XLOCK",
+    "NOWAIT",
+    "SNAPSHOT",
+    "NOEXPAND",
+    "FORCESCAN",
+    "FORCESEEK",
+    "INDEX",
+    "SPATIAL_WINDOW_MAX_CELLS",
+    "KEEPIDENTITY",
+    "KEEPDEFAULTS",
+    "IGNORE_CONSTRAINTS",
+    "IGNORE_TRIGGERS",
+];
+
+/// Hints of which at most one may appear in a list (Msg 1047; FORCESEEK with FORCESCAN, Msg 10746),
+/// after READUNCOMMITTED -> NOLOCK and SERIALIZABLE -> HOLDLOCK. Every pair of the 28 hints in
+/// `hint-rules/pair-*` conflicts exactly when both are in one of these groups.
+const HINT_GROUPS: &[&[&str]] = &[
+    &["PAGLOCK", "NOLOCK", "ROWLOCK", "TABLOCK", "TABLOCKX"],
+    &[
+        "HOLDLOCK",
+        "NOLOCK",
+        "READCOMMITTED",
+        "READCOMMITTEDLOCK",
+        "REPEATABLEREAD",
+        "SNAPSHOT",
+    ],
+    &["NOLOCK", "UPDLOCK", "XLOCK"],
+    &["FORCESEEK", "FORCESCAN"],
+];
+
+/// A table hint list, `WITH ( ... )` on a table or `OPTION (TABLE HINT (alias, ...))`. Evidence:
+/// SQL Server 2025 LocalDB 17.0.1000.7, levels 100-170, oracle set `hint-rules` (every hint alone,
+/// every pair, every hint on each DML target) and the hint-*, pair-*, table-hints/* cases:
+/// - an unknown name (Msg 321), and conflicting hints (`HINT_GROUPS`);
+/// - FORCESEEK with an index and columns next to INDEX or another FORCESEEK (Msg 10747/10748);
+///   FORCESEEK on index 0 (Msg 10749); SPATIAL_WINDOW_MAX_CELLS twice (Msg 1017);
+/// - on the target of UPDATE, DELETE, INSERT or MERGE (`WITH` only, not `OPTION`): NOLOCK or
+///   READUNCOMMITTED (Msg 1065); INDEX, FORCESEEK, FORCESCAN except on MERGE (Msg 1069, 10724,
+///   10745); READPAST and READCOMMITTEDLOCK on INSERT (Msg 4102, 4140).
+fn table_hints(list: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let mut cursor = list.walk();
+    let children: Vec<Node> = list.children(&mut cursor).collect();
+    if list.kind() == "query_hint" && !children.iter().any(|n| n.kind() == "keyword_table") {
+        return;
+    }
+    // After a rowset function (`OPENJSON(@j) WITH (ROWLOCK int)`) the list is a column schema that
+    // parses like hints; the engine accepts it (`table-hints/hint-keyword-schema`).
+    let after_function = list.prev_named_sibling().is_some_and(|r| {
+        r.kind() == "relation" && r.named_child(0).is_some_and(|n| n.kind() == "invocation")
+    });
+    if after_function {
+        return;
+    }
+    let target = dml_target(list);
+    let mut seen: Vec<String> = Vec::new();
+    let (mut index, mut seek, mut seek_with_columns, mut spatial) = (false, 0, 0, 0);
+    for item in children.iter().filter(|n| n.kind() == "table_hint_item") {
+        let Some(first) = item.named_child(0) else {
+            continue;
+        };
+        let name = upper_text(first, source);
+        if !TABLE_HINTS.contains(&name.as_str()) {
+            out.push(violation(
+                "table-hint",
+                format!("unknown table hint {name}"),
+                *item,
+            ));
+            continue;
+        }
+        let name = match name.as_str() {
+            "READUNCOMMITTED" => "NOLOCK".to_string(),
+            "SERIALIZABLE" => "HOLDLOCK".to_string(),
+            _ => name,
+        };
+        let mut c = item.walk();
+        let with_arguments = item.children(&mut c).any(|n| n.kind() == "(");
+        match name.as_str() {
+            "INDEX" => index = true,
+            "SPATIAL_WINDOW_MAX_CELLS" => spatial += 1,
+            "FORCESEEK" => {
+                seek += 1;
+                if with_arguments {
+                    seek_with_columns += 1;
+                    let zero = item.named_child(1).is_some_and(|n| {
+                        n.kind() == "literal" && upper_text(n, source).bytes().all(|b| b == b'0')
+                    });
+                    if zero {
+                        out.push(violation(
+                            "table-hint",
+                            "FORCESEEK cannot use index 0".into(),
+                            *item,
+                        ));
+                    }
+                }
+            }
+            _ => {}
+        }
+        if let Some(statement) = target {
+            let refused = match name.as_str() {
+                "NOLOCK" => true,
+                "INDEX" | "FORCESEEK" | "FORCESCAN" => statement != "merge",
+                "READPAST" | "READCOMMITTEDLOCK" => statement == "insert",
+                _ => false,
+            };
+            if refused {
+                out.push(violation(
+                    "table-hint",
+                    format!(
+                        "{name} cannot be used on the target of {}",
+                        statement.to_uppercase()
+                    ),
+                    *item,
+                ));
+            }
+        }
+        if !seen.contains(&name) {
+            seen.push(name);
+        }
+    }
+    let conflict = HINT_GROUPS
+        .iter()
+        .any(|group| seen.iter().filter(|n| group.contains(&n.as_str())).count() > 1);
+    let detail = if conflict {
+        "conflicting table hints"
+    } else if seek_with_columns > 0 && (index || seek > 1) {
+        "FORCESEEK with an index cannot be combined with INDEX or another FORCESEEK"
+    } else if spatial > 1 {
+        "SPATIAL_WINDOW_MAX_CELLS appears twice"
+    } else {
+        return;
+    };
+    out.push(violation("table-hint", detail.into(), list));
+}
+
+/// The statement whose write target carries this `WITH ( ... )` list, if any: the list is a direct
+/// child of UPDATE, DELETE or INSERT, or of MERGE before USING (a hint on the USING source is not a
+/// target hint).
+fn dml_target(list: Node) -> Option<&'static str> {
+    if list.kind() != "table_hint" {
+        return None;
+    }
+    let statement = match list.parent()?.kind() {
+        "update" => "update",
+        "delete" => "delete",
+        "insert" => "insert",
+        "merge" => "merge",
+        _ => return None,
+    };
+    let mut prev = list.prev_sibling();
+    while let Some(p) = prev {
+        if p.kind() == "keyword_using" {
+            return None;
+        }
+        prev = p.prev_sibling();
+    }
+    Some(statement)
+}
+
+/// `OPTION (TABLE HINT (alias, ...), TABLE HINT (alias, ...))` names each alias once. Evidence: SQL
+/// Server 2025 LocalDB 17.0.1000.7, levels 100-170: Msg 8720 for `hint-rules/option-same-alias-twice`;
+/// two different aliases accepted (`hint-rules/option-two-lists`).
+fn table_hint_aliases(option: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let mut seen = Vec::new();
+    let mut cursor = option.walk();
+    for hint in option
+        .named_children(&mut cursor)
+        .filter(|n| n.kind() == "query_hint")
+    {
+        let mut c = hint.walk();
+        let kids: Vec<Node> = hint.named_children(&mut c).collect();
+        // keyword_table, the word HINT (an identifier), then the alias.
+        if kids.first().map(|n| n.kind()) != Some("keyword_table") {
+            continue;
+        }
+        let Some(alias) = kids.get(2).map(|n| upper_text(*n, source)) else {
+            continue;
+        };
+        if seen.contains(&alias) {
+            out.push(violation(
+                "table-hint",
+                format!("TABLE HINT names {alias} twice"),
+                hint,
+            ));
+        }
+        seen.push(alias);
+    }
+}
+
 fn upper_text(node: Node, source: &[u8]) -> String {
     node.utf8_text(source)
         .unwrap_or_default()
@@ -857,6 +1063,46 @@ mod tests {
             format!("CREATE PROCEDURE dbo.p AS {M}"),
         ] {
             assert_eq!(rules(&bad), ["merge-terminator"], "{bad}");
+        }
+    }
+
+    #[test]
+    fn table_hints_follow_the_engine_matrix() {
+        for ok in [
+            "SELECT a FROM dbo.t WITH (NOLOCK, READUNCOMMITTED, NOWAIT);",
+            "SELECT a FROM dbo.t WITH (SERIALIZABLE HOLDLOCK ROWLOCK UPDLOCK);",
+            "SELECT a FROM dbo.t WITH (nolock, index(ix));",
+            "SELECT a FROM dbo.t WITH (FORCESEEK, INDEX(ix), INDEX(0));",
+            "SELECT a FROM dbo.t WITH (FORCESEEK(1(a)));",
+            "SELECT a FROM dbo.t WITH (NOLOCK) JOIN dbo.s WITH (UPDLOCK) ON 1 = 1;",
+            "SELECT a FROM dbo.t AS x OPTION (TABLE HINT (x, NOLOCK), TABLE HINT (y, UPDLOCK));",
+            "UPDATE x SET a = 1 FROM dbo.t AS x WITH (NOLOCK);",
+            "UPDATE x SET a = 1 FROM dbo.t AS x OPTION (TABLE HINT (x, NOLOCK));",
+            "MERGE dbo.t WITH (INDEX(ix), FORCESCAN) AS t USING dbo.s AS s ON 1 = 1 WHEN MATCHED THEN DELETE;",
+            "INSERT dbo.t WITH (TABLOCK) SELECT a FROM dbo.s WITH (NOLOCK);",
+            "UPDATE dbo.t WITH (READPAST) SET a = 1;",
+            "DECLARE @j nvarchar(max); SELECT * FROM OPENJSON(@j) WITH (ROWLOCK int);",
+        ] {
+            assert!(rules(ok).is_empty(), "{ok}");
+        }
+        for bad in [
+            "SELECT a FROM dbo.t WITH (NOLOCK, HOLDLOCK);",
+            "SELECT a FROM dbo.t WITH (READUNCOMMITTED UPDLOCK);",
+            "SELECT a FROM dbo.t WITH (ROWLOCK, PAGLOCK);",
+            "SELECT a FROM dbo.t WITH (FORCESEEK, FORCESCAN);",
+            "SELECT a FROM dbo.t WITH (FORCESEEK(ix(a)), INDEX(ix));",
+            "SELECT a FROM dbo.t WITH (FORCESEEK(ix(a)), FORCESEEK);",
+            "SELECT a FROM dbo.t WITH (FORCESEEK(00(a)));",
+            "SELECT a FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=8, SPATIAL_WINDOW_MAX_CELLS=8);",
+            "SELECT a FROM dbo.t WITH (NOLOCKX);",
+            "SELECT a FROM dbo.t AS x OPTION (TABLE HINT (x, NOLOCK, UPDLOCK));",
+            "SELECT a FROM dbo.t AS x OPTION (TABLE HINT (x, NOLOCK), TABLE HINT (x, UPDLOCK));",
+            "UPDATE dbo.t WITH (NOLOCK) SET a = 1;",
+            "DELETE FROM dbo.t WITH (FORCESCAN);",
+            "INSERT INTO dbo.t WITH (READPAST) (a) VALUES (1);",
+            "MERGE dbo.t WITH (READUNCOMMITTED) AS t USING dbo.s AS s ON 1 = 1 WHEN MATCHED THEN DELETE;",
+        ] {
+            assert_eq!(rules(bad), ["table-hint"], "{bad}");
         }
     }
 

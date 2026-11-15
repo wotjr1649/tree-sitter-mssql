@@ -53,6 +53,7 @@ A context-free grammar can express "each of n options at most once, in any order
 | `cte-table-source`: a single SELECT after WITH needs a table source outside the CTE definitions | `WITH ... SELECT` | Msg 422 (`context/cte-*`, kit `cte-none`); accepted with FROM in a subquery, for UNION, INSERT, UPDATE |
 | `window-frame-order`: ROWS/RANGE needs ORDER BY in the same OVER or a base window | `OVER ( ... )` | Msg 10756 or 102 (`context/window-*`, kit `window-no-order-*`) |
 | `merge-terminator`: MERGE ends with `;` | `MERGE` anywhere | Msg 10713 (`context/merge-*`, `semicolon/merge-*`); a comment before the `;` is fine |
+| `table-hint`: known names; at most one hint of each conflict group; FORCESEEK with an index next to INDEX or another FORCESEEK; FORCESEEK on index 0; one SPATIAL_WINDOW_MAX_CELLS; no NOLOCK/READUNCOMMITTED on a DML target, no INDEX/FORCESEEK/FORCESCAN on an UPDATE/DELETE/INSERT target, no READPAST/READCOMMITTEDLOCK on an INSERT target; each TABLE HINT alias once | `WITH ( ... )` on a table, `OPTION (TABLE HINT ...)` | Msg 321, 1047, 10746–10749, 1017, 1065, 1069, 10724, 10745, 4102, 4140, 8720 (`hint-rules`: every hint alone, all 406 pairs, every hint on each DML target; kit `hint-*`, `pair-*`; `table-hints/*`) |
 
 ## Consequences
 
