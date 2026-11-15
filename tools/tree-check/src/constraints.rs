@@ -472,8 +472,12 @@ fn window_frame_order(spec: Node, out: &mut Vec<Violation>) {
 /// MERGE must end with `;`: the next token after it is a semicolon, wherever the statement sits
 /// (batch, block, IF or ELSE branch, procedure body). Evidence: SQL Server 2025 LocalDB 17.0.1000.7,
 /// levels 100-170, oracle sets `context/merge-*` and `semicolon/merge-*`: Msg 10713 otherwise; a
-/// comment before the semicolon is fine.
+/// comment before the semicolon is fine. A MERGE used as a table source (`FROM (MERGE ... OUTPUT
+/// ...) AS x`) is not a statement and is not checked (accepted; fixture merge_as_from_source.sql).
 fn merge_terminator(merge: Node, out: &mut Vec<Violation>) {
+    if merge.parent().map(|p| p.kind()) != Some("statement") {
+        return;
+    }
     let mut n = merge;
     let next = loop {
         match n.next_sibling() {
@@ -842,6 +846,7 @@ mod tests {
             format!("IF 1=1 {M}; ELSE SELECT 1;"),
             format!("{M} /* c */ ;"),
             format!("{M} OUTPUT $action;"),
+            format!("INSERT INTO dbo.u SELECT a FROM ({M} OUTPUT deleted.a) AS x (a);"),
         ] {
             assert!(rules(&ok).is_empty(), "{ok}");
         }
