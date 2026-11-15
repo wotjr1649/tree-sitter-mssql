@@ -24,3 +24,11 @@
 {"id":"identifiers/alias-var","sha256":"dd338323aca35dbe66cb9248d83f119f98929598e91b01c169c376c071652162","source":"SELECT 1 AS @a;"}
 {"id":"identifiers/alias-sysvar","sha256":"dc73417101e932f1a24995017be6f393ba826c5b33e0817838a09c0a8bb2bb7b","source":"SELECT 1 AS @@x;"}
 {"id":"identifiers/alias-var-noas","sha256":"6978d2cfb9c378bf241c943e7df306eb3cdae6f46552b8f71cd288e4684e77b4","source":"SELECT 1 @a;"}
+{"id":"identifiers/table-alias-var","sha256":"841ae2a3865250b0180dc90a1e900fdfcf9502be5ece127828fbaa9a94956c79","source":"SELECT * FROM dbo.t AS @x;"}
+{"id":"identifiers/table-alias-var-noas","sha256":"7212efafc1f8410c12b07e217a6cb754d7bba3dd1a994d262de9466317d01ddb","source":"SELECT * FROM dbo.t @x;"}
+{"id":"identifiers/table-alias-sysvar","sha256":"943c1f54a66aa487b5d457ac1b6ce612e1aca995a65ccbf7000dd6c751317460","source":"SELECT * FROM dbo.t AS @@x;"}
+{"id":"identifiers/table-alias-temp","sha256":"09061a1493e09b9aaf8bc3f576cc4e8cd3b1b7e0a1065fa380574b36ec07f08b","source":"SELECT * FROM dbo.t AS #x;"}
+{"id":"identifiers/column-alias-temp","sha256":"85ac93b6c622003427a24d98da6580a13fa3d46dd51068f5d8a1db841409a272","source":"SELECT 1 AS #x;"}
+{"id":"identifiers/assign-var","sha256":"343b7b8beb2f4aca1639eb2a1a53f89cb6b3026a0af9af0fda3f41626ff2f213","source":"DECLARE @a int; SELECT @a = 1;"}
+{"id":"identifiers/column-alias-bracket-var","sha256":"32beedfad0d340b19bb07b025a9226d2ce2b45e65527b655c58e532ecc7f87a1","source":"SELECT 1 AS [@a];"}
+{"id":"identifiers/merge-alias-var","sha256":"068576e995f7335509ac1b6801b21d9cc14a025c38714814ee0098830bca7336","source":"MERGE dbo.t AS @x USING dbo.s AS s ON 1 = 1 WHEN MATCHED THEN DELETE;"}

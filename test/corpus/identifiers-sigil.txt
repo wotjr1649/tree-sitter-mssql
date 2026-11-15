@@ -92,3 +92,89 @@ SELECT @@ROWCOUNT;
             (term
               (field
                 (identifier)))))))))
+
+==================
+A variable cannot be a column alias (SQL Server 2025 17.0.1000.7, levels 100 and 170: Msg 102)
+:error
+==================
+
+SELECT 1 AS @a;
+
+---
+
+
+
+==================
+A system variable cannot be a column alias (SQL Server 2025 17.0.1000.7, levels 100 and 170: Msg 102)
+:error
+==================
+
+SELECT 1 AS @@x;
+
+---
+
+
+
+==================
+A variable cannot be a table alias (SQL Server 2025 17.0.1000.7, levels 100 and 170: Msg 102)
+:error
+==================
+
+SELECT * FROM dbo.t AS @x;
+
+---
+
+
+
+==================
+Temporary-name, bracketed and assignment forms stay valid next to the alias rule (SQL Server 2025 17.0.1000.7, levels 100 and 170: accepted)
+==================
+
+SELECT * FROM dbo.t AS #x;
+SELECT 1 AS [@a];
+DECLARE @a int; SELECT @a = 1;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier)
+              (identifier))
+            (keyword_as)
+            (identifier)))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal)
+              (keyword_as)
+              (identifier))))))
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (keyword_int))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (binary_expression
+                (field
+                  (identifier))
+                (literal)))))))))

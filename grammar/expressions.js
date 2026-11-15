@@ -443,6 +443,21 @@ export default {
       // treatment as every other identifier variant here.
       $._sqlcmd_variable,
     ),
+  // The identifier spellings an alias accepts: all of `identifier` except variables. SQL Server
+  // rejects `AS @a`, `AS @@a` and an AS-less `@a` as column, table and MERGE aliases (Msg 102,
+  // LocalDB 17.0.1000.7, levels 100-170); `#t`, `[@a]` and quoted names are accepted.
+  _alias_name: ($) =>
+    choice(
+      $._identifier,
+      $._bracketed_identifier,
+      $._double_quote_string,
+      $._temporary_table,
+      $._dollar_action,
+      $._dollar_partition,
+      $._dollar_identity,
+      $._dollar_rowguid,
+      $._sqlcmd_variable,
+    ),
   // A regular identifier: letters, digits, `_`, `#` and `$` after the first
   // character, per SQL Server's identifier rules (`addr##1` is legal).
   _identifier: (_) => new RegExp(`[${IDENTIFIER_START}][${IDENTIFIER_CONTINUE}]*`),

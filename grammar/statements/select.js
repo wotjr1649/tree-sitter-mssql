@@ -266,7 +266,7 @@ export default {
   // `unpivot_clause` and `merge` all reach this. SQL Server rejects a
   // string literal here (only a `term`'s column alias accepts one — see
   // `_column_alias` below).
-  _alias: ($) => seq(optional($.keyword_as), field('alias', $.identifier)),
+  _alias: ($) => seq(optional($.keyword_as), field('alias', alias($._alias_name, $.identifier))),
 
   // A select-list column alias — the one alias position where a
   // single-quoted string literal is also accepted, e.g. SUM(x) 'TotalX' or
@@ -274,7 +274,10 @@ export default {
   _column_alias: ($) =>
     seq(
       optional($.keyword_as),
-      field('alias', choice($.identifier, alias($._single_quote_string, $.literal))),
+      field(
+        'alias',
+        choice(alias($._alias_name, $.identifier), alias($._single_quote_string, $.literal)),
+      ),
     ),
 
   from: ($) =>

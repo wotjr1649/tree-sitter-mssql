@@ -1,5 +1,5 @@
 {
-"meta": {"mode":"PARSEONLY","engine":{"product_version":"17.0.1000.7","product_level":"RTM","edition":"Express Edition (64-bit)","platform":"Windows","collation":"SQL_Latin1_General_CP1_CI_AS"},"session_set":{"quoted_identifier":1,"ansi_nulls":1,"ansi_padding":1,"ansi_warnings":1,"arithabort":0,"concat_null_yields_null":1},"levels":[100,110,120,130,140,150,160,170],"cases_sha256":"a2ddb9eab45e6ff0a7e0dc793899b53f536adb80815f4fa3f79b40321f33b1be","runner":"oracle/runner/ParseOnly (C#, Microsoft.Data.SqlClient)","runner_sha256":"b4235c70b408450a60e09eee88586288726af2e8173eab4c69a1543b405a1dc8","observed_utc":"2026-11-15"},
+"meta": {"mode":"PARSEONLY","engine":{"product_version":"17.0.1000.7","product_level":"RTM","edition":"Express Edition (64-bit)","platform":"Windows","collation":"SQL_Latin1_General_CP1_CI_AS"},"session_set":{"quoted_identifier":1,"ansi_nulls":1,"ansi_padding":1,"ansi_warnings":1,"arithabort":0,"concat_null_yields_null":1},"levels":[100,110,120,130,140,150,160,170],"cases_sha256":"37a348c315687d2f59429cccd608712089a5f53ff5f93948ee06bfab967f6b97","runner":"oracle/runner/ParseOnly (C#, Microsoft.Data.SqlClient)","runner_sha256":"b4235c70b408450a60e09eee88586288726af2e8173eab4c69a1543b405a1dc8","observed_utc":"2026-11-15"},
 "verdicts": {
   "identifiers/hangul-alias": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
   "identifiers/hangul-table-column": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
@@ -26,6 +26,14 @@
   "identifiers/temp-digit": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
   "identifiers/alias-var": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]},
   "identifiers/alias-sysvar": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]},
-  "identifiers/alias-var-noas": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]}
+  "identifiers/alias-var-noas": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]},
+  "identifiers/table-alias-var": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]},
+  "identifiers/table-alias-var-noas": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]},
+  "identifiers/table-alias-sysvar": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]},
+  "identifiers/table-alias-temp": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "identifiers/column-alias-temp": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "identifiers/assign-var": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "identifiers/column-alias-bracket-var": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "identifiers/merge-alias-var": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]}
 }
 }
