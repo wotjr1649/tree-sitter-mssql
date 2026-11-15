@@ -1,0 +1,52 @@
+==================
+OUTPUT parameters passed to a linked server with EXEC ( ... ) AT (SQL Server 2025 17.0.1000.7, levels 100 and 170: accepted)
+==================
+
+DECLARE @v int, @w int;
+EXEC(N'SELECT ?', @v OUTPUT) AT [lnk];
+EXEC(N'SELECT ?', @v OUT) AT lnk;
+EXEC(N'SELECT ?, ?', @v OUTPUT, @w OUTPUT) AT [lnk];
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (keyword_int))
+        (var_declaration
+          (identifier)
+          (keyword_int))))
+    (statement
+      (execute_statement
+        (keyword_exec)
+        (literal)
+        (field
+          (identifier))
+        (keyword_output)
+        (keyword_at)
+        (identifier)))
+    (statement
+      (execute_statement
+        (keyword_exec)
+        (literal)
+        (field
+          (identifier))
+        (keyword_out)
+        (keyword_at)
+        (identifier)))
+    (statement
+      (execute_statement
+        (keyword_exec)
+        (literal)
+        (field
+          (identifier))
+        (keyword_output)
+        (field
+          (identifier))
+        (keyword_output)
+        (keyword_at)
+        (identifier)))))

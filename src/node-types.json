@@ -10217,6 +10217,14 @@
           "named": true
         },
         {
+          "type": "keyword_out",
+          "named": true
+        },
+        {
+          "type": "keyword_output",
+          "named": true
+        },
+        {
           "type": "keyword_recompile",
           "named": true
         },

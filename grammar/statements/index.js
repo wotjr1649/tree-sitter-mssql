@@ -345,7 +345,14 @@ export default {
             optional(seq($.keyword_with, $.keyword_recompile)),
           ),
           seq(
-            wrapped_in_parenthesis(comma_list($._expression, true)),
+            // A parameter passed to a linked server may be marked OUTPUT; SQL Server allows that
+            // only with AT (Msg 102 otherwise), which the constraint layer checks (ADR-0003).
+            wrapped_in_parenthesis(
+              comma_list(
+                seq($._expression, optional(choice($.keyword_out, $.keyword_output))),
+                true,
+              ),
+            ),
             optional(
               choice(
                 seq($.keyword_at, $.identifier),

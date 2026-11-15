@@ -24,6 +24,10 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
         if node.kind() == "statement" {
             cte_terminator(node, &mut out);
         }
+        if node.kind() == "execute_statement" {
+            exec_output_requires_at(node, &mut out);
+            exec_output_variable(node, source, &mut out);
+        }
         if cursor.goto_first_child() {
             continue;
         }
@@ -62,6 +66,76 @@ fn cte_terminator(statement: Node, out: &mut Vec<Violation>) {
             "the statement before a WITH common table expression must end with ';'".into(),
             statement,
         ));
+    }
+}
+
+/// `EXEC ( string [, value [OUTPUT]] ... )`: a value marked OUTPUT or OUT is a parameter passed to a
+/// linked server, which needs `AT linked_server`. Evidence: SQL Server 2025 LocalDB 17.0.1000.7,
+/// levels 100-170: accepted with AT (OUTPUT, OUT, several), Msg 102 without AT. (A constant marked
+/// OUTPUT is Msg 179, a context error left to grammar-kit.) Procedure calls have their own
+/// `exec_argument` nodes and are not affected.
+fn exec_output_requires_at(statement: Node, out: &mut Vec<Violation>) {
+    let mut cursor = statement.walk();
+    let children: Vec<Node> = statement.children(&mut cursor).collect();
+    if children.iter().any(|n| n.kind() == "keyword_at") {
+        return;
+    }
+    if let Some(output) = children
+        .iter()
+        .find(|n| matches!(n.kind(), "keyword_output" | "keyword_out"))
+    {
+        out.push(violation(
+            "exec-output-requires-at",
+            "an OUTPUT parameter of EXEC ( ... ) needs AT linked_server".into(),
+            *output,
+        ));
+    }
+}
+
+/// OUTPUT or OUT must mark a local variable (`@v`, not `@@v`), in a procedure call's arguments and in
+/// `EXEC ( ... ) AT`. Evidence: SQL Server 2025 LocalDB 17.0.1000.7, levels 100-170: Msg 179 for an
+/// integer, a string, DEFAULT, a system variable or a bare name marked OUTPUT (positional and named),
+/// Msg 102 for an expression in `EXEC ( ... ) AT`; accepted for `@v OUTPUT`, `@v OUT`, `@a = @v OUTPUT`.
+fn exec_output_variable(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let is_output = |n: &Node| matches!(n.kind(), "keyword_output" | "keyword_out");
+    let local_variable = |n: Node| {
+        let name = if n.kind() == "field" && n.named_child_count() == 1 {
+            n.child_by_field_name("name")
+        } else {
+            Some(n)
+        };
+        name.filter(|n| n.kind() == "identifier")
+            .and_then(|n| n.utf8_text(source).ok())
+            .is_some_and(|text| text.starts_with('@') && !text.starts_with("@@"))
+    };
+    let mut cursor = statement.walk();
+    for child in statement.children(&mut cursor).collect::<Vec<_>>() {
+        // EXEC ( string, value OUTPUT ) AT: the value is the named node right before OUTPUT.
+        if is_output(&child) {
+            if !child.prev_named_sibling().is_some_and(local_variable) {
+                out.push(violation(
+                    "exec-output-variable",
+                    "OUTPUT must mark a local variable".into(),
+                    child,
+                ));
+            }
+            continue;
+        }
+        if child.kind() == "exec_argument" {
+            let mut c = child.walk();
+            let marked = child.children(&mut c).any(|n| is_output(&n));
+            if marked
+                && !child
+                    .child_by_field_name("value")
+                    .is_some_and(local_variable)
+            {
+                out.push(violation(
+                    "exec-output-variable",
+                    "OUTPUT must mark a local variable".into(),
+                    child,
+                ));
+            }
+        }
     }
 }
 
@@ -237,6 +311,42 @@ mod tests {
             format!("CREATE PROCEDURE dbo.p AS {CTE}"),
         ] {
             assert!(rules(&sql).is_empty(), "{sql}");
+        }
+    }
+
+    #[test]
+    fn exec_output_parameters_need_at() {
+        let q = "N'SELECT ?'";
+        assert!(rules(&format!("DECLARE @v int; EXEC({q}, @v OUTPUT) AT [lnk];")).is_empty());
+        assert!(rules(&format!("DECLARE @v int; EXEC({q}, @v OUT) AT lnk;")).is_empty());
+        assert_eq!(
+            rules(&format!("DECLARE @v int; EXEC({q}, @v OUTPUT);")),
+            ["exec-output-requires-at"]
+        );
+        assert!(rules("DECLARE @v int; EXEC dbo.p @v OUTPUT;").is_empty());
+    }
+
+    #[test]
+    fn output_marks_only_a_local_variable() {
+        for ok in [
+            "EXEC dbo.p @v OUTPUT;",
+            "EXEC dbo.p @v OUT;",
+            "EXEC dbo.p @a = @v OUTPUT;",
+            "EXEC(N'x', @v OUTPUT) AT l;",
+        ] {
+            assert!(rules(ok).is_empty(), "{ok}");
+        }
+        for bad in [
+            "EXEC dbo.p 1 OUTPUT;",
+            "EXEC dbo.p 'a' OUTPUT;",
+            "EXEC dbo.p DEFAULT OUTPUT;",
+            "EXEC dbo.p @@ROWCOUNT OUTPUT;",
+            "EXEC dbo.p x OUTPUT;",
+            "EXEC dbo.p @a = 1 OUTPUT;",
+            "EXEC(N'x', 1 OUTPUT) AT l;",
+            "EXEC(N'x', @@ROWCOUNT OUTPUT) AT l;",
+        ] {
+            assert_eq!(rules(bad), ["exec-output-variable"], "{bad}");
         }
     }
 

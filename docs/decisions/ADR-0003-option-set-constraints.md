@@ -44,6 +44,8 @@ A context-free grammar can express "each of n options at most once, in any order
 | `queue-activation-required`: CREATE needs PROCEDURE_NAME, MAX_QUEUE_READERS and EXECUTE AS | `CREATE QUEUE` | Msg 102: `queue-missing-48/49/50`, `queue-29`, 13 probes; accepted: `queue-missing-51` |
 
 | `cte-terminator`: a statement that starts with a CTE must not directly follow another statement or block without `;` (it may come first in a batch, block or module body, or after `;`, a label, IF, ELSE or WHILE) | any statement list | Msg 319 for the `semicolon/*-no-terminator` probes (after SELECT, END, IF, IF ... ELSE, WHILE, inside a procedure body); every terminated, leading, label and control-body form accepted |
+| `exec-output-requires-at`: a value marked OUTPUT/OUT in `EXEC ( ... )` needs `AT linked_server` | `EXEC ( string, ... )` | accepted with AT (OUTPUT, OUT, several); Msg 102 without AT (`oracle/probes/exec-output.jsonl`) |
+| `exec-output-variable`: OUTPUT/OUT marks only a local variable (`@v`, not `@@v`) | procedure-call arguments, `EXEC ( ... ) AT` | Msg 179 for constants, strings, DEFAULT, NULL, system variables and bare or bracketed names (kit `issue151-*`, 12 probes); Msg 102 for an expression |
 
 ## Consequences
 
