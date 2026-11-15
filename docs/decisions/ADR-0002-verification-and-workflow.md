@@ -45,9 +45,21 @@ The goal is complete T-SQL support with zero defects (ADR-0001: SQL Server's par
 3. **Verified engine profile.** SQL Server 2025 (17.x) at every compatibility level it supports: 100, 110, 120,
    130, 140, 150, 160 and 170 (owner decision, 2026-11-15; first measured the same day on LocalDB 17.0.1000.7: levels
    100 to 120 gave identical verdicts on the 726 cases, and 15 cases change verdict between levels).
-   - A case is positive if any verified level accepts it, and a syntax negative only if every level rejects it on
-     syntax grounds.
-   - Other engine versions and Azure are marked unverified rather than claimed.
+   Real older engines are verified too (owner decision, 2026-11-16), each at the levels it supports, in Linux
+   containers pinned by digest:
+
+   | Engine | Levels |
+   | --- | --- |
+   | SQL Server 2017 CU31 (14.0.3570.2) | 100–140 |
+   | SQL Server 2019 CU32 (15.0.4510.2) | 100–150 |
+   | SQL Server 2022 CU28 (16.0.4325.4) | 100–160 |
+   | SQL Server 2025 CU11 (17.0.5065.9) | 100–170 |
+
+   - A case is positive if any verified engine and level accepts it. It is a syntax negative only if every one of
+     them rejects it on syntax grounds.
+   - Differences between engines are recorded, not overwritten. Linux rejects non-SQL-Server OPENROWSET providers
+     with 7222, which is a platform difference and not syntax.
+   - SQL Server 2008 to 2016 (Windows only) and Azure are marked unverified rather than claimed.
    - Verdicts record engine build, edition, platform, level, initial `SET` state, mode and case hash. Only
      `PARSEONLY` verdicts count; errors obtained by compiling (for example 4193, 4194, 4406 in grammar-kit's data)
      are context, not syntax.
