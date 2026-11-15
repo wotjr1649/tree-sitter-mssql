@@ -14202,6 +14202,10 @@
             "named": true
           },
           {
+            "type": "object_reference",
+            "named": true
+          },
+          {
             "type": "option",
             "named": true
           }
@@ -14212,6 +14216,14 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "execute_as_clause",
+          "named": true
+        },
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
         {
           "type": "option",
           "named": true

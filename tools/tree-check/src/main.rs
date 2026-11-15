@@ -229,8 +229,8 @@ mod tests {
 
     #[test]
     fn zero_width_node_fails() {
-        // The CLI text dump shows no ERROR or MISSING here, only a zero-width identifier.
-        let r = check("ALTER QUEUE dbo.q WITH ACTIVATION ();\n");
+        // The CLI text dump shows no ERROR or MISSING here, but has zero-width nodes.
+        let r = check("CREATE ASSEMBLY a FROM 'x' WITH x ();\n");
         assert!(r.zero_width_nodes > 0, "{r:?}");
         assert!(!r.ok());
     }

@@ -1,0 +1,2269 @@
+================================================================================
+m2-create-order-0-0 (order; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))))))))
+
+================================================================================
+m2-create-order-1-1 (order; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, EXECUTE AS SELF, MAX_QUEUE_READERS = 1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (literal))))))))
+
+================================================================================
+m2-create-order-2-2 (order; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (MAX_QUEUE_READERS = 1, PROCEDURE_NAME = dbo.m2_p, EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (literal))
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))))))))
+
+================================================================================
+m2-create-order-3-3 (order; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (MAX_QUEUE_READERS = 1, EXECUTE AS SELF, PROCEDURE_NAME = dbo.m2_p);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))))))))
+
+================================================================================
+m2-create-order-4-4 (order; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (EXECUTE AS SELF, PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))))))))
+
+================================================================================
+m2-create-order-5-5 (order; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (EXECUTE AS SELF, MAX_QUEUE_READERS = 1, PROCEDURE_NAME = dbo.m2_p);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (literal))
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))))))))
+
+================================================================================
+m2-create-principal-SELF-6 (principal; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))))))))
+
+================================================================================
+m2-create-principal-OWNER-7 (principal; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS OWNER);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_owner))))))))
+
+================================================================================
+m2-create-principal-muser-8 (principal; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS 'm2_user');
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (literal))))))))
+
+================================================================================
+m2-create-principal-N-9 (principal; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS N'사용자');
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (literal))))))))
+
+================================================================================
+m2-create-principal-CALLER-10 (principal; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS CALLER);
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-create-principal-muser-11 (principal; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS m2_user);
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-create-principal-muser-12 (principal; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS "m2_user");
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-create-subset-0-13 (empty; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION ();
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-create-subset-1-14 (missing-required; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))))))))
+
+================================================================================
+m2-create-subset-2-15 (missing-required; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (MAX_QUEUE_READERS = 1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (literal))))))))
+
+================================================================================
+m2-create-subset-3-16 (missing-required; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))))))))
+
+================================================================================
+m2-create-subset-4-17 (missing-required; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))))))))
+
+================================================================================
+m2-create-subset-5-18 (missing-required; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))))))))
+
+================================================================================
+m2-create-subset-6-19 (missing-required; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (MAX_QUEUE_READERS = 1, EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))))))))
+
+================================================================================
+m2-create-subset-7-20 (complete-or-partial; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))))))))
+
+================================================================================
+m2-create-subset-8-21 (missing-required; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (STATUS = OFF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (keyword_off))))))))
+
+================================================================================
+m2-create-subset-9-22 (missing-required; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, STATUS = OFF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (keyword_off))))))))
+
+================================================================================
+m2-create-subset-10-23 (missing-required; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (MAX_QUEUE_READERS = 1, STATUS = OFF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (literal))
+            (option
+              name: (identifier)
+              value: (keyword_off))))))))
+
+================================================================================
+m2-create-subset-11-24 (missing-required; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, STATUS = OFF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (option
+              name: (identifier)
+              value: (keyword_off))))))))
+
+================================================================================
+m2-create-subset-12-25 (missing-required; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (EXECUTE AS SELF, STATUS = OFF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (keyword_off))))))))
+
+================================================================================
+m2-create-subset-13-26 (missing-required; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, EXECUTE AS SELF, STATUS = OFF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (keyword_off))))))))
+
+================================================================================
+m2-create-subset-14-27 (missing-required; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (MAX_QUEUE_READERS = 1, EXECUTE AS SELF, STATUS = OFF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (keyword_off))))))))
+
+================================================================================
+m2-create-subset-15-28 (complete-or-partial; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS SELF, STATUS = OFF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (keyword_off))))))))
+
+================================================================================
+m2-create-duplicate-0-29 (duplicate; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS SELF, STATUS = OFF, PROCEDURE_NAME = dbo.m2_p);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (keyword_off))
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))))))))
+
+================================================================================
+m2-create-duplicate-1-30 (duplicate; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS SELF, STATUS = OFF, MAX_QUEUE_READERS = 1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (keyword_off))
+            (option
+              name: (identifier)
+              value: (literal))))))))
+
+================================================================================
+m2-create-duplicate-2-31 (duplicate; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS SELF, STATUS = OFF, EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (keyword_off))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))))))))
+
+================================================================================
+m2-create-duplicate-3-32 (duplicate; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS SELF, STATUS = OFF, STATUS = OFF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (keyword_off))
+            (option
+              name: (identifier)
+              value: (keyword_off))))))))
+
+================================================================================
+m2-create-drop-33 (DROP; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (DROP);
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-create-drop-status-34 (DROP; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (DROP, STATUS = ON);
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-create-status-drop-35 (DROP; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (STATUS = ON, DROP);
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-create-trailing-comma-36 (other; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS SELF,);
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-create-missing-comma-37 (other; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p MAX_QUEUE_READERS = 1, EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-create-bad-status-38 (other; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS SELF, STATUS = YES);
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-create-bad-readers-39 (other; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 'one', EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-create-exec-short-40 (other; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXEC AS SELF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_queue
+        (keyword_create)
+        (keyword_queue)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_exec)
+              (keyword_as)
+              (keyword_self))))))))
+
+================================================================================
+m2-create-negative-readers-41 (other; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = -1, EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-create-decimal-readers-42 (other; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+CREATE QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1.5, EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-alter-order-0-43 (order; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))))))))
+
+================================================================================
+m2-alter-order-1-44 (order; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, EXECUTE AS SELF, MAX_QUEUE_READERS = 1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (literal))))))))
+
+================================================================================
+m2-alter-order-2-45 (order; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (MAX_QUEUE_READERS = 1, PROCEDURE_NAME = dbo.m2_p, EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (literal))
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))))))))
+
+================================================================================
+m2-alter-order-3-46 (order; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (MAX_QUEUE_READERS = 1, EXECUTE AS SELF, PROCEDURE_NAME = dbo.m2_p);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))))))))
+
+================================================================================
+m2-alter-order-4-47 (order; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (EXECUTE AS SELF, PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))))))))
+
+================================================================================
+m2-alter-order-5-48 (order; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (EXECUTE AS SELF, MAX_QUEUE_READERS = 1, PROCEDURE_NAME = dbo.m2_p);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (literal))
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))))))))
+
+================================================================================
+m2-alter-principal-SELF-49 (principal; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))))))))
+
+================================================================================
+m2-alter-principal-OWNER-50 (principal; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS OWNER);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_owner))))))))
+
+================================================================================
+m2-alter-principal-muser-51 (principal; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS 'm2_user');
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (literal))))))))
+
+================================================================================
+m2-alter-principal-N-52 (principal; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS N'사용자');
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (literal))))))))
+
+================================================================================
+m2-alter-principal-CALLER-53 (principal; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS CALLER);
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-alter-principal-muser-54 (principal; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS m2_user);
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-alter-principal-muser-55 (principal; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS "m2_user");
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-alter-subset-0-56 (empty; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION ();
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-alter-subset-1-57 (complete-or-partial; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))))))))
+
+================================================================================
+m2-alter-subset-2-58 (complete-or-partial; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (MAX_QUEUE_READERS = 1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (literal))))))))
+
+================================================================================
+m2-alter-subset-3-59 (complete-or-partial; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))))))))
+
+================================================================================
+m2-alter-subset-4-60 (complete-or-partial; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))))))))
+
+================================================================================
+m2-alter-subset-5-61 (complete-or-partial; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))))))))
+
+================================================================================
+m2-alter-subset-6-62 (complete-or-partial; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (MAX_QUEUE_READERS = 1, EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))))))))
+
+================================================================================
+m2-alter-subset-7-63 (complete-or-partial; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))))))))
+
+================================================================================
+m2-alter-subset-8-64 (complete-or-partial; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (STATUS = OFF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (keyword_off))))))))
+
+================================================================================
+m2-alter-subset-9-65 (complete-or-partial; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, STATUS = OFF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (keyword_off))))))))
+
+================================================================================
+m2-alter-subset-10-66 (complete-or-partial; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (MAX_QUEUE_READERS = 1, STATUS = OFF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (literal))
+            (option
+              name: (identifier)
+              value: (keyword_off))))))))
+
+================================================================================
+m2-alter-subset-11-67 (complete-or-partial; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, STATUS = OFF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (option
+              name: (identifier)
+              value: (keyword_off))))))))
+
+================================================================================
+m2-alter-subset-12-68 (complete-or-partial; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (EXECUTE AS SELF, STATUS = OFF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (keyword_off))))))))
+
+================================================================================
+m2-alter-subset-13-69 (complete-or-partial; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, EXECUTE AS SELF, STATUS = OFF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (keyword_off))))))))
+
+================================================================================
+m2-alter-subset-14-70 (complete-or-partial; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (MAX_QUEUE_READERS = 1, EXECUTE AS SELF, STATUS = OFF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (keyword_off))))))))
+
+================================================================================
+m2-alter-subset-15-71 (complete-or-partial; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS SELF, STATUS = OFF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (keyword_off))))))))
+
+================================================================================
+m2-alter-duplicate-0-72 (duplicate; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS SELF, STATUS = OFF, PROCEDURE_NAME = dbo.m2_p);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (keyword_off))
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))))))))
+
+================================================================================
+m2-alter-duplicate-1-73 (duplicate; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS SELF, STATUS = OFF, MAX_QUEUE_READERS = 1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (keyword_off))
+            (option
+              name: (identifier)
+              value: (literal))))))))
+
+================================================================================
+m2-alter-duplicate-2-74 (duplicate; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS SELF, STATUS = OFF, EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (keyword_off))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))))))))
+
+================================================================================
+m2-alter-duplicate-3-75 (duplicate; engine 102 - accepted gap; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS SELF, STATUS = OFF, STATUS = OFF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_execute)
+              (keyword_as)
+              (keyword_self))
+            (option
+              name: (identifier)
+              value: (keyword_off))
+            (option
+              name: (identifier)
+              value: (keyword_off))))))))
+
+================================================================================
+m2-alter-drop-76 (DROP; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (DROP);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (keyword_drop)))))))
+
+================================================================================
+m2-alter-drop-status-77 (DROP; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (DROP, STATUS = ON);
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-alter-status-drop-78 (DROP; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (STATUS = ON, DROP);
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-alter-trailing-comma-79 (other; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS SELF,);
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-alter-missing-comma-80 (other; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p MAX_QUEUE_READERS = 1, EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-alter-bad-status-81 (other; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXECUTE AS SELF, STATUS = YES);
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-alter-bad-readers-82 (other; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 'one', EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-alter-exec-short-83 (other; engine accepts; LocalDB 17.0.1000.7 levels 100-170)
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1, EXEC AS SELF);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (object_reference
+                schema: (identifier)
+                name: (identifier)))
+            (option
+              name: (identifier)
+              value: (literal))
+            (execute_as_clause
+              (keyword_exec)
+              (keyword_as)
+              (keyword_self))))))))
+
+================================================================================
+m2-alter-negative-readers-84 (other; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = -1, EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+m2-alter-decimal-readers-85 (other; engine 102 - rejected; LocalDB 17.0.1000.7 levels 100-170)
+:error
+================================================================================
+
+ALTER QUEUE dbo.m2_q WITH ACTIVATION (PROCEDURE_NAME = dbo.m2_p, MAX_QUEUE_READERS = 1.5, EXECUTE AS SELF);
+
+--------------------------------------------------------------------------------

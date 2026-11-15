@@ -1,4 +1,4 @@
-import { paren_list, wrapped_in_parenthesis } from '../helpers.js';
+import { comma_list, make_keyword, paren_list, wrapped_in_parenthesis } from '../helpers.js';
 
 // Service Broker DML: the statements that open, use and close a
 // conversation. The DDL half (CREATE QUEUE / CONTRACT / MESSAGE TYPE /
@@ -13,6 +13,92 @@ import { paren_list, wrapped_in_parenthesis } from '../helpers.js';
 // a label (`send: SELECT 1` errors, `GOTO send` still parses), for the
 // same reason: a label is another thing a statement may begin with.
 export default {
+  _create_queue_with_clause: ($) =>
+    seq($.keyword_with, comma_list(alias($._create_queue_option, $.option), true)),
+
+  _alter_queue_with_clause: ($) =>
+    seq($.keyword_with, comma_list(alias($._alter_queue_option, $.option), true)),
+
+  _create_queue_option: ($) =>
+    choice(
+      $._queue_common_option,
+      seq(
+        field('name', alias($._queue_activation, $.identifier)),
+        paren_list($._queue_activation_option, true),
+      ),
+    ),
+
+  _alter_queue_option: ($) =>
+    choice(
+      $._queue_common_option,
+      seq(
+        field('name', alias($._queue_activation, $.identifier)),
+        wrapped_in_parenthesis(
+          choice($.keyword_drop, comma_list($._queue_activation_option, true)),
+        ),
+      ),
+    ),
+
+  _queue_common_option: ($) =>
+    choice(
+      $._queue_status_option,
+      seq(
+        field('name', alias($._queue_retention, $.identifier)),
+        '=',
+        field('value', choice($.keyword_on, $.keyword_off)),
+      ),
+      seq(
+        field('name', alias($._queue_poison, $.identifier)),
+        wrapped_in_parenthesis(alias($._queue_status_option, $.option)),
+      ),
+    ),
+
+  // Duplicates and CREATE's required settings are not enforced here: they belong to the constraint
+  // layer in tools/tree-check (ADR-0003); docs/accepted-gaps.md tracks them until that rule lands.
+  _queue_activation_option: ($) =>
+    choice(
+      alias($._queue_status_option, $.option),
+      alias($._queue_procedure_option, $.option),
+      alias($._queue_readers_option, $.option),
+      alias($._queue_execute_as, $.execute_as_clause),
+    ),
+
+  _queue_status_option: ($) =>
+    seq(
+      field('name', alias($._queue_status, $.identifier)),
+      '=',
+      field('value', choice($.keyword_on, $.keyword_off)),
+    ),
+
+  _queue_procedure_option: ($) =>
+    seq(
+      field('name', alias($._queue_procedure, $.identifier)),
+      '=',
+      field('value', $.object_reference),
+    ),
+
+  _queue_readers_option: ($) =>
+    seq(
+      field('name', alias($._queue_readers, $.identifier)),
+      '=',
+      field('value', alias($._natural_number, $.literal)),
+    ),
+
+  // Module EXECUTE AS also permits CALLER; queue activation does not.
+  _queue_execute_as: ($) =>
+    seq(
+      choice($.keyword_exec, $.keyword_execute),
+      $.keyword_as,
+      choice($.keyword_self, $.keyword_owner, alias($._single_quote_string, $.literal)),
+    ),
+
+  _queue_activation: (_) => make_keyword('activation'),
+  _queue_retention: (_) => make_keyword('retention'),
+  _queue_poison: (_) => make_keyword('poison_message_handling'),
+  _queue_status: (_) => make_keyword('status'),
+  _queue_procedure: (_) => make_keyword('procedure_name'),
+  _queue_readers: (_) => make_keyword('max_queue_readers'),
+
   // BEGIN DIALOG [CONVERSATION] @handle
   //   FROM SERVICE name TO SERVICE { 'name' | @name } [, { 'broker_instance' | @broker_instance }]
   //   [ON CONTRACT name] [WITH option [, ...]]

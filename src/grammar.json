@@ -14625,8 +14625,13 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "with_clause"
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_create_queue_with_clause"
+              },
+              "named": true,
+              "value": "with_clause"
             },
             {
               "type": "BLANK"
@@ -17507,8 +17512,13 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "with_clause"
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_alter_queue_with_clause"
+              },
+              "named": true,
+              "value": "with_clause"
             },
             {
               "type": "SEQ",
@@ -24582,6 +24592,534 @@
           "value": "|="
         }
       ]
+    },
+    "_create_queue_with_clause": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "keyword_with"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_create_queue_option"
+              },
+              "named": true,
+              "value": "option"
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": ","
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_create_queue_option"
+                    },
+                    "named": true,
+                    "value": "option"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "_alter_queue_with_clause": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "keyword_with"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_alter_queue_option"
+              },
+              "named": true,
+              "value": "option"
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": ","
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_alter_queue_option"
+                    },
+                    "named": true,
+                    "value": "option"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "_create_queue_option": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_queue_common_option"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "name",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_queue_activation"
+                },
+                "named": true,
+                "value": "identifier"
+              }
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "("
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "_queue_activation_option"
+                    },
+                    {
+                      "type": "REPEAT",
+                      "content": {
+                        "type": "SEQ",
+                        "members": [
+                          {
+                            "type": "STRING",
+                            "value": ","
+                          },
+                          {
+                            "type": "SYMBOL",
+                            "name": "_queue_activation_option"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "STRING",
+                  "value": ")"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "_alter_queue_option": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_queue_common_option"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "name",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_queue_activation"
+                },
+                "named": true,
+                "value": "identifier"
+              }
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "("
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "keyword_drop"
+                    },
+                    {
+                      "type": "SEQ",
+                      "members": [
+                        {
+                          "type": "SYMBOL",
+                          "name": "_queue_activation_option"
+                        },
+                        {
+                          "type": "REPEAT",
+                          "content": {
+                            "type": "SEQ",
+                            "members": [
+                              {
+                                "type": "STRING",
+                                "value": ","
+                              },
+                              {
+                                "type": "SYMBOL",
+                                "name": "_queue_activation_option"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "STRING",
+                  "value": ")"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "_queue_common_option": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_queue_status_option"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "name",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_queue_retention"
+                },
+                "named": true,
+                "value": "identifier"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": "="
+            },
+            {
+              "type": "FIELD",
+              "name": "value",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "keyword_on"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "keyword_off"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "name",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_queue_poison"
+                },
+                "named": true,
+                "value": "identifier"
+              }
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "("
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_queue_status_option"
+                  },
+                  "named": true,
+                  "value": "option"
+                },
+                {
+                  "type": "STRING",
+                  "value": ")"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "_queue_activation_option": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_queue_status_option"
+          },
+          "named": true,
+          "value": "option"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_queue_procedure_option"
+          },
+          "named": true,
+          "value": "option"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_queue_readers_option"
+          },
+          "named": true,
+          "value": "option"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_queue_execute_as"
+          },
+          "named": true,
+          "value": "execute_as_clause"
+        }
+      ]
+    },
+    "_queue_status_option": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_queue_status"
+            },
+            "named": true,
+            "value": "identifier"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "FIELD",
+          "name": "value",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "keyword_on"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "keyword_off"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "_queue_procedure_option": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_queue_procedure"
+            },
+            "named": true,
+            "value": "identifier"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "FIELD",
+          "name": "value",
+          "content": {
+            "type": "SYMBOL",
+            "name": "object_reference"
+          }
+        }
+      ]
+    },
+    "_queue_readers_option": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_queue_readers"
+            },
+            "named": true,
+            "value": "identifier"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "FIELD",
+          "name": "value",
+          "content": {
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_natural_number"
+            },
+            "named": true,
+            "value": "literal"
+          }
+        }
+      ]
+    },
+    "_queue_execute_as": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "keyword_exec"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "keyword_execute"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_as"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "keyword_self"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "keyword_owner"
+            },
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_single_quote_string"
+              },
+              "named": true,
+              "value": "literal"
+            }
+          ]
+        }
+      ]
+    },
+    "_queue_activation": {
+      "type": "PATTERN",
+      "value": "[aA][cC][tT][iI][vV][aA][tT][iI][oO][nN]"
+    },
+    "_queue_retention": {
+      "type": "PATTERN",
+      "value": "[rR][eE][tT][eE][nN][tT][iI][oO][nN]"
+    },
+    "_queue_poison": {
+      "type": "PATTERN",
+      "value": "[pP][oO][iI][sS][oO][nN][__][mM][eE][sS][sS][aA][gG][eE][__][hH][aA][nN][dD][lL][iI][nN][gG]"
+    },
+    "_queue_status": {
+      "type": "PATTERN",
+      "value": "[sS][tT][aA][tT][uU][sS]"
+    },
+    "_queue_procedure": {
+      "type": "PATTERN",
+      "value": "[pP][rR][oO][cC][eE][dD][uU][rR][eE][__][nN][aA][mM][eE]"
+    },
+    "_queue_readers": {
+      "type": "PATTERN",
+      "value": "[mM][aA][xX][__][qQ][uU][eE][uU][eE][__][rR][eE][aA][dD][eE][rR][sS]"
     },
     "begin_dialog_statement": {
       "type": "PREC_RIGHT",

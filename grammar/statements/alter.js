@@ -318,7 +318,6 @@ export default {
     ),
 
   // ALTER QUEUE name { WITH queue_option [, ...] | REBUILD [WITH (...)] | REORGANIZE [WITH (...)] }   (Service Broker)
-  // The bare `with_clause` mirrors `create_queue`'s own WITH option list.
   // No prec.right, for the same trailing-WITH-vs-following-CTE reason
   // `truncate_statement` documents — see the `[$.alter_queue]` conflicts
   // entry in grammar.js.
@@ -331,7 +330,7 @@ export default {
       $.keyword_queue,
       $.object_reference,
       choice(
-        $.with_clause,
+        alias($._alter_queue_with_clause, $.with_clause),
         seq($.keyword_rebuild, optional($.with_options)),
         seq($.keyword_reorganize, optional($.with_clause)),
       ),
