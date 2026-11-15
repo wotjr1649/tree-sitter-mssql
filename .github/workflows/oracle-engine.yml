@@ -42,7 +42,8 @@ jobs:
   engine:
     name: ${{ matrix.name }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    # SQL Server 2025 on Linux judges slowly (8-11 min for 934 cases, over 15 for 1,574).
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
