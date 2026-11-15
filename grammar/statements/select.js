@@ -310,7 +310,7 @@ export default {
 
   // T-SQL query hint clause, e.g. OPTION (HASH GROUP, FAST 10, MAXDOP 1) or
   // OPTION (OPTIMIZE FOR (@x = 'literal', @y UNKNOWN)). Hints other than
-  // OPTIMIZE FOR and RECOMPILE are identifiers — T-SQL has dozens, most of
+  // OPTIMIZE FOR, RECOMPILE and TABLE HINT are identifiers — T-SQL has dozens, most of
   // them multi-word, and nothing downstream needs them distinguished.
   option_clause: ($) =>
     seq($.keyword_option, wrapped_in_parenthesis(comma_list($.query_hint, true))),
@@ -324,6 +324,13 @@ export default {
           choice($.keyword_unknown, wrapped_in_parenthesis(comma_list($.optimize_for_item, true))),
         ),
         $.keyword_recompile,
+        seq(
+          $.keyword_table,
+          alias($.keyword_hint, $.identifier),
+          wrapped_in_parenthesis(
+            seq($.identifier, optional(seq(',', comma_list($.table_hint_item, true)))),
+          ),
+        ),
         seq(
           $.identifier,
           repeat(choice($.identifier, alias($._natural_number, $.literal))),

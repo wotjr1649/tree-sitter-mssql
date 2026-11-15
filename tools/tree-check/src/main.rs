@@ -241,9 +241,8 @@ mod tests {
     }
 
     #[test]
-    fn error_node_fails_even_where_the_cli_summary_reports_success() {
-        // The CLI 0.27.2 summary counts this as a successful parse.
-        let r = check("SELECT * FROM dbo.t WITH (FORCESEEK(2(a)));\n");
+    fn error_node_fails() {
+        let r = check("SELECT * FROM dbo.t WITH (FORCESEEK(-1(a)));\n");
         assert!(r.error_nodes > 0, "{r:?}");
         assert!(!r.ok());
     }

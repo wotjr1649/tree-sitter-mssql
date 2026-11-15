@@ -68,6 +68,26 @@ from NOEXEC Msg 196; compile-time rejection is not a syntax verdict.
 | `SELECT FROM;` (also with a leading `;`) | FROM is read as an identifier when the SELECT expression is absent; the new empty statement support exposes this existing SELECT gap. LocalDB 100–170 returns 156. | `semicolon/invalid-leading-select`; corpus `semicolon.txt` |
 | A statement-less BEGIN/END block followed by a CTE | LocalDB 100–170 returns 156 and 102; the grammar accepts the empty block; the CTE after it is now rejected by the `cte-terminator` constraint, so the input fails as SQL Server says, though for that reason rather than the empty block. | `semicolon/cte-after-empty-block`; corpus `semicolon.txt` |
 
+## Table hints: remaining gaps
+
+The table-hint probes (`oracle/probes/table-hints.jsonl`, 165 cases) were measured with LocalDB
+17.0.1000.7, PARSEONLY at levels 100–170. INDEX takes a name or a 0..2147483647 integer;
+FORCESEEK also takes a non-empty column list. Their numbers allow up to 11 digits (leading zeros
+included); SPATIAL_WINDOW_MAX_CELLS allows up to 128 digits, still bounded by 2147483647. WITH
+accepts comma, space and mixed separators; TABLE HINT in OPTION requires commas and may omit its
+inner hint list.
+
+Names, conflicts, FORCESEEK arguments and DML-target restrictions are enforced by the
+`table-hint` constraint (ADR-0003, measured in `oracle/probes/hint-rules.jsonl`). These rejected
+cases still have a clean tree:
+
+| Oracle cases | Engine verdict | Disposition |
+| --- | --- | --- |
+| `table-hints/bare-index`, `table-hints/bare-index-alone` | 1018 | Deprecated hint form without WITH after an alias: INDEX needs WITH there. Needs its own measured rule |
+| `table-hints/maxdop-32768`, `table-hints/maxdop-2147483647` | 304 | Query-hint value gap: MAXDOP is 0..32767 |
+| `table-hints/maxdop-2147483648`, `table-hints/maxdop-1e0`, `table-hints/maxdop-0x1` | 102 | Query-hint number syntax over-acceptance, outside the table-hint rule |
+| `hint-rules/merge-source-nolock`, `hint-rules/merge-source-index` | 156 | `MERGE ... USING src WITH (...) AS s`: the grammar takes hints before the source alias, where SQL Server does not |
+
 ## Adding an entry
 
 When a review or a probe finds a new gap, add a row here in the same pass as the corpus case (or

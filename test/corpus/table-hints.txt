@@ -1,0 +1,5132 @@
+================================================================================
+table-hints/seek-name - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (FORCESEEK(ix(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (identifier)
+              (identifier))))))))
+
+================================================================================
+table-hints/seek-int - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (FORCESEEK(2(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal)
+              (identifier))))))))
+
+================================================================================
+table-hints/seek-max - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (FORCESEEK(2147483647(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal)
+              (identifier))))))))
+
+================================================================================
+table-hints/seek-next - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (FORCESEEK(ix(a)), NOWAIT);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (identifier)
+              (identifier))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/seek-zero - LocalDB 17.0.1000.7 levels 100-170 - engine 10749 - context or constraint gap
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (FORCESEEK(0(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal)
+              (identifier))))))))
+
+================================================================================
+table-hints/seek-leading-zero - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (FORCESEEK(0000000002(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal)
+              (identifier))))))))
+
+================================================================================
+table-hints/seek-too-many-digits - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (FORCESEEK(00000000002(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal)
+              (identifier))))))))
+
+================================================================================
+table-hints/seek-overflow - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (FORCESEEK(2147483648(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/seek-negative - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (FORCESEEK(-1(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/seek-decimal - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (FORCESEEK(1.0(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/seek-empty-columns - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (FORCESEEK(ix()));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (identifier)
+              (identifier
+                  (MISSING _identifier)))))))))
+
+================================================================================
+table-hints/seek-no-columns - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (FORCESEEK(ix));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (identifier))))))))
+
+================================================================================
+table-hints/seek-multiple-columns - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (FORCESEEK(ix(a,b)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (identifier)
+              (identifier)
+              (identifier))))))))
+
+================================================================================
+table-hints/seek-quoted - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (FORCESEEK([ix]([a])));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (identifier)
+              (identifier))))))))
+
+================================================================================
+table-hints/seek-alone - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (FORCESEEK);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/scan - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (FORCESCAN);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/noexpand - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (NOEXPAND);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/seek-noexpand - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (NOEXPAND FORCESEEK(ix(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (table_hint_item
+              (identifier)
+              (identifier)
+              (identifier))))))))
+
+================================================================================
+table-hints/index-zero - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX(0));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (keyword_index)
+              (literal))))))))
+
+================================================================================
+table-hints/index-one - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX(1));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (keyword_index)
+              (literal))))))))
+
+================================================================================
+table-hints/index-mixed-numbers - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX(0,1));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (keyword_index)
+              (literal)
+              (literal))))))))
+
+================================================================================
+table-hints/index-mixed-names - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX(0,ix,1,[other]));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (keyword_index)
+              (literal)
+              (identifier)
+              (literal)
+              (identifier))))))))
+
+================================================================================
+table-hints/index-equals-zero - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX=0);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (keyword_index)
+              (literal))))))))
+
+================================================================================
+table-hints/index-max - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX(2147483647));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (keyword_index)
+              (literal))))))))
+
+================================================================================
+table-hints/index-name - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX(ix));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (keyword_index)
+              (identifier))))))))
+
+================================================================================
+table-hints/index-equals-name - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX=ix);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (keyword_index)
+              (identifier))))))))
+
+================================================================================
+table-hints/index-equals-parenthesized - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX=(ix));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (keyword_index)
+              (ERROR)
+              (identifier))))))))
+
+================================================================================
+table-hints/index-overflow - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX(2147483648));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier)))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/index-negative - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX(-1));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier)))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/index-positive-sign - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX(+1));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier)))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/index-decimal - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX(1.0));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier)))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal)
+      (literal))))
+
+================================================================================
+table-hints/index-exponent - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX(1e0));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (keyword_index)
+              (ERROR
+                (literal))
+              (identifier))))))))
+
+================================================================================
+table-hints/index-hex - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX(0x1));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (keyword_index)
+              (ERROR
+                (literal))
+              (identifier))))))))
+
+================================================================================
+table-hints/index-zeros - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX(0000000001));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (keyword_index)
+              (literal))))))))
+
+================================================================================
+table-hints/index-many-zeros - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX(00000000001));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (keyword_index)
+              (literal))))))))
+
+================================================================================
+table-hints/index-quoted-numeric - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX([2147483648]));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (keyword_index)
+              (identifier))))))))
+
+================================================================================
+table-hints/index-nvarchar - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX(N'ix'));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (keyword_index)
+              (identifier)
+              (ERROR))))))))
+
+================================================================================
+table-hints/index-string - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX('ix'));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier)))))
+    (ERROR
+      (keyword_with)
+      (keyword_index))))
+
+================================================================================
+table-hints/index-qualified - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX(dbo.ix));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (keyword_index)
+              (identifier)
+              (ERROR))))))))
+
+================================================================================
+table-hints/index-empty - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX());
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (keyword_index)
+              (identifier
+                  (MISSING _identifier)))))))))
+
+================================================================================
+table-hints/index-space - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX(ix 1));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (keyword_index)
+              (identifier)
+              (ERROR))))))))
+
+================================================================================
+table-hints/space - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (UPDLOCK ROWLOCK READPAST);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (table_hint_item
+              (identifier))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/mixed - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (UPDLOCK, ROWLOCK READPAST);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (table_hint_item
+              (identifier))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/leading-comma - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (,ROWLOCK);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (ERROR)
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/trailing-comma - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (ROWLOCK,);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR)))))))
+
+================================================================================
+table-hints/double-comma - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (ROWLOCK,,READPAST);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR)
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/conflict - LocalDB 17.0.1000.7 levels 100-170 - engine 1047 - context or constraint gap
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (NOLOCK HOLDLOCK);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/unknown - LocalDB 17.0.1000.7 levels 100-170 - engine 321 - context or constraint gap
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (NO_SUCH_HINT);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/parameterless-args - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (ROWLOCK(1));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal))))))
+    (ERROR)))
+
+================================================================================
+table-hints/parameterless-equals - LocalDB 17.0.1000.7 levels 100-170 - engine 321 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (ROWLOCK=1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal))))))))
+
+================================================================================
+table-hints/spatial-one - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal))))))))
+
+================================================================================
+table-hints/spatial-zero - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=0);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal))))))))
+
+================================================================================
+table-hints/spatial-max - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=2147483647);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal))))))))
+
+================================================================================
+table-hints/spatial-overflow - LocalDB 17.0.1000.7 levels 100-170 - engine 1080 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=2147483648);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier)))))
+    (ERROR
+      (keyword_with)
+      (identifier)
+      (literal))))
+
+================================================================================
+table-hints/spatial-many-zeros - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=00000000000000000000000000000000000000001);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal))))))))
+
+================================================================================
+table-hints/spatial-adjacent - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1ROWLOCK);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/spatial-zero-adjacent - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=00XLOCK);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/spatial-leading-adjacent - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=01ROWLOCK);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/spatial-comment - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1/*c*/ROWLOCK);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal))
+            (marginalia)
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/spatial-space - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1 ROWLOCK);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/spatial-comma - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1,ROWLOCK);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/spatial-negative - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=-1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier)))))
+    (ERROR
+      (keyword_with)
+      (identifier)
+      (literal))))
+
+================================================================================
+table-hints/spatial-decimal - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1.0);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier)))))
+    (ERROR
+      (keyword_with)
+      (identifier)
+      (literal)
+      (literal))))
+
+================================================================================
+table-hints/spatial-exponent - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1e0);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (ERROR
+              (identifier)
+              (literal))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/spatial-hex - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=0x1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (ERROR
+              (identifier)
+              (literal))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/spatial-overflow-adjacent - LocalDB 17.0.1000.7 levels 100-170 - engine 1080 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=2147483648ROWLOCK);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (ERROR
+              (identifier)
+              (literal))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/spatial-decimal-adjacent - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1.0ROWLOCK);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (ERROR
+              (identifier)
+              (literal)
+              (literal))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/spatial-exponent-adjacent - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1e0ROWLOCK);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (ERROR
+              (identifier)
+              (literal))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/spatial-hex-adjacent - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=0x1ROWLOCK);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (ERROR
+              (identifier)
+              (literal))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/spatial-parens - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS(1));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier)))))
+    (ERROR
+      (keyword_with)
+      (identifier)
+      (literal))))
+
+================================================================================
+table-hints/bare-space - LocalDB 17.0.1000.7 levels 100-170 - engine 1018 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a (UPDLOCK ROWLOCK READPAST);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier)
+            (table_hint
+              (ERROR
+                (identifier)
+                (identifier))
+              (table_hint_item
+                (identifier)))))))))
+
+================================================================================
+table-hints/bare-mixed - LocalDB 17.0.1000.7 levels 100-170 - engine 1018 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a (UPDLOCK, ROWLOCK READPAST);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier)
+            (table_hint
+              (table_hint_item
+                (identifier))
+              (table_hint_item
+                (identifier))
+              (ERROR
+                (identifier)))))))))
+
+================================================================================
+table-hints/bare-index - LocalDB 17.0.1000.7 levels 100-170 - engine 1018 - context or constraint gap
+================================================================================
+
+SELECT * FROM dbo.t AS a (INDEX(0,ix));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier)
+            (table_hint
+              (table_hint_item
+                (keyword_index)
+                (literal)
+                (identifier)))))))))
+
+================================================================================
+table-hints/bare-seek - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a (FORCESEEK(ix(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier)
+            (table_hint
+              (table_hint_item
+                (identifier))
+              (ERROR))))))
+    (ERROR)))
+
+================================================================================
+table-hints/bare-spatial - LocalDB 17.0.1000.7 levels 100-170 - engine 321 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a (SPATIAL_WINDOW_MAX_CELLS=1ROWLOCK);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier)
+            (list
+              (column
+                (identifier))
+              (ERROR
+                (literal)
+                (identifier)))))))))
+
+================================================================================
+table-hints/query-table-index - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a OPTION (TABLE HINT (a, INDEX = ix));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (keyword_table)
+          (identifier)
+          (identifier)
+          (table_hint_item
+            (keyword_index)
+            (identifier)))))))
+
+================================================================================
+table-hints/query-table-index-zero - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a OPTION (TABLE HINT (a, INDEX(0,ix)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (keyword_table)
+          (identifier)
+          (identifier)
+          (table_hint_item
+            (keyword_index)
+            (literal)
+            (identifier)))))))
+
+================================================================================
+table-hints/query-table-seek - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a OPTION (TABLE HINT (a, FORCESEEK(ix(a))));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (keyword_table)
+          (identifier)
+          (identifier)
+          (table_hint_item
+            (identifier)
+            (identifier)
+            (identifier)))))))
+
+================================================================================
+table-hints/query-table-spatial - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a OPTION (TABLE HINT (a, SPATIAL_WINDOW_MAX_CELLS=1));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (keyword_table)
+          (identifier)
+          (identifier)
+          (table_hint_item
+            (identifier)
+            (literal)))))))
+
+================================================================================
+table-hints/query-table-space - LocalDB 17.0.1000.7 levels 100-170 - engine 4102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a OPTION (TABLE HINT (a, UPDLOCK ROWLOCK READPAST));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (keyword_table)
+          (identifier)
+          (identifier)
+          (ERROR
+            (table_hint_item
+              (identifier))
+            (identifier))
+          (table_hint_item
+            (identifier)))))))
+
+================================================================================
+table-hints/query-table-bad-index - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a OPTION (TABLE HINT (a, INDEX=(ix)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (keyword_table)
+          (identifier)
+          (identifier)
+          (table_hint_item
+            (keyword_index)
+            (ERROR)
+            (identifier)))))))
+
+================================================================================
+table-hints/maxdop-0 - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t OPTION (MAXDOP 0);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (identifier)
+          (literal))))))
+
+================================================================================
+table-hints/maxdop-1 - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t OPTION (MAXDOP 1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (identifier)
+          (literal))))))
+
+================================================================================
+table-hints/maxdop-32767 - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t OPTION (MAXDOP 32767);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (identifier)
+          (literal))))))
+
+================================================================================
+table-hints/maxdop-32768 - LocalDB 17.0.1000.7 levels 100-170 - engine 304 - context or constraint gap
+================================================================================
+
+SELECT * FROM dbo.t OPTION (MAXDOP 32768);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (identifier)
+          (literal))))))
+
+================================================================================
+table-hints/maxdop-2147483647 - LocalDB 17.0.1000.7 levels 100-170 - engine 304 - context or constraint gap
+================================================================================
+
+SELECT * FROM dbo.t OPTION (MAXDOP 2147483647);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (identifier)
+          (literal))))))
+
+================================================================================
+table-hints/maxdop-2147483648 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - context or constraint gap
+================================================================================
+
+SELECT * FROM dbo.t OPTION (MAXDOP 2147483648);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (identifier)
+          (literal))))))
+
+================================================================================
+table-hints/maxdop-_1 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t OPTION (MAXDOP -1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (identifier)
+          (ERROR)
+          (literal))))))
+
+================================================================================
+table-hints/maxdop-1_0 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t OPTION (MAXDOP 1.0);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (identifier)
+          (literal)
+          (ERROR)
+          (literal))))))
+
+================================================================================
+table-hints/maxdop-1e0 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - context or constraint gap
+================================================================================
+
+SELECT * FROM dbo.t OPTION (MAXDOP 1e0);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (identifier)
+          (literal)
+          (identifier))))))
+
+================================================================================
+table-hints/maxdop-0x1 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - context or constraint gap
+================================================================================
+
+SELECT * FROM dbo.t OPTION (MAXDOP 0x1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (identifier)
+          (literal)
+          (identifier))))))
+
+================================================================================
+table-hints/update-space - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+UPDATE dbo.t WITH (UPDLOCK ROWLOCK READPAST) SET a=1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (update
+        (keyword_update)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (table_hint
+          (keyword_with)
+          (table_hint_item
+            (identifier))
+          (table_hint_item
+            (identifier))
+          (table_hint_item
+            (identifier)))
+        (keyword_set)
+        (assignment
+          left: (field
+            name: (identifier))
+          (assignment_operator)
+          right: (literal))))))
+
+================================================================================
+table-hints/update-index - LocalDB 17.0.1000.7 levels 100-170 - engine 1069 - context or constraint gap
+================================================================================
+
+UPDATE dbo.t WITH (INDEX(0,ix)) SET a=1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (update
+        (keyword_update)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (table_hint
+          (keyword_with)
+          (table_hint_item
+            (keyword_index)
+            (literal)
+            (identifier)))
+        (keyword_set)
+        (assignment
+          left: (field
+            name: (identifier))
+          (assignment_operator)
+          right: (literal))))))
+
+================================================================================
+table-hints/update-seek - LocalDB 17.0.1000.7 levels 100-170 - engine 10724 - context or constraint gap
+================================================================================
+
+UPDATE dbo.t WITH (FORCESEEK(ix(a))) SET a=1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (update
+        (keyword_update)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (table_hint
+          (keyword_with)
+          (table_hint_item
+            (identifier)
+            (identifier)
+            (identifier)))
+        (keyword_set)
+        (assignment
+          left: (field
+            name: (identifier))
+          (assignment_operator)
+          right: (literal))))))
+
+================================================================================
+table-hints/update-scan - LocalDB 17.0.1000.7 levels 100-170 - engine 10745 - context or constraint gap
+================================================================================
+
+UPDATE dbo.t WITH (FORCESCAN) SET a=1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (update
+        (keyword_update)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (table_hint
+          (keyword_with)
+          (table_hint_item
+            (identifier)))
+        (keyword_set)
+        (assignment
+          left: (field
+            name: (identifier))
+          (assignment_operator)
+          right: (literal))))))
+
+================================================================================
+table-hints/update-spatial - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+UPDATE dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=1ROWLOCK) SET a=1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (update
+        (keyword_update)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (table_hint
+          (keyword_with)
+          (table_hint_item
+            (identifier)
+            (literal))
+          (table_hint_item
+            (identifier)))
+        (keyword_set)
+        (assignment
+          left: (field
+            name: (identifier))
+          (assignment_operator)
+          right: (literal))))))
+
+================================================================================
+table-hints/delete-space - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+DELETE FROM dbo.t WITH (UPDLOCK ROWLOCK READPAST);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (delete
+        (keyword_delete)
+        (keyword_from)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (table_hint
+          (keyword_with)
+          (table_hint_item
+            (identifier))
+          (table_hint_item
+            (identifier))
+          (table_hint_item
+            (identifier)))))))
+
+================================================================================
+table-hints/delete-index - LocalDB 17.0.1000.7 levels 100-170 - engine 1069 - context or constraint gap
+================================================================================
+
+DELETE FROM dbo.t WITH (INDEX(0,ix));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (delete
+        (keyword_delete)
+        (keyword_from)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (table_hint
+          (keyword_with)
+          (table_hint_item
+            (keyword_index)
+            (literal)
+            (identifier)))))))
+
+================================================================================
+table-hints/delete-seek - LocalDB 17.0.1000.7 levels 100-170 - engine 10724 - context or constraint gap
+================================================================================
+
+DELETE FROM dbo.t WITH (FORCESEEK(ix(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (delete
+        (keyword_delete)
+        (keyword_from)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (table_hint
+          (keyword_with)
+          (table_hint_item
+            (identifier)
+            (identifier)
+            (identifier)))))))
+
+================================================================================
+table-hints/delete-scan - LocalDB 17.0.1000.7 levels 100-170 - engine 10745 - context or constraint gap
+================================================================================
+
+DELETE FROM dbo.t WITH (FORCESCAN);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (delete
+        (keyword_delete)
+        (keyword_from)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (table_hint
+          (keyword_with)
+          (table_hint_item
+            (identifier)))))))
+
+================================================================================
+table-hints/delete-spatial - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+DELETE FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=1ROWLOCK);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (delete
+        (keyword_delete)
+        (keyword_from)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (table_hint
+          (keyword_with)
+          (table_hint_item
+            (identifier)
+            (literal))
+          (table_hint_item
+            (identifier)))))))
+
+================================================================================
+table-hints/spatial-single-zero-xlock - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=0XLOCK);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (ERROR
+              (identifier)
+              (literal))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/spatial-double-zero-hex - LocalDB 17.0.1000.7 levels 100-170 - engine 321 - context or constraint gap
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=00x1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/spatial-one-hex - LocalDB 17.0.1000.7 levels 100-170 - engine 321 - context or constraint gap
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1x1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/spatial-long-zero-overflow - LocalDB 17.0.1000.7 levels 100-170 - engine 1080 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=0002147483648);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier)))))
+    (ERROR
+      (keyword_with)
+      (identifier)
+      (literal))))
+
+================================================================================
+table-hints/index-long-zero-overflow - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX(0002147483648));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier)))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/index-max-zeros - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX(0002147483647));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier)))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/spatial-max-zeros - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=0002147483647);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal))))))))
+
+================================================================================
+table-hints/spatial-overflow-long - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=99999999999999999999999999999999);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier)))))
+    (ERROR
+      (keyword_with)
+      (identifier)
+      (literal))))
+
+================================================================================
+table-hints/index-lowercase-exp - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (INDEX(1e));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (keyword_index)
+              (ERROR
+                (literal))
+              (identifier))))))))
+
+================================================================================
+table-hints/spatial-lowercase-exp - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t AS a WITH (SPATIAL_WINDOW_MAX_CELLS=1e);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (table_hint
+            (keyword_with)
+            (ERROR
+              (identifier)
+              (literal))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/bare-single - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t AS a (NOLOCK);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier)
+            (table_hint
+              (table_hint_item
+                (identifier)))))))))
+
+================================================================================
+table-hints/bare-index-alone - LocalDB 17.0.1000.7 levels 100-170 - engine 1018 - context or constraint gap
+================================================================================
+
+SELECT * FROM dbo.t AS a (INDEX(ix));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier)
+            (table_hint
+              (table_hint_item
+                (keyword_index)
+                (identifier)))))))))
+
+================================================================================
+table-hints/index-length-20 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (INDEX(00000000000000000001));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/forceseek-length-20 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (FORCESEEK(00000000000000000001(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/index-length-30 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (INDEX(000000000000000000000000000001));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/forceseek-length-30 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (FORCESEEK(000000000000000000000000000001(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/index-length-31 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (INDEX(0000000000000000000000000000001));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/forceseek-length-31 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (FORCESEEK(0000000000000000000000000000001(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/index-length-32 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (INDEX(00000000000000000000000000000001));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/forceseek-length-32 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (FORCESEEK(00000000000000000000000000000001(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/index-length-33 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (INDEX(000000000000000000000000000000001));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/forceseek-length-33 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (FORCESEEK(000000000000000000000000000000001(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/index-length-38 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (INDEX(00000000000000000000000000000000000001));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/forceseek-length-38 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (FORCESEEK(00000000000000000000000000000000000001(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/index-length-39 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (INDEX(000000000000000000000000000000000000001));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/forceseek-length-39 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (FORCESEEK(000000000000000000000000000000000000001(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/index-length-40 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (INDEX(0000000000000000000000000000000000000001));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/forceseek-length-40 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (FORCESEEK(0000000000000000000000000000000000000001(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/index-length-68 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (INDEX(00000000000000000000000000000000000000000000000000000000000000000001));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/forceseek-length-68 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (FORCESEEK(00000000000000000000000000000000000000000000000000000000000000000001(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/index-length-512 - LocalDB 17.0.1000.7 levels 100-170 - engine 103/102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (INDEX(00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/forceseek-length-512 - LocalDB 17.0.1000.7 levels 100-170 - engine 103/102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (FORCESEEK(00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/index-length-12 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (INDEX(000000000001));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/forceseek-length-12 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (FORCESEEK(000000000001(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/index-length-13 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (INDEX(0000000000001));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/forceseek-length-13 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (FORCESEEK(0000000000001(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/index-length-14 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (INDEX(00000000000001));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/forceseek-length-14 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (FORCESEEK(00000000000001(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/index-length-15 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (INDEX(000000000000001));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/forceseek-length-15 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (FORCESEEK(000000000000001(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/index-length-16 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (INDEX(0000000000000001));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/forceseek-length-16 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (FORCESEEK(0000000000000001(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/index-length-17 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (INDEX(00000000000000001));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/forceseek-length-17 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (FORCESEEK(00000000000000001(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/index-length-18 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (INDEX(000000000000000001));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/forceseek-length-18 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (FORCESEEK(000000000000000001(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/index-length-19 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (INDEX(0000000000000000001));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (keyword_index)
+      (literal))))
+
+================================================================================
+table-hints/forceseek-length-19 - LocalDB 17.0.1000.7 levels 100-170 - engine 102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (FORCESEEK(0000000000000000001(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (ERROR
+              (literal)
+              (identifier))))))
+    (ERROR)))
+
+================================================================================
+table-hints/index-max-eleven - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t WITH (INDEX(02147483647));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (keyword_index)
+              (literal))))))))
+
+================================================================================
+table-hints/seek-max-eleven - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t WITH (FORCESEEK(02147483647(a)));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal)
+              (identifier))))))))
+
+================================================================================
+table-hints/query-table-empty - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t a OPTION (TABLE HINT (a));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            alias: (identifier))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (keyword_table)
+          (identifier)
+          (identifier))))))
+
+================================================================================
+table-hints/query-table-multiple - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t a OPTION (TABLE HINT (a, INDEX=ix, FORCESEEK));
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            alias: (identifier))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (keyword_table)
+          (identifier)
+          (identifier)
+          (table_hint_item
+            (keyword_index)
+            (identifier))
+          (table_hint_item
+            (identifier)))))))
+
+================================================================================
+table-hints/query-table-next - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t a OPTION (TABLE HINT (a, INDEX=ix), MAXDOP 1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            alias: (identifier))))
+      (option_clause
+        (keyword_option)
+        (query_hint
+          (keyword_table)
+          (identifier)
+          (identifier)
+          (table_hint_item
+            (keyword_index)
+            (identifier)))
+        (query_hint
+          (identifier)
+          (literal))))))
+
+================================================================================
+table-hints/hint-udt-schema - LocalDB 17.0.1000.7 levels 130-170 accepted; 100-120 Msg 319
+================================================================================
+
+DECLARE @j nvarchar(max); SELECT * FROM OPENJSON(@j) WITH (a dbo.udt);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (nvarchar
+            (keyword_nvarchar)
+            size: (keyword_max)))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (invocation
+              (object_reference
+                name: (identifier))
+              parameter: (term
+                value: (field
+                  name: (identifier)))))
+          (openjson_schema
+            (keyword_with)
+            (openjson_column
+              name: (identifier)
+              type: (custom_type
+                (object_reference
+                  schema: (identifier)
+                  name: (identifier))))))))))
+
+================================================================================
+table-hints/hint-keyword-schema - LocalDB 17.0.1000.7 levels 130-170 accepted; 100-120 Msg 319
+================================================================================
+
+DECLARE @j nvarchar(max); SELECT * FROM OPENJSON(@j) WITH (ROWLOCK int);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (nvarchar
+            (keyword_nvarchar)
+            size: (keyword_max)))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (invocation
+              (object_reference
+                name: (identifier))
+              parameter: (term
+                value: (field
+                  name: (identifier)))))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/hint-short-nolock-nowait - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t WITH (NOLOCK NOWAIT);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier))
+            (table_hint_item
+              (identifier))))))))
+
+================================================================================
+table-hints/spatial-length-100 - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal))))))))
+
+================================================================================
+table-hints/spatial-length-127 - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal))))))))
+
+================================================================================
+table-hints/spatial-length-128 - LocalDB 17.0.1000.7 levels 100-170 - engine accepted
+================================================================================
+
+SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))
+          (table_hint
+            (keyword_with)
+            (table_hint_item
+              (identifier)
+              (literal))))))))
+
+================================================================================
+table-hints/spatial-length-129 - LocalDB 17.0.1000.7 levels 100-170 - engine 103/102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (identifier)
+      (literal))))
+
+================================================================================
+table-hints/spatial-length-255 - LocalDB 17.0.1000.7 levels 100-170 - engine 103/102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (identifier)
+      (literal))))
+
+================================================================================
+table-hints/spatial-length-256 - LocalDB 17.0.1000.7 levels 100-170 - engine 103/102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (identifier)
+      (literal))))
+
+================================================================================
+table-hints/spatial-length-257 - LocalDB 17.0.1000.7 levels 100-170 - engine 103/102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (identifier)
+      (literal))))
+
+================================================================================
+table-hints/spatial-length-512 - LocalDB 17.0.1000.7 levels 100-170 - engine 103/102 - syntax error
+================================================================================
+
+SELECT * FROM dbo.t WITH (SPATIAL_WINDOW_MAX_CELLS=00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))
+    (ERROR
+      (keyword_with)
+      (identifier)
+      (literal))))

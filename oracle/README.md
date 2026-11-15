@@ -6,10 +6,14 @@ The reference for valid T-SQL is SQL Server's own parser under `SET PARSEONLY ON
 | --- | --- |
 | `kit/cases.jsonl` | 726 cases from tree-sitter-grammar-kit: `id`, `sha256`, `source` ([NOTICE](kit/NOTICE)) |
 | `kit/edits.jsonl`, `kit/route-edits.jsonl` | Edit histories for comparing incremental and fresh parses: 353 gap histories (939 edits) and 19 route histories (40 edits) |
-| `probes/*.jsonl` | Cases written and engine-checked while fixing defects. They gate those fixes like the kit cases do. IDs are prefixed with the set name. Current sets: `context` (797, the context rules ported from grammar-kit under ADR-0004: permissions, all 312 trigger event types on both scopes, built-in arity, scalar RETURN, CTE table source, window frame, MERGE terminator), `kit-routes` (640 realistic scripts from grammar-kit, ADR-0004; 44 contain `GO` lines, which the runner splits like a client), `queue-activation` (86, the QUEUE fix and constraint rules), `semicolon` (70), `exec-output` (18, EXEC OUTPUT rules) and `identifiers` (34: Unicode names, bare `#`/`@` sigil names, and variables in column, table and MERGE alias positions, which the engine rejects) |
+| `probes/*.jsonl` | Cases written and engine-checked while fixing defects. They gate those fixes like the kit cases do. IDs are prefixed with the set name. Current sets: `hint-rules` (596, the table-hint rules: every hint alone, every pair, every hint on each DML target), `table-hints` (165, hint syntax), `context` (797, the context rules ported from grammar-kit under ADR-0004: permissions, all 312 trigger event types on both scopes, built-in arity, scalar RETURN, CTE table source, window frame, MERGE terminator), `kit-routes` (640 realistic scripts from grammar-kit, ADR-0004; 44 contain `GO` lines, which the runner splits like a client), `queue-activation` (86, the QUEUE fix and constraint rules), `semicolon` (70), `exec-output` (18, EXEC OUTPUT rules) and `identifiers` (34: Unicode names, bare `#`/`@` sigil names, and variables in column, table and MERGE alias positions, which the engine rejects) |
 | `verdicts/*.json` | Engine verdicts per case and compatibility level: the error numbers, `[]` for accepted. `meta` records the engine build, edition, platform, session `SET` state, levels, and the hashes of the cases and of the runner |
 | `runner/ParseOnly/` | The runner that produces the verdicts (C#, .NET 10, Microsoft.Data.SqlClient pinned by `packages.lock.json`) |
 | `expected.json` | The grammar's current result per case (`clean` or `error`) and the edit histories whose incremental parse differs from a fresh one |
+
+The `table-hints` probe set adds 165 cases for INDEX/FORCESEEK arguments, numeric and token-length
+bounds, adjacent/space-separated hints, query TABLE HINT and UPDATE/DELETE targets. Its committed
+LocalDB verdicts cover levels 100–170; the matching corpus includes the documented context gaps.
 
 ## Reading the verdicts
 
