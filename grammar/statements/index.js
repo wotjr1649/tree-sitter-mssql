@@ -802,6 +802,7 @@ export default {
         alias($.keyword_collection, $.identifier),
       ),
       seq(alias($.keyword_availability, $.identifier), alias($.keyword_group, $.identifier)),
+      seq(alias($.keyword_external, $.identifier), alias($.keyword_language, $.identifier)),
     ),
 
   // The column list is aliased to a named `list` node (the same pattern
@@ -1002,7 +1003,12 @@ export default {
   // `_dml_read` adds the CTE, which is legal for a statement, a view, an
   // inline table-valued function's RETURN, and a cursor declaration, and
   // not inside a derived table or another CTE.
-  _query_expression: ($) => optional_parenthesis(choice($._select_statement, $.set_operation)),
+  _query_expression: ($) =>
+    choice(
+      $._select_statement,
+      $.set_operation,
+      wrapped_in_parenthesis(choice($._select_statement, $.set_operation)),
+    ),
 
   _dml_read: ($) => seq(optional(optional_parenthesis($._cte)), $._query_expression),
 

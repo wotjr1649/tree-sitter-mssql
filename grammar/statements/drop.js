@@ -6,6 +6,7 @@ export default {
   _drop_statement: ($) =>
     choice(
       $.drop_table,
+      $.drop_availability_group,
       $.drop_aggregate,
       $.drop_default,
       $.drop_rule,
@@ -66,6 +67,9 @@ export default {
       $.drop_security_policy,
       $.drop_xml_schema_collection,
     ),
+
+  drop_availability_group: ($) =>
+    seq($.keyword_drop, $.keyword_availability, $.keyword_group, field('name', $.identifier)),
 
   // DROP XML SCHEMA COLLECTION [IF EXISTS] name
   drop_xml_schema_collection: ($) =>

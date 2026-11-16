@@ -9,7 +9,7 @@ import { sqlcmd_command } from './grammar/helpers.js';
 export default grammar({
   name: 'mssql',
 
-  extras: ($) => [/\s/, $.comment, $.marginalia],
+  extras: ($) => [/[\s\u2002]/, $.comment, $.marginalia],
 
   // The block comment is lexed by src/scanner.c rather than a regex because
   // T-SQL block comments nest, and a regex cannot match balanced nesting.
@@ -41,6 +41,11 @@ export default grammar({
   // before it can settle; tree-sitter reports any that stop being needed
   // as "unnecessary conflicts" on generate, and those are removed.
   conflicts: ($) => [
+    // A closing parenthesis may end the scalar subquery before an outer comparison or alias.
+    [$._query_expression, $.query_specification],
+    [$._query_expression],
+    [$._select_statement],
+    [$.query_specification, $._select_statement],
     // Space-separated hints and a rowset schema share the identifier prefix.
     [$.table_hint_item, $.openjson_column],
     // A comma may continue this filegroup or start the next FILEGROUP.

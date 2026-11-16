@@ -65,7 +65,12 @@ export default {
       $.keyword_cryptographic,
       $.keyword_provider,
       $.identifier,
-      choice($.keyword_enable, $.keyword_disable, $.with_clause),
+      choice(
+        $.keyword_enable,
+        $.keyword_disable,
+        $.with_clause,
+        seq($.keyword_from, $.keyword_file, '=', $.literal),
+      ),
     ),
 
   // ALTER XML SCHEMA COLLECTION name ADD expression
@@ -118,6 +123,7 @@ export default {
               seq(
                 field('type', $._type),
                 optional(seq($.keyword_collate, $.identifier)),
+                optional($.encrypted_with),
                 optional(choice($.keyword_null, $._not_null)),
                 optional($.with_options),
               ),

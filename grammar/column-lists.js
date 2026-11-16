@@ -4,10 +4,10 @@ import { comma_list, paren_list, wrapped_in_parenthesis } from './helpers.js';
 // UNIQUE, and an inline INDEX, at both column level (no explicit column
 // list — the constraint's own column is implied) and table level (an
 // explicit `ordered_columns` list).
-function index_spec($, { columns } = {}) {
+function index_spec($, { columns, optionalColumns } = {}) {
   return [
     optional($._constraint_index_kind),
-    ...(columns ? [$.ordered_columns] : []),
+    ...(columns ? [optionalColumns ? optional($.ordered_columns) : $.ordered_columns] : []),
     optional($._constraint_index_options),
     optional($.on_filegroup),
   ];
@@ -54,20 +54,23 @@ export default {
   // name AS expression [PERSISTED] [NOT NULL]       (computed column)
   column_definition: ($) =>
     prec.left(
-      seq(
-        field('name', $._column),
-        choice(
-          seq(
-            field('type', $._type),
-            optional(seq($.keyword_collate, $.identifier)),
-            repeat($._column_constraint),
-          ),
-          seq(
-            $.keyword_as,
-            field('expression', $._expression),
-            optional($.keyword_persisted),
-            optional($._not_null),
-            repeat($._column_key_constraint),
+      choice(
+        field('type', $.keyword_timestamp),
+        seq(
+          field('name', choice($._column, alias($.keyword_timestamp, $.identifier))),
+          choice(
+            seq(
+              field('type', $._type),
+              optional(seq($.keyword_collate, $.identifier)),
+              repeat($._column_constraint),
+            ),
+            seq(
+              $.keyword_as,
+              field('expression', $._expression),
+              optional($.keyword_persisted),
+              optional($._not_null),
+              repeat($._column_key_constraint),
+            ),
           ),
         ),
       ),
@@ -136,8 +139,8 @@ export default {
       seq(
         optional(seq($.keyword_constraint, field('name', $.identifier))),
         choice(
-          seq($._primary_key, ...index_spec($)),
-          seq($.keyword_unique, ...index_spec($)),
+          seq($._primary_key, ...index_spec($, { columns: true, optionalColumns: true })),
+          seq($.keyword_unique, ...index_spec($, { columns: true, optionalColumns: true })),
           seq(
             optional(seq($.keyword_foreign, $.keyword_key)),
             $.keyword_references,

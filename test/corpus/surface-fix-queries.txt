@@ -1,0 +1,552 @@
+================================================================================
+Surface query: redistribute-inner
+================================================================================
+
+SELECT a.k FROM a INNER REDISTRIBUTE JOIN b ON a.k = b.k;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (object_reference
+                  (identifier))
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier)))
+          (join
+            (keyword_inner)
+            (join_hint
+              (keyword_redistribute))
+            (keyword_join)
+            (relation
+              (object_reference
+                (identifier)))
+            (keyword_on)
+            (binary_expression
+              (field
+                (object_reference
+                  (identifier))
+                (identifier))
+              (field
+                (object_reference
+                  (identifier))
+                (identifier)))))))))
+
+================================================================================
+Surface query: redistribute-alias
+================================================================================
+
+SELECT redistribute.k FROM a AS redistribute INNER REDISTRIBUTE JOIN b ON redistribute.k = b.k;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (object_reference
+                  (identifier))
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))
+            (keyword_as)
+            (identifier))
+          (join
+            (keyword_inner)
+            (join_hint
+              (keyword_redistribute))
+            (keyword_join)
+            (relation
+              (object_reference
+                (identifier)))
+            (keyword_on)
+            (binary_expression
+              (field
+                (object_reference
+                  (identifier))
+                (identifier))
+              (field
+                (object_reference
+                  (identifier))
+                (identifier)))))))))
+
+================================================================================
+Surface query: distributed-agg
+================================================================================
+
+SELECT k, SUM(v) FROM t GROUP BY k WITH(DISTRIBUTED_AGG);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))
+            (term
+              (invocation
+                (object_reference
+                  (identifier))
+                (term
+                  (field
+                    (identifier)))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))
+        (group_by
+          (keyword_group)
+          (keyword_by)
+          (field
+            (identifier))
+          (keyword_with)
+          (keyword_distributed_agg))))))
+
+================================================================================
+Surface query: distributed-agg-spaced
+================================================================================
+
+SELECT k, SUM(v) FROM t GROUP BY k WITH ( DISTRIBUTED_AGG ) ORDER BY k;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))
+            (term
+              (invocation
+                (object_reference
+                  (identifier))
+                (term
+                  (field
+                    (identifier)))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))
+        (group_by
+          (keyword_group)
+          (keyword_by)
+          (field
+            (identifier))
+          (keyword_with)
+          (keyword_distributed_agg)))
+      (order_by
+        (keyword_order)
+        (keyword_by)
+        (order_target
+          (field
+            (identifier)))))))
+
+================================================================================
+Surface query: merge-values
+================================================================================
+
+MERGE t USING (VALUES (1, 2), (3, 4)) AS s(k,v) ON t.k = s.k WHEN MATCHED THEN UPDATE SET v = s.v;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (merge
+        (keyword_merge)
+        (object_reference
+          (identifier))
+        (keyword_using)
+        (values
+          (keyword_values)
+          (list
+            (literal)
+            (literal))
+          (list
+            (literal)
+            (literal)))
+        (keyword_as)
+        (identifier)
+        (list
+          (column
+            (identifier))
+          (column
+            (identifier)))
+        (keyword_on)
+        (binary_expression
+          (field
+            (object_reference
+              (identifier))
+            (identifier))
+          (field
+            (object_reference
+              (identifier))
+            (identifier)))
+        (merge_when_clause
+          (keyword_when)
+          (keyword_matched)
+          (keyword_then)
+          (keyword_update)
+          (keyword_set)
+          (assignment
+            (field
+              (identifier))
+            (assignment_operator)
+            (field
+              (object_reference
+                (identifier))
+              (identifier))))))))
+
+================================================================================
+Surface query: merge-values-no-as
+================================================================================
+
+MERGE t USING (VALUES (1)) s(k) ON t.k = s.k WHEN MATCHED THEN DELETE;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (merge
+        (keyword_merge)
+        (object_reference
+          (identifier))
+        (keyword_using)
+        (values
+          (keyword_values)
+          (list
+            (literal)))
+        (identifier)
+        (list
+          (column
+            (identifier)))
+        (keyword_on)
+        (binary_expression
+          (field
+            (object_reference
+              (identifier))
+            (identifier))
+          (field
+            (object_reference
+              (identifier))
+            (identifier)))
+        (merge_when_clause
+          (keyword_when)
+          (keyword_matched)
+          (keyword_then)
+          (keyword_delete))))))
+
+================================================================================
+Surface query: merge-joined-source
+================================================================================
+
+MERGE t USING ((SELECT 1 AS k) AS s JOIN u ON s.k = u.k) ON t.k = s.k WHEN MATCHED THEN DELETE;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (merge
+        (keyword_merge)
+        (object_reference
+          (identifier))
+        (keyword_using)
+        (relation
+          (subquery
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    (literal)
+                    (keyword_as)
+                    (identifier))))))
+          (keyword_as)
+          (identifier))
+        (join
+          (keyword_join)
+          (relation
+            (object_reference
+              (identifier)))
+          (keyword_on)
+          (binary_expression
+            (field
+              (object_reference
+                (identifier))
+              (identifier))
+            (field
+              (object_reference
+                (identifier))
+              (identifier))))
+        (keyword_on)
+        (binary_expression
+          (field
+            (object_reference
+              (identifier))
+            (identifier))
+          (field
+            (object_reference
+              (identifier))
+            (identifier)))
+        (merge_when_clause
+          (keyword_when)
+          (keyword_matched)
+          (keyword_then)
+          (keyword_delete))))))
+
+================================================================================
+Surface query: delete-two-output-columns
+================================================================================
+
+DECLARE @out TABLE(k int); DELETE t OUTPUT DELETED.k INTO @out(k) OUTPUT DELETED.k AS deleted_key FROM t JOIN u ON t.k = u.k WHERE u.k = 1;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (table_var_declaration
+          (identifier)
+          (keyword_table)
+          (column_definitions
+            (column_definition
+              (identifier)
+              (keyword_int))))))
+    (statement
+      (delete
+        (keyword_delete)
+        (object_reference
+          (identifier))
+        (output_clause
+          (keyword_output)
+          (term
+            (field
+              (object_reference
+                (identifier))
+              (identifier)))
+          (keyword_into)
+          (object_reference
+            (identifier))
+          (identifier)
+          (keyword_output)
+          (term
+            (field
+              (object_reference
+                (identifier))
+              (identifier))
+            (keyword_as)
+            (identifier)))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier)))
+          (join
+            (keyword_join)
+            (relation
+              (object_reference
+                (identifier)))
+            (keyword_on)
+            (binary_expression
+              (field
+                (object_reference
+                  (identifier))
+                (identifier))
+              (field
+                (object_reference
+                  (identifier))
+                (identifier)))))
+        (where
+          (keyword_where)
+          (binary_expression
+            (field
+              (object_reference
+                (identifier))
+              (identifier))
+            (literal)))))))
+
+================================================================================
+Surface query: update-two-output
+================================================================================
+
+DECLARE @out TABLE(k int); UPDATE t SET k = 1 OUTPUT INSERTED.k INTO @out OUTPUT INSERTED.k;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (table_var_declaration
+          (identifier)
+          (keyword_table)
+          (column_definitions
+            (column_definition
+              (identifier)
+              (keyword_int))))))
+    (statement
+      (update
+        (keyword_update)
+        (object_reference
+          (identifier))
+        (keyword_set)
+        (assignment
+          (field
+            (identifier))
+          (assignment_operator)
+          (literal))
+        (output_clause
+          (keyword_output)
+          (term
+            (field
+              (object_reference
+                (identifier))
+              (identifier)))
+          (keyword_into)
+          (object_reference
+            (identifier))
+          (keyword_output)
+          (term
+            (field
+              (object_reference
+                (identifier))
+              (identifier))))))))
+
+================================================================================
+Surface query: insert-two-output
+================================================================================
+
+DECLARE @out TABLE(k int); INSERT t OUTPUT INSERTED.k INTO @out OUTPUT INSERTED.k VALUES (1);
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (table_var_declaration
+          (identifier)
+          (keyword_table)
+          (column_definitions
+            (column_definition
+              (identifier)
+              (keyword_int))))))
+    (statement
+      (insert
+        (keyword_insert)
+        (object_reference
+          (identifier))
+        (output_clause
+          (keyword_output)
+          (term
+            (field
+              (object_reference
+                (identifier))
+              (identifier)))
+          (keyword_into)
+          (object_reference
+            (identifier))
+          (keyword_output)
+          (term
+            (field
+              (object_reference
+                (identifier))
+              (identifier))))
+        (keyword_values)
+        (list
+          (literal))))))
+
+================================================================================
+Surface query: merge-two-output
+================================================================================
+
+DECLARE @out TABLE(k int); MERGE t USING u ON t.k = u.k WHEN MATCHED THEN DELETE OUTPUT DELETED.k INTO @out OUTPUT DELETED.k;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (table_var_declaration
+          (identifier)
+          (keyword_table)
+          (column_definitions
+            (column_definition
+              (identifier)
+              (keyword_int))))))
+    (statement
+      (merge
+        (keyword_merge)
+        (object_reference
+          (identifier))
+        (keyword_using)
+        (object_reference
+          (identifier))
+        (keyword_on)
+        (binary_expression
+          (field
+            (object_reference
+              (identifier))
+            (identifier))
+          (field
+            (object_reference
+              (identifier))
+            (identifier)))
+        (merge_when_clause
+          (keyword_when)
+          (keyword_matched)
+          (keyword_then)
+          (keyword_delete))
+        (output_clause
+          (keyword_output)
+          (term
+            (field
+              (object_reference
+                (identifier))
+              (identifier)))
+          (keyword_into)
+          (object_reference
+            (identifier))
+          (keyword_output)
+          (term
+            (field
+              (object_reference
+                (identifier))
+              (identifier))))))))

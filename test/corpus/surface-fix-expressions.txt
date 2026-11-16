@@ -1,0 +1,669 @@
+==================
+surface-fix-expressions/money/negative — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+SELECT CEILING($-123.45);
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (literal))))))))))
+
+==================
+surface-fix-expressions/money/positive — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+SELECT $+123.45;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))))))
+
+==================
+surface-fix-expressions/money/commas — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+SELECT $-1,234.56;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))))))
+
+==================
+surface-fix-expressions/money/action — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+MERGE t USING s ON t.x=s.x WHEN MATCHED THEN DELETE OUTPUT $action;
+
+---
+
+(program
+  (batch
+    (statement
+      (merge
+        (keyword_merge)
+        (object_reference
+          name: (identifier))
+        (keyword_using)
+        (object_reference
+          name: (identifier))
+        (keyword_on)
+        predicate: (binary_expression
+          left: (field
+            (object_reference
+              name: (identifier))
+            name: (identifier))
+          right: (field
+            (object_reference
+              name: (identifier))
+            name: (identifier)))
+        (merge_when_clause
+          (keyword_when)
+          (keyword_matched)
+          (keyword_then)
+          (keyword_delete))
+        (output_clause
+          (keyword_output)
+          (term
+            value: (field
+              name: (identifier))))))))
+
+==================
+surface-fix-expressions/hex/lf — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+SELECT 0xabc\
+def AS x;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal)
+              (keyword_as)
+              alias: (identifier))))))))
+
+==================
+surface-fix-expressions/hex/crlf — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+SELECT 0xAB\
+CD\
+EF;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))))))
+
+==================
+surface-fix-expressions/hex/plain — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+SELECT 0xabcdef;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))))))
+
+==================
+surface-fix-expressions/whitespace/en-space — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+SELECT 1 AS x;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal)
+              (keyword_as)
+              alias: (identifier))))))))
+
+==================
+surface-fix-expressions/whitespace/bracket-name — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+SELECT 1 AS [a b];
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal)
+              (keyword_as)
+              alias: (identifier))))))))
+
+==================
+surface-fix-expressions/nulls/ignore — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+SELECT LAG(x) IGNORE NULLS OVER (ORDER BY y) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (window_function
+                (invocation
+                  (object_reference
+                    name: (identifier))
+                  parameter: (term
+                    value: (field
+                      name: (identifier))))
+                (keyword_ignore)
+                (keyword_nulls)
+                (keyword_over)
+                (window_specification
+                  (order_by
+                    (keyword_order)
+                    (keyword_by)
+                    (order_target
+                      (field
+                        name: (identifier)))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+surface-fix-expressions/nulls/respect — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+SELECT LEAD(x) RESPECT NULLS OVER (ORDER BY y) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (window_function
+                (invocation
+                  (object_reference
+                    name: (identifier))
+                  parameter: (term
+                    value: (field
+                      name: (identifier))))
+                (keyword_respect)
+                (keyword_nulls)
+                (keyword_over)
+                (window_specification
+                  (order_by
+                    (keyword_order)
+                    (keyword_by)
+                    (order_target
+                      (field
+                        name: (identifier)))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+surface-fix-expressions/nulls/first — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+SELECT FIRST_VALUE(x) IGNORE NULLS OVER (ORDER BY y) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (window_function
+                (invocation
+                  (object_reference
+                    name: (identifier))
+                  parameter: (term
+                    value: (field
+                      name: (identifier))))
+                (keyword_ignore)
+                (keyword_nulls)
+                (keyword_over)
+                (window_specification
+                  (order_by
+                    (keyword_order)
+                    (keyword_by)
+                    (order_target
+                      (field
+                        name: (identifier)))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+surface-fix-expressions/odbc/guid — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+SELECT {GUID '92C4279F-1207-48A3-8448-4636514EB7E2'};
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal
+                (identifier)
+                (literal)))))))))
+
+==================
+surface-fix-expressions/odbc/lower-guid — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+SELECT {guid '92C4279F-1207-48A3-8448-4636514EB7E2'};
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal
+                (identifier)
+                (literal)))))))))
+
+==================
+surface-fix-expressions/odbc/date — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+SELECT {d '2026-11-16'};
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal
+                (identifier)
+                (literal)))))))))
+
+==================
+surface-fix-expressions/method/cast — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+SELECT CAST(x AS xml).value('.', 'int') FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (method_call
+                (cast
+                  name: (keyword_cast)
+                  parameter: (field
+                    name: (identifier))
+                  (keyword_as)
+                  (keyword_xml))
+                method: (identifier)
+                parameter: (term
+                  value: (literal))
+                parameter: (term
+                  value: (literal))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+surface-fix-expressions/method/try-cast — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+SELECT TRY_CAST(x AS xml).query('.') FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (method_call
+                (cast
+                  name: (keyword_try_cast)
+                  parameter: (field
+                    name: (identifier))
+                  (keyword_as)
+                  (keyword_xml))
+                method: (identifier)
+                parameter: (term
+                  value: (literal))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+surface-fix-expressions/method/chain — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+SELECT CAST(x AS xml).query('.').value('.', 'int') FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (method_call
+                (method_call
+                  (cast
+                    name: (keyword_cast)
+                    parameter: (field
+                      name: (identifier))
+                    (keyword_as)
+                    (keyword_xml))
+                  method: (identifier)
+                  parameter: (term
+                    value: (literal)))
+                method: (identifier)
+                parameter: (term
+                  value: (literal))
+                parameter: (term
+                  value: (literal))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+surface-fix-expressions/subquery/if — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+IF ((SELECT 1) > 0) PRINT 1;
+
+---
+
+(program
+  (batch
+    (statement
+      (if_statement
+        (keyword_if)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (subquery
+              (query_specification
+                (select
+                  (keyword_select)
+                  (select_expression
+                    (term
+                      value: (literal))))))
+            right: (literal)))
+        consequence: (statement
+          (print_statement
+            (keyword_print)
+            (literal)))))))
+
+==================
+surface-fix-expressions/subquery/while — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+WHILE ((SELECT 1) > 0) BREAK;
+
+---
+
+(program
+  (batch
+    (statement
+      (while_statement
+        (keyword_while)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (subquery
+              (query_specification
+                (select
+                  (keyword_select)
+                  (select_expression
+                    (term
+                      value: (literal))))))
+            right: (literal)))
+        body: (statement
+          (break_statement
+            (keyword_break)))))))
+
+==================
+surface-fix-expressions/subquery/nested — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+IF (((SELECT 1)) > 0) PRINT 1;
+
+---
+
+(program
+  (batch
+    (statement
+      (if_statement
+        (keyword_if)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (parenthesized_expression
+              (subquery
+                (query_specification
+                  (select
+                    (keyword_select)
+                    (select_expression
+                      (term
+                        value: (literal)))))))
+            right: (literal)))
+        consequence: (statement
+          (print_statement
+            (keyword_print)
+            (literal)))))))
+
+==================
+surface-fix-expressions/subquery/select — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+SELECT ((SELECT 1) + 1);
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (parenthesized_expression
+                (binary_expression
+                  left: (subquery
+                    (query_specification
+                      (select
+                        (keyword_select)
+                        (select_expression
+                          (term
+                            value: (literal))))))
+                  right: (literal))))))))))
+
+==================
+surface-fix-expressions/graph/last-start — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+SELECT 1 FROM a,b,e WHERE MATCH(LAST_NODE(a)-(e)->b);
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier)))
+          (relation
+            (object_reference
+              name: (identifier)))
+          (relation
+            (object_reference
+              name: (identifier))))
+        (where
+          (keyword_where)
+          predicate: (graph_match_predicate
+            (keyword_match)
+            (graph_match_expr
+              (graph_path
+                node: (graph_last_node
+                  (keyword_last_node)
+                  (identifier))
+                (graph_hop
+                  edge: (identifier)
+                  node: (identifier))))))))))
+
+==================
+surface-fix-expressions/graph/last-end — LocalDB 17.0.1000.7 levels 100–170 accepted
+==================
+
+SELECT 1 FROM a,b,e WHERE MATCH(a-(e)->LAST_NODE(b));
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier)))
+          (relation
+            (object_reference
+              name: (identifier)))
+          (relation
+            (object_reference
+              name: (identifier))))
+        (where
+          (keyword_where)
+          predicate: (graph_match_predicate
+            (keyword_match)
+            (graph_match_expr
+              (graph_path
+                node: (identifier)
+                (graph_hop
+                  edge: (identifier)
+                  node: (graph_last_node
+                    (keyword_last_node)
+                    (identifier)))))))))))

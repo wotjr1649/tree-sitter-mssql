@@ -1,0 +1,24 @@
+{"id":"surface-fix-expressions/money/negative","sha256":"5d8b3ea879058fcb13da568c72e9cb7622df79f8274f3be4195e6efc47bbda51","source":"SELECT CEILING($-123.45);"}
+{"id":"surface-fix-expressions/money/positive","sha256":"a8b9d72d97ebcb45cc9df396e346fc97c9aa3fc06f67647cf6eb55d529789334","source":"SELECT $+123.45;"}
+{"id":"surface-fix-expressions/money/commas","sha256":"26ac2414ec43cc0342bb3fdc475e154f3b22ea1ae7c8a682b31e760809ad69a7","source":"SELECT $-1,234.56;"}
+{"id":"surface-fix-expressions/money/action","sha256":"15850555abb02c2520adbe84921e2fc8c572781db50ee8644e67b3c9d6edf82e","source":"MERGE t USING s ON t.x=s.x WHEN MATCHED THEN DELETE OUTPUT $action;"}
+{"id":"surface-fix-expressions/hex/lf","sha256":"ad735666a80db488040261d98ad6d6597898c19ad309391365101b488f4642b0","source":"SELECT 0xabc\\\ndef AS x;"}
+{"id":"surface-fix-expressions/hex/crlf","sha256":"3b14ab6952e6eb470b7014e4f2c06e16bf471d0bd0529e7ef070ea2f371f877e","source":"SELECT 0xAB\\\r\nCD\\\r\nEF;"}
+{"id":"surface-fix-expressions/hex/plain","sha256":"1d6c7fb92a03ab9caf9806d907c82d52504cf442f3ab6f79a4b284cb30717677","source":"SELECT 0xabcdef;"}
+{"id":"surface-fix-expressions/whitespace/en-space","sha256":"33fa96d8c390107b02a79688135ad26494b24db5c85c2f3f12953106f515310b","source":"SELECT 1 AS x;"}
+{"id":"surface-fix-expressions/whitespace/bracket-name","sha256":"f604a066b3d17c1ce5d7a948cb56edcd0e70706ed5140ff1bc47f318b72e9363","source":"SELECT 1 AS [a b];"}
+{"id":"surface-fix-expressions/nulls/ignore","sha256":"60799ccc0312e3c149091777f99b670ef8ec6a9760b9156a9ced006e11e37373","source":"SELECT LAG(x) IGNORE NULLS OVER (ORDER BY y) FROM t;"}
+{"id":"surface-fix-expressions/nulls/respect","sha256":"e90612ef9470cec40cb3ac881c6bffe58ef74fd6ca6efedb3aeacd6bdd5e648f","source":"SELECT LEAD(x) RESPECT NULLS OVER (ORDER BY y) FROM t;"}
+{"id":"surface-fix-expressions/nulls/first","sha256":"7d6a979c9c0e0d36bcf3d11432148901827473fca12e90b4c122735d6de7d4e7","source":"SELECT FIRST_VALUE(x) IGNORE NULLS OVER (ORDER BY y) FROM t;"}
+{"id":"surface-fix-expressions/odbc/guid","sha256":"6f1110238dd6e4eb3931cdcad663b963316f5e41653ce810a7064e6c22baecc8","source":"SELECT {GUID '92C4279F-1207-48A3-8448-4636514EB7E2'};"}
+{"id":"surface-fix-expressions/odbc/lower-guid","sha256":"9f629de22b4db908e57f656a10a136c08f26ab00e962bdd158c7cd910bcd3c2b","source":"SELECT {guid '92C4279F-1207-48A3-8448-4636514EB7E2'};"}
+{"id":"surface-fix-expressions/odbc/date","sha256":"0d117dfc8dbaf54aa102123cd797244eeddb4cb7bf53d768d5542bd213b6f755","source":"SELECT {d '2026-11-16'};"}
+{"id":"surface-fix-expressions/method/cast","sha256":"4e6a59ec44d8d3cf3bd14ad9fa6831bdc64ea522602a1fb9d4152a3b4d145654","source":"SELECT CAST(x AS xml).value('.', 'int') FROM t;"}
+{"id":"surface-fix-expressions/method/try-cast","sha256":"cc263b51f2bfb131c380b63d75e44b36155797e5d28104a2f0580e464fac82a8","source":"SELECT TRY_CAST(x AS xml).query('.') FROM t;"}
+{"id":"surface-fix-expressions/method/chain","sha256":"535e129b4c057e00cc024ad585836326308a210b7e7ef878b0bcafddbc682528","source":"SELECT CAST(x AS xml).query('.').value('.', 'int') FROM t;"}
+{"id":"surface-fix-expressions/subquery/if","sha256":"dc706f6271fadcb3b128a6c9adf7e835d4b69fb1f2c33ba72b8f31ef12088b3c","source":"IF ((SELECT 1) > 0) PRINT 1;"}
+{"id":"surface-fix-expressions/subquery/while","sha256":"b90b18c882fbda69e0a83dd6940488d1e1cff5773b6a83230a03793d6e7e9aa9","source":"WHILE ((SELECT 1) > 0) BREAK;"}
+{"id":"surface-fix-expressions/subquery/nested","sha256":"3aa67440f7457388748d80174944429b907460dbe2d818c1fcabe81c5818f196","source":"IF (((SELECT 1)) > 0) PRINT 1;"}
+{"id":"surface-fix-expressions/subquery/select","sha256":"4f1e5510bec34ad5b7d5beea35bb5bfe26c3dfad95d32794ecb9c02bae53039e","source":"SELECT ((SELECT 1) + 1);"}
+{"id":"surface-fix-expressions/graph/last-start","sha256":"c36dc15dd92aeca568a2dac97aa3d0dc54ab887ff59dbd92b813d0a0d44fe789","source":"SELECT 1 FROM a,b,e WHERE MATCH(LAST_NODE(a)-(e)->b);"}
+{"id":"surface-fix-expressions/graph/last-end","sha256":"8bf20bc3a23a077e09b101ee59038002158c4154d6f9c0960dcf2d21a74d69b3","source":"SELECT 1 FROM a,b,e WHERE MATCH(a-(e)->LAST_NODE(b));"}

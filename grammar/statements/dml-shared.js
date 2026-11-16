@@ -4,14 +4,21 @@ import { comma_list, paren_list } from '../helpers.js';
 // INSERT, UPDATE, DELETE and MERGE; `assignment`/`_set_values` are used by
 // UPDATE and MERGE's `WHEN MATCHED THEN UPDATE SET` action, but not INSERT.
 export default {
-  // OUTPUT term [, ...] [INTO table [(columns)]] — on INSERT, UPDATE, DELETE
+  // OUTPUT term [, ...] [INTO table [(columns)] [OUTPUT term [, ...]]] — on INSERT, UPDATE, DELETE
   // and MERGE. The terms reference the `inserted`/`deleted` pseudo-tables
   // and `$action`, all of which are ordinary identifiers here.
   output_clause: ($) =>
     seq(
       $.keyword_output,
       comma_list($.term, true),
-      optional(seq($.keyword_into, $.object_reference, optional(paren_list($.identifier, true)))),
+      optional(
+        seq(
+          $.keyword_into,
+          $.object_reference,
+          optional(paren_list($.identifier, true)),
+          optional(seq($.keyword_output, comma_list($.term, true))),
+        ),
+      ),
     ),
 
   assignment: ($) =>

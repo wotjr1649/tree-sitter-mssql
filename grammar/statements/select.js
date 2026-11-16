@@ -1,6 +1,7 @@
 import {
   aliased_with_columns,
   comma_list,
+  make_keyword,
   optional_parenthesis,
   paren_list,
   paren_pair,
@@ -138,10 +139,16 @@ export default {
   // `query_specification`: they scope to the outermost query, never to one
   // branch of a union.
   _select_statement: ($) =>
-    optional_parenthesis(
+    choice(
       seq(
         alias($._query_specification_core, $.query_specification),
         trailing_sort_and_hint_clauses($),
+      ),
+      wrapped_in_parenthesis(
+        seq(
+          alias($._query_specification_core, $.query_specification),
+          trailing_sort_and_hint_clauses($),
+        ),
       ),
     ),
 
@@ -536,7 +543,7 @@ export default {
       field('predicate', $._expression),
     ),
 
-  // { HASH | LOOP | MERGE | REMOTE } between the join type and JOIN: a
+  // { HASH | LOOP | MERGE | REMOTE | REDUCE | REPLICATE | REDISTRIBUTE } before JOIN: a
   // physical join hint, its own node because a linter wants to flag it.
   // The hint is only accepted after a join type. A bare `FROM a HASH JOIN
   // b` would make HASH, LOOP and REMOTE keywords in the position an
@@ -554,7 +561,12 @@ export default {
       $.keyword_remote,
       $.keyword_reduce,
       $.keyword_replicate,
+      $.keyword_redistribute,
     ),
+
+  keyword_redistribute: (_) => make_keyword('redistribute'),
+
+  keyword_distributed_agg: (_) => make_keyword('distributed_agg'),
 
   cross_join: ($) => seq($.keyword_cross, $.keyword_join, $._relation_with_hint),
 
@@ -630,7 +642,16 @@ export default {
         $.keyword_group,
         $.keyword_by,
         comma_list(choice($._expression, $.grouping_sets), true),
-        optional(seq($.keyword_with, choice($.keyword_cube, $.keyword_rollup))),
+        optional(
+          seq(
+            $.keyword_with,
+            choice(
+              $.keyword_cube,
+              $.keyword_rollup,
+              wrapped_in_parenthesis($.keyword_distributed_agg),
+            ),
+          ),
+        ),
       ),
     ),
 

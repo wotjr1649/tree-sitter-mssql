@@ -64,6 +64,14 @@
       },
       {
         "name": "column",
+        "text": "Code"
+      },
+      {
+        "name": "column",
+        "text": "Kind"
+      },
+      {
+        "name": "column",
         "text": "Flag"
       },
       {
