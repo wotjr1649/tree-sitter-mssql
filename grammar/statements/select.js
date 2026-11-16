@@ -162,9 +162,10 @@ export default {
   select: ($) =>
     seq(
       $.keyword_select,
-      optional($.keyword_distinct),
-      optional($.top_clause),
-      $.select_expression,
+      choice(
+        seq(optional($.keyword_distinct), optional($.top_clause), $.select_expression),
+        seq($.keyword_all, $.top_clause, $.select_expression),
+      ),
     ),
 
   // T-SQL TOP: `TOP (expression)` or the legacy bare `TOP n`, optionally
@@ -264,6 +265,7 @@ export default {
   window_function: ($) =>
     seq(
       choice($.invocation, $.next_value_for),
+      optional(seq(choice($.keyword_ignore, $.keyword_respect), $.keyword_nulls)),
       $.keyword_over,
       choice($.window_specification, field('window', $.identifier)),
     ),
@@ -379,32 +381,31 @@ export default {
   // ever reject a valid query, never accept an invalid one silently in the
   // other direction — but the write target is not one of those places.
   relation: ($) =>
-    prec.right(
-      seq(
-        choice(
-          $.subquery,
-          $.invocation,
-          $.object_reference,
-          wrapped_in_parenthesis($.values),
-          // DML OUTPUT row sources belong to INSERT; the constraint layer checks scope and OUTPUT.
-          wrapped_in_parenthesis(choice($.merge, $.delete, $.update, $.insert)),
-          $.opendatasource_reference,
-          $.changetable,
-          wrapped_in_parenthesis(seq($._relation_with_hint, repeat1(choice($.join, $.cross_join)))),
-        ),
-        // FOR SYSTEM_TIME sits between the table reference and its alias
-        // (`FROM t FOR SYSTEM_TIME AS OF x AS t1`), per the documented
-        // syntax — not after the alias, where table hints and TABLESAMPLE
-        // go.
-        optional($.for_system_time_clause),
-        aliased_with_columns($),
-        // The deprecated bare hint sits inside `relation` rather than beside
-        // it in `_relation_with_hint`: after the table name the parser has
-        // to shift `(` for both an invocation and the hint from the same
-        // state, and reducing `relation` first would lose to the
-        // invocation's shift on precedence.
-        optional(alias($._bare_table_hint, $.table_hint)),
+    seq(
+      choice(
+        $.subquery,
+        $.invocation,
+        $.object_reference,
+        wrapped_in_parenthesis($.values),
+        // DML OUTPUT row sources belong to INSERT; the constraint layer checks scope and OUTPUT.
+        wrapped_in_parenthesis(choice($.merge, $.delete, $.update, $.insert)),
+        $.opendatasource_reference,
+        $.changetable,
+        wrapped_in_parenthesis(seq($._relation_with_hint, repeat1(choice($.join, $.cross_join)))),
       ),
+      // FOR SYSTEM_TIME sits between the table reference and its alias
+      // (`FROM t FOR SYSTEM_TIME AS OF x AS t1`), per the documented
+      // syntax — not after the alias, where table hints and TABLESAMPLE
+      // go.
+      optional($.for_system_time_clause),
+      optional(seq($.keyword_for, $.keyword_path)),
+      aliased_with_columns($),
+      // The deprecated bare hint sits inside `relation` rather than beside
+      // it in `_relation_with_hint`: after the table name the parser has
+      // to shift `(` for both an invocation and the hint from the same
+      // state, and reducing `relation` first would lose to the
+      // invocation's shift on precedence.
+      optional(alias($._bare_table_hint, $.table_hint)),
     ),
 
   // FOR SYSTEM_TIME <qualifier> — queries a system-versioned temporal

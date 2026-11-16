@@ -266,10 +266,12 @@ go_statement
 goto_statement
 grant_statement
 graph_hop{edge,node}
+graph_last_node
+graph_last_node_comparison
 graph_match_expr
 graph_match_predicate
 graph_path{node}
-graph_shortest_path
+graph_shortest_path{edge,node}
 group_by
 grouping_sets
 having
@@ -459,6 +461,7 @@ keyword_go
 keyword_goto
 keyword_governor
 keyword_grant
+keyword_graph
 keyword_group
 keyword_grouping
 keyword_hadr
@@ -500,6 +503,7 @@ keyword_kill
 keyword_labelonly
 keyword_language
 keyword_last
+keyword_last_node
 keyword_leading
 keyword_left
 keyword_level
@@ -544,6 +548,7 @@ keyword_notification
 keyword_nowait
 keyword_ntext
 keyword_null
+keyword_nulls
 keyword_numanode
 keyword_numeric
 keyword_nvarchar
@@ -572,6 +577,7 @@ keyword_parse
 keyword_partial
 keyword_partition
 keyword_partitions
+keyword_path
 keyword_pause
 keyword_percent
 keyword_period
@@ -621,6 +627,7 @@ keyword_replicate
 keyword_replication
 keyword_reset
 keyword_resource
+keyword_respect
 keyword_restart
 keyword_restore
 keyword_result

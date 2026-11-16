@@ -115,6 +115,9 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
             "object_reference" | "field" => static_reference(node, source, &mut out),
             "create_function" | "alter_function" => scalar_function_return(node, &mut out),
             "window_specification" => window_frame_order(node, &mut out),
+            "window_function" | "graph_match_expr" | "graph_shortest_path" | "graph_hop" => {
+                ddl_rest_routes(node, source, &mut out);
+            }
             "merge" => merge_terminator(node, &mut out),
             "table_hint" | "query_hint" => table_hints(node, source, &mut out),
             "option_clause" => table_hint_aliases(node, source, &mut out),

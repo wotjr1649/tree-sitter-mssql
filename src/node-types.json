@@ -16983,6 +16983,40 @@
     }
   },
   {
+    "type": "graph_last_node",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_last_node",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "graph_last_node_comparison",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "graph_last_node",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "graph_match_expr",
     "named": true,
     "fields": {},
@@ -16991,11 +17025,19 @@
       "required": true,
       "types": [
         {
+          "type": "graph_last_node_comparison",
+          "named": true
+        },
+        {
           "type": "graph_path",
           "named": true
         },
         {
           "type": "graph_shortest_path",
+          "named": true
+        },
+        {
+          "type": "keyword_and",
           "named": true
         }
       ]
@@ -17049,17 +17091,46 @@
   {
     "type": "graph_shortest_path",
     "named": true,
-    "fields": {},
+    "fields": {
+      "edge": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "node": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "graph_hop",
+          "named": true
+        },
         {
           "type": "graph_path",
           "named": true
         },
         {
           "type": "keyword_shortest_path",
+          "named": true
+        },
+        {
+          "type": "literal",
           "named": true
         }
       ]
@@ -17655,7 +17726,15 @@
           "named": true
         },
         {
+          "type": "keyword_graph",
+          "named": true
+        },
+        {
           "type": "keyword_group",
+          "named": true
+        },
+        {
+          "type": "keyword_path",
           "named": true
         },
         {
@@ -21483,6 +21562,14 @@
           "named": true
         },
         {
+          "type": "keyword_for",
+          "named": true
+        },
+        {
+          "type": "keyword_path",
+          "named": true
+        },
+        {
           "type": "list",
           "named": true
         },
@@ -22157,6 +22244,10 @@
       "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "keyword_all",
+          "named": true
+        },
         {
           "type": "keyword_distinct",
           "named": true
@@ -26924,7 +27015,19 @@
           "named": true
         },
         {
+          "type": "keyword_ignore",
+          "named": true
+        },
+        {
+          "type": "keyword_nulls",
+          "named": true
+        },
+        {
           "type": "keyword_over",
+          "named": true
+        },
+        {
+          "type": "keyword_respect",
           "named": true
         },
         {
@@ -27978,6 +28081,10 @@
     "named": true
   },
   {
+    "type": "keyword_graph",
+    "named": true
+  },
+  {
     "type": "keyword_group",
     "named": true
   },
@@ -28135,6 +28242,10 @@
   },
   {
     "type": "keyword_last",
+    "named": true
+  },
+  {
+    "type": "keyword_last_node",
     "named": true
   },
   {
@@ -28314,6 +28425,10 @@
     "named": true
   },
   {
+    "type": "keyword_nulls",
+    "named": true
+  },
+  {
     "type": "keyword_numanode",
     "named": true
   },
@@ -28423,6 +28538,10 @@
   },
   {
     "type": "keyword_partitions",
+    "named": true
+  },
+  {
+    "type": "keyword_path",
     "named": true
   },
   {
@@ -28615,6 +28734,10 @@
   },
   {
     "type": "keyword_resource",
+    "named": true
+  },
+  {
+    "type": "keyword_respect",
     "named": true
   },
   {

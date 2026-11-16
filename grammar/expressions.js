@@ -233,13 +233,50 @@ export default {
   // but meaningless binary_expression tree instead of a clean parse.
   graph_match_predicate: ($) => seq($.keyword_match, wrapped_in_parenthesis($.graph_match_expr)),
 
-  graph_match_expr: ($) => comma_list(choice($.graph_shortest_path, $.graph_path), true),
+  graph_match_expr: ($) =>
+    seq(
+      choice($.graph_shortest_path, $.graph_path, $.graph_last_node_comparison),
+      repeat(
+        seq(
+          choice(',', $.keyword_and),
+          choice($.graph_shortest_path, $.graph_path, $.graph_last_node_comparison),
+        ),
+      ),
+    ),
 
-  // SHORTEST_PATH(path+) — the arbitrary-length form of a path. SQL Server
-  // supports only the `+` (one-or-more) quantifier here, not `*` — a
-  // shortest-path search needs at least one edge to traverse.
+  graph_last_node: ($) => seq($.keyword_last_node, wrapped_in_parenthesis($.identifier)),
+
+  graph_last_node_comparison: ($) => seq($.graph_last_node, '=', $.graph_last_node),
+
+  // SHORTEST_PATH repeats a parenthesized hop group with + or {1, upper_bound}.
+  // Keep the legacy path+ alternative so existing clean trees remain unchanged.
   graph_shortest_path: ($) =>
-    seq($.keyword_shortest_path, wrapped_in_parenthesis(seq($.graph_path, '+'))),
+    seq(
+      $.keyword_shortest_path,
+      wrapped_in_parenthesis(
+        choice(
+          seq($.graph_path, '+'),
+          seq(
+            field('node', $.identifier),
+            wrapped_in_parenthesis(repeat1($.graph_hop)),
+            $._graph_quantifier,
+          ),
+          seq(
+            wrapped_in_parenthesis(seq(field('node', $.identifier), repeat1($._graph_reverse_hop))),
+            $._graph_quantifier,
+            field('node', $.identifier),
+          ),
+        ),
+      ),
+    ),
+
+  _graph_quantifier: ($) =>
+    choice(
+      '+',
+      seq('{', alias($._natural_number, $.literal), ',', alias($._natural_number, $.literal), '}'),
+    ),
+
+  _graph_reverse_hop: ($) => seq('<-', wrapped_in_parenthesis($._graph_edge_names), '-'),
 
   // node -(edge)-> node [ -(edge)-> node ... ], or the reverse <-(edge)-
   // form. Each hop is one edge traversal; a path chains one or more.
@@ -269,7 +306,13 @@ export default {
       seq(
         choice($.object_reference, alias($._static_reference, $.object_reference)),
         $._invocation_arguments,
-        optional(seq($.keyword_within, $.keyword_group, wrapped_in_parenthesis($.order_by))),
+        optional(
+          seq(
+            $.keyword_within,
+            $.keyword_group,
+            wrapped_in_parenthesis(choice($.order_by, seq($.keyword_graph, $.keyword_path))),
+          ),
+        ),
       ),
     ),
 
@@ -484,6 +527,7 @@ export default {
       $._temporary_table,
       // These pseudo-identifiers share one token without changing their identifier nodes.
       $._dollar_identifier,
+      $._dollar_graph,
       // $(var): a SQLCMD scripting variable, substituted by the sqlcmd/SSMS
       // client before the batch reaches the server. Textual substitution, so
       // it can appear anywhere an identifier or literal can — modeled as one
@@ -518,5 +562,6 @@ export default {
   _double_quote_string: (_) => /"([^"]|"")+"/,
   _dollar_identifier: (_) =>
     /(\$[aA][cC][tT][iI][oO][nN]|\$[pP][aA][rR][tT][iI][tT][iI][oO][nN]|\$[iI][dD][eE][nN][tT][iI][tT][yY]|\$[rR][oO][wW][gG][uU][iI][dD])/,
+  _dollar_graph: (_) => /\$([nN][oO][dD][eE]|[eE][dD][gG][eE]|[fF][rR][oO][mM]|[tT][oO])_[iI][dD]/,
   _sqlcmd_variable: (_) => /\$\([A-Za-z_][0-9A-Za-z_]*\)/,
 };
