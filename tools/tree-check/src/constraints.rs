@@ -182,6 +182,7 @@ fn canonical_source(source: &[u8]) -> (Vec<u8>, Vec<usize>) {
 
 fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
     let mut out = Vec::new();
+    go_line_inside_token(tree, source, &mut out);
     let mut cursor = tree.walk();
     loop {
         let node = cursor.node();
@@ -339,6 +340,21 @@ fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
             | "create_event_session"
             | "create_asymmetric_key" => ddl_rest_create(node, source, &mut out),
             _ => {}
+        }
+        if matches!(
+            node.kind(),
+            "create_procedure"
+                | "alter_procedure"
+                | "create_view"
+                | "alter_view"
+                | "create_function"
+                | "alter_function"
+                | "create_trigger"
+                | "alter_trigger"
+                | "create_rule"
+                | "create_default"
+        ) {
+            batch_module(node, &mut out);
         }
         if node.kind() == "execute_statement" {
             ddl_rest_routes(node, source, &mut out);
@@ -1147,6 +1163,104 @@ fn window_frame_order(spec: Node, out: &mut Vec<Violation>) {
 /// column or a table constraint. Evidence: SQL Server 2025 LocalDB 17.0.1000.7, levels 100-170,
 /// oracle set `column-constraints/tablevar-*`, `tabletype-*`, `tvf-*`: Msg 156 at REFERENCES; a
 /// CHECK constraint there and a foreign key on a #temp table are accepted.
+/// A module must start its batch, and some must end it. Evidence: SQL Server 2025 LocalDB
+/// 17.0.1000.7, levels 100 and 170, oracle set `batch-rules`: CREATE/ALTER PROCEDURE, VIEW,
+/// FUNCTION, TRIGGER and CREATE RULE/DEFAULT after another statement or a label are Msg 111, and
+/// inside IF, BEGIN or another module Msg 156; only comments and `;` may come before. A VIEW,
+/// FUNCTION, RULE or DEFAULT followed by another statement is Msg 156 (a procedure or trigger
+/// body takes the following statements). CREATE SCHEMA is checked by `surface-shape`; a view
+/// inside it is a schema element (accepted, `surface-fix-gaps/schema/view`).
+fn batch_module(module: Node, out: &mut Vec<Violation>) {
+    let statement = module.parent().filter(|p| p.kind() == "statement");
+    let batch = statement
+        .and_then(|s| s.parent())
+        .filter(|b| b.kind() == "batch");
+    let (Some(statement), Some(batch)) = (statement, batch) else {
+        out.push(violation(
+            "batch-module",
+            "this statement must start a batch, not sit inside another statement".into(),
+            module,
+        ));
+        return;
+    };
+    let statements: Vec<Node> = batch
+        .syntax_named_children(&mut batch.walk())
+        .filter(|n| n.kind() == "statement")
+        .collect();
+    // A view after CREATE SCHEMA in the same batch is one of its schema elements.
+    let first_is_schema = statements
+        .first()
+        .and_then(|s| s.syntax_named_child(0))
+        .is_some_and(|n| n.kind() == "create_schema");
+    if first_is_schema && module.kind() == "create_view" {
+        return;
+    }
+    if statements.first() != Some(&statement) {
+        out.push(violation(
+            "batch-module",
+            "this statement must be the first in its batch".into(),
+            module,
+        ));
+    }
+    let ends_batch = !matches!(
+        module.kind(),
+        "create_procedure" | "alter_procedure" | "create_trigger" | "alter_trigger"
+    );
+    if ends_batch && statements.last() != Some(&statement) {
+        out.push(violation(
+            "batch-module",
+            "this statement must be the last in its batch".into(),
+            module,
+        ));
+    }
+}
+
+/// A client splits a script at every GO line, also inside a block comment or a multi-line string
+/// or quoted name, so the batch before it ends inside that token. Evidence: SQL Server 2025
+/// LocalDB 17.0.1000.7, levels 100 and 170, oracle set `batch-rules/go-in-*`: Msg 113 (comment)
+/// and Msg 105 (string); GO in a line comment or as text on a comment line is fine.
+fn go_line_inside_token(tree: &Tree, source: &[u8], out: &mut Vec<Violation>) {
+    let mut line_start = 0;
+    for line in source.split_inclusive(|b| *b == b'\n') {
+        let text = line.strip_suffix(b"\n").unwrap_or(line);
+        let text = text.strip_suffix(b"\r").unwrap_or(text);
+        let indent = text
+            .iter()
+            .take_while(|b| matches!(b, b' ' | b'\t'))
+            .count();
+        if is_go_line(&text[indent..]) {
+            let go = line_start + indent;
+            let node = tree.root_node().descendant_for_byte_range(go, go + 2);
+            if let Some(node) = node.filter(|n| n.child_count() == 0 && n.start_byte() < go) {
+                out.push(violation(
+                    "go-inside-token",
+                    "a client splits the batch at this GO line, inside a comment or string".into(),
+                    node,
+                ));
+            }
+        }
+        line_start += line.len();
+    }
+}
+
+/// `GO`, an optional count and an optional `--` comment: the line a client treats as a batch separator.
+fn is_go_line(text: &[u8]) -> bool {
+    if text.len() < 2 || !text[..2].eq_ignore_ascii_case(b"go") {
+        return false;
+    }
+    let rest = &text[2..];
+    let rest = &rest[rest
+        .iter()
+        .take_while(|b| matches!(b, b' ' | b'\t'))
+        .count()..];
+    let rest = &rest[rest.iter().take_while(|b| b.is_ascii_digit()).count()..];
+    let rest = &rest[rest
+        .iter()
+        .take_while(|b| matches!(b, b' ' | b'\t'))
+        .count()..];
+    rest.is_empty() || rest.starts_with(b"--")
+}
+
 fn table_variable_foreign_key(columns: Node, out: &mut Vec<Violation>) {
     if !matches!(
         columns.parent().map(|p| p.kind()),
@@ -6000,6 +6114,50 @@ mod tests {
             "WITH c AS (SELECT 1 AS a), d AS (SELECT a FROM c) SELECT 1;",
         ] {
             assert_eq!(rules(bad), ["cte-table-source"], "{bad}");
+        }
+    }
+
+    #[test]
+    fn a_module_starts_its_batch_and_some_end_it() {
+        for ok in [
+            "CREATE PROCEDURE p AS SELECT 1;\nSELECT 2;",
+            "-- header\n;CREATE VIEW v AS SELECT 1 AS a;\n-- end",
+            "SELECT 1\nGO\nCREATE FUNCTION f() RETURNS int AS BEGIN RETURN 1 END;",
+            "CREATE TRIGGER tr ON t AFTER INSERT AS SELECT 1;\nSELECT 2;",
+            "CREATE SCHEMA x CREATE VIEW v AS SELECT 1 AS a;",
+            "SELECT 1;\nCREATE TABLE t (a int);",
+        ] {
+            assert!(rules(ok).is_empty(), "{ok}");
+        }
+        for bad in [
+            "SELECT 1;\nCREATE PROCEDURE p AS SELECT 1;",
+            "SET NOCOUNT ON\nALTER VIEW v AS SELECT 1 AS a;",
+            "CREATE VIEW v AS SELECT 1 AS a;\nSELECT 2;",
+            "CREATE FUNCTION f() RETURNS TABLE AS RETURN SELECT 1 AS a;\nSELECT 2;",
+            "IF 1 = 1 CREATE PROCEDURE p AS SELECT 1;",
+            "CREATE PROCEDURE p AS CREATE VIEW v AS SELECT 1 AS a;",
+            "SELECT 1;\nCREATE RULE r AS @x > 0;",
+        ] {
+            assert_eq!(rules(bad), ["batch-module"], "{bad}");
+        }
+    }
+
+    #[test]
+    fn a_go_line_inside_a_comment_or_string_splits_the_batch() {
+        for ok in [
+            "SELECT 1\nGO\nSELECT 2;",
+            "-- GO\nSELECT 1;",
+            "/* GO is a client command */\nSELECT 1;",
+            "SELECT 1;\n  go 2 -- twice\n",
+        ] {
+            assert!(rules(ok).is_empty(), "{ok}");
+        }
+        for bad in [
+            "/*\nGO\n*/\nSELECT 1;",
+            "SELECT 1;\n/* note\n  go 2\n*/\nSELECT 2;",
+            "SELECT '\nGO\n';",
+        ] {
+            assert_eq!(rules(bad), ["go-inside-token"], "{bad}");
         }
     }
 

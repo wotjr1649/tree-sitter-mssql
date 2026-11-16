@@ -156,7 +156,6 @@
     "surface/queries/predict-transact-sql/example-002": {"class":"environment","errors":"102","reason":"원문의 해당 clause/connector는 Fabric, Synapse, Azure SQL/Edge 등 제품별 형식이다. SQL Server LocalDB의 지원 범위와 분리한다."},
     "surface/queries/predict-transact-sql/example-003": {"class":"environment","errors":"102","reason":"원문의 해당 clause/connector는 Fabric, Synapse, Azure SQL/Edge 등 제품별 형식이다. SQL Server LocalDB의 지원 범위와 분리한다."},
     "surface/queries/predict-transact-sql/example-005": {"class":"environment","errors":"102","reason":"원문의 해당 clause/connector는 Fabric, Synapse, Azure SQL/Edge 등 제품별 형식이다. SQL Server LocalDB의 지원 범위와 분리한다."},
-    "surface/session/set-noexec-transact-sql/example-001": {"class":"context","errors":"137+156","reason":"문서의 독립 코드 블록에 필요한 변수 선언이 없거나 같은 배치에서 중복 선언된다(Msg 156+137). 선언/배치 문맥이 필요한 거부다."},
     "surface/session/set-quoted-identifier-transact-sql/example-002": {"class":"context","errors":"102","reason":"같은 연결의 QUOTED_IDENTIFIER 전환에 따라 이중 인용 이름이 문자열이 된다. 세션 상태가 필요한 거부다."},
     "surface/session/set-recommendations-sql/example-001": {"class":"environment","errors":"195","reason":"이 문서의 monikerRange는 \"=azure-sqldw-latest\"이며 온프레미스 SQL Server용이 아니다. LocalDB 거부를 문법 결함으로 세지 않는다."},
     "surface/session/set-recommendations-sql/example-002": {"class":"environment","errors":"195","reason":"DBCC COMPUTE/SESSION_ID는 문서의 Synapse 전용 형식이다. SQL Server LocalDB와 제품 연결 조건이 다르다."},

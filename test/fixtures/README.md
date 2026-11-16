@@ -40,7 +40,7 @@ handful of T-SQL shapes the grammar deliberately does not parse are listed in th
 | `trigger_body_instead_of_insert.sql` | Bare `INSTEAD OF INSERT` trigger body, `IF @@ROWCOUNT = 0 RETURN`, `INSERT` without `INTO` |
 | `trigger_body_delete_join.sql` | Bare `FOR DELETE` trigger body, `DELETE alias FROM ... JOIN` |
 | `trigger_body_after_update.sql` | Bare `AFTER UPDATE` trigger body, `UPDATE ... FROM inserted` |
-| `server_ddl_trigger_guarded_enable.sql` | A guarded (`IF NOT EXISTS (SELECT ... FROM master.sys.server_triggers)`) bare `CREATE TRIGGER ... ON ALL SERVER FOR LOGON`, followed by `ENABLE TRIGGER ... ON ALL SERVER` |
+| `server_ddl_trigger_guarded_enable.sql` | A bare `CREATE TRIGGER ... ON ALL SERVER FOR LOGON`, then, after `GO`, `ENABLE TRIGGER ... ON ALL SERVER` guarded by `IF EXISTS (SELECT ... FROM master.sys.server_triggers)` (a CREATE TRIGGER cannot sit inside IF: Msg 156) |
 | `server_ddl_trigger_body.sql` | Bare `CREATE TRIGGER ... ON ALL SERVER WITH EXECUTE AS CALLER FOR DDL_DATABASE_LEVEL_EVENTS` body: `TRY`/`CATCH`, XML methods (`.value()`), `DECLARE ... = expression`, a table variable with `IDENTITY ... PRIMARY KEY`, `VALUES` derived tables, `UNION ALL`, bitwise `\|`, `sp_executesql` with `@params` |
 | `logon_trigger_body.sql` | Bare `CREATE TRIGGER ... ON ALL SERVER FOR LOGON` body, `SET CONTEXT_INFO` |
 | `function_wrapped_dynamic_sql.sql` | Scalar `CREATE FUNCTION` module inside an `sp_executesql` string |
