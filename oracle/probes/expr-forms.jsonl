@@ -225,6 +225,25 @@
 {"id":"expr-forms/set/with","sha256":"8ccd0cb5c416d959284481fb077aaf6e6179eeb0b8c6b2483937268a3153a5fd","source":"SELECT 1 UNION (WITH c AS (SELECT 2 AS x) SELECT x FROM c);\n"}
 {"id":"expr-forms/set/orderBefore","sha256":"373406d2895c736f698f608d942f2922617d0aa71ea4eba49b53e27b27ccadc5","source":"(SELECT 1 UNION SELECT 2 ORDER BY 1) EXCEPT SELECT 3;\n"}
 {"id":"expr-forms/set/offset","sha256":"77e40a228c1612014ded2b27471b8ebd099a9489f9cd6f6dbbeb044d080974e1","source":"SELECT 1 UNION (SELECT 2 UNION SELECT 3 ORDER BY 1 OFFSET 0 ROWS);\n"}
+{"id":"expr-forms/provider/normal","sha256":"2de44d883286b2b975e3c37ccd5d4e5285fffbb1060f991a6aefda5a0ce5f99f","source":"SELECT * FROM OPENROWSET('p','d';'u';'pw','SELECT 1') AS t;\n"}
+{"id":"expr-forms/provider/empty","sha256":"363554fd3922df13f9cd7bfee2416b3f9a539b69f44fb9580dd9c66b2c52e8aa","source":"SELECT * FROM OPENROWSET('p','d';'';'','SELECT 1') AS t;\n"}
+{"id":"expr-forms/provider/omitted","sha256":"8a7419245aaa6311226ef405aa6e826d232d4c177b99cd6a78af998208254ff8","source":"SELECT * FROM OPENROWSET('p','d';;,'SELECT 1') AS t;\n"}
+{"id":"expr-forms/provider/emptyUser","sha256":"4e522f6c83711abaeac9cadfdd06b0b9c851c9fd905d7a23c9d363fb54299832","source":"SELECT * FROM OPENROWSET('p','d';;'pw','SELECT 1') AS t;\n"}
+{"id":"expr-forms/provider/emptyPassword","sha256":"e80ef628be50ac3029cfe203f1367b8ba3c67c0f8d9c4e1f58ab620923bdaf55","source":"SELECT * FROM OPENROWSET('p','d';'u';,'SELECT 1') AS t;\n"}
+{"id":"expr-forms/provider/one","sha256":"7d4c750e282a4d3e81f7b5a2c363eff6dffb825e513d4f4c88021f90e90b719f","source":"SELECT * FROM OPENROWSET('p','d';'u','SELECT 1') AS t;\n"}
+{"id":"expr-forms/provider/four","sha256":"cee04f4227fe002230e5c7a60d38aa73fdd2066f1d5c597ed3e569ac098e46d2","source":"SELECT * FROM OPENROWSET('p','d';'u';'pw';'x','SELECT 1') AS t;\n"}
+{"id":"expr-forms/provider/variables","sha256":"e48ff1dd245fbd5f3086ad81f6463da8d3a50ddae3cc9099a1db5d34457bf4f9","source":"SELECT * FROM OPENROWSET('p',@d;@u;@pw,'SELECT 1') AS t;\n"}
+{"id":"expr-forms/provider/numbers","sha256":"0f4bdc83658ab7fcada2969f4bc4498a50d6cda4de7170acb4f6c7afd1671af5","source":"SELECT * FROM OPENROWSET('p',1;2;3,'SELECT 1') AS t;\n"}
+{"id":"expr-forms/provider/unicode","sha256":"d202ae55641f35b715be7d7323757da2d30ed91d7325f3bd1204d34a7c428f0c","source":"SELECT * FROM OPENROWSET(N'p',N'd';N'u';N'pw',N'SELECT 1') AS t;\n"}
+{"id":"expr-forms/provider/providerVariable","sha256":"58595a1ba9d320b05ac86d2a3225926f9900d2119fb6ef59d70e8b56dccf4250","source":"SELECT * FROM OPENROWSET(@p,'d';'u';'pw','SELECT 1') AS t;\n"}
+{"id":"expr-forms/provider/queryVariable","sha256":"01e730956cd613ef9d0ec1bcb89bcb61745f0fa017e8b72456abb4dc924c5e5e","source":"SELECT * FROM OPENROWSET('p','d';'u';'pw',@q) AS t;\n"}
+{"id":"expr-forms/provider/table","sha256":"b8452433252bf24379a3f528a8df01a89fcb2271ef2a606fd9564ab30c09834b","source":"SELECT * FROM OPENROWSET('p','d';'u';'pw',db.dbo.t) AS t;\n"}
+{"id":"expr-forms/provider/connection","sha256":"6d79044c98f21fed0be26a6f44891c5f05071c3e973991dcb67d941eb9b90cb3","source":"SELECT * FROM OPENROWSET('p','Server=s;Trusted_Connection=yes;','SELECT 1') AS t;\n"}
+{"id":"expr-forms/provider/first","sha256":"b59f4aa5eb481dbe3b59d6eb997a8e4c2d1faf0b96163e7b9db1c8dc9178e05d","source":"SELECT * FROM OPENROWSET('p';'d';'u','SELECT 1') AS t;\n"}
+{"id":"expr-forms/provider/last","sha256":"97587168c67291765ba6cb0d17e215f78f56acdf566b36fb8f5d0304753e874f","source":"SELECT * FROM OPENROWSET('p','conn','SELECT 1';'u';'pw') AS t;\n"}
+{"id":"expr-forms/provider/comments","sha256":"50420059e9c1af814e01a66aab9d437fdadf23a37d1daa65bc0ef7baf7c39456","source":"SELECT * FROM OPENROWSET('p','d'/*a*/;--b\n'u';/*c*/'pw','SELECT 1') AS t;\n"}
+{"id":"expr-forms/provider/ordinary","sha256":"62df68ff6064710a3051fe26d32b8a293af7c2c6be7d200a32870b77ee9c8bf4","source":"SELECT dbo.f('p','d';'u';'pw','SELECT 1');\n"}
+{"id":"expr-forms/provider/qualified","sha256":"25d64a09fb1b744f9e5c77789eb024e1cbe5dc5ce7dc1d855ffa8ed940cfbdb8","source":"SELECT * FROM dbo.OPENROWSET('p','d';'u';'pw','SELECT 1') t;\n"}
 {"id":"expr-forms/static/hierarchy","sha256":"49f8379ba4b44bc7b12e86af8c80fa2ad3296fb9552549acf5f7bd41886d5d46","source":"SELECT hierarchyid::GetRoot();\n"}
 {"id":"expr-forms/static/geometry","sha256":"7515bf559fc24994670ba686546d62515fde7cfe099dae4a7bb09e898e21c448","source":"SELECT geometry::Point(1,2,0);\n"}
 {"id":"expr-forms/static/schema","sha256":"9cd5850d007347602155555a062f7d6d90e770cde3f680ce00e7a6dbe390b91f","source":"SELECT dbo.t::f(1);\n"}
@@ -324,6 +343,10 @@
 {"id":"expr-forms/static/extra-systemType","sha256":"1bdd27f8aa1ff797dc121985b59afb9a207bce540e4ccffa11563f46760fb487","source":"SELECT int::f();\n"}
 {"id":"expr-forms/static/extra-quotedType","sha256":"2de658b8754d9b18a8c0b260bbeb4bd42c9932fa8450525f678bb36c8f07d592","source":"SELECT [geometry]::[Null];\n"}
 {"id":"expr-forms/static/extra-dotted","sha256":"1e7281dc976f0c9bc3fbaf855f6585267d9dbed941d4e5496fa9d1b613173182","source":"SELECT geometry::Point(1,2,0).STAsText();\n"}
+{"id":"expr-forms/provider/serverMissing","sha256":"72b91a072fb56883e4bf2eb1e676c5f5bb9baaee5ac0153823e97935fcb94367","source":"SELECT * FROM OPENROWSET('p',;'u';'pw','SELECT 1') AS t;\n"}
+{"id":"expr-forms/provider/allMissing","sha256":"fb4bf8cc83bccc63c22c69e7bd0912d9f3bb4129e2c1fe40a93a7094d0f9a14c","source":"SELECT * FROM OPENROWSET('p',;;,'SELECT 1') AS t;\n"}
+{"id":"expr-forms/provider/twoMissing","sha256":"8a7419245aaa6311226ef405aa6e826d232d4c177b99cd6a78af998208254ff8","source":"SELECT * FROM OPENROWSET('p','d';;,'SELECT 1') AS t;\n"}
+{"id":"expr-forms/provider/noServerQuoted","sha256":"dfc4c90d75fc0a8fa221e7f8699d6460ff49abda94b9ec75e79aea2a9e24e625","source":"SELECT * FROM OPENROWSET('p','';'u';'pw','SELECT 1') AS t;\n"}
 {"id":"expr-forms/comparison/unicode-2","sha256":"2e9991f4aaea13fe8115bccb863f84263d83e7a6de485d7298ceebd4d59c2b3e","source":"SELECT 1 WHERE 1 !\u0002= 2;\n"}
 {"id":"expr-forms/comparison/unicode-3","sha256":"4bfa62268fdcd500a3673849e740445721dd49374e0ec7e95106d8857bf64165","source":"SELECT 1 WHERE 1 !\u0003= 2;\n"}
 {"id":"expr-forms/comparison/unicode-4","sha256":"a02ea8ef43e9a1a165b48857c898da1abe19af3a44b0ffd44967d8af3ea60ff5","source":"SELECT 1 WHERE 1 !\u0004= 2;\n"}
@@ -360,3 +383,4 @@
 {"id":"expr-forms/comparison/mixed-ltgt","sha256":"8ada76321ad88f09bf9c49827a2f1038e5872c3f827a59ded2e8df06f9b7ffd7","source":"SELECT 1 WHERE 1 <​/* a /* b */ c */-- d\r\n> 2;\n"}
 {"id":"expr-forms/comparison/mixed-banglt","sha256":"fc1a1d76484119cb464b5c50dbab171257557625b5cd1399483f8f3ffc67a015","source":"SELECT 1 WHERE 1 !​/* a /* b */ c */-- d\r\n< 2;\n"}
 {"id":"expr-forms/comparison/mixed-banggt","sha256":"4ee7c8b8f03e07d4013cfb53f4a810345f553184bf2cdfbbab4563525ed0afd7","source":"SELECT 1 WHERE 1 !​/* a /* b */ c */-- d\r\n> 2;\n"}
+{"id":"expr-forms/provider/schema","sha256":"1b1d314a30d9796eebaa209be0ab89c9c2819a7e27466a5172533d86c3685f72","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENROWSET('p', 'd'; 'u'; 'pw', 'SELECT 1') WITH (id int) AS x;\n"}

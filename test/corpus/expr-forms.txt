@@ -475,6 +475,87 @@ SELECT 1 UNION (SELECT 2 INTO #t UNION SELECT 3);
 (program (batch (statement (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal))))) operation: (keyword_union) (query_specification (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (keyword_into) (object_reference name: (identifier))) operation: (keyword_union) (query_specification (select (keyword_select) (select_expression (term value: (literal)))))))))))
 
 ==================
+expr-forms/provider/normal - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM OPENROWSET('p','d';'u';'pw','SELECT 1') AS t;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (literal)) parameter: (term value: (literal) (literal) (literal)) parameter: (term value: (literal))) (keyword_as) alias: (identifier)))))))
+
+==================
+expr-forms/provider/empty - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM OPENROWSET('p','d';'';'','SELECT 1') AS t;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (literal)) parameter: (term value: (literal) (literal) (literal)) parameter: (term value: (literal))) (keyword_as) alias: (identifier)))))))
+
+==================
+expr-forms/provider/omitted - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM OPENROWSET('p','d';;,'SELECT 1') AS t;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (literal)) parameter: (term value: (literal)) parameter: (term value: (literal))) (keyword_as) alias: (identifier)))))))
+
+==================
+expr-forms/provider/emptyUser - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM OPENROWSET('p','d';;'pw','SELECT 1') AS t;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (literal)) parameter: (term value: (literal) (literal)) parameter: (term value: (literal))) (keyword_as) alias: (identifier)))))))
+
+==================
+expr-forms/provider/emptyPassword - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM OPENROWSET('p','d';'u';,'SELECT 1') AS t;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (literal)) parameter: (term value: (literal) (literal)) parameter: (term value: (literal))) (keyword_as) alias: (identifier)))))))
+
+==================
+expr-forms/provider/unicode - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM OPENROWSET(N'p',N'd';N'u';N'pw',N'SELECT 1') AS t;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (literal)) parameter: (term value: (literal) (literal) (literal)) parameter: (term value: (literal))) (keyword_as) alias: (identifier)))))))
+
+==================
+expr-forms/provider/table - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM OPENROWSET('p','d';'u';'pw',db.dbo.t) AS t;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (literal)) parameter: (term value: (literal) (literal) (literal)) parameter: (term value: (field (object_reference schema: (identifier) name: (identifier)) name: (identifier)))) (keyword_as) alias: (identifier)))))))
+
+==================
+expr-forms/provider/comments - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM OPENROWSET('p','d'/*a*/;--b
+'u';/*c*/'pw','SELECT 1') AS t;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (literal)) parameter: (term value: (literal) (marginalia) (comment) (literal) (marginalia) (literal)) parameter: (term value: (literal))) (keyword_as) alias: (identifier)))))))
+
+==================
 expr-forms/static/hierarchy - LocalDB 17.0.1000.7 levels 100-170 accepts
 ==================
 
@@ -819,3 +900,13 @@ SELECT 1 WHERE 1 !​/* a /* b */ c */-- d
 ---
 
 (program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/provider/schema - engine 102; tree-check expression-rowset-provider
+==================
+
+DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENROWSET('p', 'd'; 'u'; 'pw', 'SELECT 1') WITH (id int) AS x;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)) (var_declaration (identifier) (varbinary (keyword_varbinary) size: (keyword_max))))) (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (literal)) parameter: (term value: (literal) (literal) (literal)) parameter: (term value: (literal)))) (openjson_schema (keyword_with) (openjson_column name: (identifier) type: (keyword_int))) (keyword_as) alias: (identifier))))))

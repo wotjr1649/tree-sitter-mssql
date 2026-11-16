@@ -73,6 +73,7 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
             "invocation" => {
                 builtin_arity(node, source, &mut out);
                 expression_language(node, source, &mut out);
+                expression_provider(node, source, &mut out);
             }
             "set_operation" => nested_set_clauses(node, &mut out),
             "object_reference" | "field" => static_reference(node, source, &mut out),
@@ -459,6 +460,53 @@ fn expression_language(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         }
         if invalid {
             out.push(violation("expression-fulltext-language", "LANGUAGE needs a full-text function, its language argument position and a language name, LCID or local variable".into(), node));
+        }
+    }
+}
+
+/// R15 expr-forms/provider: credentials are confined to OPENROWSET's second argument.
+fn expression_provider(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let Some(callee) = node.named_child(0) else {
+        return;
+    };
+    let name = upper_text(callee, source);
+    let mut cursor = node.walk();
+    let args: Vec<_> = node
+        .children_by_field_name("parameter", &mut cursor)
+        .collect();
+    let connections: Vec<_> = args
+        .iter()
+        .enumerate()
+        .filter(|(_, arg)| {
+            let mut c = arg.walk();
+            arg.children(&mut c).any(|n| n.kind() == ";")
+        })
+        .collect();
+    if !connections.is_empty() {
+        let mut invalid = name != "OPENROWSET"
+            || connections.len() != 1
+            || connections[0].0 != 1
+            || args.len() != 3;
+        for (_, connection) in &connections {
+            let mut c = connection.walk();
+            invalid |= connection
+                .named_children(&mut c)
+                .filter(|n| !n.is_extra())
+                .any(|n| !string_literal(n, source));
+        }
+        invalid |= !args
+            .first()
+            .and_then(|n| n.child_by_field_name("value"))
+            .is_some_and(|n| string_literal(n, source));
+        if let Some(query) = args.get(2) {
+            invalid |= query.child_by_field_name("alias").is_some()
+                || !query.child_by_field_name("value").is_some_and(|v| {
+                    string_literal(v, source)
+                        || (v.kind() == "field" && !upper_text(v, source).starts_with('@'))
+                });
+        }
+        if invalid {
+            out.push(violation("expression-rowset-provider", "OPENROWSET takes provider, server;[user];[password], query or table; connection components are strings".into(), node));
         }
     }
 }
@@ -1673,6 +1721,23 @@ fn query_rowset_schema(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         .and_then(|n| n.named_child(0))
         .map(|n| upper_text(n, source))
         .unwrap_or_default();
+    // rowset-56 and expr-forms/provider/schema: provider credentials take no WITH schema (102).
+    if name == "OPENROWSET"
+        && call.is_some_and(|call| {
+            let mut c = call.walk();
+            call.children_by_field_name("parameter", &mut c).any(|arg| {
+                let mut c = arg.walk();
+                arg.children(&mut c).any(|part| part.kind() == ";")
+            })
+        })
+    {
+        out.push(violation(
+            "expression-rowset-provider",
+            "OPENROWSET provider credentials take no WITH rowset schema".into(),
+            node,
+        ));
+        return;
+    }
     if node.kind() == "openxml_table_schema" {
         if name != "OPENXML" {
             out.push(violation(
@@ -2637,6 +2702,9 @@ mod tests {
             ("static/extra-methodVariable", "expression-static-reference"),
             ("static/nullCall", "expression-static-reference"),
             ("set/innerTop", "expression-nested-set-clause"),
+            ("provider/numbers", "expression-rowset-provider"),
+            ("provider/last", "expression-rowset-provider"),
+            ("provider/schema", "expression-rowset-provider"),
         ] {
             let case = cases
                 .iter()
@@ -2653,6 +2721,8 @@ mod tests {
             "static/schema",
             "static/nullQuoted",
             "set/deep",
+            "provider/omitted",
+            "provider/table",
         ] {
             let case = cases
                 .iter()
