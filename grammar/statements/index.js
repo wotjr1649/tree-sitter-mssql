@@ -62,6 +62,7 @@ export default {
       $.revert_statement,
       $.enable_trigger_statement,
       $.grant_statement,
+
       $.update_statistics_statement,
       $.kill_statement,
       $.checkpoint_statement,
@@ -735,7 +736,7 @@ export default {
         optional(
           seq(
             $.keyword_on,
-            optional(seq($.identifier, '::')),
+            optional(seq($._securable_class, '::')),
             $.object_reference,
             optional(paren_list($.identifier, true)),
           ),
@@ -746,6 +747,41 @@ export default {
         optional($.keyword_cascade),
         optional(seq($.keyword_as, $.identifier)),
       ),
+    ),
+
+  // Keep class words as identifiers, like the existing single-word qualifier.
+  _securable_class: ($) =>
+    choice(
+      $.identifier,
+      alias($.keyword_database, $.identifier),
+      seq(alias($.keyword_application, $.identifier), alias($.keyword_role, $.identifier)),
+      seq(alias($.keyword_asymmetric, $.identifier), alias($.keyword_key, $.identifier)),
+      seq(alias($.keyword_symmetric, $.identifier), alias($.keyword_key, $.identifier)),
+      seq(
+        alias($.keyword_database, $.identifier),
+        alias($.keyword_scoped, $.identifier),
+        alias($.keyword_credential, $.identifier),
+      ),
+      seq(alias($.keyword_fulltext, $.identifier), alias($.keyword_catalog, $.identifier)),
+      seq(alias($.keyword_fulltext, $.identifier), alias($.keyword_stoplist, $.identifier)),
+      seq(alias($.keyword_message, $.identifier), alias($.keyword_type, $.identifier)),
+      seq(
+        alias($.keyword_remote, $.identifier),
+        alias($.keyword_service, $.identifier),
+        alias($.keyword_binding, $.identifier),
+      ),
+      seq(
+        alias($.keyword_search, $.identifier),
+        alias($.keyword_property, $.identifier),
+        alias($.keyword_list, $.identifier),
+      ),
+      seq(alias($.keyword_server, $.identifier), alias($.keyword_role, $.identifier)),
+      seq(
+        alias($.keyword_xml, $.identifier),
+        alias($.keyword_schema, $.identifier),
+        alias($.keyword_collection, $.identifier),
+      ),
+      seq(alias($.keyword_availability, $.identifier), alias($.keyword_group, $.identifier)),
     ),
 
   // The column list is aliased to a named `list` node (the same pattern

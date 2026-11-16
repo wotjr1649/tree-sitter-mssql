@@ -1,0 +1,2 @@
+{"id":"ddl-rest/edit-0","source":"-- 한글 경로 C:\\검증\nGRANT CONTROL ON ASYMMETRIC KEY::ak TO u;\n","edits":[{"find":"ASYMMETRIC KEY::","replace":"ASYMMETRIC /* 경계 */ KEY::"},{"find":"ASYMMETRIC /* 경계 */ KEY::","replace":"ASYMMETRIC KEY::"}]}
+{"id":"ddl-rest/edit-1","source":"-- 한글 경로 C:\\검증\nGRANT SELECT ON OBJECT::dbo.t TO u, [domain\\u] WITH GRANT OPTION AS dbo;\n","edits":[{"find":"WITH GRANT OPTION","replace":"WITH /* 경계 */ GRANT OPTION"},{"find":"WITH /* 경계 */ GRANT OPTION","replace":"WITH GRANT OPTION"}]}

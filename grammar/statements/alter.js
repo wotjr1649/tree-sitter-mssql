@@ -47,7 +47,6 @@ export default {
       $.alter_route,
     ),
 
-  // ALTER XML SCHEMA COLLECTION name ADD expression
   alter_xml_schema_collection: ($) =>
     seq(
       $.keyword_alter,
@@ -330,7 +329,7 @@ export default {
       $.keyword_schema,
       $.identifier,
       $.keyword_transfer,
-      optional(seq($.identifier, '::')),
+      optional(seq($._securable_class, '::')),
       $.object_reference,
     ),
 
@@ -373,14 +372,22 @@ export default {
 
   // ALTER AUTHORIZATION ON [class::] object TO { principal | SCHEMA OWNER }
   alter_authorization: ($) =>
-    seq(
-      $.keyword_alter,
-      $.keyword_authorization,
-      $.keyword_on,
-      optional(seq(choice($.identifier, seq($.keyword_availability, $.keyword_group)), '::')),
-      $.object_reference,
-      $.keyword_to,
-      choice(seq($.keyword_schema, $.keyword_owner), $.identifier),
+    prec(
+      1,
+      seq(
+        $.keyword_alter,
+        $.keyword_authorization,
+        $.keyword_on,
+        optional(
+          seq(
+            choice($._securable_class, prec(1, seq($.keyword_availability, $.keyword_group))),
+            '::',
+          ),
+        ),
+        $.object_reference,
+        $.keyword_to,
+        choice(seq($.keyword_schema, $.keyword_owner), $.identifier),
+      ),
     ),
 
   // ALTER EVENT SESSION name ON SERVER

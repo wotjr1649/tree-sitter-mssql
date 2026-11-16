@@ -8,6 +8,17 @@ import { make_keyword } from './helpers.js';
 // names (SET options, index options, DBCC commands, query and table hints)
 // are deliberately not keywords; they are identifiers.
 export default {
+  keyword_workload: (_) => make_keyword('workload'),
+  keyword_priority: (_) => make_keyword('priority'),
+  keyword_broker: (_) => make_keyword('broker'),
+  keyword_rule: (_) => make_keyword('rule'),
+  keyword_cryptographic: (_) => make_keyword('cryptographic'),
+  keyword_aggregate: (_) => make_keyword('aggregate'),
+  keyword_binding: (_) => make_keyword('binding'),
+  keyword_credential: (_) => make_keyword('credential'),
+  keyword_application: (_) => make_keyword('application'),
+  keyword_columns: (_) => make_keyword('columns'),
+  keyword_query: (_) => make_keyword('query'),
   keyword_resource: (_) => make_keyword('resource'),
   keyword_pool: (_) => make_keyword('pool'),
   keyword_language: (_) => make_keyword('language'),

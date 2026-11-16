@@ -18,6 +18,36 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
     let mut cursor = tree.walk();
     loop {
         let node = cursor.node();
+        if matches!(
+            node.kind(),
+            "create_credential"
+                | "alter_credential"
+                | "create_login"
+                | "alter_login"
+                | "create_user"
+                | "alter_user"
+                | "create_remote_service_binding"
+                | "alter_remote_service_binding"
+                | "create_resource_pool"
+                | "alter_resource_pool"
+                | "create_workload_group"
+                | "alter_workload_group"
+                | "alter_queue"
+                | "alter_message_type"
+                | "alter_authorization"
+        ) {
+            ddl_rest_alter(node, source, &mut out);
+        }
+        if matches!(
+            node.kind(),
+            "commit_statement"
+                | "kill_statement"
+                | "update_statistics_statement"
+                | "sensitivity_classification_statement"
+                | "signature_signer"
+        ) {
+            ddl_rest_misc(node, source, &mut out);
+        }
         if matches!(node.kind(), "create_queue" | "alter_queue") {
             queue_activation(node, source, &mut out);
         }
@@ -28,7 +58,10 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
                 query_offsets(node, source, &mut out);
             }
             "atomic_clause" => query_atomic(node, source, &mut out),
-            "select" => query_select(node, &mut out),
+            "select" => {
+                query_select(node, &mut out);
+                ddl_rest_routes(node, source, &mut out);
+            }
             "function_argument" => query_parameter(node, &mut out),
             "cast" => query_cast(node, &mut out),
             "openjson_schema" | "openxml_table_schema" => {
@@ -68,7 +101,10 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
                 cte_terminator(node, &mut out);
                 cte_table_source(node, &mut out);
             }
-            "grant_statement" => column_permissions(node, source, &mut out),
+            "grant_statement" => {
+                column_permissions(node, source, &mut out);
+                ddl_rest_permissions(node, &mut out);
+            }
             "create_trigger" | "alter_trigger" => trigger_scope(node, source, &mut out),
             "invocation" => {
                 builtin_arity(node, source, &mut out);
@@ -92,9 +128,15 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
                 encryption_algorithm(node, source, &mut out)
             }
             "backup_statement" | "restore_statement" => backup_restore(node, source, &mut out),
+            "create_index"
+            | "create_aggregate"
+            | "create_cryptographic_provider"
+            | "create_event_session"
+            | "create_asymmetric_key" => ddl_rest_create(node, source, &mut out),
             _ => {}
         }
         if node.kind() == "execute_statement" {
+            ddl_rest_routes(node, source, &mut out);
             query_exec(node, &mut out);
             exec_output_requires_at(node, &mut out);
             exec_output_variable(node, source, &mut out);
@@ -241,6 +283,35 @@ fn column_permissions(statement: Node, source: &[u8], out: &mut Vec<Violation>) 
                 *permission,
             ));
         }
+    }
+}
+
+/// Permission tails are verb-specific. SQL Server 2025 LocalDB 17.0.1000.7, levels 100-170,
+/// ddl-rest/permission-{grant-from,deny-from,grant-cascade,deny-with-grant,revoke-with-grant}
+/// reject with Msg 102; permission-{grant,deny}-grant-option-for reject with Msg 156/102.
+/// REVOKE accepts TO and FROM, with or without GRANT OPTION FOR, and CASCADE/AS.
+fn ddl_rest_permissions(statement: Node, out: &mut Vec<Violation>) {
+    let mut cursor = statement.walk();
+    let parts: Vec<Node> = statement
+        .named_children(&mut cursor)
+        .filter(|node| !node.is_extra())
+        .collect();
+    let Some(verb) = parts.first().map(|node| node.kind()) else {
+        return;
+    };
+    let has = |kind| parts.iter().any(|node| node.kind() == kind);
+    let option_for = parts
+        .get(1)
+        .is_some_and(|node| node.kind() == "keyword_grant");
+    if (verb != "keyword_revoke" && (has("keyword_from") || option_for))
+        || (verb != "keyword_grant" && has("keyword_with"))
+        || (verb == "keyword_grant" && has("keyword_cascade"))
+    {
+        out.push(violation(
+            "ddl-rest-permission",
+            "FROM and GRANT OPTION FOR require REVOKE; WITH GRANT OPTION requires GRANT; CASCADE requires DENY or REVOKE".into(),
+            statement,
+        ));
     }
 }
 
@@ -2665,6 +2736,552 @@ fn backup_certificate(children: &[Node], source: &[u8], out: &mut Vec<Violation>
     }
 }
 
+/// R17 ddl-rest/routes probes, LocalDB 17.0.1000.7, levels 100-170:
+/// NULLS on SUM/ROW_NUMBER is Msg 16208; MATCH comma and ungrouped shortest path are Msg 102;
+/// shortest-path lower bound != 1 is Msg 13942, upper bound 0 is Msg 13943; ALL DISTINCT is 156.
+/// fixture-graph-before/shortest-fixed reject a pipe edge list (102); fixture-graph-after accepts OR of MATCH predicates.
+/// Keep legacy raw trees and reject here.
+fn ddl_rest_routes(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let mut cursor = node.walk();
+    let children: Vec<_> = node
+        .children(&mut cursor)
+        .filter(|n| !n.is_extra())
+        .collect();
+    let problem = match node.kind() {
+        "select" => {
+            let all_distinct = children
+                .iter()
+                .find(|n| n.kind() == "select_expression")
+                .and_then(|n| n.named_child(0))
+                .and_then(|n| n.child_by_field_name("value"))
+                .is_some_and(|n| {
+                    n.child_by_field_name("operator")
+                        .is_some_and(|n| n.kind() == "keyword_all")
+                        && n.child_by_field_name("operand").is_some_and(|n| {
+                            n.kind() == "field" && upper_text(n, source) == "DISTINCT"
+                        })
+                });
+            all_distinct.then_some((
+                "query-select-quantifier",
+                "DISTINCT and ALL are mutually exclusive",
+            ))
+        }
+        "window_function" => {
+            let modifier = children
+                .iter()
+                .find(|n| matches!(n.kind(), "keyword_ignore" | "keyword_respect"));
+            if modifier.is_none() {
+                return;
+            }
+            let name = children
+                .first()
+                .and_then(|n| n.named_child(0))
+                .map(|n| upper_text(n, source));
+            if matches!(
+                name.as_deref(),
+                Some("FIRST_VALUE" | "LAST_VALUE" | "LAG" | "LEAD")
+            ) {
+                return;
+            }
+            Some((
+                "ddl-rest-nulls-modifier",
+                "IGNORE/RESPECT NULLS needs FIRST_VALUE, LAST_VALUE, LAG or LEAD",
+            ))
+        }
+        "graph_hop" => children.iter().any(|n| n.kind() == "|").then_some((
+            "ddl-rest-graph-edge",
+            "a MATCH hop names one edge; combine complete MATCH predicates",
+        )),
+        "graph_match_expr" => children.iter().any(|n| n.kind() == ",").then_some((
+            "ddl-rest-graph-match",
+            "MATCH paths are joined with AND, not commas",
+        )),
+        "graph_shortest_path" => {
+            if children.iter().any(|n| n.kind() == "graph_path") {
+                Some((
+                    "ddl-rest-graph-shortest",
+                    "SHORTEST_PATH repeats a parenthesized hop group",
+                ))
+            } else if children
+                .iter()
+                .find(|n| n.kind() == "literal")
+                .is_some_and(|n| upper_text(*n, source).parse::<u64>() != Ok(1))
+            {
+                Some((
+                    "ddl-rest-graph-bound",
+                    "the SHORTEST_PATH lower bound must be 1",
+                ))
+            } else if children
+                .iter()
+                .filter(|n| n.kind() == "literal")
+                .nth(1)
+                .is_some_and(|n| upper_text(*n, source).parse::<u64>() == Ok(0))
+            {
+                Some((
+                    "ddl-rest-graph-bound",
+                    "the SHORTEST_PATH upper bound must be positive",
+                ))
+            } else {
+                None
+            }
+        }
+        "execute_statement" => {
+            if children
+                .iter()
+                .any(|n| matches!(n.kind(), "keyword_exec" | "keyword_execute"))
+            {
+                return;
+            }
+            let Some(batch) = node
+                .parent()
+                .and_then(|n| n.parent())
+                .filter(|n| n.kind() == "batch")
+            else {
+                return;
+            };
+            let mut previous = batch.prev_named_sibling();
+            while previous.is_some_and(|n| n.is_extra()) {
+                previous = previous.and_then(|n| n.prev_named_sibling());
+            }
+            let follows_unterminated_batch = previous.is_some_and(|n| {
+                let mut c = n.walk();
+                n.named_children(&mut c)
+                    .filter(|n| !n.is_extra())
+                    .last()
+                    .is_none_or(|n| n.kind() != "go_statement")
+            });
+            follows_unterminated_batch.then_some((
+                "ddl-rest-implicit-exec",
+                "omitting EXEC is allowed only first in a GO-delimited batch",
+            ))
+        }
+        _ => None,
+    };
+    if let Some((rule, detail)) = problem {
+        out.push(violation(rule, detail.into(), node));
+    }
+}
+
+/// SQL Server 2025 LocalDB 17.0.1000.7, levels 100-170, ddl-rest/create-*:
+/// aggregate-empty-args/default-arg: 102/10726; provider-binary and key-executable-no-file: 102;
+/// event-session-empty: 102. The index neighbours below reject wrong storage/clause combinations
+/// (102/156/1018), non-single JSON/SPATIAL columns (102), and unknown XML mode (487).
+/// Spatial USING BOGUS and a three-value BOUNDING_BOX are PARSEONLY-accepted and stay unchecked.
+fn ddl_rest_create(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+    match node.kind() {
+        "create_index" => rest_create_index(node, source, out),
+        "create_aggregate" => {
+            let mut c = node.walk();
+            if let Some(args) = node
+                .named_children(&mut c)
+                .find(|n| n.kind() == "function_arguments")
+            {
+                let mut c = args.walk();
+                let params: Vec<Node> = args
+                    .named_children(&mut c)
+                    .filter(|n| n.kind() == "function_argument")
+                    .collect();
+                if params.is_empty() || params.iter().any(|p| has_child(*p, "=")) {
+                    out.push(violation(
+                        "ddl-rest-aggregate",
+                        "an aggregate needs at least one parameter and parameters have no defaults"
+                            .into(),
+                        args,
+                    ));
+                }
+            }
+        }
+        "create_cryptographic_provider" => {
+            let mut c = node.walk();
+            if let Some(file) = node.named_children(&mut c).find(|n| n.kind() == "literal")
+                && !(string_literal(file, source)
+                    || (source.get(file.start_byte()) == Some(&b'"')
+                        && quoted_strings(file, source)))
+            {
+                out.push(violation(
+                    "ddl-rest-provider-file",
+                    "a cryptographic provider's FILE is a string".into(),
+                    file,
+                ));
+            }
+        }
+        "create_event_session" => {
+            if !has_child(node, "event_session_event")
+                && !has_child(node, "event_session_target")
+                && !has_child(node, "with_options")
+                && !has_child(node, "keyword_drop")
+            {
+                out.push(violation(
+                    "ddl-rest-event-session",
+                    "CREATE EVENT SESSION needs a body".into(),
+                    node,
+                ));
+            }
+        }
+        "create_asymmetric_key" if has_child(node, "keyword_from") => {
+            for option in direct_options(node) {
+                if option_name(option, source) == "EXECUTABLE" {
+                    out.push(violation(
+                        "ddl-rest-key-source",
+                        "FROM EXECUTABLE requires FILE = 'path'".into(),
+                        option,
+                    ));
+                }
+            }
+        }
+        _ => {}
+    }
+}
+
+fn rest_create_index(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let mut c = node.walk();
+    let children: Vec<Node> = node.children(&mut c).filter(|n| !n.is_extra()).collect();
+    let storage = node
+        .child_by_field_name("storage")
+        .map(|n| upper_text(n, source))
+        .unwrap_or_default();
+    let xml = storage == "XML";
+    let json = storage == "JSON";
+    let spatial = storage == "SPATIAL";
+    let primary = has_child(node, "keyword_primary") || storage == "PRIMARY";
+    let selective = has_child(node, "keyword_selective") || storage == "SELECTIVE";
+    let using = has_child(node, "keyword_using");
+    let paths = has_child(node, "keyword_for");
+    let columns = children.iter().find(|n| n.kind() == "ordered_columns");
+    let wrong_columns = (json || spatial)
+        && columns.is_some_and(|cols| {
+            let mut c = cols.walk();
+            cols.named_children(&mut c)
+                .filter(|n| n.kind() == "column")
+                .count()
+                != 1
+        });
+    let wrong_mode = xml
+        && using
+        && children
+            .iter()
+            .position(|n| n.kind() == "keyword_for")
+            .is_some_and(|i| {
+                children.get(i + 1).is_some_and(|mode| {
+                    mode.kind() != "("
+                        && !matches!(
+                            upper_text(*mode, source).as_str(),
+                            "PATH" | "VALUE" | "PROPERTY"
+                        )
+                })
+            });
+    if ((primary || selective) && !xml)
+        || (primary && using)
+        || (selective && !paths)
+        || (using && !xml && !spatial)
+        || (paths && !xml && !json)
+        || (json && has_child(node, "selective_xml_path"))
+        || (json && has_child(node, "keyword_unique"))
+        || wrong_columns
+        || wrong_mode
+    {
+        out.push(violation(
+            "ddl-rest-index-form",
+            "index storage, columns and USING/FOR clauses must match".into(),
+            node,
+        ));
+    }
+}
+
+/// Engine neighbours in ddl-rest, SQL Server 2025 LocalDB 17.0.1000.7, levels 100-170:
+/// missing CREDENTIAL IDENTITY/REMOTE BINDING USER, NUMANODE=AUTO, CREATE LOGIN OLD_PASSWORD,
+/// bare QUEUE REORGANIZE WITH and incomplete ASYMMETRIC class are Msg 102; MAX_CPU_PERCENT=101
+/// is Msg 1080; an unknown MESSAGE TYPE validation is Msg 195. PRIORITY_LEVEL=11 and an
+/// application role without PASSWORD are accepted by PARSEONLY, so neither is restricted here.
+/// extra-credential-alter-secret/scoped-alter-secret also reject missing IDENTITY (102), while
+/// extra-remote-alter-anonymous accepts ALTER with ANONYMOUS alone, so only CREATE requires USER.
+fn ddl_rest_alter(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let kind = statement.kind();
+    let mut cursor = statement.walk();
+    let children: Vec<Node> = statement
+        .children(&mut cursor)
+        .filter(|n| !n.is_extra())
+        .collect();
+    let clauses: Vec<Node> = children
+        .iter()
+        .copied()
+        .filter(|n| matches!(n.kind(), "with_clause" | "with_options"))
+        .collect();
+    for clause in clauses {
+        if matches!(kind, "create_credential" | "alter_credential") {
+            option_set(
+                clause,
+                source,
+                "ddl-rest-credential",
+                "ddl-rest-credential",
+                &["IDENTITY"],
+                &[],
+                out,
+            );
+        }
+        if kind == "create_remote_service_binding" {
+            option_set(
+                clause,
+                source,
+                "ddl-rest-remote-binding",
+                "ddl-rest-remote-binding",
+                &["USER"],
+                &[],
+                out,
+            );
+        }
+        if kind == "alter_queue"
+            && has_child(statement, "keyword_reorganize")
+            && clause.kind() == "with_clause"
+        {
+            out.push(violation(
+                "ddl-rest-queue",
+                "REORGANIZE needs parentheses around its WITH options".into(),
+                clause,
+            ));
+        }
+        for option in direct_options(clause) {
+            let name = option_name(option, source);
+            let value = option.child_by_field_name("value");
+            if kind == "create_login" {
+                let mut c = option.walk();
+                if option
+                    .named_children(&mut c)
+                    .any(|n| n.kind() == "identifier" && upper_text(n, source) == "OLD_PASSWORD")
+                {
+                    out.push(violation(
+                        "ddl-rest-principal",
+                        "OLD_PASSWORD belongs to ALTER, not CREATE LOGIN".into(),
+                        option,
+                    ));
+                }
+            }
+            if matches!(
+                kind,
+                "create_remote_service_binding" | "alter_remote_service_binding"
+            ) && name == "USER"
+                && value.is_some_and(|n| n.kind() != "identifier")
+            {
+                out.push(violation(
+                    "ddl-rest-remote-binding",
+                    "USER is a principal name".into(),
+                    option,
+                ));
+            }
+            if matches!(kind, "create_resource_pool" | "alter_resource_pool") {
+                if name == "AFFINITY"
+                    && has_child(option, "keyword_numanode")
+                    && !has_child(option, "(")
+                {
+                    out.push(violation(
+                        "ddl-rest-resource-pool",
+                        "NUMANODE needs a parenthesized range list".into(),
+                        option,
+                    ));
+                }
+                if name == "MAX_CPU_PERCENT"
+                    && value.is_some_and(|n| {
+                        upper_text(n, source).parse::<u32>().is_ok_and(|v| v > 100)
+                    })
+                {
+                    out.push(violation(
+                        "ddl-rest-resource-pool",
+                        "MAX_CPU_PERCENT cannot exceed 100".into(),
+                        option,
+                    ));
+                }
+            }
+            if matches!(kind, "create_workload_group" | "alter_workload_group")
+                && name == "IMPORTANCE"
+                && value.is_some_and(|n| {
+                    !matches!(upper_text(n, source).as_str(), "LOW" | "MEDIUM" | "HIGH")
+                })
+            {
+                out.push(violation(
+                    "ddl-rest-workload-group",
+                    "IMPORTANCE is LOW, MEDIUM or HIGH".into(),
+                    option,
+                ));
+            }
+        }
+    }
+    if kind == "alter_message_type"
+        && let Some(eq) = children.iter().position(|n| n.kind() == "=")
+    {
+        let name = eq.checked_sub(1).and_then(|i| children.get(i));
+        let value = children.get(eq + 1);
+        let validation = value.map(|n| upper_text(*n, source)).unwrap_or_default();
+        if name.is_some_and(|n| upper_text(*n, source) != "VALIDATION")
+            || !matches!(
+                validation.as_str(),
+                "NONE" | "EMPTY" | "WELL_FORMED_XML" | "VALID_XML"
+            )
+            || (has_child(statement, "keyword_with") && validation != "VALID_XML")
+        {
+            out.push(violation("ddl-rest-message-type", "VALIDATION is NONE, EMPTY, WELL_FORMED_XML or VALID_XML; only VALID_XML takes a schema collection".into(), statement));
+        }
+    }
+    if kind == "alter_authorization"
+        && let Some(separator) = children.iter().position(|n| n.kind() == "::")
+        && separator > 0
+        && upper_text(children[separator - 1], source) == "ASYMMETRIC"
+    {
+        out.push(violation(
+            "ddl-rest-authorization",
+            "the ASYMMETRIC class needs KEY".into(),
+            children[separator - 1],
+        ));
+    }
+}
+
+/// LocalDB 17.0.1000.7, levels 100-170, ddl-rest probes:
+/// commit-bad/duplicate/invalid/multi/missing (102); kill-queryString (102);
+/// stats-wrong/unknown (155), stats-both (1052); sensitivity-badRank (16114),
+/// badLabel (102), duplicate (16104), unknown (16101), name (16103);
+/// signature-unknown/both (102). Names and catalog/variable resolution remain contextual.
+fn ddl_rest_misc(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let container = node.child_by_field_name("options").or_else(|| {
+        let mut c = node.walk();
+        node.named_children(&mut c)
+            .find(|n| matches!(n.kind(), "with_options" | "with_clause"))
+    });
+    let options = container.map(direct_options).unwrap_or_default();
+    let reject = |out: &mut Vec<Violation>, at: Node, detail: &str| {
+        out.push(violation("ddl-rest-misc", detail.into(), at));
+    };
+    match node.kind() {
+        "commit_statement" => {
+            if let Some(clause) = container
+                && (options.len() != 1
+                    || option_name(options[0], source) != "DELAYED_DURABILITY"
+                    || !options[0]
+                        .child_by_field_name("value")
+                        .is_some_and(|n| matches!(upper_text(n, source).as_str(), "ON" | "OFF"))
+                    || !has_child(options[0], "="))
+            {
+                reject(
+                    out,
+                    clause,
+                    "COMMIT WITH takes DELAYED_DURABILITY = ON or OFF",
+                );
+            }
+        }
+        "kill_statement" => {
+            if has_child(node, "keyword_query") {
+                let mut c = node.walk();
+                if node
+                    .named_children(&mut c)
+                    .filter(|n| n.kind() == "literal")
+                    .any(|n| value_kind(n, source) != 'i')
+                {
+                    reject(
+                        out,
+                        node,
+                        "a query notification subscription needs an integer or ALL",
+                    );
+                }
+            }
+        }
+        "update_statistics_statement" => {
+            let allowed = [
+                "FULLSCAN",
+                "SAMPLE",
+                "RESAMPLE",
+                "STATS_STREAM",
+                "ROWCOUNT",
+                "PAGECOUNT",
+                "ALL",
+                "COLUMNS",
+                "INDEX",
+                "NORECOMPUTE",
+                "INCREMENTAL",
+                "PERSIST_SAMPLE_PERCENT",
+                "MAXDOP",
+                "AUTO_DROP",
+            ];
+            let names: Vec<_> = options.iter().map(|n| option_name(*n, source)).collect();
+            if names.iter().any(|n| !allowed.contains(&n.as_str()))
+                || names.iter().any(|n| n == "COLUMNS") && names.iter().any(|n| n == "INDEX")
+                || options.iter().any(|n| {
+                    has_child(*n, "keyword_partitions") && option_name(*n, source) != "RESAMPLE"
+                })
+            {
+                reject(
+                    out,
+                    node,
+                    "invalid UPDATE STATISTICS option or partition suffix",
+                );
+            }
+        }
+        "sensitivity_classification_statement" => {
+            let mut c = node.walk();
+            for name in node
+                .named_children(&mut c)
+                .filter(|n| n.kind() == "object_reference")
+            {
+                let mut nc = name.walk();
+                if !name.children(&mut nc).any(|n| n.kind() == ".") {
+                    reject(
+                        out,
+                        name,
+                        "a sensitivity classification target needs table.column",
+                    );
+                }
+            }
+            let mut seen = Vec::new();
+            for option in options {
+                let name = option_name(option, source);
+                let value = option.child_by_field_name("value");
+                let valid = has_child(option, "=")
+                    && match name.as_str() {
+                        "LABEL" | "LABEL_ID" | "INFORMATION_TYPE" | "INFORMATION_TYPE_ID" => {
+                            value.is_some_and(|n| value_kind(n, source) == 's')
+                        }
+                        "RANK" => value.is_some_and(|n| {
+                            matches!(
+                                upper_text(n, source).as_str(),
+                                "NONE" | "LOW" | "MEDIUM" | "HIGH" | "CRITICAL"
+                            )
+                        }),
+                        _ => false,
+                    };
+                if !valid || seen.contains(&name) {
+                    reject(
+                        out,
+                        option,
+                        "invalid or duplicate sensitivity classification option",
+                    );
+                }
+                seen.push(name);
+            }
+        }
+        "signature_signer" => {
+            if let Some(clause) = container {
+                let valid = options.len() == 1
+                    && !(has_child(node, "keyword_symmetric")
+                        && option_name(options[0], source) == "PASSWORD")
+                    && match option_name(options[0], source).as_str() {
+                        "PASSWORD" => assigned_value(options[0], source) == Some('s'),
+                        "SIGNATURE" => {
+                            options[0].child_by_field_name("value").is_some_and(|n| {
+                                n.kind() == "literal" && upper_text(n, source).starts_with("0X")
+                            }) && has_child(options[0], "=")
+                        }
+                        _ => false,
+                    };
+                if !valid {
+                    reject(
+                        out,
+                        clause,
+                        "a signature signer takes one PASSWORD string or SIGNATURE binary value",
+                    );
+                }
+            }
+        }
+        _ => {}
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -2678,6 +3295,39 @@ mod tests {
             .into_iter()
             .map(|v| v.rule)
             .collect()
+    }
+
+    #[test]
+    fn ddl_rest_permission_tails_match_the_engine() {
+        for sql in [
+            "GRANT SELECT ON dbo.t FROM u;",
+            "DENY SELECT ON dbo.t FROM u;",
+            "GRANT SELECT ON dbo.t TO u CASCADE;",
+            "DENY SELECT ON dbo.t TO u WITH GRANT OPTION;",
+            "REVOKE SELECT ON dbo.t FROM u WITH GRANT OPTION;",
+            "GRANT GRANT OPTION FOR SELECT ON dbo.t TO u;",
+            "DENY GRANT OPTION FOR SELECT ON dbo.t TO u;",
+        ] {
+            let mut parser = Parser::new();
+            parser
+                .set_language(&tree_sitter_mssql::LANGUAGE.into())
+                .unwrap();
+            assert!(
+                !parser.parse(sql, None).unwrap().root_node().has_error(),
+                "{sql}: this boundary is enforced by constraints"
+            );
+            assert_eq!(rules(sql), ["ddl-rest-permission"], "{sql}");
+        }
+        for sql in [
+            "GRANT SELECT ON dbo.t TO u WITH GRANT OPTION AS dbo;",
+            "DENY SELECT ON dbo.t TO u CASCADE AS dbo;",
+            "REVOKE SELECT ON dbo.t TO u;",
+            "REVOKE SELECT ON dbo.t FROM u CASCADE AS dbo;",
+            "REVOKE GRANT OPTION FOR SELECT ON dbo.t TO u CASCADE AS dbo;",
+            r"GRANT CONTROL ON ASYMMETRIC/* 한국어 C:\keys */KEY::ak TO u;",
+        ] {
+            assert!(rules(sql).is_empty(), "{sql}");
+        }
     }
 
     #[test]

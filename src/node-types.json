@@ -10941,6 +10941,78 @@
     }
   },
   {
+    "type": "drop_aggregate",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "object_reference",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_aggregate",
+          "named": true
+        },
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_exists",
+          "named": true
+        },
+        {
+          "type": "keyword_if",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "drop_application_role",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_application",
+          "named": true
+        },
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_role",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "drop_assembly",
     "named": true,
     "fields": {
@@ -11027,6 +11099,40 @@
         },
         {
           "type": "keyword_remove",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "drop_broker_priority",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_broker",
+          "named": true
+        },
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_priority",
           "named": true
         }
       ]
@@ -11139,6 +11245,108 @@
     }
   },
   {
+    "type": "drop_contract",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_contract",
+          "named": true
+        },
+        {
+          "type": "keyword_drop",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "drop_credential",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_credential",
+          "named": true
+        },
+        {
+          "type": "keyword_database",
+          "named": true
+        },
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_scoped",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "drop_cryptographic_provider",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_cryptographic",
+          "named": true
+        },
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_provider",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "drop_database",
     "named": true,
     "fields": {
@@ -11159,6 +11367,109 @@
       "types": [
         {
           "type": "keyword_database",
+          "named": true
+        },
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_exists",
+          "named": true
+        },
+        {
+          "type": "keyword_if",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "drop_database_audit_specification",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_audit",
+          "named": true
+        },
+        {
+          "type": "keyword_database",
+          "named": true
+        },
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_specification",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "drop_database_encryption_key",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_database",
+          "named": true
+        },
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_encryption",
+          "named": true
+        },
+        {
+          "type": "keyword_key",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "drop_default",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "object_reference",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_default",
           "named": true
         },
         {
@@ -11758,6 +12069,108 @@
     }
   },
   {
+    "type": "drop_message_type",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_message",
+          "named": true
+        },
+        {
+          "type": "keyword_type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "drop_partition_function",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_function",
+          "named": true
+        },
+        {
+          "type": "keyword_partition",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "drop_partition_scheme",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_partition",
+          "named": true
+        },
+        {
+          "type": "keyword_scheme",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "drop_procedure",
     "named": true,
     "fields": {
@@ -11794,6 +12207,108 @@
         },
         {
           "type": "keyword_procedure",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "drop_queue",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "object_reference",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_queue",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "drop_remote_service_binding",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_binding",
+          "named": true
+        },
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_remote",
+          "named": true
+        },
+        {
+          "type": "keyword_service",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "drop_resource_pool",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_pool",
+          "named": true
+        },
+        {
+          "type": "keyword_resource",
           "named": true
         }
       ]
@@ -11842,6 +12357,74 @@
     }
   },
   {
+    "type": "drop_route",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_route",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "drop_rule",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "object_reference",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_exists",
+          "named": true
+        },
+        {
+          "type": "keyword_if",
+          "named": true
+        },
+        {
+          "type": "keyword_rule",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "drop_schema",
     "named": true,
     "fields": {
@@ -11874,6 +12457,44 @@
         },
         {
           "type": "keyword_schema",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "drop_search_property_list",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_list",
+          "named": true
+        },
+        {
+          "type": "keyword_property",
+          "named": true
+        },
+        {
+          "type": "keyword_search",
           "named": true
         }
       ]
@@ -11954,6 +12575,108 @@
         },
         {
           "type": "keyword_sequence",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "drop_server_audit",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_audit",
+          "named": true
+        },
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_server",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "drop_server_audit_specification",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_audit",
+          "named": true
+        },
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_server",
+          "named": true
+        },
+        {
+          "type": "keyword_specification",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "drop_service",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_service",
           "named": true
         }
       ]
@@ -12270,6 +12993,40 @@
         },
         {
           "type": "keyword_view",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "drop_workload_group",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_group",
+          "named": true
+        },
+        {
+          "type": "keyword_workload",
           "named": true
         }
       ]
@@ -21322,11 +22079,23 @@
           "named": true
         },
         {
+          "type": "drop_aggregate",
+          "named": true
+        },
+        {
+          "type": "drop_application_role",
+          "named": true
+        },
+        {
           "type": "drop_assembly",
           "named": true
         },
         {
           "type": "drop_asymmetric_key",
+          "named": true
+        },
+        {
+          "type": "drop_broker_priority",
           "named": true
         },
         {
@@ -21342,7 +22111,31 @@
           "named": true
         },
         {
+          "type": "drop_contract",
+          "named": true
+        },
+        {
+          "type": "drop_credential",
+          "named": true
+        },
+        {
+          "type": "drop_cryptographic_provider",
+          "named": true
+        },
+        {
           "type": "drop_database",
+          "named": true
+        },
+        {
+          "type": "drop_database_audit_specification",
+          "named": true
+        },
+        {
+          "type": "drop_database_encryption_key",
+          "named": true
+        },
+        {
+          "type": "drop_default",
           "named": true
         },
         {
@@ -21410,7 +22203,31 @@
           "named": true
         },
         {
+          "type": "drop_message_type",
+          "named": true
+        },
+        {
+          "type": "drop_partition_function",
+          "named": true
+        },
+        {
+          "type": "drop_partition_scheme",
+          "named": true
+        },
+        {
           "type": "drop_procedure",
+          "named": true
+        },
+        {
+          "type": "drop_queue",
+          "named": true
+        },
+        {
+          "type": "drop_remote_service_binding",
+          "named": true
+        },
+        {
+          "type": "drop_resource_pool",
           "named": true
         },
         {
@@ -21418,7 +22235,19 @@
           "named": true
         },
         {
+          "type": "drop_route",
+          "named": true
+        },
+        {
+          "type": "drop_rule",
+          "named": true
+        },
+        {
           "type": "drop_schema",
+          "named": true
+        },
+        {
+          "type": "drop_search_property_list",
           "named": true
         },
         {
@@ -21427,6 +22256,18 @@
         },
         {
           "type": "drop_sequence",
+          "named": true
+        },
+        {
+          "type": "drop_server_audit",
+          "named": true
+        },
+        {
+          "type": "drop_server_audit_specification",
+          "named": true
+        },
+        {
+          "type": "drop_service",
           "named": true
         },
         {
@@ -21459,6 +22300,10 @@
         },
         {
           "type": "drop_view",
+          "named": true
+        },
+        {
+          "type": "drop_workload_group",
           "named": true
         },
         {
@@ -24547,6 +25392,10 @@
     "named": true
   },
   {
+    "type": "keyword_aggregate",
+    "named": true
+  },
+  {
     "type": "keyword_ai_generate_embeddings",
     "named": true
   },
@@ -24576,6 +25425,10 @@
   },
   {
     "type": "keyword_append",
+    "named": true
+  },
+  {
+    "type": "keyword_application",
     "named": true
   },
   {
@@ -24659,6 +25512,10 @@
     "named": true
   },
   {
+    "type": "keyword_binding",
+    "named": true
+  },
+  {
     "type": "keyword_bit",
     "named": true
   },
@@ -24672,6 +25529,10 @@
   },
   {
     "type": "keyword_break",
+    "named": true
+  },
+  {
+    "type": "keyword_broker",
     "named": true
   },
   {
@@ -24843,7 +25704,15 @@
     "named": true
   },
   {
+    "type": "keyword_credential",
+    "named": true
+  },
+  {
     "type": "keyword_cross",
+    "named": true
+  },
+  {
+    "type": "keyword_cryptographic",
     "named": true
   },
   {
@@ -25651,6 +26520,10 @@
     "named": true
   },
   {
+    "type": "keyword_priority",
+    "named": true
+  },
+  {
     "type": "keyword_private",
     "named": true
   },
@@ -25840,6 +26713,10 @@
   },
   {
     "type": "keyword_rowversion",
+    "named": true
+  },
+  {
+    "type": "keyword_rule",
     "named": true
   },
   {
@@ -26268,6 +27145,10 @@
   },
   {
     "type": "keyword_work",
+    "named": true
+  },
+  {
+    "type": "keyword_workload",
     "named": true
   },
   {

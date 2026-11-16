@@ -1,0 +1,4394 @@
+==================
+ddl-rest/permission-grant-object — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT SELECT ON OBJECT::dbo.t TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_select))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-object-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT SELECT ON OBJECT::dbo.t TO u, [domain\u] WITH GRANT OPTION AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_select))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_with)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-object — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY SELECT ON OBJECT::dbo.t TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_select))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-object-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY SELECT ON OBJECT::dbo.t TO u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_select))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-object — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE SELECT ON OBJECT::dbo.t FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (keyword_select))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-object-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE GRANT OPTION FOR SELECT ON OBJECT::dbo.t FROM u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_for)
+        (permission
+          (keyword_select))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_from)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-schema — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT ALTER ON SCHEMA::dbo TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-schema-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT ALTER ON SCHEMA::dbo TO u, [domain\u] WITH GRANT OPTION AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_with)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-schema — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY ALTER ON SCHEMA::dbo TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-schema-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY ALTER ON SCHEMA::dbo TO u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-schema — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE ALTER ON SCHEMA::dbo FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-schema-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE GRANT OPTION FOR ALTER ON SCHEMA::dbo FROM u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_for)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-certificate — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT CONTROL ON CERTIFICATE::c TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-certificate-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT CONTROL ON CERTIFICATE::c TO u, [domain\u] WITH GRANT OPTION AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_with)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-certificate — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY CONTROL ON CERTIFICATE::c TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-certificate-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY CONTROL ON CERTIFICATE::c TO u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-certificate — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE CONTROL ON CERTIFICATE::c FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-certificate-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE GRANT OPTION FOR CONTROL ON CERTIFICATE::c FROM u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_for)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-asymmetric — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT CONTROL ON ASYMMETRIC KEY::ak TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-asymmetric-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT CONTROL ON ASYMMETRIC KEY::ak TO u, [domain\u] WITH GRANT OPTION AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_with)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-asymmetric — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY CONTROL ON ASYMMETRIC KEY::ak TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-asymmetric-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY CONTROL ON ASYMMETRIC KEY::ak TO u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-asymmetric — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE CONTROL ON ASYMMETRIC KEY::ak FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-asymmetric-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE GRANT OPTION FOR CONTROL ON ASYMMETRIC KEY::ak FROM u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_for)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-symmetric — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT CONTROL ON SYMMETRIC KEY::sk TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-symmetric-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT CONTROL ON SYMMETRIC KEY::sk TO u, [domain\u] WITH GRANT OPTION AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_with)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-symmetric — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY CONTROL ON SYMMETRIC KEY::sk TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-symmetric-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY CONTROL ON SYMMETRIC KEY::sk TO u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-symmetric — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE CONTROL ON SYMMETRIC KEY::sk FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-symmetric-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE GRANT OPTION FOR CONTROL ON SYMMETRIC KEY::sk FROM u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_for)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-application — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT CONTROL ON APPLICATION ROLE::ar TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-application-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT CONTROL ON APPLICATION ROLE::ar TO u, [domain\u] WITH GRANT OPTION AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_with)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-application — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY CONTROL ON APPLICATION ROLE::ar TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-application-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY CONTROL ON APPLICATION ROLE::ar TO u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-application — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE CONTROL ON APPLICATION ROLE::ar FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-application-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE GRANT OPTION FOR CONTROL ON APPLICATION ROLE::ar FROM u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_for)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-credential — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT CONTROL ON DATABASE SCOPED CREDENTIAL::cred TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-credential-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT CONTROL ON DATABASE SCOPED CREDENTIAL::cred TO u, [domain\u] WITH GRANT OPTION AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_with)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-credential — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY CONTROL ON DATABASE SCOPED CREDENTIAL::cred TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-credential-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY CONTROL ON DATABASE SCOPED CREDENTIAL::cred TO u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-credential — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE CONTROL ON DATABASE SCOPED CREDENTIAL::cred FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-credential-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE GRANT OPTION FOR CONTROL ON DATABASE SCOPED CREDENTIAL::cred FROM u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_for)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-catalog — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT REFERENCES ON FULLTEXT CATALOG::ft TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_references))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-catalog-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT REFERENCES ON FULLTEXT CATALOG::ft TO u, [domain\u] WITH GRANT OPTION AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_references))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_with)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-catalog — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY REFERENCES ON FULLTEXT CATALOG::ft TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_references))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-catalog-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY REFERENCES ON FULLTEXT CATALOG::ft TO u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_references))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-catalog — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE REFERENCES ON FULLTEXT CATALOG::ft FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (keyword_references))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-catalog-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE GRANT OPTION FOR REFERENCES ON FULLTEXT CATALOG::ft FROM u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_for)
+        (permission
+          (keyword_references))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-stoplist — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT VIEW DEFINITION ON FULLTEXT STOPLIST::sl TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_view)
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-stoplist-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT VIEW DEFINITION ON FULLTEXT STOPLIST::sl TO u, [domain\u] WITH GRANT OPTION AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_view)
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_with)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-stoplist — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY VIEW DEFINITION ON FULLTEXT STOPLIST::sl TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_view)
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-stoplist-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY VIEW DEFINITION ON FULLTEXT STOPLIST::sl TO u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_view)
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-stoplist — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE VIEW DEFINITION ON FULLTEXT STOPLIST::sl FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (keyword_view)
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-stoplist-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE GRANT OPTION FOR VIEW DEFINITION ON FULLTEXT STOPLIST::sl FROM u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_for)
+        (permission
+          (keyword_view)
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-message — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT REFERENCES ON MESSAGE TYPE::mt TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_references))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-message-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT REFERENCES ON MESSAGE TYPE::mt TO u, [domain\u] WITH GRANT OPTION AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_references))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_with)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-message — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY REFERENCES ON MESSAGE TYPE::mt TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_references))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-message-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY REFERENCES ON MESSAGE TYPE::mt TO u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_references))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-message — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE REFERENCES ON MESSAGE TYPE::mt FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (keyword_references))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-message-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE GRANT OPTION FOR REFERENCES ON MESSAGE TYPE::mt FROM u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_for)
+        (permission
+          (keyword_references))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-remote — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT ALTER ON REMOTE SERVICE BINDING::rsb TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-remote-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT ALTER ON REMOTE SERVICE BINDING::rsb TO u, [domain\u] WITH GRANT OPTION AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_with)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-remote — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY ALTER ON REMOTE SERVICE BINDING::rsb TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-remote-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY ALTER ON REMOTE SERVICE BINDING::rsb TO u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-remote — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE ALTER ON REMOTE SERVICE BINDING::rsb FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-remote-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE GRANT OPTION FOR ALTER ON REMOTE SERVICE BINDING::rsb FROM u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_for)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-search — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT VIEW DEFINITION ON SEARCH PROPERTY LIST::spl TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_view)
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-search-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT VIEW DEFINITION ON SEARCH PROPERTY LIST::spl TO u, [domain\u] WITH GRANT OPTION AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_view)
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_with)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-search — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY VIEW DEFINITION ON SEARCH PROPERTY LIST::spl TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_view)
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-search-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY VIEW DEFINITION ON SEARCH PROPERTY LIST::spl TO u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_view)
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-search — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE VIEW DEFINITION ON SEARCH PROPERTY LIST::spl FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (keyword_view)
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-search-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE GRANT OPTION FOR VIEW DEFINITION ON SEARCH PROPERTY LIST::spl FROM u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_for)
+        (permission
+          (keyword_view)
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-server — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT ALTER ON SERVER ROLE::sr TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-server-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT ALTER ON SERVER ROLE::sr TO u, [domain\u] WITH GRANT OPTION AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_with)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-server — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY ALTER ON SERVER ROLE::sr TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-server-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY ALTER ON SERVER ROLE::sr TO u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-server — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE ALTER ON SERVER ROLE::sr FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-server-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE GRANT OPTION FOR ALTER ON SERVER ROLE::sr FROM u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_for)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-xml — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT ALTER ON XML SCHEMA COLLECTION::dbo.xs TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-xml-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT ALTER ON XML SCHEMA COLLECTION::dbo.xs TO u, [domain\u] WITH GRANT OPTION AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_with)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-xml — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY ALTER ON XML SCHEMA COLLECTION::dbo.xs TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-xml-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY ALTER ON XML SCHEMA COLLECTION::dbo.xs TO u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-xml — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE ALTER ON XML SCHEMA COLLECTION::dbo.xs FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-xml-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE GRANT OPTION FOR ALTER ON XML SCHEMA COLLECTION::dbo.xs FROM u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_for)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_from)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-availability — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT CONTROL ON AVAILABILITY GROUP::ag TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-availability-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT CONTROL ON AVAILABILITY GROUP::ag TO u, [domain\u] WITH GRANT OPTION AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_with)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-availability — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY CONTROL ON AVAILABILITY GROUP::ag TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-availability-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY CONTROL ON AVAILABILITY GROUP::ag TO u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-availability — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE CONTROL ON AVAILABILITY GROUP::ag FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-availability-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE GRANT OPTION FOR CONTROL ON AVAILABILITY GROUP::ag FROM u, [domain\u] CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_for)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-class-comment — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT CONTROL ON ASYMMETRIC/* 한국어 C:\keys */KEY::ak TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (marginalia)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-class-line-comment — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY REFERENCES ON MESSAGE--x
+TYPE::mt TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_references))
+        (keyword_on)
+        (identifier)
+        (comment)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-class-bracket — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+GRANT CONTROL ON [ASYMMETRIC KEY]::ak TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-cascade — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+GRANT SELECT ON dbo.t TO u CASCADE;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_select))
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (keyword_cascade)))))
+
+==================
+ddl-rest/permission-grant-from — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+GRANT SELECT ON dbo.t FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_select))
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-from — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+DENY SELECT ON dbo.t FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_select))
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/permission-deny-with-grant — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+DENY SELECT ON dbo.t TO u WITH GRANT OPTION;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_select))
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (keyword_with)
+        (keyword_grant)
+        (keyword_option)))))
+
+==================
+ddl-rest/permission-deny-grant-option-for — LocalDB 17.0.1000.7 levels 100-170: rejects 156,102
+==================
+
+DENY GRANT OPTION FOR SELECT ON dbo.t TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_for)
+        (permission
+          (keyword_select))
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-grant-option-for — LocalDB 17.0.1000.7 levels 100-170: rejects 156,102
+==================
+
+GRANT GRANT OPTION FOR SELECT ON dbo.t TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_for)
+        (permission
+          (keyword_select))
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-with-grant — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+REVOKE SELECT ON dbo.t FROM u WITH GRANT OPTION;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (keyword_select))
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_from)
+        (identifier)
+        (keyword_with)
+        (keyword_grant)
+        (keyword_option)))))
+
+==================
+ddl-rest/permission-revoke-to — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE SELECT ON dbo.t TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (keyword_select))
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-grant-to — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE GRANT OPTION FOR SELECT ON dbo.t TO u CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_for)
+        (permission
+          (keyword_select))
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-revoke-cascade — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE SELECT ON dbo.t FROM u CASCADE AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (keyword_select))
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_from)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-as — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT SELECT ON dbo.t TO u WITH GRANT OPTION AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_select))
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (keyword_with)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-grant-column-good — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT SELECT(a), UPDATE(b) ON OBJECT::dbo.t TO u WITH GRANT OPTION;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_select)
+          (list
+            (identifier)))
+        (permission
+          (keyword_update)
+          (list
+            (identifier)))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_to)
+        (identifier)
+        (keyword_with)
+        (keyword_grant)
+        (keyword_option)))))
+
+==================
+ddl-rest/permission-grant-column-bad — LocalDB 17.0.1000.7 levels 100-170: rejects 1020
+==================
+
+GRANT DELETE(a) ON OBJECT::dbo.t TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_delete)
+          (list
+            (identifier)))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-backup-permission — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT CREATE TABLE, BACKUP DATABASE TO u WITH GRANT OPTION AS dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_create)
+          (keyword_table))
+        (permission
+          (identifier)
+          (keyword_database))
+        (keyword_to)
+        (identifier)
+        (keyword_with)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/permission-new-permission-words — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+GRANT CREATE APPLICATION ROLE, ALTER ANY DATABASE SCOPED CREDENTIAL, ALTER ANY REMOTE SERVICE BINDING TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_create)
+          (identifier)
+          (keyword_role))
+        (permission
+          (keyword_alter)
+          (keyword_any)
+          (keyword_database)
+          (identifier)
+          (identifier))
+        (permission
+          (keyword_alter)
+          (keyword_any)
+          (identifier)
+          (identifier)
+          (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-create-key-permission — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT CREATE ASYMMETRIC KEY, CREATE SYMMETRIC KEY, CREATE CERTIFICATE TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_create)
+          (identifier)
+          (identifier))
+        (permission
+          (keyword_create)
+          (identifier)
+          (identifier))
+        (permission
+          (keyword_create)
+          (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-create-message-permission — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT CREATE MESSAGE TYPE, CREATE CONTRACT, CREATE SERVICE TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_create)
+          (identifier)
+          (keyword_type))
+        (permission
+          (keyword_create)
+          (identifier))
+        (permission
+          (keyword_create)
+          (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-new-name-words — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT VIEW SERVER STATE, CONNECT SQL, ALTER ANY LOGIN TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_view)
+          (keyword_server)
+          (identifier))
+        (permission
+          (identifier)
+          (identifier))
+        (permission
+          (keyword_alter)
+          (keyword_any)
+          (keyword_login))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/permission-unknown-permission — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+GRANT NONEXISTENT PERMISSION TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (identifier)
+          (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/create-event-session-server — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE EVENT SESSION e ON SERVER ADD EVENT sqlserver.error_reported;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_event_session
+        (keyword_create)
+        (keyword_event)
+        (keyword_session)
+        name: (identifier)
+        (keyword_on)
+        (keyword_server)
+        (keyword_add)
+        (keyword_event)
+        (event_session_event
+          name: (object_reference
+            schema: (identifier)
+            name: (identifier)))))))
+
+==================
+ddl-rest/create-event-session-empty — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+CREATE EVENT SESSION e ON SERVER;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_event_session
+        (keyword_create)
+        (keyword_event)
+        (keyword_session)
+        name: (identifier)
+        (keyword_on)
+        (keyword_server)))))
+
+==================
+ddl-rest/create-key-executable-no-file — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+CREATE ASYMMETRIC KEY k FROM EXECUTABLE = 'C:\a.dll';
+
+---
+
+(program
+  (batch
+    (statement
+      (create_asymmetric_key
+        (keyword_create)
+        (keyword_asymmetric)
+        (keyword_key)
+        name: (identifier)
+        (keyword_from)
+        (option
+          name: (identifier)
+          value: (literal))))))
+
+==================
+ddl-rest/create-login-hashed — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE LOGIN l WITH PASSWORD = 0x02001234 HASHED, CHECK_POLICY = OFF;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_login
+        (keyword_create)
+        (keyword_login)
+        name: (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)
+            value: (identifier))
+          (option
+            name: (identifier)
+            value: (keyword_off)))))))
+
+==================
+ddl-rest/create-login-must-change — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE LOGIN l WITH PASSWORD = 'dummy' MUST_CHANGE, CHECK_POLICY = ON;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_login
+        (keyword_create)
+        (keyword_login)
+        name: (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)
+            value: (identifier))
+          (option
+            name: (identifier)
+            value: (keyword_on)))))))
+
+==================
+ddl-rest/create-index-json-multiple-columns — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+CREATE JSON INDEX i ON dbo.t(a,b);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier))
+          (column
+            name: (identifier)))))))
+
+==================
+ddl-rest/create-index-spatial-multiple-columns — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+CREATE SPATIAL INDEX i ON dbo.t(a,b);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier))
+          (column
+            name: (identifier)))))))
+
+==================
+ddl-rest/create-index-primary-no-xml — LocalDB 17.0.1000.7 levels 100-170: rejects 1018
+==================
+
+CREATE PRIMARY INDEX i ON dbo.t(c);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))))))
+
+==================
+ddl-rest/create-index-selective-no-xml — LocalDB 17.0.1000.7 levels 100-170: rejects 1018
+==================
+
+CREATE SELECTIVE INDEX i ON dbo.t(c);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))))))
+
+==================
+ddl-rest/create-index-json-with-unique — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+CREATE UNIQUE JSON INDEX i ON dbo.t(j);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        (keyword_unique)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))))))
+
+==================
+ddl-rest/alter-assembly-drop-all — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER ASSEMBLY a DROP FILE ALL;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_assembly
+        (keyword_alter)
+        (keyword_assembly)
+        (identifier)
+        (keyword_drop)
+        (keyword_file)
+        (keyword_all)))))
+
+==================
+ddl-rest/alter-authorization-multi — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER AUTHORIZATION ON XML SCHEMA COLLECTION::dbo.x TO SCHEMA OWNER;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_authorization
+        (keyword_alter)
+        (keyword_authorization)
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_to)
+        (keyword_schema)
+        (keyword_owner)))))
+
+==================
+ddl-rest/alter-authorization-key — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER AUTHORIZATION ON ASYMMETRIC KEY::k TO dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_authorization
+        (keyword_alter)
+        (keyword_authorization)
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/alter-login-must — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER LOGIN l WITH PASSWORD = 'placeholder' MUST_CHANGE;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_login
+        (keyword_alter)
+        (keyword_login)
+        (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)
+            value: (identifier)))))))
+
+==================
+ddl-rest/alter-login-unlock — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER LOGIN l WITH PASSWORD = 'placeholder' UNLOCK;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_login
+        (keyword_alter)
+        (keyword_login)
+        (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)
+            value: (identifier)))))))
+
+==================
+ddl-rest/alter-login-hashed — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER LOGIN l WITH PASSWORD = 0x02000A1B HASHED, CHECK_POLICY = OFF, NO CREDENTIAL;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_login
+        (keyword_alter)
+        (keyword_login)
+        (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)
+            value: (identifier))
+          (option
+            name: (identifier)
+            value: (keyword_off))
+          (option
+            name: (identifier)
+            value: (identifier)))))))
+
+==================
+ddl-rest/alter-user-null — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER USER u WITH DEFAULT_SCHEMA = NULL, DEFAULT_LANGUAGE = 1033;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_user
+        (keyword_alter)
+        (keyword_user)
+        (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal
+              (keyword_null)))
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
+ddl-rest/alter-queue-bare-reorganize — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+ALTER QUEUE dbo.q REORGANIZE WITH LOB_COMPACTION = OFF;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_reorganize)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_off)))))))
+
+==================
+ddl-rest/alter-schema-xml — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER SCHEMA s TRANSFER XML SCHEMA COLLECTION::dbo.x;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_schema
+        (keyword_alter)
+        (keyword_schema)
+        (identifier)
+        (keyword_transfer)
+        (identifier)
+        (identifier)
+        (identifier)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))))))
+
+==================
+ddl-rest/alter-bad-login-old-bare — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+ALTER LOGIN l WITH PASSWORD = 'placeholder' OLD_PASSWORD;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_login
+        (keyword_alter)
+        (keyword_login)
+        (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)
+            value: (identifier)))))))
+
+==================
+ddl-rest/drop-aggregate — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP AGGREGATE IF EXISTS dbo.a;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_aggregate
+        (keyword_drop)
+        (keyword_aggregate)
+        (keyword_if)
+        (keyword_exists)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))))))
+
+==================
+ddl-rest/drop-default — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP DEFAULT IF EXISTS dbo.d, d2;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_default
+        (keyword_drop)
+        (keyword_default)
+        (keyword_if)
+        (keyword_exists)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        name: (object_reference
+          name: (identifier))))))
+
+==================
+ddl-rest/drop-rule — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP RULE IF EXISTS dbo.r, r2;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_rule
+        (keyword_drop)
+        (keyword_rule)
+        (keyword_if)
+        (keyword_exists)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        name: (object_reference
+          name: (identifier))))))
+
+==================
+ddl-rest/drop-application-role — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP APPLICATION ROLE ar;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_application_role
+        (keyword_drop)
+        (keyword_application)
+        (keyword_role)
+        name: (identifier)))))
+
+==================
+ddl-rest/drop-broker-priority — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP BROKER PRIORITY p;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_broker_priority
+        (keyword_drop)
+        (keyword_broker)
+        (keyword_priority)
+        name: (identifier)))))
+
+==================
+ddl-rest/drop-contract — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP CONTRACT c;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_contract
+        (keyword_drop)
+        (keyword_contract)
+        name: (identifier)))))
+
+==================
+ddl-rest/drop-credential — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP CREDENTIAL c;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_credential
+        (keyword_drop)
+        (keyword_credential)
+        name: (identifier)))))
+
+==================
+ddl-rest/drop-scoped-credential — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP DATABASE SCOPED CREDENTIAL c;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_credential
+        (keyword_drop)
+        (keyword_database)
+        (keyword_scoped)
+        (keyword_credential)
+        name: (identifier)))))
+
+==================
+ddl-rest/drop-crypto-provider — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP CRYPTOGRAPHIC PROVIDER p;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_cryptographic_provider
+        (keyword_drop)
+        (keyword_cryptographic)
+        (keyword_provider)
+        name: (identifier)))))
+
+==================
+ddl-rest/drop-database-audit — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP DATABASE AUDIT SPECIFICATION a;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_database_audit_specification
+        (keyword_drop)
+        (keyword_database)
+        (keyword_audit)
+        (keyword_specification)
+        name: (identifier)))))
+
+==================
+ddl-rest/drop-database-key — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP DATABASE ENCRYPTION KEY;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_database_encryption_key
+        (keyword_drop)
+        (keyword_database)
+        (keyword_encryption)
+        (keyword_key)))))
+
+==================
+ddl-rest/drop-message-type — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP MESSAGE TYPE m;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_message_type
+        (keyword_drop)
+        (keyword_message)
+        (keyword_type)
+        name: (identifier)))))
+
+==================
+ddl-rest/drop-partition-function — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP PARTITION FUNCTION f;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_partition_function
+        (keyword_drop)
+        (keyword_partition)
+        (keyword_function)
+        name: (identifier)))))
+
+==================
+ddl-rest/drop-partition-scheme — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP PARTITION SCHEME p;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_partition_scheme
+        (keyword_drop)
+        (keyword_partition)
+        (keyword_scheme)
+        name: (identifier)))))
+
+==================
+ddl-rest/drop-queue — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP QUEUE db.dbo.q;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_queue
+        (keyword_drop)
+        (keyword_queue)
+        name: (object_reference
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))))))
+
+==================
+ddl-rest/drop-remote-binding — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP REMOTE SERVICE BINDING b;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_remote_service_binding
+        (keyword_drop)
+        (keyword_remote)
+        (keyword_service)
+        (keyword_binding)
+        name: (identifier)))))
+
+==================
+ddl-rest/drop-resource-pool — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP RESOURCE POOL p;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_resource_pool
+        (keyword_drop)
+        (keyword_resource)
+        (keyword_pool)
+        name: (identifier)))))
+
+==================
+ddl-rest/drop-route — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP ROUTE r;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_route
+        (keyword_drop)
+        (keyword_route)
+        name: (identifier)))))
+
+==================
+ddl-rest/drop-search-list — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP SEARCH PROPERTY LIST p;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_search_property_list
+        (keyword_drop)
+        (keyword_search)
+        (keyword_property)
+        (keyword_list)
+        name: (identifier)))))
+
+==================
+ddl-rest/drop-server-audit — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP SERVER AUDIT a;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_server_audit
+        (keyword_drop)
+        (keyword_server)
+        (keyword_audit)
+        name: (identifier)))))
+
+==================
+ddl-rest/drop-server-audit-spec — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP SERVER AUDIT SPECIFICATION a;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_server_audit_specification
+        (keyword_drop)
+        (keyword_server)
+        (keyword_audit)
+        (keyword_specification)
+        name: (identifier)))))
+
+==================
+ddl-rest/drop-service — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP SERVICE s;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_service
+        (keyword_drop)
+        (keyword_service)
+        name: (identifier)))))
+
+==================
+ddl-rest/drop-workload-group — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP WORKLOAD GROUP g;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_workload_group
+        (keyword_drop)
+        (keyword_workload)
+        (keyword_group)
+        name: (identifier)))))
+
+==================
+ddl-rest/routes-select-all — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT ALL c FROM dbo.t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (unary_expression
+                operator: (keyword_all)
+                operand: (field
+                  name: (identifier))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))))
+
+==================
+ddl-rest/routes-select-distinct-all — LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT DISTINCT ALL c FROM dbo.t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (keyword_distinct)
+          (select_expression
+            (term
+              value: (unary_expression
+                operator: (keyword_all)
+                operand: (field
+                  name: (identifier))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))))
+
+==================
+ddl-rest/routes-select-all-distinct — LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT ALL DISTINCT c FROM dbo.t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (unary_expression
+                operator: (keyword_all)
+                operand: (field
+                  name: (identifier)))
+              alias: (identifier))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))))
+
+==================
+ddl-rest/routes-select-all-top-missing — LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT ALL TOP FROM dbo.t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (unary_expression
+                operator: (keyword_all)
+                operand: (field
+                  name: (identifier))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))))
+
+==================
+ddl-rest/routes-match-comma — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT 1 FROM dbo.a a,dbo.e e,dbo.b b WHERE MATCH(a-(e)->b,b<-(e)-a);
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            alias: (identifier))
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            alias: (identifier))
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            alias: (identifier)))
+        (where
+          (keyword_where)
+          predicate: (graph_match_predicate
+            (keyword_match)
+            (graph_match_expr
+              (graph_path
+                node: (identifier)
+                (graph_hop
+                  edge: (identifier)
+                  node: (identifier)))
+              (graph_path
+                node: (identifier)
+                (graph_hop
+                  edge: (identifier)
+                  node: (identifier))))))))))
+
+==================
+ddl-rest/routes-inline-implicit — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TABLE t(id int INDEX ix NONCLUSTERED);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        name: (object_reference
+          name: (identifier))
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)
+            (keyword_index)
+            name: (identifier)
+            (keyword_nonclustered)))))))
+
+==================
+ddl-rest/commit-basic — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+COMMIT;
+
+---
+
+(program
+  (batch
+    (statement
+      (commit_statement
+        (keyword_commit)))))
+
+==================
+ddl-rest/commit-trans — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+COMMIT TRAN t;
+
+---
+
+(program
+  (batch
+    (statement
+      (commit_statement
+        (keyword_commit)
+        (keyword_tran)
+        name: (identifier)))))
+
+==================
+ddl-rest/kill-plain — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+KILL 12;
+
+---
+
+(program
+  (batch
+    (statement
+      (kill_statement
+        (keyword_kill)
+        (literal)))))
+
+==================
+ddl-rest/kill-uow — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+KILL 'D5499C66-E398-45CA-BF7E-DC9C194B48CF' ROLLBACK;
+
+---
+
+(program
+  (batch
+    (statement
+      (kill_statement
+        (keyword_kill)
+        (literal)))
+    (statement
+      (rollback_statement
+        (keyword_rollback)))))
+
+==================
+ddl-rest/kill-bad — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+KILL 12 ROLLBACK;
+
+---
+
+(program
+  (batch
+    (statement
+      (kill_statement
+        (keyword_kill)
+        (literal)))
+    (statement
+      (rollback_statement
+        (keyword_rollback)))))
+
+==================
+ddl-rest/stats-index — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+UPDATE STATISTICS dbo.t WITH FULLSCAN, INDEX;
+
+---
+
+(program
+  (batch
+    (statement
+      (update_statistics_statement
+        (keyword_update)
+        (keyword_statistics)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier))
+          (option
+            name: (identifier)))))))
+
+==================
+ddl-rest/stats-stream — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+UPDATE STATISTICS dbo.t st WITH STATS_STREAM = 0x0100, ROWCOUNT = 1000, PAGECOUNT = 10;
+
+---
+
+(program
+  (batch
+    (statement
+      (update_statistics_statement
+        (keyword_update)
+        (keyword_statistics)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
+ddl-rest/stats-both — LocalDB 17.0.1000.7 levels 100-170: rejects 1052
+==================
+
+UPDATE STATISTICS dbo.t WITH FULLSCAN, COLUMNS, INDEX;
+
+---
+
+(program
+  (batch
+    (statement
+      (update_statistics_statement
+        (keyword_update)
+        (keyword_statistics)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier))
+          (option
+            name: (identifier))
+          (option
+            name: (identifier)))))))
+
+==================
+ddl-rest/stats-unknown — LocalDB 17.0.1000.7 levels 100-170: rejects 155
+==================
+
+UPDATE STATISTICS dbo.t WITH WHATEVER = 1;
+
+---
+
+(program
+  (batch
+    (statement
+      (update_statistics_statement
+        (keyword_update)
+        (keyword_statistics)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
+ddl-rest/fixture-graph-before — LocalDB 17.0.1000.7 levels 100-170: rejects 102,102
+==================
+
+CREATE TABLE Person (
+    ID integer PRIMARY KEY,
+    name varchar(100)
+) AS NODE;
+
+CREATE TABLE likes (
+    weight float
+) AS EDGE;
+
+SELECT Person1.name, Person2.name
+FROM Person Person1, likes, Person Person2
+WHERE MATCH(Person1-(likes)->Person2);
+
+SELECT Person1.name, Person2.name
+FROM Person Person1, likes, Person Person2
+WHERE MATCH(Person2<-(likes)-Person1);
+
+SELECT Person1.name
+FROM Person Person1, likes, Person Person2
+WHERE MATCH(SHORTEST_PATH(Person1-(likes)->Person2+));
+
+CREATE TABLE reports_to (
+    since date
+) AS EDGE;
+
+SELECT Person1.name, Person2.name
+FROM Person Person1, likes, reports_to, Person Person2
+WHERE MATCH(Person1-(likes|reports_to)->Person2);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        name: (object_reference
+          name: (identifier))
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)
+            (keyword_primary)
+            (keyword_key))
+          (column_definition
+            name: (identifier)
+            type: (varchar
+              (keyword_varchar)
+              size: (literal))))
+        (table_data_placement
+          option: (identifier)
+          filegroup: (identifier))))
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        name: (object_reference
+          name: (identifier))
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (float
+              (keyword_float))))
+        (table_data_placement
+          option: (identifier)
+          filegroup: (identifier))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (field
+                (object_reference
+                  name: (identifier))
+                name: (identifier)))
+            (term
+              value: (field
+                (object_reference
+                  name: (identifier))
+                name: (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))
+            alias: (identifier))
+          (relation
+            (object_reference
+              name: (identifier)))
+          (relation
+            (object_reference
+              name: (identifier))
+            alias: (identifier)))
+        (where
+          (keyword_where)
+          predicate: (graph_match_predicate
+            (keyword_match)
+            (graph_match_expr
+              (graph_path
+                node: (identifier)
+                (graph_hop
+                  edge: (identifier)
+                  node: (identifier))))))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (field
+                (object_reference
+                  name: (identifier))
+                name: (identifier)))
+            (term
+              value: (field
+                (object_reference
+                  name: (identifier))
+                name: (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))
+            alias: (identifier))
+          (relation
+            (object_reference
+              name: (identifier)))
+          (relation
+            (object_reference
+              name: (identifier))
+            alias: (identifier)))
+        (where
+          (keyword_where)
+          predicate: (graph_match_predicate
+            (keyword_match)
+            (graph_match_expr
+              (graph_path
+                node: (identifier)
+                (graph_hop
+                  edge: (identifier)
+                  node: (identifier))))))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (field
+                (object_reference
+                  name: (identifier))
+                name: (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))
+            alias: (identifier))
+          (relation
+            (object_reference
+              name: (identifier)))
+          (relation
+            (object_reference
+              name: (identifier))
+            alias: (identifier)))
+        (where
+          (keyword_where)
+          predicate: (graph_match_predicate
+            (keyword_match)
+            (graph_match_expr
+              (graph_shortest_path
+                (keyword_shortest_path)
+                (graph_path
+                  node: (identifier)
+                  (graph_hop
+                    edge: (identifier)
+                    node: (identifier)))))))))
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        name: (object_reference
+          name: (identifier))
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (keyword_date)))
+        (table_data_placement
+          option: (identifier)
+          filegroup: (identifier))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (field
+                (object_reference
+                  name: (identifier))
+                name: (identifier)))
+            (term
+              value: (field
+                (object_reference
+                  name: (identifier))
+                name: (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))
+            alias: (identifier))
+          (relation
+            (object_reference
+              name: (identifier)))
+          (relation
+            (object_reference
+              name: (identifier)))
+          (relation
+            (object_reference
+              name: (identifier))
+            alias: (identifier)))
+        (where
+          (keyword_where)
+          predicate: (graph_match_predicate
+            (keyword_match)
+            (graph_match_expr
+              (graph_path
+                node: (identifier)
+                (graph_hop
+                  edge: (identifier)
+                  edge: (identifier)
+                  node: (identifier))))))))))
