@@ -15,13 +15,16 @@ An owner-maintained [tree-sitter](https://tree-sitter.github.io/tree-sitter/) gr
 ## What it guarantees
 
 SQL Server's own parser is the reference (`SET PARSEONLY ON`, ADR-0002). The oracle in `oracle/` holds 10,300
-cases judged by SQL Server 2017, 2019, 2022 and 2025 at compatibility levels 100–170. From 2.0.0:
+inputs with recorded SQL Server 2017, 2019, 2022 and 2025 results at compatibility levels 100–170. Acceptance means
+acceptance by at least one recorded engine/level; the runner excludes one input that sets PARSEONLY itself.
+From 2.0.0:
 
 - every case SQL Server accepts parses without an error;
 - every case SQL Server rejects is rejected by the grammar or by the constraint layer in `tools/tree-check` (also a
   WebAssembly module for CGO-free hosts, [docs/constraint-wasm.md](docs/constraint-wasm.md)), or is listed with its
-  reason in `oracle/rejected-clean.json`. Those reasons are declarations or the catalog, the edition, platform or
-  server configuration, a feature these builds lack, or a limit of the oracle runner; no grammar gap is open.
+  reason in `oracle/rejected-clean.json` (including runner exclusions). Those reasons are declarations or the catalog,
+  the edition, platform or server configuration, a feature these builds lack, or a limit of the oracle runner;
+  no oracle case is classified as an open grammar gap.
 
 Scope and known limits:
 
