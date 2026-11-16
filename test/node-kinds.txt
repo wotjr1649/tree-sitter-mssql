@@ -170,6 +170,7 @@ drop_aggregate{name}
 drop_application_role{name}
 drop_assembly{name}
 drop_asymmetric_key{name}
+drop_availability_group{name}
 drop_broker_priority{name}
 drop_certificate{name}
 drop_column_encryption_key{name}
@@ -408,6 +409,7 @@ keyword_dialog
 keyword_disable
 keyword_distinct
 keyword_distributed
+keyword_distributed_agg
 keyword_document
 keyword_double
 keyword_drop
@@ -615,6 +617,7 @@ keyword_rebuild
 keyword_receive
 keyword_recompile
 keyword_reconfigure
+keyword_redistribute
 keyword_reduce
 keyword_references
 keyword_regenerate

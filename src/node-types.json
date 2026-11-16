@@ -812,7 +812,19 @@
           "named": true
         },
         {
+          "type": "keyword_file",
+          "named": true
+        },
+        {
+          "type": "keyword_from",
+          "named": true
+        },
+        {
           "type": "keyword_provider",
+          "named": true
+        },
+        {
+          "type": "literal",
           "named": true
         },
         {
@@ -3600,6 +3612,10 @@
         },
         {
           "type": "constraint",
+          "named": true
+        },
+        {
+          "type": "encrypted_with",
           "named": true
         },
         {
@@ -6546,7 +6562,7 @@
       },
       "name": {
         "multiple": true,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "identifier",
@@ -7814,6 +7830,10 @@
       "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "binary_expression",
+          "named": true
+        },
         {
           "type": "identifier",
           "named": true
@@ -10223,6 +10243,10 @@
         {
           "type": "keyword_to",
           "named": true
+        },
+        {
+          "type": "literal",
+          "named": true
         }
       ]
     }
@@ -11153,6 +11177,14 @@
           "named": true
         },
         {
+          "type": "cte",
+          "named": true
+        },
+        {
+          "type": "for_clause",
+          "named": true
+        },
+        {
           "type": "keyword_as",
           "named": true
         },
@@ -11177,7 +11209,31 @@
           "named": true
         },
         {
+          "type": "keyword_with",
+          "named": true
+        },
+        {
+          "type": "offset_fetch",
+          "named": true
+        },
+        {
           "type": "on_filegroup",
+          "named": true
+        },
+        {
+          "type": "option_clause",
+          "named": true
+        },
+        {
+          "type": "order_by",
+          "named": true
+        },
+        {
+          "type": "query_specification",
+          "named": true
+        },
+        {
+          "type": "set_operation",
           "named": true
         },
         {
@@ -11186,6 +11242,10 @@
         },
         {
           "type": "with_options",
+          "named": true
+        },
+        {
+          "type": "xmlnamespaces",
           "named": true
         }
       ]
@@ -12698,6 +12758,40 @@
         },
         {
           "type": "keyword_remove",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "drop_availability_group",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_availability",
+          "named": true
+        },
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_group",
           "named": true
         }
       ]
@@ -16979,6 +17073,10 @@
         "required": true,
         "types": [
           {
+            "type": "graph_last_node",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           }
@@ -17074,6 +17172,10 @@
         "multiple": false,
         "required": true,
         "types": [
+          {
+            "type": "graph_last_node",
+            "named": true
+          },
           {
             "type": "identifier",
             "named": true
@@ -17202,6 +17304,10 @@
         },
         {
           "type": "keyword_cube",
+          "named": true
+        },
+        {
+          "type": "keyword_distributed_agg",
           "named": true
         },
         {
@@ -17981,6 +18087,10 @@
         },
         {
           "type": "keyword_merge",
+          "named": true
+        },
+        {
+          "type": "keyword_redistribute",
           "named": true
         },
         {
@@ -18816,7 +18926,15 @@
       "required": true,
       "types": [
         {
+          "type": "cross_join",
+          "named": true
+        },
+        {
           "type": "invocation",
+          "named": true
+        },
+        {
+          "type": "join",
           "named": true
         },
         {
@@ -18852,11 +18970,23 @@
           "named": true
         },
         {
+          "type": "openjson_schema",
+          "named": true
+        },
+        {
+          "type": "openxml_table_schema",
+          "named": true
+        },
+        {
           "type": "option_clause",
           "named": true
         },
         {
           "type": "output_clause",
+          "named": true
+        },
+        {
+          "type": "relation",
           "named": true
         },
         {
@@ -18868,7 +18998,15 @@
           "named": true
         },
         {
+          "type": "tablesample_clause",
+          "named": true
+        },
+        {
           "type": "top_clause",
+          "named": true
+        },
+        {
+          "type": "values",
           "named": true
         }
       ]
@@ -19073,6 +19211,10 @@
       "multiple": false,
       "required": true,
       "types": [
+        {
+          "type": "cast",
+          "named": true
+        },
         {
           "type": "invocation",
           "named": true
@@ -24124,6 +24266,10 @@
           "named": true
         },
         {
+          "type": "drop_availability_group",
+          "named": true
+        },
+        {
           "type": "drop_broker_priority",
           "named": true
         },
@@ -27096,6 +27242,18 @@
       "required": true,
       "types": [
         {
+          "type": "encryption_mechanism",
+          "named": true
+        },
+        {
+          "type": "keyword_key",
+          "named": true
+        },
+        {
+          "type": "keyword_private",
+          "named": true
+        },
+        {
           "type": "keyword_with",
           "named": true
         },
@@ -27878,6 +28036,10 @@
   },
   {
     "type": "keyword_distributed",
+    "named": true
+  },
+  {
+    "type": "keyword_distributed_agg",
     "named": true
   },
   {
@@ -28698,6 +28860,10 @@
   },
   {
     "type": "keyword_reconfigure",
+    "named": true
+  },
+  {
+    "type": "keyword_redistribute",
     "named": true
   },
   {

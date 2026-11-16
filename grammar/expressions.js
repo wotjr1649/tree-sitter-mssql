@@ -119,7 +119,7 @@ export default {
     prec(
       1,
       seq(
-        choice($.subquery, $.parenthesized_expression, $.invocation, $.method_call),
+        choice($.subquery, $.parenthesized_expression, $.invocation, $.cast, $.method_call),
         '.',
         field('method', $.identifier),
         paren_list(field('parameter', $.term)),
@@ -280,7 +280,8 @@ export default {
 
   // node -(edge)-> node [ -(edge)-> node ... ], or the reverse <-(edge)-
   // form. Each hop is one edge traversal; a path chains one or more.
-  graph_path: ($) => seq(field('node', $.identifier), repeat1($.graph_hop)),
+  graph_path: ($) =>
+    seq(field('node', choice($.identifier, $.graph_last_node)), repeat1($.graph_hop)),
 
   graph_hop: ($) =>
     seq(
@@ -288,7 +289,7 @@ export default {
         seq('-', wrapped_in_parenthesis($._graph_edge_names), '->'),
         seq('<-', wrapped_in_parenthesis($._graph_edge_names), '-'),
       ),
-      field('node', $.identifier),
+      field('node', choice($.identifier, $.graph_last_node)),
     ),
 
   // One or more `|`-separated edge-table names — a polymorphic edge
@@ -516,16 +517,17 @@ export default {
         ),
       ),
     ),
-  // Money literal: $5, $1,234.56. `$action` is an identifier, not money.
-  _odbc_date_kind: (_) => /[dD]|[tT]|[tT][sS]/,
-  _money: (_) => /\$\d+(,\d{3})*(\.\d+)?/,
+  // ODBC date/time and GUID escapes share the existing literal shape.
+  _odbc_date_kind: (_) => /[dD]|[tT]|[tT][sS]|[gG][uU][iI][dD]/,
+  // The sign follows the currency symbol; `$action` remains an identifier.
+  _money: (_) => /\$[+-]?\d+(,\d{3})*(\.\d+)?/,
   // Character string, optionally with the N prefix for nvarchar. A quote
   // inside the string is doubled; there is no backslash escaping.
   _single_quote_string: (_) => /[nN]?'([^']|'')*'/,
   _literal_string: ($) => $._single_quote_string,
   _natural_number: (_) => /\d+/,
   // Decimal integers and hexadecimal binary literals (`0x4D5A`, `0x`).
-  _integer: (_) => /(0[xX][0-9A-Fa-f]*)|(\d+)/,
+  _integer: (_) => /(0[xX][0-9A-Fa-f]*(\\\r?\n[0-9A-Fa-f]+)*)|(\d+)/,
   _decimal_number: (_) => /((\d+\.\d*|\.\d+)([eE][+-]?\d+)?)|(\d+[eE][+-]?\d+)/,
 
   identifier: ($) =>

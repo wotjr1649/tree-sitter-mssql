@@ -131,13 +131,29 @@ export default {
         $.keyword_table,
         field('name', $.object_reference),
         choice(
-          seq($.column_definitions, optional(alias($._graph_table_kind, $.table_data_placement))),
-          seq($.keyword_as, choice($.keyword_filetable, $.keyword_edge)),
+          seq($.with_options, $.keyword_as, $._dml_read),
+          seq(
+            choice(
+              seq(
+                alias($._create_table_columns, $.column_definitions),
+                optional(alias($._graph_table_kind, $.table_data_placement)),
+              ),
+              seq($.keyword_as, choice($.keyword_filetable, $.keyword_edge)),
+            ),
+            optional($.on_filegroup),
+            optional($.table_data_placement),
+            optional($.table_data_placement),
+            optional($.with_options),
+          ),
         ),
-        optional($.on_filegroup),
-        optional($.table_data_placement),
-        optional($.table_data_placement),
-        optional($.with_options),
+      ),
+    ),
+
+  _create_table_columns: ($) =>
+    wrapped_in_parenthesis(
+      seq(
+        comma_list(choice($.column_definition, $.constraint, $.period_for_system_time), true),
+        optional(','),
       ),
     ),
 
@@ -282,7 +298,11 @@ export default {
     ),
 
   _index_tuple_option: ($) =>
-    seq(field('name', $.identifier), '=', paren_list(choice($.literal, $.option), true)),
+    seq(
+      field('name', $.identifier),
+      '=',
+      paren_list(choice($.literal, $.option, $.unary_expression), true),
+    ),
 
   _index_filestream_placement: ($) =>
     seq(
@@ -569,10 +589,13 @@ export default {
         field('name', $.identifier),
         optional(seq($.keyword_authorization, $.identifier)),
         $.keyword_from,
-        comma_list(choice($.literal, alias($._tsql_parameter, $.identifier)), true),
+        comma_list($._assembly_source, true),
         optional($.with_clause),
       ),
     ),
+
+  _assembly_source: ($) =>
+    prec(2, choice($.literal, alias($._tsql_parameter, $.identifier), $.binary_expression)),
 
   // CREATE FULLTEXT INDEX ON table (column [TYPE COLUMN col] [LANGUAGE lang] [STATISTICAL_SEMANTICS] [, ...])
   //   KEY INDEX index_name [ON catalog] [WITH options]
@@ -747,7 +770,7 @@ export default {
       $.identifier,
       optional($.keyword_all),
       $.keyword_to,
-      paren_list($.identifier, true),
+      paren_list(choice($.identifier, alias($._literal_string, $.literal)), true),
     ),
 
   // CREATE EVENT SESSION name ON SERVER
