@@ -3203,6 +3203,88 @@ CREATE ASYMMETRIC KEY ak_asm FROM ASSEMBLY HelloAsm;
         (identifier)))))
 
 ==================
+ddl-rest/create-route-alt-tsql-B03-r204 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE BROKER PRIORITY prio_orders FOR CONVERSATION SET (CONTRACT_NAME = OrderContract, LOCAL_SERVICE_NAME = OrderService,
+  REMOTE_SERVICE_NAME = 'RemoteOrderService', PRIORITY_LEVEL = 8);
+CREATE BROKER PRIORITY prio_any FOR CONVERSATION SET (CONTRACT_NAME = ANY, PRIORITY_LEVEL = DEFAULT);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_broker_priority
+        (keyword_create)
+        (keyword_broker)
+        (keyword_priority)
+        name: (identifier)
+        (keyword_for)
+        (keyword_conversation)
+        (keyword_set)
+        (option
+          name: (identifier)
+          value: (identifier))
+        (option
+          name: (identifier)
+          value: (identifier))
+        (option
+          name: (identifier)
+          value: (literal))
+        (option
+          name: (identifier)
+          value: (literal))))
+    (statement
+      (create_broker_priority
+        (keyword_create)
+        (keyword_broker)
+        (keyword_priority)
+        name: (identifier)
+        (keyword_for)
+        (keyword_conversation)
+        (keyword_set)
+        (option
+          name: (identifier)
+          value: (identifier))
+        (option
+          name: (identifier)
+          value: (keyword_default))))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r205 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE CONTRACT OrderContract AUTHORIZATION dbo (OrderRequest SENT BY INITIATOR, OrderReply SENT BY TARGET, [DEFAULT] SENT BY ANY);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_contract
+        (keyword_create)
+        (keyword_contract)
+        name: (identifier)
+        (keyword_authorization)
+        (identifier)
+        (contract_message
+          (identifier)
+          (keyword_sent)
+          (keyword_by)
+          (keyword_initiator))
+        (contract_message
+          (identifier)
+          (keyword_sent)
+          (keyword_by)
+          (keyword_target))
+        (contract_message
+          (identifier)
+          (keyword_sent)
+          (keyword_by)
+          (keyword_any))))))
+
+==================
 ddl-rest/create-route-alt-tsql-B03-r212 — LocalDB 17.0.1000.7 levels 100-170: accepts
 ==================
 
@@ -3275,6 +3357,273 @@ CREATE DEFAULT dbo.df_zero AS 0;
           name: (identifier))
         (keyword_as)
         (literal)))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r224 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE EVENT NOTIFICATION en_ddl ON SERVER WITH FAN_IN FOR CREATE_TABLE, DDL_LOGIN_EVENTS TO SERVICE 'NotifyService', '8140a771-3c4b-4479-8ac0-81008ab17984';
+CREATE EVENT NOTIFICATION en_db ON DATABASE FOR DDL_TABLE_EVENTS TO SERVICE 'NotifyService', 'current database';
+CREATE EVENT NOTIFICATION en_q ON QUEUE dbo.NotifyQueue FOR QUEUE_ACTIVATION TO SERVICE 'NotifyService', 'current database';
+
+---
+
+(program
+  (batch
+    (statement
+      (create_event_notification
+        (keyword_create)
+        (keyword_event)
+        (keyword_notification)
+        name: (identifier)
+        (keyword_on)
+        (keyword_server)
+        (keyword_with)
+        (keyword_fan_in)
+        (keyword_for)
+        (identifier)
+        (identifier)
+        (keyword_to)
+        (keyword_service)
+        (literal)
+        (literal)))
+    (statement
+      (create_event_notification
+        (keyword_create)
+        (keyword_event)
+        (keyword_notification)
+        name: (identifier)
+        (keyword_on)
+        (keyword_database)
+        (keyword_for)
+        (identifier)
+        (keyword_to)
+        (keyword_service)
+        (literal)
+        (literal)))
+    (statement
+      (create_event_notification
+        (keyword_create)
+        (keyword_event)
+        (keyword_notification)
+        name: (identifier)
+        (keyword_on)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_for)
+        (identifier)
+        (keyword_to)
+        (keyword_service)
+        (literal)
+        (literal)))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r226 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE EVENT SESSION xe_db ON DATABASE ADD EVENT sqlserver.error_reported (WHERE severity > 10) ADD TARGET package0.ring_buffer (SET max_memory = 4096)
+  WITH (EVENT_RETENTION_MODE = ALLOW_MULTIPLE_EVENT_LOSS, MAX_DISPATCH_LATENCY = INFINITE, MEMORY_PARTITION_MODE = PER_NODE, TRACK_CAUSALITY = OFF,
+    STARTUP_STATE = ON, MAX_DURATION = 2 HOURS);
+CREATE EVENT SESSION xe_waits ON SERVER ADD EVENT sqlos.wait_completed WITH (EVENT_RETENTION_MODE = NO_EVENT_LOSS, MEMORY_PARTITION_MODE = PER_CPU, MAX_DURATION = 30 SECONDS);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_event_session
+        (keyword_create)
+        (keyword_event)
+        (keyword_session)
+        name: (identifier)
+        (keyword_on)
+        (keyword_database)
+        (keyword_add)
+        (keyword_event)
+        (event_session_event
+          name: (object_reference
+            schema: (identifier)
+            name: (identifier))
+          (where
+            (keyword_where)
+            predicate: (binary_expression
+              left: (field
+                name: (identifier))
+              right: (literal))))
+        (keyword_add)
+        (keyword_target)
+        (event_session_target
+          name: (object_reference
+            schema: (identifier)
+            name: (identifier))
+          (keyword_set)
+          (option
+            name: (identifier)
+            value: (literal)))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier))
+          (option
+            name: (identifier)
+            value: (identifier))
+          (option
+            name: (identifier)
+            value: (identifier))
+          (option
+            name: (identifier)
+            value: (keyword_off))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (literal)
+            value: (identifier)))))
+    (statement
+      (create_event_session
+        (keyword_create)
+        (keyword_event)
+        (keyword_session)
+        name: (identifier)
+        (keyword_on)
+        (keyword_server)
+        (keyword_add)
+        (keyword_event)
+        (event_session_event
+          name: (object_reference
+            schema: (identifier)
+            name: (identifier)))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier))
+          (option
+            name: (identifier)
+            value: (identifier))
+          (option
+            name: (identifier)
+            value: (literal)
+            value: (identifier)))))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r248 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE MESSAGE TYPE mt4 VALIDATION = VALID_XML WITH SCHEMA COLLECTION dbo.OrderSchemas;
+CREATE ROUTE rt1 AUTHORIZATION dbo WITH SERVICE_NAME = '//example/Service1', BROKER_INSTANCE = 'D8D4D268-02A3-4C62-8F91-634B89C1E315', LIFETIME = 259200, ADDRESS = 'TCP://srv2.example:4022', MIRROR_ADDRESS = 'TCP://srv3.example:4022';
+CREATE SERVICE [//example/Service1] AUTHORIZATION dbo ON QUEUE dbo.q1 (contract1, [DEFAULT]);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_message_type
+        (keyword_create)
+        (keyword_message)
+        (keyword_type)
+        (identifier)
+        (identifier)
+        (identifier)
+        (keyword_with)
+        (keyword_schema)
+        (keyword_collection)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))))
+    (statement
+      (create_route
+        (keyword_create)
+        (keyword_route)
+        name: (identifier)
+        (keyword_authorization)
+        (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal)))))
+    (statement
+      (create_service
+        (keyword_create)
+        (keyword_service)
+        name: (identifier)
+        (keyword_authorization)
+        (identifier)
+        (keyword_on)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (identifier)
+        (identifier)))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r249 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE REMOTE SERVICE BINDING rsb1 AUTHORIZATION dbo TO SERVICE '//example/Service1' WITH USER = user1, ANONYMOUS = ON;
+CREATE REMOTE SERVICE BINDING rsb2 TO SERVICE '//example/Service2' WITH USER = user2, ANONYMOUS = OFF;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_remote_service_binding
+        (keyword_create)
+        (keyword_remote)
+        (keyword_service)
+        (keyword_binding)
+        name: (identifier)
+        (keyword_authorization)
+        (identifier)
+        (keyword_to)
+        (keyword_service)
+        (literal)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier))
+          (option
+            name: (identifier)
+            value: (keyword_on)))))
+    (statement
+      (create_remote_service_binding
+        (keyword_create)
+        (keyword_remote)
+        (keyword_service)
+        (keyword_binding)
+        name: (identifier)
+        (keyword_to)
+        (keyword_service)
+        (literal)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier))
+          (option
+            name: (identifier)
+            value: (keyword_off)))))))
 
 ==================
 ddl-rest/create-route-alt-tsql-B03-r250 — LocalDB 17.0.1000.7 levels 100-170: accepts
@@ -4106,6 +4455,179 @@ CREATE RULE dbo.r AS @v > 0;
           right: (literal))))))
 
 ==================
+ddl-rest/create-broker-priority — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE BROKER PRIORITY p FOR CONVERSATION SET (CONTRACT_NAME = ANY, PRIORITY_LEVEL = DEFAULT);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_broker_priority
+        (keyword_create)
+        (keyword_broker)
+        (keyword_priority)
+        name: (identifier)
+        (keyword_for)
+        (keyword_conversation)
+        (keyword_set)
+        (option
+          name: (identifier)
+          value: (identifier))
+        (option
+          name: (identifier)
+          value: (keyword_default))))))
+
+==================
+ddl-rest/create-broker-priority-range — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE BROKER PRIORITY p FOR CONVERSATION SET (PRIORITY_LEVEL = 11);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_broker_priority
+        (keyword_create)
+        (keyword_broker)
+        (keyword_priority)
+        name: (identifier)
+        (keyword_for)
+        (keyword_conversation)
+        (keyword_set)
+        (option
+          name: (identifier)
+          value: (literal))))))
+
+==================
+ddl-rest/create-contract-owner — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE CONTRACT c AUTHORIZATION dbo (m SENT BY INITIATOR);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_contract
+        (keyword_create)
+        (keyword_contract)
+        name: (identifier)
+        (keyword_authorization)
+        (identifier)
+        (contract_message
+          (identifier)
+          (keyword_sent)
+          (keyword_by)
+          (keyword_initiator))))))
+
+==================
+ddl-rest/create-service — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE SERVICE s AUTHORIZATION dbo ON QUEUE dbo.q (c, [DEFAULT]);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_service
+        (keyword_create)
+        (keyword_service)
+        name: (identifier)
+        (keyword_authorization)
+        (identifier)
+        (keyword_on)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (identifier)
+        (identifier)))))
+
+==================
+ddl-rest/create-service-no-contract — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE SERVICE s ON QUEUE dbo.q;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_service
+        (keyword_create)
+        (keyword_service)
+        name: (identifier)
+        (keyword_on)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))))))
+
+==================
+ddl-rest/create-remote-binding — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE REMOTE SERVICE BINDING b TO SERVICE 's' WITH USER = u, ANONYMOUS = OFF;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_remote_service_binding
+        (keyword_create)
+        (keyword_remote)
+        (keyword_service)
+        (keyword_binding)
+        name: (identifier)
+        (keyword_to)
+        (keyword_service)
+        (literal)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier))
+          (option
+            name: (identifier)
+            value: (keyword_off)))))))
+
+==================
+ddl-rest/create-remote-binding-no-user — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+CREATE REMOTE SERVICE BINDING b TO SERVICE 's' WITH ANONYMOUS = OFF;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_remote_service_binding
+        (keyword_create)
+        (keyword_remote)
+        (keyword_service)
+        (keyword_binding)
+        name: (identifier)
+        (keyword_to)
+        (keyword_service)
+        (literal)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_off)))))))
+
+==================
 ddl-rest/create-resource-pool — LocalDB 17.0.1000.7 levels 100-170: accepts
 ==================
 
@@ -4281,6 +4803,65 @@ CREATE WORKLOAD GROUP g WITH (IMPORTANCE = WRONG);
           (keyword_with)
           (option
             name: (identifier)
+            value: (identifier)))))))
+
+==================
+ddl-rest/create-event-notification — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE EVENT NOTIFICATION e ON QUEUE dbo.q FOR QUEUE_ACTIVATION TO SERVICE 's', 'current database';
+
+---
+
+(program
+  (batch
+    (statement
+      (create_event_notification
+        (keyword_create)
+        (keyword_event)
+        (keyword_notification)
+        name: (identifier)
+        (keyword_on)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_for)
+        (identifier)
+        (keyword_to)
+        (keyword_service)
+        (literal)
+        (literal)))))
+
+==================
+ddl-rest/create-event-session-database — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE EVENT SESSION e ON DATABASE ADD EVENT sqlserver.error_reported WITH (MAX_DURATION = 2 MINUTES);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_event_session
+        (keyword_create)
+        (keyword_event)
+        (keyword_session)
+        name: (identifier)
+        (keyword_on)
+        (keyword_database)
+        (keyword_add)
+        (keyword_event)
+        (event_session_event
+          name: (object_reference
+            schema: (identifier)
+            name: (identifier)))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)
             value: (identifier)))))))
 
 ==================
@@ -4896,6 +5477,38 @@ ALTER ASSEMBLY a ADD FILE FROM 'C:\clr\a.pdb' AS N'a.pdb';
         (literal)))))
 
 ==================
+ddl-rest/alter-broker-priority — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER BROKER PRIORITY p FOR CONVERSATION SET (CONTRACT_NAME = ANY, LOCAL_SERVICE_NAME = ANY, REMOTE_SERVICE_NAME = ANY, PRIORITY_LEVEL = DEFAULT);
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_broker_priority
+        (keyword_alter)
+        (keyword_broker)
+        (keyword_priority)
+        name: (identifier)
+        (keyword_for)
+        (keyword_conversation)
+        (keyword_set)
+        (option
+          name: (identifier)
+          value: (identifier))
+        (option
+          name: (identifier)
+          value: (identifier))
+        (option
+          name: (identifier)
+          value: (identifier))
+        (option
+          name: (identifier)
+          value: (keyword_default))))))
+
+==================
 ddl-rest/alter-authorization-multi — LocalDB 17.0.1000.7 levels 100-170: accepts
 ==================
 
@@ -4941,6 +5554,65 @@ ALTER AUTHORIZATION ON ASYMMETRIC KEY::k TO dbo;
           name: (identifier))
         (keyword_to)
         (identifier)))))
+
+==================
+ddl-rest/alter-event-database — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER EVENT SESSION e ON DATABASE ADD EVENT sqlserver.error_reported (WHERE severity > 10) WITH (MAX_DURATION = 2 HOURS);
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_event_session
+        (keyword_alter)
+        (keyword_event)
+        (keyword_session)
+        name: (identifier)
+        (keyword_on)
+        (keyword_database)
+        (keyword_add)
+        (keyword_event)
+        (event_session_event
+          name: (object_reference
+            schema: (identifier)
+            name: (identifier))
+          (where
+            (keyword_where)
+            predicate: (binary_expression
+              left: (field
+                name: (identifier))
+              right: (literal))))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)
+            value: (identifier)))))))
+
+==================
+ddl-rest/alter-event-state — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER EVENT SESSION e ON DATABASE STATE = START;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_event_session
+        (keyword_alter)
+        (keyword_event)
+        (keyword_session)
+        name: (identifier)
+        (keyword_on)
+        (keyword_database)
+        (option
+          name: (identifier)
+          value: (identifier))))))
 
 ==================
 ddl-rest/alter-login-old-password — LocalDB 17.0.1000.7 levels 100-170: accepts
@@ -5115,6 +5787,167 @@ ALTER USER u WITH DEFAULT_SCHEMA = NULL, DEFAULT_LANGUAGE = 1033;
             value: (literal)))))))
 
 ==================
+ddl-rest/alter-message-none — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER MESSAGE TYPE m VALIDATION = NONE;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_message_type
+        (keyword_alter)
+        (keyword_message)
+        (keyword_type)
+        name: (identifier)
+        (identifier)
+        (identifier)))))
+
+==================
+ddl-rest/alter-message-schema — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER MESSAGE TYPE m VALIDATION = VALID_XML WITH SCHEMA COLLECTION dbo.x;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_message_type
+        (keyword_alter)
+        (keyword_message)
+        (keyword_type)
+        name: (identifier)
+        (identifier)
+        (identifier)
+        (keyword_with)
+        (keyword_schema)
+        (keyword_collection)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))))))
+
+==================
+ddl-rest/alter-service-contract — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER SERVICE s ON QUEUE dbo.q (ADD CONTRACT c, DROP CONTRACT d);
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_service
+        (keyword_alter)
+        (keyword_service)
+        name: (identifier)
+        (keyword_on)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_add)
+        (keyword_contract)
+        (identifier)
+        (keyword_drop)
+        (keyword_contract)
+        (identifier)))))
+
+==================
+ddl-rest/alter-service-only-contract — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER SERVICE s (ADD CONTRACT c);
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_service
+        (keyword_alter)
+        (keyword_service)
+        name: (identifier)
+        (keyword_add)
+        (keyword_contract)
+        (identifier)))))
+
+==================
+ddl-rest/alter-service-only-queue — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER SERVICE s ON QUEUE dbo.q;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_service
+        (keyword_alter)
+        (keyword_service)
+        name: (identifier)
+        (keyword_on)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))))))
+
+==================
+ddl-rest/alter-remote-binding — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER REMOTE SERVICE BINDING b WITH USER = u, ANONYMOUS = OFF;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_remote_service_binding
+        (keyword_alter)
+        (keyword_remote)
+        (keyword_service)
+        (keyword_binding)
+        name: (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier))
+          (option
+            name: (identifier)
+            value: (keyword_off)))))))
+
+==================
+ddl-rest/alter-queue-reorganize — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER QUEUE dbo.q REORGANIZE WITH (LOB_COMPACTION = OFF);
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_reorganize)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_off)))))))
+
+==================
 ddl-rest/alter-queue-bare-reorganize — LocalDB 17.0.1000.7 levels 100-170: rejects 102
 ==================
 
@@ -5137,6 +5970,48 @@ ALTER QUEUE dbo.q REORGANIZE WITH LOB_COMPACTION = OFF;
           (option
             name: (identifier)
             value: (keyword_off)))))))
+
+==================
+ddl-rest/alter-queue-move — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER QUEUE dbo.q MOVE TO fg;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_move)
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/alter-queue-move-default — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER QUEUE dbo.q MOVE TO "default";
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_queue
+        (keyword_alter)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_move)
+        (keyword_to)
+        (identifier)))))
 
 ==================
 ddl-rest/alter-resource-reconfigure — LocalDB 17.0.1000.7 levels 100-170: accepts
@@ -5379,6 +6254,98 @@ ALTER SCHEMA s TRANSFER XML SCHEMA COLLECTION::dbo.x;
         (identifier)
         (identifier)
         (object_reference
+          schema: (identifier)
+          name: (identifier))))))
+
+==================
+ddl-rest/alter-search-add — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER SEARCH PROPERTY LIST p ADD 'Author' WITH (PROPERTY_SET_GUID = 'F29F85E0-4FF9-1068-AB91-08002B27B3D9', PROPERTY_INT_ID = 4);
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_search_property_list
+        (keyword_alter)
+        (keyword_search)
+        (keyword_property)
+        (keyword_list)
+        name: (identifier)
+        (keyword_add)
+        (literal)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
+ddl-rest/alter-search-drop — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER SEARCH PROPERTY LIST p DROP 'Author';
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_search_property_list
+        (keyword_alter)
+        (keyword_search)
+        (keyword_property)
+        (keyword_list)
+        name: (identifier)
+        (keyword_drop)
+        (literal)))))
+
+==================
+ddl-rest/alter-bad-message-invalid — LocalDB 17.0.1000.7 levels 100-170: rejects 195
+==================
+
+ALTER MESSAGE TYPE m VALIDATION = INVALID;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_message_type
+        (keyword_alter)
+        (keyword_message)
+        (keyword_type)
+        name: (identifier)
+        (identifier)
+        (identifier)))))
+
+==================
+ddl-rest/alter-bad-message-wrong-schema — LocalDB 17.0.1000.7 levels 100-170: rejects 102,102
+==================
+
+ALTER MESSAGE TYPE m VALIDATION = NONE WITH SCHEMA COLLECTION dbo.x;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_message_type
+        (keyword_alter)
+        (keyword_message)
+        (keyword_type)
+        name: (identifier)
+        (identifier)
+        (identifier)
+        (keyword_with)
+        (keyword_schema)
+        (keyword_collection)
+        name: (object_reference
           schema: (identifier)
           name: (identifier))))))
 
@@ -5788,6 +6755,86 @@ DROP WORKLOAD GROUP g;
         (keyword_workload)
         (keyword_group)
         name: (identifier)))))
+
+==================
+ddl-rest/drop-event-notification-server — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP EVENT NOTIFICATION n, n2 ON SERVER;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_event_notification
+        (keyword_drop)
+        (keyword_event)
+        (keyword_notification)
+        name: (identifier)
+        name: (identifier)
+        (keyword_on)
+        (keyword_server)))))
+
+==================
+ddl-rest/drop-event-notification-database — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP EVENT NOTIFICATION n ON DATABASE;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_event_notification
+        (keyword_drop)
+        (keyword_event)
+        (keyword_notification)
+        name: (identifier)
+        (keyword_on)
+        (keyword_database)))))
+
+==================
+ddl-rest/drop-event-notification-queue — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP EVENT NOTIFICATION n ON QUEUE dbo.q;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_event_notification
+        (keyword_drop)
+        (keyword_event)
+        (keyword_notification)
+        name: (identifier)
+        (keyword_on)
+        (keyword_queue)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))))))
+
+==================
+ddl-rest/drop-event-session-database — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP EVENT SESSION e ON DATABASE;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_event_session
+        (keyword_drop)
+        (keyword_event)
+        (keyword_session)
+        name: (identifier)
+        (keyword_on)
+        (keyword_database)))))
 
 ==================
 ddl-rest/routes-select-all — LocalDB 17.0.1000.7 levels 100-170: accepts
@@ -6362,6 +7409,29 @@ ALTER DATABASE SCOPED CREDENTIAL c WITH SECRET = 'x';
           (option
             name: (identifier)
             value: (literal)))))))
+
+==================
+ddl-rest/extra-remote-alter-anonymous — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER REMOTE SERVICE BINDING b WITH ANONYMOUS = OFF;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_remote_service_binding
+        (keyword_alter)
+        (keyword_remote)
+        (keyword_service)
+        (keyword_binding)
+        name: (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_off)))))))
 
 ==================
 ddl-rest/extra-provider-qi-off — LocalDB 17.0.1000.7 levels 100-170: accepts

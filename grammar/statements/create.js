@@ -94,9 +94,12 @@ export default {
       $.create_cryptographic_provider,
       $.create_default,
       $.create_rule,
-
+      $.create_broker_priority,
+      $.create_service,
+      $.create_remote_service_binding,
       $.create_resource_pool,
       $.create_workload_group,
+      $.create_event_notification,
     ),
 
   // CREATE XML SCHEMA COLLECTION name AS expression
@@ -540,6 +543,7 @@ export default {
       $.keyword_create,
       $.keyword_contract,
       field('name', $.identifier),
+      optional(seq($.keyword_authorization, $.identifier)),
       paren_list($.contract_message, true),
     ),
 
@@ -676,7 +680,7 @@ export default {
         $.keyword_session,
         field('name', $.identifier),
         $.keyword_on,
-        $.keyword_server,
+        choice($.keyword_server, $.keyword_database),
         event_session_body($),
       ),
     ),
@@ -772,6 +776,47 @@ export default {
       $._expression,
     ),
 
+  create_broker_priority: ($) => seq($.keyword_create, $._broker_priority_body),
+
+  _broker_priority_body: ($) =>
+    seq(
+      $.keyword_broker,
+      $.keyword_priority,
+      field('name', $.identifier),
+      $.keyword_for,
+      $.keyword_conversation,
+      $.keyword_set,
+      paren_list($.option, true),
+    ),
+
+  create_service: ($) =>
+    prec.right(
+      seq(
+        $.keyword_create,
+        $.keyword_service,
+        field('name', $.identifier),
+        optional(seq($.keyword_authorization, $.identifier)),
+        $.keyword_on,
+        $.keyword_queue,
+        $.object_reference,
+        optional(paren_list($.identifier, true)),
+      ),
+    ),
+
+  create_remote_service_binding: ($) =>
+    seq(
+      $.keyword_create,
+      $.keyword_remote,
+      $.keyword_service,
+      $.keyword_binding,
+      field('name', $.identifier),
+      optional(seq($.keyword_authorization, $.identifier)),
+      $.keyword_to,
+      $.keyword_service,
+      $.literal,
+      alias($._remote_binding_with_clause, $.with_clause),
+    ),
+
   create_resource_pool: ($) =>
     prec.right(
       seq(
@@ -818,5 +863,28 @@ export default {
         seq($.identifier, optional(seq(',', $.keyword_external, $.identifier))),
         seq($.keyword_external, $.identifier),
       ),
+    ),
+
+  create_event_notification: ($) =>
+    seq(
+      $.keyword_create,
+      $.keyword_event,
+      $.keyword_notification,
+      field('name', $.identifier),
+      $._event_notification_scope,
+      optional(seq($.keyword_with, $.keyword_fan_in)),
+      $.keyword_for,
+      comma_list($.identifier, true),
+      $.keyword_to,
+      $.keyword_service,
+      $.literal,
+      ',',
+      $.literal,
+    ),
+
+  _event_notification_scope: ($) =>
+    seq(
+      $.keyword_on,
+      choice($.keyword_server, $.keyword_database, seq($.keyword_queue, $.object_reference)),
     ),
 };

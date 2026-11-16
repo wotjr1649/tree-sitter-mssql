@@ -1260,7 +1260,12 @@ KILL QUERY NOTIFICATION SUBSCRIPTION ALL;
 
 ---
 
-(program (ERROR (keyword_kill) (keyword_all)) (batch))
+(program
+  (ERROR
+    (keyword_kill)
+    (keyword_notification)
+    (keyword_all))
+  (batch))
 
 ==================
 query-forms/open-stats-partitions - LocalDB 17.0.1000.7 levels 100-170 - engine accepts

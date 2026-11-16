@@ -6,6 +6,7 @@ alter_assembly
 alter_asymmetric_key{name}
 alter_authorization
 alter_availability_group{name}
+alter_broker_priority{name}
 alter_certificate{name}
 alter_column_encryption_key{name}
 alter_credential{name}
@@ -27,20 +28,24 @@ alter_function{body,name}
 alter_index{name}
 alter_login
 alter_master_key
+alter_message_type{name}
 alter_partition_function
 alter_partition_scheme
 alter_procedure{body,name,number}
 alter_queue
+alter_remote_service_binding{name}
 alter_resource_governor
 alter_resource_pool{name}
 alter_role
 alter_route
 alter_schema
+alter_search_property_list{name}
 alter_security_policy{name}
 alter_sequence
 alter_server_audit{name}
 alter_server_audit_specification{name}
 alter_server_configuration
+alter_service{name}
 alter_service_master_key
 alter_symmetric_key{name}
 alter_table{from_partition,name,target,to_partition,type}
@@ -91,6 +96,7 @@ create_application_role{name}
 create_assembly{name}
 create_asymmetric_key{name}
 create_availability_group{name}
+create_broker_priority{name}
 create_certificate{name}
 create_column_encryption_key{name}
 create_column_master_key{name}
@@ -102,6 +108,7 @@ create_database_audit_specification{name}
 create_database_encryption_key
 create_default{name}
 create_endpoint{name}
+create_event_notification{name}
 create_event_session{name}
 create_external_data_source{name}
 create_external_file_format{name}
@@ -121,6 +128,7 @@ create_partition_function{name}
 create_partition_scheme{name}
 create_procedure{body,name,number}
 create_queue{name}
+create_remote_service_binding{name}
 create_resource_pool{name}
 create_role{name}
 create_route{name}
@@ -131,6 +139,7 @@ create_security_policy{name}
 create_sequence{name}
 create_server_audit{name}
 create_server_audit_specification{name}
+create_service{name}
 create_statistics{name}
 create_symmetric_key{name}
 create_synonym{name}
@@ -173,6 +182,7 @@ drop_database_audit_specification{name}
 drop_database_encryption_key
 drop_default{name}
 drop_endpoint{name}
+drop_event_notification{name}
 drop_event_session{name}
 drop_external_data_source{name}
 drop_external_file_format{name}
@@ -415,6 +425,7 @@ keyword_exit
 keyword_extension
 keyword_external
 keyword_failover
+keyword_fan_in
 keyword_fetch
 keyword_file
 keyword_filegroup
@@ -526,6 +537,7 @@ keyword_nocheck
 keyword_nonclustered
 keyword_none
 keyword_not
+keyword_notification
 keyword_nowait
 keyword_ntext
 keyword_null

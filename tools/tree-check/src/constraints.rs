@@ -3287,6 +3287,12 @@ mod tests {
     use super::*;
     use tree_sitter::Parser;
 
+    fn parse(sql: &str) -> Tree {
+        let mut p = Parser::new();
+        p.set_language(&tree_sitter_mssql::LANGUAGE.into()).unwrap();
+        p.parse(sql, None).unwrap()
+    }
+
     fn rules(sql: &str) -> Vec<&'static str> {
         let mut p = Parser::new();
         p.set_language(&tree_sitter_mssql::LANGUAGE.into()).unwrap();
@@ -3295,6 +3301,84 @@ mod tests {
             .into_iter()
             .map(|v| v.rule)
             .collect()
+    }
+
+    #[test]
+    fn ddl_rest_alter_neighbours_match_the_engine() {
+        for (sql, rule) in [
+            (
+                "ALTER CREDENTIAL c WITH SECRET = 'x';",
+                "ddl-rest-credential",
+            ),
+            (
+                "ALTER DATABASE SCOPED CREDENTIAL c WITH SECRET = 'x';",
+                "ddl-rest-credential",
+            ),
+            (
+                "CREATE CREDENTIAL c WITH SECRET = 'placeholder';",
+                "ddl-rest-credential",
+            ),
+            (
+                "CREATE REMOTE SERVICE BINDING b TO SERVICE 's' WITH ANONYMOUS = OFF;",
+                "ddl-rest-remote-binding",
+            ),
+            (
+                "CREATE RESOURCE POOL p WITH (AFFINITY NUMANODE = AUTO);",
+                "ddl-rest-resource-pool",
+            ),
+            (
+                "CREATE RESOURCE POOL p WITH (MAX_CPU_PERCENT = 101);",
+                "ddl-rest-resource-pool",
+            ),
+            (
+                "CREATE WORKLOAD GROUP g WITH (IMPORTANCE = WRONG);",
+                "ddl-rest-workload-group",
+            ),
+            (
+                "CREATE LOGIN l WITH PASSWORD = 'dummy' OLD_PASSWORD = 'other';",
+                "ddl-rest-principal",
+            ),
+            (
+                "ALTER QUEUE q REORGANIZE WITH LOB_COMPACTION = OFF;",
+                "ddl-rest-queue",
+            ),
+            (
+                "ALTER MESSAGE TYPE m VALIDATION = INVALID;",
+                "ddl-rest-message-type",
+            ),
+            (
+                "ALTER MESSAGE TYPE m VALIDATION = NONE WITH SCHEMA COLLECTION dbo.x;",
+                "ddl-rest-message-type",
+            ),
+            (
+                "ALTER AUTHORIZATION ON ASYMMETRIC::k TO dbo;",
+                "ddl-rest-authorization",
+            ),
+        ] {
+            assert!(
+                parse(sql).root_node().has_error() || rules(sql).contains(&rule),
+                "{sql}: {rule}"
+            );
+        }
+        for sql in [
+            "ALTER REMOTE SERVICE BINDING b WITH ANONYMOUS = OFF;",
+            "CREATE APPLICATION ROLE a WITH DEFAULT_SCHEMA = dbo;",
+            "CREATE CREDENTIAL c WITH IDENTITY = 'dummy';",
+            "ALTER CREDENTIAL c WITH IDENTITY = 'dummy', SECRET = 'placeholder';",
+            "CREATE REMOTE SERVICE BINDING b TO SERVICE 's' WITH USER = u, ANONYMOUS = OFF;",
+            "CREATE RESOURCE POOL p WITH (AFFINITY SCHEDULER = AUTO, MAX_CPU_PERCENT = 50);",
+            "ALTER RESOURCE POOL p WITH (AFFINITY NUMANODE = (0, 1 TO 2));",
+            "CREATE WORKLOAD GROUP g WITH (IMPORTANCE = MEDIUM) USING p;",
+            "ALTER WORKLOAD GROUP g WITH (IMPORTANCE = HIGH);",
+            "CREATE BROKER PRIORITY p FOR CONVERSATION SET (PRIORITY_LEVEL = 11);",
+            "ALTER LOGIN l WITH PASSWORD = 'dummy' OLD_PASSWORD = 'other';",
+            "CREATE LOGIN l WITH PASSWORD = 'dummy' MUST_CHANGE, CHECK_POLICY = ON;",
+            "ALTER QUEUE q REORGANIZE WITH (LOB_COMPACTION = OFF);",
+            "ALTER MESSAGE TYPE m VALIDATION = VALID_XML WITH SCHEMA COLLECTION dbo.x;",
+            "ALTER AUTHORIZATION ON ASYMMETRIC KEY::k TO dbo;",
+        ] {
+            assert!(rules(sql).is_empty(), "{sql}: {:?}", rules(sql));
+        }
     }
 
     #[test]

@@ -66,7 +66,8 @@ export default grammar({
     [$.create_queue],
     [$.truncate_statement],
     [$.alter_queue],
-
+    [$.alter_service],
+    [$.alter_message_type],
     [$.alter_assembly],
     [$.alter_fulltext_catalog],
     [$.alter_fulltext_index],

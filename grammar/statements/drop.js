@@ -28,6 +28,7 @@ export default {
       $.drop_server_audit_specification,
       $.drop_service,
       $.drop_workload_group,
+      $.drop_event_notification,
 
       $.drop_endpoint,
       $.drop_external_data_source,
@@ -203,7 +204,7 @@ export default {
       optional($._if_exists),
       field('name', $.identifier),
       $.keyword_on,
-      $.keyword_server,
+      choice($.keyword_server, $.keyword_database),
     ),
   drop_aggregate: ($) =>
     seq(
@@ -310,4 +311,14 @@ export default {
 
   drop_workload_group: ($) =>
     seq($.keyword_drop, $.keyword_workload, $.keyword_group, field('name', $.identifier)),
+
+  drop_event_notification: ($) =>
+    seq(
+      $.keyword_drop,
+      $.keyword_event,
+      $.keyword_notification,
+      comma_list(field('name', $.identifier), true),
+      $.keyword_on,
+      choice($.keyword_server, $.keyword_database, seq($.keyword_queue, $.object_reference)),
+    ),
 };

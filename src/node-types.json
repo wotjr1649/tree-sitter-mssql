@@ -584,6 +584,56 @@
     }
   },
   {
+    "type": "alter_broker_priority",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_alter",
+          "named": true
+        },
+        {
+          "type": "keyword_broker",
+          "named": true
+        },
+        {
+          "type": "keyword_conversation",
+          "named": true
+        },
+        {
+          "type": "keyword_for",
+          "named": true
+        },
+        {
+          "type": "keyword_priority",
+          "named": true
+        },
+        {
+          "type": "keyword_set",
+          "named": true
+        },
+        {
+          "type": "option",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "alter_certificate",
     "named": true,
     "fields": {
@@ -1128,6 +1178,10 @@
         },
         {
           "type": "keyword_alter",
+          "named": true
+        },
+        {
+          "type": "keyword_database",
           "named": true
         },
         {
@@ -2040,6 +2094,60 @@
     }
   },
   {
+    "type": "alter_message_type",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "object_reference",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_alter",
+          "named": true
+        },
+        {
+          "type": "keyword_collection",
+          "named": true
+        },
+        {
+          "type": "keyword_message",
+          "named": true
+        },
+        {
+          "type": "keyword_schema",
+          "named": true
+        },
+        {
+          "type": "keyword_type",
+          "named": true
+        },
+        {
+          "type": "keyword_with",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "alter_partition_function",
     "named": true,
     "fields": {},
@@ -2276,11 +2384,19 @@
       "required": true,
       "types": [
         {
+          "type": "identifier",
+          "named": true
+        },
+        {
           "type": "keyword_all",
           "named": true
         },
         {
           "type": "keyword_alter",
+          "named": true
+        },
+        {
+          "type": "keyword_move",
           "named": true
         },
         {
@@ -2297,6 +2413,10 @@
         },
         {
           "type": "keyword_reorganize",
+          "named": true
+        },
+        {
+          "type": "keyword_to",
           "named": true
         },
         {
@@ -2317,6 +2437,48 @@
         },
         {
           "type": "with_options",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "alter_remote_service_binding",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_alter",
+          "named": true
+        },
+        {
+          "type": "keyword_binding",
+          "named": true
+        },
+        {
+          "type": "keyword_remote",
+          "named": true
+        },
+        {
+          "type": "keyword_service",
+          "named": true
+        },
+        {
+          "type": "with_clause",
           "named": true
         }
       ]
@@ -2499,6 +2661,60 @@
         },
         {
           "type": "object_reference",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "alter_search_property_list",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_add",
+          "named": true
+        },
+        {
+          "type": "keyword_alter",
+          "named": true
+        },
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_list",
+          "named": true
+        },
+        {
+          "type": "keyword_property",
+          "named": true
+        },
+        {
+          "type": "keyword_search",
+          "named": true
+        },
+        {
+          "type": "literal",
+          "named": true
+        },
+        {
+          "type": "with_options",
           "named": true
         }
       ]
@@ -2843,6 +3059,64 @@
         },
         {
           "type": "server_cpu_range",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "alter_service",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_add",
+          "named": true
+        },
+        {
+          "type": "keyword_alter",
+          "named": true
+        },
+        {
+          "type": "keyword_contract",
+          "named": true
+        },
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_on",
+          "named": true
+        },
+        {
+          "type": "keyword_queue",
+          "named": true
+        },
+        {
+          "type": "keyword_service",
+          "named": true
+        },
+        {
+          "type": "object_reference",
           "named": true
         }
       ]
@@ -7716,6 +7990,56 @@
     }
   },
   {
+    "type": "create_broker_priority",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_broker",
+          "named": true
+        },
+        {
+          "type": "keyword_conversation",
+          "named": true
+        },
+        {
+          "type": "keyword_create",
+          "named": true
+        },
+        {
+          "type": "keyword_for",
+          "named": true
+        },
+        {
+          "type": "keyword_priority",
+          "named": true
+        },
+        {
+          "type": "keyword_set",
+          "named": true
+        },
+        {
+          "type": "option",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "create_certificate",
     "named": true,
     "fields": {
@@ -7910,6 +8234,14 @@
       "types": [
         {
           "type": "contract_message",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_authorization",
           "named": true
         },
         {
@@ -8411,6 +8743,88 @@
     }
   },
   {
+    "type": "create_event_notification",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_create",
+          "named": true
+        },
+        {
+          "type": "keyword_database",
+          "named": true
+        },
+        {
+          "type": "keyword_event",
+          "named": true
+        },
+        {
+          "type": "keyword_fan_in",
+          "named": true
+        },
+        {
+          "type": "keyword_for",
+          "named": true
+        },
+        {
+          "type": "keyword_notification",
+          "named": true
+        },
+        {
+          "type": "keyword_on",
+          "named": true
+        },
+        {
+          "type": "keyword_queue",
+          "named": true
+        },
+        {
+          "type": "keyword_server",
+          "named": true
+        },
+        {
+          "type": "keyword_service",
+          "named": true
+        },
+        {
+          "type": "keyword_to",
+          "named": true
+        },
+        {
+          "type": "keyword_with",
+          "named": true
+        },
+        {
+          "type": "literal",
+          "named": true
+        },
+        {
+          "type": "object_reference",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "create_event_session",
     "named": true,
     "fields": {
@@ -8447,6 +8861,10 @@
         },
         {
           "type": "keyword_create",
+          "named": true
+        },
+        {
+          "type": "keyword_database",
           "named": true
         },
         {
@@ -9866,6 +10284,64 @@
     }
   },
   {
+    "type": "create_remote_service_binding",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_authorization",
+          "named": true
+        },
+        {
+          "type": "keyword_binding",
+          "named": true
+        },
+        {
+          "type": "keyword_create",
+          "named": true
+        },
+        {
+          "type": "keyword_remote",
+          "named": true
+        },
+        {
+          "type": "keyword_service",
+          "named": true
+        },
+        {
+          "type": "keyword_to",
+          "named": true
+        },
+        {
+          "type": "literal",
+          "named": true
+        },
+        {
+          "type": "with_clause",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "create_resource_pool",
     "named": true,
     "fields": {
@@ -10392,6 +10868,56 @@
         },
         {
           "type": "with_options",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "create_service",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_authorization",
+          "named": true
+        },
+        {
+          "type": "keyword_create",
+          "named": true
+        },
+        {
+          "type": "keyword_on",
+          "named": true
+        },
+        {
+          "type": "keyword_queue",
+          "named": true
+        },
+        {
+          "type": "keyword_service",
+          "named": true
+        },
+        {
+          "type": "object_reference",
           "named": true
         }
       ]
@@ -12531,6 +13057,60 @@
     }
   },
   {
+    "type": "drop_event_notification",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_database",
+          "named": true
+        },
+        {
+          "type": "keyword_drop",
+          "named": true
+        },
+        {
+          "type": "keyword_event",
+          "named": true
+        },
+        {
+          "type": "keyword_notification",
+          "named": true
+        },
+        {
+          "type": "keyword_on",
+          "named": true
+        },
+        {
+          "type": "keyword_queue",
+          "named": true
+        },
+        {
+          "type": "keyword_server",
+          "named": true
+        },
+        {
+          "type": "object_reference",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "drop_event_session",
     "named": true,
     "fields": {
@@ -12549,6 +13129,10 @@
       "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "keyword_database",
+          "named": true
+        },
         {
           "type": "keyword_drop",
           "named": true
@@ -22708,6 +23292,10 @@
           "named": true
         },
         {
+          "type": "alter_broker_priority",
+          "named": true
+        },
+        {
           "type": "alter_certificate",
           "named": true
         },
@@ -22792,6 +23380,10 @@
           "named": true
         },
         {
+          "type": "alter_message_type",
+          "named": true
+        },
+        {
           "type": "alter_partition_function",
           "named": true
         },
@@ -22805,6 +23397,10 @@
         },
         {
           "type": "alter_queue",
+          "named": true
+        },
+        {
+          "type": "alter_remote_service_binding",
           "named": true
         },
         {
@@ -22828,6 +23424,10 @@
           "named": true
         },
         {
+          "type": "alter_search_property_list",
+          "named": true
+        },
+        {
           "type": "alter_security_policy",
           "named": true
         },
@@ -22845,6 +23445,10 @@
         },
         {
           "type": "alter_server_configuration",
+          "named": true
+        },
+        {
+          "type": "alter_service",
           "named": true
         },
         {
@@ -22944,6 +23548,10 @@
           "named": true
         },
         {
+          "type": "create_broker_priority",
+          "named": true
+        },
+        {
           "type": "create_certificate",
           "named": true
         },
@@ -22985,6 +23593,10 @@
         },
         {
           "type": "create_endpoint",
+          "named": true
+        },
+        {
+          "type": "create_event_notification",
           "named": true
         },
         {
@@ -23064,6 +23676,10 @@
           "named": true
         },
         {
+          "type": "create_remote_service_binding",
+          "named": true
+        },
+        {
           "type": "create_resource_pool",
           "named": true
         },
@@ -23101,6 +23717,10 @@
         },
         {
           "type": "create_server_audit_specification",
+          "named": true
+        },
+        {
+          "type": "create_service",
           "named": true
         },
         {
@@ -23225,6 +23845,10 @@
         },
         {
           "type": "drop_endpoint",
+          "named": true
+        },
+        {
+          "type": "drop_event_notification",
           "named": true
         },
         {
@@ -26989,6 +27613,10 @@
     "named": true
   },
   {
+    "type": "keyword_fan_in",
+    "named": true
+  },
+  {
     "type": "keyword_fetch",
     "named": true
   },
@@ -27426,6 +28054,10 @@
   },
   {
     "type": "keyword_not",
+    "named": true
+  },
+  {
+    "type": "keyword_notification",
     "named": true
   },
   {

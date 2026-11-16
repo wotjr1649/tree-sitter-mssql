@@ -632,6 +632,10 @@
       "type": "PATTERN",
       "value": "[eE][xX][eE][cC][uU][tT][aA][bB][lL][eE]"
     },
+    "keyword_fan_in": {
+      "type": "PATTERN",
+      "value": "[fF][aA][nN][__][iI][nN]"
+    },
     "keyword_workload": {
       "type": "PATTERN",
       "value": "[wW][oO][rR][kK][lL][oO][aA][dD]"
@@ -675,6 +679,10 @@
     "keyword_columns": {
       "type": "PATTERN",
       "value": "[cC][oO][lL][uU][mM][nN][sS]"
+    },
+    "keyword_notification": {
+      "type": "PATTERN",
+      "value": "[nN][oO][tT][iI][fF][iI][cC][aA][tT][iI][oO][nN]"
     },
     "keyword_query": {
       "type": "PATTERN",
@@ -16170,11 +16178,27 @@
         },
         {
           "type": "SYMBOL",
+          "name": "create_broker_priority"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "create_service"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "create_remote_service_binding"
+        },
+        {
+          "type": "SYMBOL",
           "name": "create_resource_pool"
         },
         {
           "type": "SYMBOL",
           "name": "create_workload_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "create_event_notification"
         }
       ]
     },
@@ -19818,6 +19842,27 @@
           }
         },
         {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "keyword_authorization"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "identifier"
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
           "type": "SEQ",
           "members": [
             {
@@ -20408,8 +20453,17 @@
             "name": "keyword_on"
           },
           {
-            "type": "SYMBOL",
-            "name": "keyword_server"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "keyword_server"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "keyword_database"
+              }
+            ]
           },
           {
             "type": "SEQ",
@@ -21045,6 +21099,265 @@
         }
       ]
     },
+    "create_broker_priority": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "keyword_create"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_broker_priority_body"
+        }
+      ]
+    },
+    "_broker_priority_body": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "keyword_broker"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_priority"
+        },
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_for"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_conversation"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_set"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "option"
+                },
+                {
+                  "type": "REPEAT",
+                  "content": {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "STRING",
+                        "value": ","
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "option"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
+        }
+      ]
+    },
+    "create_service": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "keyword_create"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "keyword_service"
+          },
+          {
+            "type": "FIELD",
+            "name": "name",
+            "content": {
+              "type": "SYMBOL",
+              "name": "identifier"
+            }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "keyword_authorization"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "identifier"
+                  }
+                ]
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "SYMBOL",
+            "name": "keyword_on"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "keyword_queue"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "object_reference"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "("
+                  },
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "identifier"
+                      },
+                      {
+                        "type": "REPEAT",
+                        "content": {
+                          "type": "SEQ",
+                          "members": [
+                            {
+                              "type": "STRING",
+                              "value": ","
+                            },
+                            {
+                              "type": "SYMBOL",
+                              "name": "identifier"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "STRING",
+                    "value": ")"
+                  }
+                ]
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "create_remote_service_binding": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "keyword_create"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_remote"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_service"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_binding"
+        },
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "keyword_authorization"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "identifier"
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_to"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_service"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "literal"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_remote_binding_with_clause"
+          },
+          "named": true,
+          "value": "with_clause"
+        }
+      ]
+    },
     "create_resource_pool": {
       "type": "PREC_RIGHT",
       "value": 0,
@@ -21373,6 +21686,140 @@
                 {
                   "type": "SYMBOL",
                   "name": "identifier"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "create_event_notification": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "keyword_create"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_event"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_notification"
+        },
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_event_notification_scope"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "keyword_with"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "keyword_fan_in"
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_for"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "identifier"
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": ","
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "identifier"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_to"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_service"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "literal"
+        },
+        {
+          "type": "STRING",
+          "value": ","
+        },
+        {
+          "type": "SYMBOL",
+          "name": "literal"
+        }
+      ]
+    },
+    "_event_notification_scope": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "keyword_on"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "keyword_server"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "keyword_database"
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "keyword_queue"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "object_reference"
                 }
               ]
             }
@@ -21728,6 +22175,22 @@
         },
         {
           "type": "SYMBOL",
+          "name": "alter_broker_priority"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "alter_message_type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "alter_service"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "alter_remote_service_binding"
+        },
+        {
+          "type": "SYMBOL",
           "name": "alter_resource_governor"
         },
         {
@@ -21737,6 +22200,10 @@
         {
           "type": "SYMBOL",
           "name": "alter_workload_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "alter_search_property_list"
         },
         {
           "type": "SYMBOL",
@@ -23880,8 +24347,17 @@
             "name": "keyword_on"
           },
           {
-            "type": "SYMBOL",
-            "name": "keyword_server"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "keyword_server"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "keyword_database"
+              }
+            ]
           },
           {
             "type": "CHOICE",
@@ -24115,13 +24591,39 @@
                   "type": "CHOICE",
                   "members": [
                     {
-                      "type": "SYMBOL",
-                      "name": "with_clause"
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "SYMBOL",
+                          "name": "with_clause"
+                        },
+                        {
+                          "type": "SYMBOL",
+                          "name": "with_options"
+                        }
+                      ]
                     },
                     {
                       "type": "BLANK"
                     }
                   ]
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "keyword_move"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "keyword_to"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "identifier"
                 }
               ]
             }
@@ -25456,6 +25958,268 @@
         }
       ]
     },
+    "alter_broker_priority": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "keyword_alter"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_broker_priority_body"
+        }
+      ]
+    },
+    "alter_message_type": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "keyword_alter"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_message"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_type"
+        },
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "identifier"
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "SYMBOL",
+          "name": "identifier"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "keyword_with"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "keyword_schema"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "keyword_collection"
+                },
+                {
+                  "type": "FIELD",
+                  "name": "name",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "object_reference"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
+    "alter_service": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "keyword_alter"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_service"
+        },
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "keyword_on"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "keyword_queue"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "object_reference"
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "_alter_service_contracts"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_alter_service_contracts"
+            }
+          ]
+        }
+      ]
+    },
+    "_alter_service_contracts": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "keyword_add"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "keyword_drop"
+                    }
+                  ]
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "keyword_contract"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "identifier"
+                }
+              ]
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": ","
+                  },
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "CHOICE",
+                        "members": [
+                          {
+                            "type": "SYMBOL",
+                            "name": "keyword_add"
+                          },
+                          {
+                            "type": "SYMBOL",
+                            "name": "keyword_drop"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "keyword_contract"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "identifier"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": ")"
+        }
+      ]
+    },
+    "alter_remote_service_binding": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "keyword_alter"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_remote"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_service"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_binding"
+        },
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_remote_binding_with_clause"
+          },
+          "named": true,
+          "value": "with_clause"
+        }
+      ]
+    },
     "alter_resource_governor": {
       "type": "SEQ",
       "members": [
@@ -25650,6 +26414,70 @@
         ]
       }
     },
+    "alter_search_property_list": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "keyword_alter"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_search"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_property"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_list"
+        },
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "keyword_add"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "literal"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "with_options"
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "keyword_drop"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "literal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
     "_drop_statement": {
       "type": "CHOICE",
       "members": [
@@ -25744,6 +26572,10 @@
         {
           "type": "SYMBOL",
           "name": "drop_workload_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "drop_event_notification"
         },
         {
           "type": "SYMBOL",
@@ -26867,8 +27699,17 @@
           "name": "keyword_on"
         },
         {
-          "type": "SYMBOL",
-          "name": "keyword_server"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "keyword_server"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "keyword_database"
+            }
+          ]
         }
       ]
     },
@@ -27531,6 +28372,86 @@
             "type": "SYMBOL",
             "name": "identifier"
           }
+        }
+      ]
+    },
+    "drop_event_notification": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "keyword_drop"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_event"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_notification"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "name",
+              "content": {
+                "type": "SYMBOL",
+                "name": "identifier"
+              }
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": ","
+                  },
+                  {
+                    "type": "FIELD",
+                    "name": "name",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "identifier"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_on"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "keyword_server"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "keyword_database"
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "keyword_queue"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "object_reference"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -33446,6 +34367,102 @@
         {
           "type": "STRING",
           "value": "||="
+        }
+      ]
+    },
+    "_remote_binding_with_clause": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "keyword_with"
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "option"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_remote_binding_user_option"
+                    },
+                    "named": true,
+                    "value": "option"
+                  }
+                ]
+              },
+              {
+                "type": "REPEAT",
+                "content": {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": ","
+                    },
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "SYMBOL",
+                          "name": "option"
+                        },
+                        {
+                          "type": "ALIAS",
+                          "content": {
+                            "type": "SYMBOL",
+                            "name": "_remote_binding_user_option"
+                          },
+                          "named": true,
+                          "value": "option"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "_remote_binding_user_option": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "keyword_user"
+            },
+            "named": true,
+            "value": "identifier"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "FIELD",
+          "name": "value",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
         }
       ]
     },
@@ -42254,6 +43271,12 @@
     ],
     [
       "alter_queue"
+    ],
+    [
+      "alter_service"
+    ],
+    [
+      "alter_message_type"
     ],
     [
       "alter_assembly"
