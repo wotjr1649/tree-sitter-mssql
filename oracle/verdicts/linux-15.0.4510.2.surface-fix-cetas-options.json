@@ -1,0 +1,23 @@
+{
+"meta": {"mode":"PARSEONLY","engine":{"product_version":"15.0.4510.2","product_level":"RTM","edition":"Developer Edition (64-bit)","platform":"Linux","collation":"SQL_Latin1_General_CP1_CI_AS"},"session_set":{"quoted_identifier":1,"ansi_nulls":1,"ansi_padding":1,"ansi_warnings":1,"arithabort":0,"concat_null_yields_null":1},"levels":[100,110,120,130,140,150],"cases_sha256":"80e0d65e9cd383cdc3fe50e65a3a5dd521d8cfb494c9247a7b2113142849cbc8","runner":"oracle/runner/ParseOnly (C#, Microsoft.Data.SqlClient)","runner_sha256":"a2995ba64f6c912af4e935db9d2897e758a7a889f4bc1d7a14b9e67ec051132c","observed_utc":"2026-11-16"},
+"verdicts": {
+  "surface-fix-cetas-options/reject-type-value": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102]},
+  "surface-fix-cetas-options/reject-type-percentage": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102]},
+  "surface-fix-cetas-options/reject-value": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102]},
+  "surface-fix-cetas-options/reject-sample-value": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102]},
+  "surface-fix-cetas-options/reject-all-value": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102]},
+  "surface-fix-cetas-options/reject-all-percentage": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102]},
+  "surface-fix-cetas-options/reject-all-reverse": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102]},
+  "surface-fix-cetas-options/inline-format-options": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102]},
+  "surface-fix-cetas-options/unknown-option": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102]},
+  "surface-fix-cetas-options/ordinary-external/reject-type-value": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102]},
+  "surface-fix-cetas-options/ordinary-external/reject-type-percentage": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102]},
+  "surface-fix-cetas-options/ordinary-external/reject-value": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102]},
+  "surface-fix-cetas-options/ordinary-external/reject-sample-value": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102]},
+  "surface-fix-cetas-options/ordinary-external/reject-all-value": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102]},
+  "surface-fix-cetas-options/ordinary-external/reject-all-percentage": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102]},
+  "surface-fix-cetas-options/ordinary-external/reject-all-reverse": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102]},
+  "surface-fix-cetas-options/base": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102]},
+  "surface-fix-cetas-options/mi-partition": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102]}
+}
+}

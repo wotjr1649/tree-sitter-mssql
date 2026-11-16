@@ -46,16 +46,13 @@ export default {
   // 2022 form puts a FROM keyword inside the argument list, so TRIM is its
   // own node rather than an invocation. A plain TRIM(x) is this node too:
   // TRIM lexes as a keyword wherever an expression can start.
-  trim: ($) =>
+  trim: ($) => seq($.keyword_trim, wrapped_in_parenthesis($._trim_body)),
+
+  _trim_body: ($) =>
     seq(
-      $.keyword_trim,
-      wrapped_in_parenthesis(
-        seq(
-          optional(choice($.keyword_leading, $.keyword_trailing, $.keyword_both)),
-          optional(seq(field('characters', $._expression), $.keyword_from)),
-          field('parameter', $._expression),
-        ),
-      ),
+      optional(choice($.keyword_leading, $.keyword_trailing, $.keyword_both)),
+      optional(seq(field('characters', $._expression), $.keyword_from)),
+      field('parameter', $._expression),
     ),
 
   // JSON_OBJECT('key' : value [, ...] [NULL ON NULL | ABSENT ON NULL] [RETURNING json])
@@ -97,17 +94,15 @@ export default {
 
   // AI_GENERATE_EMBEDDINGS(expression USE MODEL model [PARAMETERS json]) (2025)
   ai_generate_embeddings: ($) =>
+    seq($.keyword_ai_generate_embeddings, wrapped_in_parenthesis($._embedding_body)),
+
+  _embedding_body: ($) =>
     seq(
-      $.keyword_ai_generate_embeddings,
-      wrapped_in_parenthesis(
-        seq(
-          field('parameter', $._expression),
-          $.keyword_use,
-          $.keyword_model,
-          field('model', $.object_reference),
-          optional(seq($.keyword_parameters, field('parameters', $._expression))),
-        ),
-      ),
+      field('parameter', $._expression),
+      $.keyword_use,
+      $.keyword_model,
+      field('model', $.object_reference),
+      optional(seq($.keyword_parameters, field('parameters', $._expression))),
     ),
 
   // A method call on a parenthesized expression, subquery or call result, applying
@@ -189,13 +184,13 @@ export default {
   // CASE WHEN predicate THEN result ... [ELSE result] END
   // Each WHEN branch is a named node so a consumer can count it as a
   // decision point.
-  case: ($) =>
+  case: ($) => seq($.keyword_case, $._case_body, $.keyword_end),
+
+  _case_body: ($) =>
     seq(
-      $.keyword_case,
       optional(field('input', $._expression)),
       repeat1($.when_clause),
       optional(seq($.keyword_else, field('else', $._expression))),
-      $.keyword_end,
     ),
 
   when_clause: ($) =>
@@ -214,14 +209,15 @@ export default {
         'name',
         choice($.keyword_cast, $.keyword_try_cast, $.keyword_parse, $.keyword_try_parse),
       ),
-      wrapped_in_parenthesis(
-        seq(
-          field('parameter', $._expression),
-          $.keyword_as,
-          $._type,
-          optional(seq($.keyword_using, $.literal)),
-        ),
-      ),
+      wrapped_in_parenthesis($._cast_body),
+    ),
+
+  _cast_body: ($) =>
+    seq(
+      field('parameter', $._expression),
+      $.keyword_as,
+      $._type,
+      optional(seq($.keyword_using, $.literal)),
     ),
 
   exists: ($) => seq($.keyword_exists, $.subquery),
