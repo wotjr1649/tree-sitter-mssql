@@ -49,6 +49,17 @@ every gate within the cost budget.
 
 Done when no T-SQL check or asset remains only in grammar-kit, and every ported rule agrees with the engine on its oracle cases.
 
+Status (2026-11-16):
+- Ported: every `CheckTSQLContext` check (#25, #26 and the scalar-predicate rule). Each was re-measured on the engine.
+- Imported: the 726 gap cases and 353 edit histories (M1), the 640 route cases and their 19 edit histories (#24),
+  the six T-SQL queries with their capture cases (`test/queries/kit`), and the dynamic SQL fixture.
+- Already the same as the oracle: `testdata/tsql-context` (the 726 gap cases).
+- Used as evidence only:
+  - the C2 patch chain (`src/dev/c2-patches/tsql.json`), re-implemented here;
+  - the T-SQL issue reports, whose cases are in the oracle under their issue IDs.
+- Left to go-treesitter (Go API contracts, ADR-0004 §1): the T-SQL fact-query mapping and the `tsql8` query
+  classification.
+
 ## M3: Remaining surface
 
 The remaining inventory cells: DDL families, `QUOTED_IDENTIFIER OFF` (stateful scanner), `GO`/sqlcmd as a client

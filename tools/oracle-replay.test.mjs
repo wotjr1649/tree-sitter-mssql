@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
-import { compare, isPositive, readCases } from './oracle-replay.mjs';
+import { classify, compare, isPositive, readCases } from './oracle-replay.mjs';
 
 const line = (id, source, sha = createHash('sha256').update(source).digest('hex')) =>
   JSON.stringify({ id, sha256: sha, source });
@@ -32,4 +32,16 @@ test('only an engine-accepted case going from clean to error is a regression', (
       'pos:clean->error:true',
     ],
   );
+});
+
+test('every rejected-but-clean case needs a known class, and no entry may outlive its case', () => {
+  const classification = { a: { class: 'gap' }, b: { class: 'guess' }, gone: { class: 'context' } };
+  assert.deepEqual(classify(['a', 'b', 'c'], classification), {
+    unclassified: ['b', 'c'],
+    stale: ['gone'],
+  });
+  assert.deepEqual(classify(['a'], { a: { class: 'environment' } }), {
+    unclassified: [],
+    stale: [],
+  });
 });
