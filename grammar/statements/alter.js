@@ -48,6 +48,10 @@ export default {
       $.alter_application_role,
       $.alter_credential,
 
+      $.alter_resource_governor,
+      $.alter_resource_pool,
+      $.alter_workload_group,
+
       $.alter_service_master_key,
       $.alter_cryptographic_provider,
     ),
@@ -685,5 +689,44 @@ export default {
       $.keyword_credential,
       field('name', $.identifier),
       $.with_clause,
+    ),
+
+  alter_resource_governor: ($) =>
+    seq(
+      $.keyword_alter,
+      $.keyword_resource,
+      $.keyword_governor,
+      choice(
+        $.keyword_reconfigure,
+        $.keyword_disable,
+        seq($.keyword_reset, $.keyword_statistics),
+        alias($._resource_governor_options, $.with_options),
+      ),
+    ),
+
+  _resource_governor_options: ($) =>
+    seq(
+      $.keyword_with,
+      paren_list(choice($.option, alias($._principal_null_option, $.option)), true),
+    ),
+
+  alter_resource_pool: ($) =>
+    seq(
+      $.keyword_alter,
+      $.keyword_resource,
+      $.keyword_pool,
+      field('name', $.identifier),
+      alias($._resource_pool_options, $.with_options),
+    ),
+
+  alter_workload_group: ($) =>
+    prec.right(
+      seq(
+        $.keyword_alter,
+        $.keyword_workload,
+        $.keyword_group,
+        field('name', $.identifier),
+        $._workload_group_tail,
+      ),
     ),
 };

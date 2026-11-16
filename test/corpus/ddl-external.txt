@@ -1652,25 +1652,7 @@ CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434, LISTENER_IP = (::1)) FOR TSQL (
 
 --------------------------------------------------------------------------------
 
-(program
-  (batch
-    (statement
-      (create_endpoint
-        (keyword_create)
-        (keyword_endpoint)
-        name: (identifier)
-        (endpoint_transport
-          (keyword_as)
-          (identifier)
-          (option
-            name: (identifier)
-            value: (literal))
-          (ERROR
-            (identifier)
-            (literal)))
-        (endpoint_payload
-          (keyword_for)
-          type: (identifier))))))
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal)) (ERROR (identifier) (literal))) (endpoint_payload (keyword_for) type: (identifier))))))
 
 ================================================================================
 ddl-external/endpoint-invalid-alter-authorization (engine 156; LocalDB 17.0.1000.7 levels 100-170)

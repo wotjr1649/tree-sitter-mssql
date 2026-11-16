@@ -10,10 +10,13 @@ import { make_keyword } from './helpers.js';
 export default {
   keyword_unlock: (_) => make_keyword('unlock'),
   keyword_unchecked: (_) => make_keyword('unchecked'),
+  keyword_reset: (_) => make_keyword('reset'),
   keyword_old_password: (_) => make_keyword('old_password'),
   keyword_must_change: (_) => make_keyword('must_change'),
+  keyword_governor: (_) => make_keyword('governor'),
   keyword_executable: (_) => make_keyword('executable'),
   keyword_workload: (_) => make_keyword('workload'),
+  keyword_scheduler: (_) => make_keyword('scheduler'),
   keyword_priority: (_) => make_keyword('priority'),
   keyword_broker: (_) => make_keyword('broker'),
   keyword_rule: (_) => make_keyword('rule'),

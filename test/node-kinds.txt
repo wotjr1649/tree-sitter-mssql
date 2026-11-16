@@ -31,6 +31,8 @@ alter_partition_function
 alter_partition_scheme
 alter_procedure{body,name,number}
 alter_queue
+alter_resource_governor
+alter_resource_pool{name}
 alter_role
 alter_route
 alter_schema
@@ -45,6 +47,7 @@ alter_table{from_partition,name,target,to_partition,type}
 alter_trigger{body,name,target}
 alter_user
 alter_view{name}
+alter_workload_group{name}
 alter_xml_schema_collection{name}
 apply_join{alias}
 assignment{left,right}
@@ -118,6 +121,7 @@ create_partition_function{name}
 create_partition_scheme{name}
 create_procedure{body,name,number}
 create_queue{name}
+create_resource_pool{name}
 create_role{name}
 create_route{name}
 create_rule{name}
@@ -135,6 +139,7 @@ create_trigger{body,name,target}
 create_type{name}
 create_user{name}
 create_view{name}
+create_workload_group{name}
 create_xml_schema_collection{name}
 cross_join{alias}
 cte{argument,name}
@@ -439,6 +444,7 @@ keyword_get
 keyword_global
 keyword_go
 keyword_goto
+keyword_governor
 keyword_grant
 keyword_group
 keyword_grouping
@@ -597,6 +603,7 @@ keyword_repeatable
 keyword_replica
 keyword_replicate
 keyword_replication
+keyword_reset
 keyword_resource
 keyword_restart
 keyword_restore
@@ -619,6 +626,7 @@ keyword_rowversion
 keyword_rule
 keyword_safety
 keyword_save
+keyword_scheduler
 keyword_schema
 keyword_schemabinding
 keyword_scheme

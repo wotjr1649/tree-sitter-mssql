@@ -2323,6 +2323,87 @@
     }
   },
   {
+    "type": "alter_resource_governor",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_alter",
+          "named": true
+        },
+        {
+          "type": "keyword_disable",
+          "named": true
+        },
+        {
+          "type": "keyword_governor",
+          "named": true
+        },
+        {
+          "type": "keyword_reconfigure",
+          "named": true
+        },
+        {
+          "type": "keyword_reset",
+          "named": true
+        },
+        {
+          "type": "keyword_resource",
+          "named": true
+        },
+        {
+          "type": "keyword_statistics",
+          "named": true
+        },
+        {
+          "type": "with_options",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "alter_resource_pool",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_alter",
+          "named": true
+        },
+        {
+          "type": "keyword_pool",
+          "named": true
+        },
+        {
+          "type": "keyword_resource",
+          "named": true
+        },
+        {
+          "type": "with_options",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "alter_role",
     "named": true,
     "fields": {},
@@ -3620,6 +3701,56 @@
         },
         {
           "type": "xmlnamespaces",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "alter_workload_group",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_alter",
+          "named": true
+        },
+        {
+          "type": "keyword_external",
+          "named": true
+        },
+        {
+          "type": "keyword_group",
+          "named": true
+        },
+        {
+          "type": "keyword_using",
+          "named": true
+        },
+        {
+          "type": "keyword_workload",
+          "named": true
+        },
+        {
+          "type": "with_options",
           "named": true
         }
       ]
@@ -9735,6 +9866,44 @@
     }
   },
   {
+    "type": "create_resource_pool",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_create",
+          "named": true
+        },
+        {
+          "type": "keyword_pool",
+          "named": true
+        },
+        {
+          "type": "keyword_resource",
+          "named": true
+        },
+        {
+          "type": "with_options",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "create_role",
     "named": true,
     "fields": {
@@ -10935,6 +11104,56 @@
         },
         {
           "type": "xmlnamespaces",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "create_workload_group",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_create",
+          "named": true
+        },
+        {
+          "type": "keyword_external",
+          "named": true
+        },
+        {
+          "type": "keyword_group",
+          "named": true
+        },
+        {
+          "type": "keyword_using",
+          "named": true
+        },
+        {
+          "type": "keyword_workload",
+          "named": true
+        },
+        {
+          "type": "with_options",
           "named": true
         }
       ]
@@ -19304,6 +19523,10 @@
           "named": true
         },
         {
+          "type": "keyword_scheduler",
+          "named": true
+        },
+        {
           "type": "keyword_timeout",
           "named": true
         },
@@ -22585,6 +22808,14 @@
           "named": true
         },
         {
+          "type": "alter_resource_governor",
+          "named": true
+        },
+        {
+          "type": "alter_resource_pool",
+          "named": true
+        },
+        {
           "type": "alter_role",
           "named": true
         },
@@ -22638,6 +22869,10 @@
         },
         {
           "type": "alter_view",
+          "named": true
+        },
+        {
+          "type": "alter_workload_group",
           "named": true
         },
         {
@@ -22829,6 +23064,10 @@
           "named": true
         },
         {
+          "type": "create_resource_pool",
+          "named": true
+        },
+        {
           "type": "create_role",
           "named": true
         },
@@ -22894,6 +23133,10 @@
         },
         {
           "type": "create_view",
+          "named": true
+        },
+        {
+          "type": "create_workload_group",
           "named": true
         },
         {
@@ -26862,6 +27105,10 @@
     "named": true
   },
   {
+    "type": "keyword_governor",
+    "named": true
+  },
+  {
     "type": "keyword_grant",
     "named": true
   },
@@ -27486,6 +27733,10 @@
     "named": true
   },
   {
+    "type": "keyword_reset",
+    "named": true
+  },
+  {
     "type": "keyword_resource",
     "named": true
   },
@@ -27571,6 +27822,10 @@
   },
   {
     "type": "keyword_save",
+    "named": true
+  },
+  {
+    "type": "keyword_scheduler",
     "named": true
   },
   {

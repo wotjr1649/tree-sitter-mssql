@@ -94,6 +94,9 @@ export default {
       $.create_cryptographic_provider,
       $.create_default,
       $.create_rule,
+
+      $.create_resource_pool,
+      $.create_workload_group,
     ),
 
   // CREATE XML SCHEMA COLLECTION name AS expression
@@ -767,5 +770,53 @@ export default {
       field('name', $.object_reference),
       $.keyword_as,
       $._expression,
+    ),
+
+  create_resource_pool: ($) =>
+    prec.right(
+      seq(
+        $.keyword_create,
+        $.keyword_resource,
+        $.keyword_pool,
+        field('name', $.identifier),
+        optional(alias($._resource_pool_options, $.with_options)),
+      ),
+    ),
+
+  _resource_pool_options: ($) =>
+    seq(
+      $.keyword_with,
+      paren_list(choice($.option, alias($._resource_pool_affinity, $.option)), true),
+    ),
+
+  _resource_pool_affinity: ($) =>
+    seq(
+      field('name', alias($.keyword_affinity, $.identifier)),
+      choice($.keyword_scheduler, $.keyword_numanode),
+      '=',
+      choice($.identifier, paren_list($.external_cpu_range, true)),
+    ),
+
+  create_workload_group: ($) =>
+    prec.right(
+      seq(
+        $.keyword_create,
+        $.keyword_workload,
+        $.keyword_group,
+        field('name', $.identifier),
+        optional($._workload_group_tail),
+      ),
+    ),
+
+  _workload_group_tail: ($) =>
+    choice(seq($.with_options, optional($._workload_group_using)), $._workload_group_using),
+
+  _workload_group_using: ($) =>
+    seq(
+      $.keyword_using,
+      choice(
+        seq($.identifier, optional(seq(',', $.keyword_external, $.identifier))),
+        seq($.keyword_external, $.identifier),
+      ),
     ),
 };

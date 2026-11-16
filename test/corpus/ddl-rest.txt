@@ -3277,6 +3277,86 @@ CREATE DEFAULT dbo.df_zero AS 0;
         (literal)))))
 
 ==================
+ddl-rest/create-route-alt-tsql-B03-r250 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE RESOURCE POOL rp1 WITH (MIN_CPU_PERCENT = 10, MAX_CPU_PERCENT = 50, CAP_CPU_PERCENT = 80, AFFINITY SCHEDULER = AUTO, MIN_MEMORY_PERCENT = 5, MAX_MEMORY_PERCENT = 40, MIN_IOPS_PER_VOLUME = 20, MAX_IOPS_PER_VOLUME = 100);
+CREATE RESOURCE POOL rp2 WITH (AFFINITY SCHEDULER = (0, 2 TO 3));
+CREATE RESOURCE POOL rp3 WITH (AFFINITY NUMANODE = (0, 1 TO 2));
+
+---
+
+(program
+  (batch
+    (statement
+      (create_resource_pool
+        (keyword_create)
+        (keyword_resource)
+        (keyword_pool)
+        name: (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            (keyword_scheduler)
+            (identifier))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal)))))
+    (statement
+      (create_resource_pool
+        (keyword_create)
+        (keyword_resource)
+        (keyword_pool)
+        name: (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            (keyword_scheduler)
+            (external_cpu_range
+              (literal))
+            (external_cpu_range
+              (literal)
+              (keyword_to)
+              (literal))))))
+    (statement
+      (create_resource_pool
+        (keyword_create)
+        (keyword_resource)
+        (keyword_pool)
+        name: (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            (keyword_numanode)
+            (external_cpu_range
+              (literal))
+            (external_cpu_range
+              (literal)
+              (keyword_to)
+              (literal))))))))
+
+==================
 ddl-rest/create-route-alt-tsql-B03-r253 — LocalDB 17.0.1000.7 levels 100-170: accepts
 ==================
 
@@ -3641,6 +3721,80 @@ CREATE USER u13 FOR ASYMMETRIC KEY ak_sign;
         (identifier)))))
 
 ==================
+ddl-rest/create-route-alt-tsql-B03-r293 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE WORKLOAD GROUP wg_reports WITH (IMPORTANCE = LOW, REQUEST_MAX_MEMORY_GRANT_PERCENT = 25, REQUEST_MAX_CPU_TIME_SEC = 60,
+  REQUEST_MEMORY_GRANT_TIMEOUT_SEC = 30, MAX_DOP = 4, GROUP_MAX_REQUESTS = 10, GROUP_MAX_TEMPDB_DATA_MB = 1024) USING pool_reports, EXTERNAL epool_r;
+CREATE WORKLOAD GROUP wg_adhoc WITH (IMPORTANCE = MEDIUM, GROUP_MAX_TEMPDB_DATA_PERCENT = 10) USING [default];
+CREATE WORKLOAD GROUP wg_etl WITH (IMPORTANCE = HIGH);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_workload_group
+        (keyword_create)
+        (keyword_workload)
+        (keyword_group)
+        name: (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal)))
+        (keyword_using)
+        (identifier)
+        (keyword_external)
+        (identifier)))
+    (statement
+      (create_workload_group
+        (keyword_create)
+        (keyword_workload)
+        (keyword_group)
+        name: (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier))
+          (option
+            name: (identifier)
+            value: (literal)))
+        (keyword_using)
+        (identifier)))
+    (statement
+      (create_workload_group
+        (keyword_create)
+        (keyword_workload)
+        (keyword_group)
+        name: (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier)))))))
+
+==================
 ddl-rest/create-aggregate — LocalDB 17.0.1000.7 levels 100-170: accepts
 ==================
 
@@ -3950,6 +4104,184 @@ CREATE RULE dbo.r AS @v > 0;
           left: (field
             name: (identifier))
           right: (literal))))))
+
+==================
+ddl-rest/create-resource-pool — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE RESOURCE POOL p WITH (MAX_CPU_PERCENT = 50, AFFINITY SCHEDULER = (0, 2 TO 3));
+
+---
+
+(program
+  (batch
+    (statement
+      (create_resource_pool
+        (keyword_create)
+        (keyword_resource)
+        (keyword_pool)
+        name: (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            (keyword_scheduler)
+            (external_cpu_range
+              (literal))
+            (external_cpu_range
+              (literal)
+              (keyword_to)
+              (literal))))))))
+
+==================
+ddl-rest/create-resource-pool-empty — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE RESOURCE POOL p;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_resource_pool
+        (keyword_create)
+        (keyword_resource)
+        (keyword_pool)
+        name: (identifier)))))
+
+==================
+ddl-rest/create-resource-pool-affinity — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+CREATE RESOURCE POOL p WITH (AFFINITY NUMANODE = AUTO);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_resource_pool
+        (keyword_create)
+        (keyword_resource)
+        (keyword_pool)
+        name: (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            (keyword_numanode)
+            (identifier)))))))
+
+==================
+ddl-rest/create-resource-pool-range — LocalDB 17.0.1000.7 levels 100-170: rejects 1080
+==================
+
+CREATE RESOURCE POOL p WITH (MAX_CPU_PERCENT = 101);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_resource_pool
+        (keyword_create)
+        (keyword_resource)
+        (keyword_pool)
+        name: (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
+ddl-rest/create-workload-group — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE WORKLOAD GROUP g WITH (IMPORTANCE = LOW) USING p, EXTERNAL ep;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_workload_group
+        (keyword_create)
+        (keyword_workload)
+        (keyword_group)
+        name: (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier)))
+        (keyword_using)
+        (identifier)
+        (keyword_external)
+        (identifier)))))
+
+==================
+ddl-rest/create-workload-group-external — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE WORKLOAD GROUP g USING EXTERNAL ep;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_workload_group
+        (keyword_create)
+        (keyword_workload)
+        (keyword_group)
+        name: (identifier)
+        (keyword_using)
+        (keyword_external)
+        (identifier)))))
+
+==================
+ddl-rest/create-workload-group-empty — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE WORKLOAD GROUP g;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_workload_group
+        (keyword_create)
+        (keyword_workload)
+        (keyword_group)
+        name: (identifier)))))
+
+==================
+ddl-rest/create-workload-group-importance — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+CREATE WORKLOAD GROUP g WITH (IMPORTANCE = WRONG);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_workload_group
+        (keyword_create)
+        (keyword_workload)
+        (keyword_group)
+        name: (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier)))))))
 
 ==================
 ddl-rest/create-event-session-server — LocalDB 17.0.1000.7 levels 100-170: accepts
@@ -4805,6 +5137,227 @@ ALTER QUEUE dbo.q REORGANIZE WITH LOB_COMPACTION = OFF;
           (option
             name: (identifier)
             value: (keyword_off)))))))
+
+==================
+ddl-rest/alter-resource-reconfigure — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER RESOURCE GOVERNOR RECONFIGURE;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_resource_governor
+        (keyword_alter)
+        (keyword_resource)
+        (keyword_governor)
+        (keyword_reconfigure)))))
+
+==================
+ddl-rest/alter-resource-disable — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER RESOURCE GOVERNOR DISABLE;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_resource_governor
+        (keyword_alter)
+        (keyword_resource)
+        (keyword_governor)
+        (keyword_disable)))))
+
+==================
+ddl-rest/alter-resource-reset — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER RESOURCE GOVERNOR RESET STATISTICS;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_resource_governor
+        (keyword_alter)
+        (keyword_resource)
+        (keyword_governor)
+        (keyword_reset)
+        (keyword_statistics)))))
+
+==================
+ddl-rest/alter-resource-function — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER RESOURCE GOVERNOR WITH (CLASSIFIER_FUNCTION = dbo.f);
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_resource_governor
+        (keyword_alter)
+        (keyword_resource)
+        (keyword_governor)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (object_reference
+              schema: (identifier)
+              name: (identifier))))))))
+
+==================
+ddl-rest/alter-resource-function-null — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER RESOURCE GOVERNOR WITH (CLASSIFIER_FUNCTION = NULL);
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_resource_governor
+        (keyword_alter)
+        (keyword_resource)
+        (keyword_governor)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal
+              (keyword_null))))))))
+
+==================
+ddl-rest/alter-resource-volume — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER RESOURCE GOVERNOR WITH (MAX_OUTSTANDING_IO_PER_VOLUME = 100);
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_resource_governor
+        (keyword_alter)
+        (keyword_resource)
+        (keyword_governor)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
+ddl-rest/alter-resource-pool — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER RESOURCE POOL p WITH (MIN_CPU_PERCENT = 10, MAX_CPU_PERCENT = 50, AFFINITY SCHEDULER = AUTO);
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_resource_pool
+        (keyword_alter)
+        (keyword_resource)
+        (keyword_pool)
+        name: (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            (keyword_scheduler)
+            (identifier)))))))
+
+==================
+ddl-rest/alter-resource-affinity — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER RESOURCE POOL p WITH (AFFINITY NUMANODE = (0, 1 TO 2));
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_resource_pool
+        (keyword_alter)
+        (keyword_resource)
+        (keyword_pool)
+        name: (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            (keyword_numanode)
+            (external_cpu_range
+              (literal))
+            (external_cpu_range
+              (literal)
+              (keyword_to)
+              (literal))))))))
+
+==================
+ddl-rest/alter-workload-with-using — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER WORKLOAD GROUP g WITH (IMPORTANCE = LOW, MAX_DOP = 4) USING p;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_workload_group
+        (keyword_alter)
+        (keyword_workload)
+        (keyword_group)
+        name: (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier))
+          (option
+            name: (identifier)
+            value: (literal)))
+        (keyword_using)
+        (identifier)))))
+
+==================
+ddl-rest/alter-workload-using — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER WORKLOAD GROUP g USING p;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_workload_group
+        (keyword_alter)
+        (keyword_workload)
+        (keyword_group)
+        name: (identifier)
+        (keyword_using)
+        (identifier)))))
 
 ==================
 ddl-rest/alter-schema-xml — LocalDB 17.0.1000.7 levels 100-170: accepts
