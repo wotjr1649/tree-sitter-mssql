@@ -189,13 +189,13 @@ export default {
   // CASE WHEN predicate THEN result ... [ELSE result] END
   // Each WHEN branch is a named node so a consumer can count it as a
   // decision point.
-  case: ($) =>
+  case: ($) => seq($.keyword_case, $._case_body, $.keyword_end),
+
+  _case_body: ($) =>
     seq(
-      $.keyword_case,
       optional(field('input', $._expression)),
       repeat1($.when_clause),
       optional(seq($.keyword_else, field('else', $._expression))),
-      $.keyword_end,
     ),
 
   when_clause: ($) =>
@@ -214,14 +214,15 @@ export default {
         'name',
         choice($.keyword_cast, $.keyword_try_cast, $.keyword_parse, $.keyword_try_parse),
       ),
-      wrapped_in_parenthesis(
-        seq(
-          field('parameter', $._expression),
-          $.keyword_as,
-          $._type,
-          optional(seq($.keyword_using, $.literal)),
-        ),
-      ),
+      wrapped_in_parenthesis($._cast_body),
+    ),
+
+  _cast_body: ($) =>
+    seq(
+      field('parameter', $._expression),
+      $.keyword_as,
+      $._type,
+      optional(seq($.keyword_using, $.literal)),
     ),
 
   exists: ($) => seq($.keyword_exists, $.subquery),
