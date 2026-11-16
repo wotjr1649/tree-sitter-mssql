@@ -40,6 +40,7 @@ old tree of these forms stops matching:
 | `PARSE` / `TRY_PARSE(x AS int)` | `invocation`, type as an alias | `cast` with `name: keyword_try_parse` |
 | `CREATE PROCEDURE p AS ; WITH c AS (...) SELECT ...` | CTE outside the procedure body | inside `procedure_body` |
 | `DECLARE @c AS CURSOR` | `custom_type` | `keyword_cursor` |
+| `IF a IF b s ELSE t` (dangling ELSE) | `else_clause` on the outer `if_statement` | on the nearest `if_statement`, as SQL Server executes it |
 
 No input 1.0.0 parsed cleanly gets an error now, and no other node covers a different span.
 
@@ -84,7 +85,8 @@ Child iteration is unchanged. `ChildByFieldName` now finds them.
   0.27.2). Older runtimes can give a reparse that differs from a fresh parse when a reused node starts with a keyword
   that must be read as a name; this is a runtime defect, the same for 1.0.0, and no grammar can avoid it.
 - **Error recovery of invalid input.** Trees of inputs SQL Server rejects may differ inside their `ERROR` nodes. They
-  were never a contract.
+  were never a contract. The same holds for an incremental reparse after an edit that leaves invalid text: it can
+  place the `ERROR` differently from a fresh parse of that text.
 - **Validation is a separate layer.** The grammar alone rejects 852 of the 2,795 engine-rejected inputs (30.48 %).
   The constraint layer in `tools/tree-check` rejects 1,755 more. A CGO-free host can use it as a WebAssembly
   module ([constraint-wasm.md](constraint-wasm.md)). What remains clean is classified in

@@ -28,12 +28,14 @@ From 2.0.0:
 
 Scope and known limits:
 
-- default session settings (QUOTED_IDENTIFIER ON);
+- both QUOTED_IDENTIFIER settings (the tree is the same; `tree-check --quoted-identifier on|off` judges each, ADR-0006);
+  other session settings at their defaults;
 - Azure Synapse and Data Warehouse syntax kept from upstream is accepted although SQL Server rejects it;
 - incremental reparsing needs a tree-sitter runtime with upstream commit
   [`f932671a5`](https://github.com/tree-sitter/tree-sitter/commit/f932671a5) (after 0.27.2). With 0.27.2, a reparse after an
   edit can differ from a fresh parse of the same text when a reused node starts with a keyword that has to be read
-  as a name there: 160 of 123,094 edit steps over the oracle did, 0 with the fix. A fresh parse is always exact.
+  as a name there: 160 of 123,094 edit steps over the oracle did, 0 with the fix. After an edit that leaves invalid
+  text, the incremental tree may also place its `ERROR` differently from a fresh parse. A fresh parse is always exact.
 
 Moving from 1.0.0: [docs/migrating-from-1.0.md](docs/migrating-from-1.0.md).
 
