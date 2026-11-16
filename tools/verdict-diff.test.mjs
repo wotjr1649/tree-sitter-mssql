@@ -19,3 +19,10 @@ test('refuses to compare verdicts from different cases or modes', () => {
   assert.throws(() => diff(file([110], {}, 'x'), file([110], {}, 'y')), /different cases/);
   assert.throws(() => diff({ meta: { mode: 'NOEXEC' } }, file([110], {})), /PARSEONLY/);
 });
+
+test('refuses to compare ON observations with OFF observations', () => {
+  const on = file([170], { a: { 170: [] } });
+  const off = file([170], { a: { 170: [102] } });
+  off.meta.session_set = { quoted_identifier: 0 };
+  assert.throws(() => diff(on, off), /different QUOTED_IDENTIFIER sessions/);
+});

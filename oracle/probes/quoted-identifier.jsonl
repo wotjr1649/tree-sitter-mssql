@@ -1,0 +1,122 @@
+{"id":"quoted-identifier/select-value","sha256":"eeca8fa6548f5cd570fbcaabdd5de158623ceb485262431dfe52565d65f46b06","source":"SELECT \"value\";"}
+{"id":"quoted-identifier/select-escaped-value","sha256":"2033b9db1f3e5c5b4ac5e97d2a92d0482cc1bbc16ea0d5ca4eba403c26d9b6ff","source":"SELECT \"a\"\"b\";"}
+{"id":"quoted-identifier/select-empty-value","sha256":"a3e9a0deba3927c8914c7d9ba9444b5ac1863fadd4f8c1e4c45de9681afd775b","source":"SELECT \"\";"}
+{"id":"quoted-identifier/select-apostrophe-value","sha256":"bc90ff146665575f88c6075d7360b675879239b4e05ed462d3bfb60045c672f8","source":"SELECT \"O'Brien\";"}
+{"id":"quoted-identifier/select-quoted-column","sha256":"ba18d5c758c8e9c250918129a732bb754fd062fa06befacb331b09c9a84d6937","source":"SELECT \"column\" FROM dbo.t;"}
+{"id":"quoted-identifier/select-qualified-column","sha256":"ceabda76cb938d01a844fbb4cc38e8ca4459841e5e4c3b43c2f0440a74aa8d3d","source":"SELECT \"t\".\"column\" FROM dbo.t;"}
+{"id":"quoted-identifier/select-quoted-table","sha256":"5e059e1b731c0ccb659c5c43120a203167b8e32a80b69347d4c1533169d486d7","source":"SELECT * FROM \"table\";"}
+{"id":"quoted-identifier/select-qualified-table","sha256":"ed3d00c1d73239e4916b6e68a5b6533064f345eb31151314c1f954d2c7b63d34","source":"SELECT * FROM \"dbo\".\"table\";"}
+{"id":"quoted-identifier/select-quoted-alias","sha256":"21e58ee225b126d150e039903684fae444204e207cb785614e80f97b77c5aff1","source":"SELECT 1 AS \"alias\";"}
+{"id":"quoted-identifier/select-table-alias","sha256":"55ea86d5ce695fc5875fc6dc59aeb8441b62db4dde4d53741f7d2fd6e65b1151","source":"SELECT * FROM dbo.t AS \"alias\";"}
+{"id":"quoted-identifier/select-bracket-name","sha256":"b8cdb110b58224fd43645e39173c393007ca183fe741e5db1a8510bcdc44c9e6","source":"SELECT [column] FROM [table];"}
+{"id":"quoted-identifier/select-single-value","sha256":"18459f5cbf867d81aa9a25ffde02444f5173562a1d59144a70ea521fa80fea21","source":"SELECT 'value';"}
+{"id":"quoted-identifier/like-pattern","sha256":"337e404e5b9e2bf8c474e726eb8ee7fe43bb39f6c47fd237e4e1e302cabbb713","source":"SELECT 1 WHERE name LIKE \"p%\";"}
+{"id":"quoted-identifier/like-escape","sha256":"45038e238565b4b4eda0ed2f10bea24214909a962defb7227f07e0fb2489ea65","source":"SELECT 1 WHERE name LIKE \"p!_%\" ESCAPE \"!\";"}
+{"id":"quoted-identifier/in-values","sha256":"51a9ca3c282af545770c86da75adc2b51550cc8dd8f8d6018bbf51d36d122368","source":"SELECT 1 WHERE name IN (\"a\", \"b\");"}
+{"id":"quoted-identifier/between-values","sha256":"5b4b1e91c46c2f367dcda15f632d5b348692064dffa0f6bad10bad98d3e74b6d","source":"SELECT 1 WHERE name BETWEEN \"a\" AND \"z\";"}
+{"id":"quoted-identifier/case-values","sha256":"093f1fc96c3c16cb2a607bc6f7ee76ac078f2afd99b70e4c806405703be5a65a","source":"SELECT CASE WHEN 1 = 1 THEN \"yes\" ELSE \"no\" END;"}
+{"id":"quoted-identifier/concat-values","sha256":"3fe19e78467f795e861db129617ff37e67ab71141666c2796d5db1d27213b8e1","source":"SELECT CONCAT(\"a\", \"b\");"}
+{"id":"quoted-identifier/cast-type","sha256":"32a38d0d845473f1ec79c7d20a08a7c12c29545b0630d6576068c09138320047","source":"SELECT CAST(1 AS \"int\");"}
+{"id":"quoted-identifier/convert-type","sha256":"4c7da7e15405000ac6d3d404bac0a65bfa7d496d44f059cafda16756f92c7b0d","source":"SELECT CONVERT(\"int\", 1);"}
+{"id":"quoted-identifier/collate-name","sha256":"8ccb2a25d01fc12f5f60e1787408c53e59b11e4c68c4334f76f366b174dcafbd","source":"SELECT name COLLATE \"Latin1_General_CI_AS\" FROM dbo.t;"}
+{"id":"quoted-identifier/declare-initializer","sha256":"64df136d95a0f9fe80956dd1a42d22f3c5235f683acdec5befe3c34545d49991","source":"DECLARE @s varchar(20) = \"value\";"}
+{"id":"quoted-identifier/set-variable","sha256":"0458562d082775e48fa8bc7bf0402b6406b13181f2ec723a566aadba519060b4","source":"DECLARE @s varchar(20); SET @s = \"value\";"}
+{"id":"quoted-identifier/print-value","sha256":"1710b9ccb4f9c7ecfb4081319fbc8924bed03815856c88c888392627674e351f","source":"PRINT \"value\";"}
+{"id":"quoted-identifier/raiserror-message","sha256":"cbfbbcaf9c1abad68446878ab98cce7a74e36e74d31e2499b4d144f19db0beec","source":"RAISERROR(\"message\", 16, 1);"}
+{"id":"quoted-identifier/waitfor-time","sha256":"2b8fc4964f466cf3ad69413ce4b88473c28574a963546d7b6cc5dbb74ec361c1","source":"WAITFOR DELAY \"00:00:01\";"}
+{"id":"quoted-identifier/exec-argument","sha256":"64f905bc95af68814271a24b2a4858e1c79487a939b33136676243df29aabe1d","source":"EXEC dbo.p \"value\";"}
+{"id":"quoted-identifier/exec-named-argument","sha256":"013f9bca0b8ba433ac8ea2228a343598c009cc6e95ac802df979ba5a847ffd0d","source":"EXEC dbo.p @x = \"value\";"}
+{"id":"quoted-identifier/exec-quoted-procedure","sha256":"0bacb01affbb9674b6289b777226537d6de72b07c12b61940a8156bc023db9ba","source":"EXEC \"procedure\";"}
+{"id":"quoted-identifier/exec-dynamic","sha256":"0fa3f86577cee9db3a2c7be01534d3c96f43e09a5fdac08ee3f4435d62ac8ab2","source":"EXEC (\"SELECT 1;\");"}
+{"id":"quoted-identifier/exec-sp-executesql","sha256":"9450dedb9c20960841028634b0ad8059889ddbc6f856be1a9c00ec99e0c00468","source":"EXEC sys.sp_executesql \"SELECT 1;\";"}
+{"id":"quoted-identifier/insert-values","sha256":"95ad13ef5c39d9628e12ff74ab256a57ca7509209ceed8cb0007506d387f9a03","source":"INSERT INTO dbo.t (a) VALUES (\"value\");"}
+{"id":"quoted-identifier/insert-quoted-table","sha256":"321bc12b4fbb6ab76425b9760f2685e3f92e84a97da7515be9a1aae1e4a840a9","source":"INSERT INTO \"table\" (a) VALUES (1);"}
+{"id":"quoted-identifier/update-value","sha256":"64b40ce10140701fce65346ac37f97eccc76e33d110a33400f255f235ddf87fe","source":"UPDATE dbo.t SET a = \"value\";"}
+{"id":"quoted-identifier/update-quoted-table","sha256":"185c731a13c525b248351daa2b7bea74f6d8fe9f0c01e1780733992ebd917bdb","source":"UPDATE \"table\" SET a = 1;"}
+{"id":"quoted-identifier/delete-quoted-table","sha256":"d27ea34cffe5c82e19f8ccd38deb0874d42d0664a0c0f453677c770f28b2dcd9","source":"DELETE FROM \"table\";"}
+{"id":"quoted-identifier/create-table-name","sha256":"d4a926172ed1c5522cc7a3cc47ab5e6189fa7c7b2969910b5ce1fc3ff2d54e1c","source":"CREATE TABLE \"table\" (a int);"}
+{"id":"quoted-identifier/create-column-name","sha256":"1284e2f0f02e6d67aa1100e76dcca33a0b2e2468fa8bfd9fb68b49562cbf0ece","source":"CREATE TABLE dbo.t (\"column\" int);"}
+{"id":"quoted-identifier/create-table-default","sha256":"b717cef2ce177869f81a409438fdc5709ff74c7f74209a146febc6986b139133","source":"CREATE TABLE dbo.t (a varchar(20) DEFAULT \"value\");"}
+{"id":"quoted-identifier/create-table-computed","sha256":"f71a58be27a56db05adf3a750797fc3df03c2320b168488cf94c337d2128b6ce","source":"CREATE TABLE dbo.t (a int, b AS \"a\" + 1);"}
+{"id":"quoted-identifier/create-index-name","sha256":"b407ec3d292bec10b0f3acb83a2615a950f8ed742da4df8dd176dca65b22fbdf","source":"CREATE INDEX \"index\" ON dbo.t (a);"}
+{"id":"quoted-identifier/create-index-column","sha256":"e81330a8dab80207b049f696a15a4f926d91cecc7faf900edb0a97984bf3bf54","source":"CREATE INDEX ix ON dbo.t (\"column\");"}
+{"id":"quoted-identifier/create-filtered-index","sha256":"96fb1a04ea7ff495ef980f6466733e834c2b935c6094f8d8ae1403621000e9bc","source":"CREATE INDEX ix ON dbo.t (a) WHERE a IS NOT NULL;"}
+{"id":"quoted-identifier/create-indexed-view","sha256":"0034ed6d31d685f6ebbc8a5e550820c64a5ab28ceee6be9bc4dfafd356cc063d","source":"CREATE VIEW dbo.v WITH SCHEMABINDING AS SELECT a FROM dbo.t;\nGO\nCREATE UNIQUE CLUSTERED INDEX ix ON dbo.v(a);"}
+{"id":"quoted-identifier/create-computed-index","sha256":"b772f3671b5a9fba6ecf84b38821dcb7c1cf2bf08b5e27f738d6cfc0764473d9","source":"CREATE TABLE dbo.t (a int, b AS a + 1 PERSISTED);\nGO\nCREATE INDEX ix ON dbo.t(b);"}
+{"id":"quoted-identifier/create-view-name","sha256":"f029e35304dfebfe763d35a8123ebbe17320039e4e2bb09ca3d0d126f9af09cd","source":"CREATE VIEW \"view\" AS SELECT 1 AS a;"}
+{"id":"quoted-identifier/create-procedure-name","sha256":"2f8729204b48d59117fb3c3fa8b95dacfcc93d89144f37a19425dc4b9d055b59","source":"CREATE PROCEDURE \"procedure\" AS SELECT 1;"}
+{"id":"quoted-identifier/alter-table-name","sha256":"2d6e11d157d61f20ebd86a2996a2505ff7bd5956beb2a5ddcb05a5316fcc5f22","source":"ALTER TABLE \"table\" ADD a int;"}
+{"id":"quoted-identifier/drop-table-name","sha256":"71752ef5c0f1648677fac41707f5e14d2e93f93277371b032c3bfeca5a6c416f","source":"DROP TABLE \"table\";"}
+{"id":"quoted-identifier/create-statistics-name","sha256":"6ad2ecffe7300bff67835aedf985d323d2145025ce8dd0baf45cd59653b4a6bf","source":"CREATE STATISTICS \"statistics\" ON dbo.t(a);"}
+{"id":"quoted-identifier/use-database-name","sha256":"9afbb29aafe782f0ce360eb2d0ad37bfa4330d2aa03eea2b50d1ba2f9d401ade","source":"USE \"master\";"}
+{"id":"quoted-identifier/xml-value-method","sha256":"8e06eed8858009bd75a1fd5fd4636b5853f19f1f68cafdb16c396b9f87a2ae4f","source":"DECLARE @x xml = '<a>1</a>'; SELECT @x.value('(/a/text())[1]', 'int');"}
+{"id":"quoted-identifier/xml-query-method","sha256":"caa6372a7bdd8186b3747b2a6d1bfff93ae4a96fbe2df866b1e41afa5efd08bb","source":"DECLARE @x xml = '<a/>'; SELECT @x.query('/a');"}
+{"id":"quoted-identifier/xml-exist-method","sha256":"1cb94df9cd378373abd45aa4fcc106b3f7db6a8d996cc0ad93e9dd114f5fa2b9","source":"DECLARE @x xml = '<a/>'; SELECT @x.exist('/a');"}
+{"id":"quoted-identifier/xml-nodes-method","sha256":"c0c2eb0eae8daef8bbe4bc6c45c08776f28959d9f7ef2d20dd185864b389a33b","source":"DECLARE @x xml = '<a/>'; SELECT n.x.query('.') FROM @x.nodes('/a') AS n(x);"}
+{"id":"quoted-identifier/xml-modify-method","sha256":"ed77331a9b0780f7d070bd6978906ac3234c95ae690a740ff3c06d1450b84432","source":"DECLARE @x xml = '<a/>'; SET @x.modify('insert <b/> into (/a)[1]');"}
+{"id":"quoted-identifier/xml-double-query","sha256":"dadc7dc2712b3c2bf3ecbab02f20a233b23df07c5806c933be9d2938beceb89f","source":"DECLARE @x xml; SELECT @x.query(\"/a\");"}
+{"id":"quoted-identifier/xml-double-type","sha256":"b92e78a6bc4ae066fc6cc1a43fd5cdf2e64a3b30d1ed1eabcea5caffda446ff9","source":"DECLARE @x xml; SELECT @x.value('(/a)[1]', \"int\");"}
+{"id":"quoted-identifier/openjson-path","sha256":"f41eb5ab4217d0474ee7863131dff641e945297e2b8bece28ec4958938bd1e2f","source":"DECLARE @j nvarchar(max); SELECT * FROM OPENJSON(@j, \"$.a\");"}
+{"id":"quoted-identifier/json-value-path","sha256":"0b7965832463c41895c8ee15febd4189d64951412592ed8068438bf4a45df04a","source":"DECLARE @j nvarchar(max); SELECT JSON_VALUE(@j, \"$.a\");"}
+{"id":"quoted-identifier/bulk-path","sha256":"786b061ec44d62e28713e46288f1d85e7f681234e0299716533f7b59dd8fbfac","source":"BULK INSERT dbo.t FROM \"data.csv\";"}
+{"id":"quoted-identifier/backup-path","sha256":"7ad99ca7deb96e7a05e57cf8238707f0eee45c0cd754c8038a558233e24e4538","source":"BACKUP DATABASE db TO DISK = \"backup.bak\";"}
+{"id":"quoted-identifier/set-on-table","sha256":"918368b84891c4d30df9d709a10feedcda7073c14b05f12d87a57fab67757721","source":"SET QUOTED_IDENTIFIER ON; SELECT * FROM \"t\";"}
+{"id":"quoted-identifier/set-off-table","sha256":"307f2ab33bde9afd3850730c7bb98c3fca652d8144cf891f471c22facbc37d2e","source":"SET QUOTED_IDENTIFIER OFF; SELECT * FROM \"t\";"}
+{"id":"quoted-identifier/set-on-print","sha256":"7239f46057dc5653d4d93bac65c497206fb7434c341d0c8d86d90d5c5e34ade5","source":"SET QUOTED_IDENTIFIER ON; PRINT \"value\";"}
+{"id":"quoted-identifier/set-off-print","sha256":"373e6a8efe501b5c4ce298412866db66b0ccba3361b1c81464f80bdfb61aef67","source":"SET QUOTED_IDENTIFIER OFF; PRINT \"value\";"}
+{"id":"quoted-identifier/go-on-table","sha256":"05645ea5ef5dbd37cb5f478bb573f360fe9c0d077f31a77e7caf2f4906c22680","source":"SET QUOTED_IDENTIFIER ON;\nGO\nSELECT * FROM \"t\";"}
+{"id":"quoted-identifier/go-off-table","sha256":"61b5802f073c4e6323ba466d9e9af7f2c1f9e5f3ff1c0455abcd7dccee0ec941","source":"SET QUOTED_IDENTIFIER OFF;\nGO\nSELECT * FROM \"t\";"}
+{"id":"quoted-identifier/procedure-inner-off","sha256":"fc3681a475d605778784aafac8707401579e4f20a3d502692b87263faa15d67e","source":"CREATE PROCEDURE dbo.p AS SET QUOTED_IDENTIFIER OFF; SELECT * FROM \"t\";"}
+{"id":"quoted-identifier/procedure-inner-on","sha256":"a39b353ebc58750d25011ce5e655615074c468ef278c9360c992d0421984ce07","source":"CREATE PROCEDURE dbo.p AS SET QUOTED_IDENTIFIER ON; SELECT * FROM \"t\";"}
+{"id":"quoted-identifier/dynamic-inner-off","sha256":"8d013733c0a3510dbc2ff47cc43dde0d9e812487bca98c9e1454b444d350c046","source":"EXEC ('SET QUOTED_IDENTIFIER OFF;'); SELECT * FROM \"t\";"}
+{"id":"quoted-identifier/dynamic-inner-on","sha256":"3ce33f9487899021d19379dfb79e0c4cf905f40bba1ca714378669168b6286f7","source":"EXEC ('SET QUOTED_IDENTIFIER ON;'); SELECT * FROM \"t\";"}
+{"id":"quoted-identifier/bulk-empty-path","sha256":"7ea16708c3788e202a4ec3834f3888b0f4c880640785af858ba8b1b8d40c392d","source":"BULK INSERT dbo.t FROM \"\";"}
+{"id":"quoted-identifier/bulk-escaped-path","sha256":"b61faafc7fe50bb33e9e8ab9150b73909644550debd695e8a9bfa124c8c148c3","source":"BULK INSERT dbo.t FROM \"a\"\"b.csv\";"}
+{"id":"quoted-identifier/filegroup-index-filegroup/default","sha256":"7f5e47ba87d99dca459d1a2013739e0256970be5e4b2d9d75c9fb9d4978a7921","source":"CREATE INDEX i ON dbo.t(c) ON \"default\";"}
+{"id":"quoted-identifier/filegroup-index-filegroup/upper-default","sha256":"cc1ab2db277455578238cc8f0154b4f91403c34f0c8a953c50dc952dffca2bd7","source":"CREATE INDEX i ON dbo.t(c) ON \"DEFAULT\";"}
+{"id":"quoted-identifier/filegroup-index-filegroup/primary","sha256":"af333c833c7ed440a2b5cc7848eaf9b4a740e88c8b826c9282a4cdf3c2d339de","source":"CREATE INDEX i ON dbo.t(c) ON \"PRIMARY\";"}
+{"id":"quoted-identifier/filegroup-index-filegroup/fg","sha256":"04c7ef732c7142e7ddd8058e585fd081f323df3ab7f5f61360bd6a9d930ba02b","source":"CREATE INDEX i ON dbo.t(c) ON \"fg\";"}
+{"id":"quoted-identifier/filegroup-index-filegroup/null","sha256":"3cdb10f2b91ee55112482db4b2efa77f7d355cf01648c796480e062db44da76a","source":"CREATE INDEX i ON dbo.t(c) ON \"NULL\";"}
+{"id":"quoted-identifier/filegroup-index-filegroup/lower-null","sha256":"1f06909100819dba8db956b0ce4b83c894bccba0bb9ea65b50e0e7479643acea","source":"CREATE INDEX i ON dbo.t(c) ON \"null\";"}
+{"id":"quoted-identifier/filegroup-index-filegroup/single-default","sha256":"a8f61f87b65ef17f26e37ef29dca60b6775afcd8d2688b8bab234b24869b7a73","source":"CREATE INDEX i ON dbo.t(c) ON 'default';"}
+{"id":"quoted-identifier/filegroup-index-filegroup/single-null","sha256":"ff78bb2104636719bb58f5aff9d5c811e620bdadb3e2d8234150a03e5ab670f4","source":"CREATE INDEX i ON dbo.t(c) ON 'NULL';"}
+{"id":"quoted-identifier/filegroup-index-filestream/default","sha256":"ee0390310df2d333fa244e91c2007c4e5209b73eb701912d1d3d40b6b4c31e68","source":"CREATE INDEX i ON dbo.t(c) FILESTREAM_ON \"default\";"}
+{"id":"quoted-identifier/filegroup-index-filestream/upper-default","sha256":"4a05402ef922d6b2bef40063ed8d4be59daa064c57c03e1e347f6ba55278cb4a","source":"CREATE INDEX i ON dbo.t(c) FILESTREAM_ON \"DEFAULT\";"}
+{"id":"quoted-identifier/filegroup-index-filestream/primary","sha256":"3ee7425cce4eb49c03632df9120fe4c937e2597b87dd469af81c3b407935efe3","source":"CREATE INDEX i ON dbo.t(c) FILESTREAM_ON \"PRIMARY\";"}
+{"id":"quoted-identifier/filegroup-index-filestream/fg","sha256":"b8fdd45e14d885ead19cbc5b5ff4d0f688e1739d0fe4c6446245026291c85d0d","source":"CREATE INDEX i ON dbo.t(c) FILESTREAM_ON \"fg\";"}
+{"id":"quoted-identifier/filegroup-index-filestream/null","sha256":"e529d56409c109346dad6d19201f63d559d161940847dd1085a84e70fcb76b33","source":"CREATE INDEX i ON dbo.t(c) FILESTREAM_ON \"NULL\";"}
+{"id":"quoted-identifier/filegroup-index-filestream/lower-null","sha256":"ae40250d53ca01040c37d7640660320fa1ce19baa57352753be6cab119132846","source":"CREATE INDEX i ON dbo.t(c) FILESTREAM_ON \"null\";"}
+{"id":"quoted-identifier/filegroup-index-filestream/single-default","sha256":"aa13aa457000305d0cde070ef482d6be5d1a5175fcea3e48d43f81491ac5564b","source":"CREATE INDEX i ON dbo.t(c) FILESTREAM_ON 'default';"}
+{"id":"quoted-identifier/filegroup-index-filestream/single-null","sha256":"1192e702e49df07468ecdf8901d5dbca0689eaad4945be22d464b197e67c7bed","source":"CREATE INDEX i ON dbo.t(c) FILESTREAM_ON 'NULL';"}
+{"id":"quoted-identifier/filegroup-drop-move/default","sha256":"6192050644536b80b71079564b378d10e20b3b33b421d6a95f30be070d6bfa9b","source":"DROP INDEX i ON dbo.t WITH (MOVE TO \"default\");"}
+{"id":"quoted-identifier/filegroup-drop-move/upper-default","sha256":"d512d7af16a77ee790f1e902e940d8c0f7da6f3ebdeabb9dbc2ccd06403f1989","source":"DROP INDEX i ON dbo.t WITH (MOVE TO \"DEFAULT\");"}
+{"id":"quoted-identifier/filegroup-drop-move/primary","sha256":"66382311769815b5ffda43fdbb97f4d0372a21ad981afa6c2dea238c852c75be","source":"DROP INDEX i ON dbo.t WITH (MOVE TO \"PRIMARY\");"}
+{"id":"quoted-identifier/filegroup-drop-move/fg","sha256":"756b02be28af4cd65291b2d8389eee76d37644b4958c567ce6ae335afd6cfed6","source":"DROP INDEX i ON dbo.t WITH (MOVE TO \"fg\");"}
+{"id":"quoted-identifier/filegroup-drop-move/null","sha256":"273e4bd95f9f083cce4a52f9957997d3635ed943c67c130a2e9676c141946da9","source":"DROP INDEX i ON dbo.t WITH (MOVE TO \"NULL\");"}
+{"id":"quoted-identifier/filegroup-drop-move/lower-null","sha256":"06bc841111427e6a50fc03896f962df4cc0dbbdb01a135e605b97ef46d54c036","source":"DROP INDEX i ON dbo.t WITH (MOVE TO \"null\");"}
+{"id":"quoted-identifier/filegroup-drop-move/single-default","sha256":"bf0fba1e54785583bd9c2f3417aed5be9ebae0994e5b6c665427ae9262f70f05","source":"DROP INDEX i ON dbo.t WITH (MOVE TO 'default');"}
+{"id":"quoted-identifier/filegroup-drop-move/single-null","sha256":"9785437ae4f5070352565c59751a2418f462f9071c594a0bca4cd32c90ba7491","source":"DROP INDEX i ON dbo.t WITH (MOVE TO 'NULL');"}
+{"id":"quoted-identifier/filegroup-drop-filestream/default","sha256":"66f17b745bf70c0087ba2ffedc64075704d03f0eeca00b0e6f5119c1eec90bc8","source":"DROP INDEX i ON dbo.t WITH (FILESTREAM_ON \"default\");"}
+{"id":"quoted-identifier/filegroup-drop-filestream/upper-default","sha256":"fbd395cc6b31119f4df1f64cb0a35a753b2e80a1f72c2272705e441e7ecb1311","source":"DROP INDEX i ON dbo.t WITH (FILESTREAM_ON \"DEFAULT\");"}
+{"id":"quoted-identifier/filegroup-drop-filestream/primary","sha256":"77c875aa6a9a21acce86598cba03ae69612c8749ed8efb6ff427ac06ef8fe6ae","source":"DROP INDEX i ON dbo.t WITH (FILESTREAM_ON \"PRIMARY\");"}
+{"id":"quoted-identifier/filegroup-drop-filestream/fg","sha256":"595d63b5755eb68fd65683925f2dcaf64150a76e5edba577440dca6e3f9338ec","source":"DROP INDEX i ON dbo.t WITH (FILESTREAM_ON \"fg\");"}
+{"id":"quoted-identifier/filegroup-drop-filestream/null","sha256":"9db9395ad95fd374b014f1ddfb88dab73d586129bc911d4deee1f11b96224636","source":"DROP INDEX i ON dbo.t WITH (FILESTREAM_ON \"NULL\");"}
+{"id":"quoted-identifier/filegroup-drop-filestream/lower-null","sha256":"56272800f12f22a36a58afa6d2dad054c6b0b95dd1b5469dafb5c0ed5b8d87c4","source":"DROP INDEX i ON dbo.t WITH (FILESTREAM_ON \"null\");"}
+{"id":"quoted-identifier/filegroup-drop-filestream/single-default","sha256":"ab4d2fb43e2993732114e5e34f2e3c87fb4ecbcb10d17f3a2dc3ac8c00f19058","source":"DROP INDEX i ON dbo.t WITH (FILESTREAM_ON 'default');"}
+{"id":"quoted-identifier/filegroup-drop-filestream/single-null","sha256":"1be2fc8fee8f7a6b66c8676ffe452273e54f540c6092ee6180ac4043b4711990","source":"DROP INDEX i ON dbo.t WITH (FILESTREAM_ON 'NULL');"}
+{"id":"quoted-identifier/filegroup-constraint-move/default","sha256":"04f84803c23189bceb86804527328c7d882476d2cc1d7314e33c07d1f20f96b8","source":"ALTER TABLE dbo.t DROP CONSTRAINT a WITH (MOVE TO \"default\");"}
+{"id":"quoted-identifier/filegroup-constraint-move/upper-default","sha256":"ccf1ebaf7fda869755102612c0203f5750e1909fd9506a7131a19e6e8ea3cb30","source":"ALTER TABLE dbo.t DROP CONSTRAINT a WITH (MOVE TO \"DEFAULT\");"}
+{"id":"quoted-identifier/filegroup-constraint-move/primary","sha256":"7020d4ae9e2e6b61b40b74ab56a5d73cfa6acbdf0ee3656bace8c0ca183f269a","source":"ALTER TABLE dbo.t DROP CONSTRAINT a WITH (MOVE TO \"PRIMARY\");"}
+{"id":"quoted-identifier/filegroup-constraint-move/fg","sha256":"9122c72b5d0abe72fffce0619e6531ed6120240ee112e75b2ee7e07c2364c69a","source":"ALTER TABLE dbo.t DROP CONSTRAINT a WITH (MOVE TO \"fg\");"}
+{"id":"quoted-identifier/filegroup-constraint-move/null","sha256":"3a04fd4467fff437735f9f1f5d360c3aea8c2191428c184e6eb096af04d379f9","source":"ALTER TABLE dbo.t DROP CONSTRAINT a WITH (MOVE TO \"NULL\");"}
+{"id":"quoted-identifier/filegroup-constraint-move/lower-null","sha256":"86af9bfbc45277c65a5487d71d2aae2a0da4cc9f75cb40afa021d8c032076a82","source":"ALTER TABLE dbo.t DROP CONSTRAINT a WITH (MOVE TO \"null\");"}
+{"id":"quoted-identifier/filegroup-constraint-move/single-default","sha256":"41fe48f8accd55df2a4c55e922e6877e7f7cd11bfab47f2560ba7906a193ff57","source":"ALTER TABLE dbo.t DROP CONSTRAINT a WITH (MOVE TO 'default');"}
+{"id":"quoted-identifier/filegroup-constraint-move/single-null","sha256":"8cbcfb723c3c473725f1018a524547e507efd6e99c30e89db6dc562ae52d2513","source":"ALTER TABLE dbo.t DROP CONSTRAINT a WITH (MOVE TO 'NULL');"}
+{"id":"quoted-identifier/filegroup-column-index-filestream/default","sha256":"f624f1ef29dce7e3c0aa658014a6fd81eee27996a9e8693189fe4fad2f878a24","source":"CREATE TABLE dbo.t (c int INDEX ix NONCLUSTERED ON fg FILESTREAM_ON \"default\");"}
+{"id":"quoted-identifier/filegroup-column-index-filestream/upper-default","sha256":"6d31c8c75163a16e3f516b3ba9e2e651d289d6459ddac43a50c8cdfbd3b7d605","source":"CREATE TABLE dbo.t (c int INDEX ix NONCLUSTERED ON fg FILESTREAM_ON \"DEFAULT\");"}
+{"id":"quoted-identifier/filegroup-column-index-filestream/primary","sha256":"bc07e7874ebd5445c60723fdd89d63fa3620a55c335aa9808152acd36c8a4f72","source":"CREATE TABLE dbo.t (c int INDEX ix NONCLUSTERED ON fg FILESTREAM_ON \"PRIMARY\");"}
+{"id":"quoted-identifier/filegroup-column-index-filestream/fg","sha256":"bc57db7a5c29b62f4cb35c12f72fd2b70690da82702e805178db1f5e94171a02","source":"CREATE TABLE dbo.t (c int INDEX ix NONCLUSTERED ON fg FILESTREAM_ON \"fg\");"}
+{"id":"quoted-identifier/filegroup-column-index-filestream/null","sha256":"2cf79590a5bd06f91ba51ddcaffb6e2221c8e6f8cf9da64483f54a92ef4d6a1a","source":"CREATE TABLE dbo.t (c int INDEX ix NONCLUSTERED ON fg FILESTREAM_ON \"NULL\");"}
+{"id":"quoted-identifier/filegroup-column-index-filestream/lower-null","sha256":"7fc2ab57160e6d417d0b8a7aee73ca4e3495f3d7cae6f9cf99fbbbf1e84771a7","source":"CREATE TABLE dbo.t (c int INDEX ix NONCLUSTERED ON fg FILESTREAM_ON \"null\");"}
+{"id":"quoted-identifier/filegroup-column-index-filestream/single-default","sha256":"36b28b153471186a8ac9f74fe9aadda7cc2c7e9f13c1b8e9a68c5f1f8acaf429","source":"CREATE TABLE dbo.t (c int INDEX ix NONCLUSTERED ON fg FILESTREAM_ON 'default');"}
+{"id":"quoted-identifier/filegroup-column-index-filestream/single-null","sha256":"60538de92186c3cfe0e15889b17427ebf8a37a7d8c1c458fef173a15a1749c70","source":"CREATE TABLE dbo.t (c int INDEX ix NONCLUSTERED ON fg FILESTREAM_ON 'NULL');"}

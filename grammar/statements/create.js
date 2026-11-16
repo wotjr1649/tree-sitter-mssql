@@ -170,7 +170,8 @@ export default {
   // TEXTIMAGE_ON filegroup | FILESTREAM_ON filegroup — where the filegroup
   // name can also be the literal keyword DEFAULT, hence a bare identifier
   // rather than an enumerated set.
-  table_data_placement: ($) => seq(field('option', $.identifier), field('filegroup', $.identifier)),
+  table_data_placement: ($) =>
+    seq(field('option', $.identifier), field('filegroup', $._filegroup_name)),
 
   // CREATE [OR ALTER] VIEW name [(columns)] [WITH option [, ...]] AS select [WITH CHECK OPTION]
   create_view: ($) => seq($.keyword_create, optional($._or_alter), $._view_definition),
@@ -307,7 +308,7 @@ export default {
   _index_filestream_placement: ($) =>
     seq(
       field('option', alias($.keyword_filestream_on, $.identifier)),
-      field('filegroup', $.identifier),
+      field('filegroup', $._filegroup_name),
     ),
 
   covering_columns: ($) => seq($.keyword_include, paren_list($.identifier, true)),

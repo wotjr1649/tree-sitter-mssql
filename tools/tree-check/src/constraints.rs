@@ -79,105 +79,11 @@ pub struct Violation {
 }
 
 pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
-    if !tree.root_node().has_error() {
-        return check_syntax(tree, source);
+    // Recovery nodes change with trivia; syntax failure already rejects the input.
+    if tree.root_node().has_error() {
+        return Vec::new();
     }
-    // Whitespace and extras can change error recovery; diagnose the same canonical token stream.
-    let (normalized, origins) = canonical_source(source);
-    let mut parser = tree_sitter::Parser::new();
-    parser
-        .set_language(&tree_sitter_mssql::LANGUAGE.into())
-        .unwrap();
-    let normalized_tree = parser.parse(&normalized, None).unwrap();
-    let mut violations = check_syntax(&normalized_tree, &normalized);
-    for violation in &mut violations {
-        let line_start = normalized
-            .split_inclusive(|byte| *byte == b'\n')
-            .take(violation.row)
-            .map(<[u8]>::len)
-            .sum::<usize>();
-        let at = origins[line_start + violation.column];
-        violation.row = source[..at].iter().filter(|byte| **byte == b'\n').count();
-        violation.column = source[..at]
-            .iter()
-            .rposition(|byte| *byte == b'\n')
-            .map_or(at, |newline| at - newline - 1);
-    }
-    violations
-}
-
-fn canonical_source(source: &[u8]) -> (Vec<u8>, Vec<usize>) {
-    let mut normalized = Vec::with_capacity(source.len());
-    let mut origins = Vec::with_capacity(source.len() + 1);
-    let mut at = 0;
-    while at < source.len() {
-        let start = at;
-        let byte = source[at];
-        if matches!(byte, b'\'' | b'"' | b'[') {
-            let close = if byte == b'[' { b']' } else { byte };
-            at += 1;
-            while at < source.len() {
-                if source[at] == close {
-                    at += 1;
-                    if source.get(at) != Some(&close) {
-                        break;
-                    }
-                }
-                at += 1;
-            }
-            normalized.extend_from_slice(&source[start..at]);
-            origins.extend(start..at);
-            continue;
-        }
-        if byte.is_ascii_whitespace()
-            || source[at..].starts_with(b"--")
-            || source[at..].starts_with(b"/*")
-        {
-            let mut newline = false;
-            loop {
-                if source.get(at).is_some_and(u8::is_ascii_whitespace) {
-                    newline |= source[at] == b'\n';
-                    at += 1;
-                } else if source[at..].starts_with(b"--") {
-                    at += 2;
-                    while at < source.len() && source[at] != b'\n' {
-                        at += 1;
-                    }
-                } else if source[at..].starts_with(b"/*") {
-                    at += 2;
-                    let mut depth = 1;
-                    while at < source.len() && depth > 0 {
-                        if source[at..].starts_with(b"/*") {
-                            depth += 1;
-                            at += 2;
-                        } else if source[at..].starts_with(b"*/") {
-                            depth -= 1;
-                            at += 2;
-                        } else {
-                            newline |= source[at] == b'\n';
-                            at += 1;
-                        }
-                    }
-                    if depth > 0 {
-                        normalized.extend_from_slice(&source[start..]);
-                        origins.extend(start..source.len());
-                        origins.push(source.len());
-                        return (normalized, origins);
-                    }
-                } else {
-                    break;
-                }
-            }
-            normalized.push(if newline { b'\n' } else { b' ' });
-            origins.push(start);
-        } else {
-            normalized.push(byte);
-            origins.push(at);
-            at += 1;
-        }
-    }
-    origins.push(source.len());
-    (normalized, origins)
+    check_syntax(tree, source)
 }
 
 fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
@@ -189,11 +95,84 @@ fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
         scalar_predicate(node, source, &mut out);
         surface_shapes(node, source, &mut out);
         match node.kind() {
+            "raiserror_statement" | "waitfor_statement" | "execute_statement" => {
+                let string_slot = match node.kind() {
+                    "execute_statement" => node.child_by_field_name("procedure").is_none(),
+                    "waitfor_statement" => {
+                        has_child(node, "keyword_delay") || has_child(node, "keyword_time")
+                    }
+                    _ => true,
+                };
+                if string_slot
+                    && let Some(value) = node
+                        .syntax_named_children(&mut node.walk())
+                        .find(|n| !n.kind().starts_with("keyword_"))
+                    && source.get(value.start_byte()) == Some(&b'"')
+                {
+                    out.push(violation(
+                        "quoted-identifier-string",
+                        "this argument requires a string, not a double-quoted identifier".into(),
+                        value,
+                    ));
+                }
+            }
+            "keyword_collate" => {
+                if let Some(name) = node.syntax_next_named_sibling()
+                    && matches!(source.get(name.start_byte()), Some(b'\'' | b'"' | b'['))
+                {
+                    out.push(violation(
+                        "collation-name",
+                        "COLLATE requires an unquoted collation name".into(),
+                        name,
+                    ));
+                }
+            }
+            "bulk_insert_statement" => {
+                if let Some(path) = node
+                    .syntax_named_children(&mut node.walk())
+                    .find(|n| n.kind() == "literal")
+                    && empty_string(path, source)
+                {
+                    out.push(violation(
+                        "bulk-path-empty",
+                        "BULK INSERT requires a nonempty path".into(),
+                        path,
+                    ));
+                }
+            }
+            "on_filegroup" => {
+                if let Some(name) = node
+                    .syntax_named_children(&mut node.walk())
+                    .find(|n| empty_string(*n, source))
+                {
+                    out.push(violation(
+                        "filegroup-name-empty",
+                        "this filegroup placement requires a nonempty name".into(),
+                        name,
+                    ));
+                }
+            }
             "invocation" => gap_invocation(node, source, &mut out),
             "binary_expression" | "term" | "exec_argument" => gap_scalar(node, source, &mut out),
             "identifier" | "object_reference" => gap_name(node, source, &mut out),
             "option" | "with_options" | "constraint" | "query_hint" | "table_hint" => {
-                gap_options(node, source, &mut out)
+                gap_options(node, source, &mut out);
+                if node.kind() == "option"
+                    && (ancestor(node, "drop_index").is_some()
+                        || ancestor(node, "alter_table").is_some())
+                    && node.child_by_field_name("name").is_some_and(|n| {
+                        matches!(upper_text(n, source).as_str(), "MOVE" | "FILESTREAM_ON")
+                    })
+                    && let Some(value) = node
+                        .child_by_field_name("value")
+                        .filter(|n| empty_string(*n, source))
+                {
+                    out.push(violation(
+                        "filegroup-name-empty",
+                        "this filegroup placement requires a nonempty name".into(),
+                        value,
+                    ));
+                }
             }
             "block"
             | "try_block"
@@ -921,6 +900,13 @@ fn string_literal(node: Node, source: &[u8]) -> bool {
     let text = &source[node.byte_range()];
     node.kind() == "literal"
         && (text.starts_with(b"'") || text.starts_with(b"N'") || text.starts_with(b"n'"))
+}
+
+fn empty_string(node: Node, source: &[u8]) -> bool {
+    matches!(
+        &source[node.byte_range()],
+        b"''" | b"N''" | b"n''" | b"\"\""
+    )
 }
 
 fn integer_literal(node: Node, source: &[u8]) -> bool {
@@ -4215,6 +4201,9 @@ fn gap_invocation(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         .parent()
         .is_some_and(|p| matches!(p.kind(), "delete" | "update"));
     let invalid = match name.as_str() {
+        "CONVERT" => args
+            .first()
+            .is_some_and(|a| string_literal(a.child_by_field_name("value").unwrap_or(*a), source)),
         "[COUNT]" | "\"COUNT\"" | "[COALESCE]" | "\"COALESCE\"" => true,
         "COALESCE" => args.len() < 2,
         "DATENAME" => args.first().is_some_and(|a| {
@@ -5050,36 +5039,26 @@ mod tests {
     }
 
     #[test]
-    fn canonical_error_source_preserves_literals_and_maps_diagnostics() {
-        let sql = b"SELECT  '/* string */'  AS [a  ]] b], \"--quoted\" /* outer /* nested */ */\r\n FROM t;";
-        let (normalized, origins) = canonical_source(sql);
-        assert_eq!(
-            normalized,
-            b"SELECT '/* string */' AS [a  ]] b], \"--quoted\"\nFROM t;"
-        );
-        let token = normalized
-            .windows(4)
-            .position(|part| part == b"FROM")
-            .unwrap();
-        assert_eq!(&sql[origins[token]..origins[token] + 4], b"FROM");
-        let malformed = b"SELECT 1 </* unterminated = 2;\n";
-        assert_eq!(canonical_source(malformed).0, malformed);
-        let invalid_utf8 = b"SELECT 1 /* \xff */\nFROM t;";
-        assert_eq!(canonical_source(invalid_utf8).0, b"SELECT 1\nFROM t;");
-    }
-
-    #[test]
     fn comments_do_not_change_error_recovery_constraints() {
         for sql in [
             "BACKUP DATABASE 'd' TO DISK = 'a.bak';",
             "BACKUP DATABASE d TO 'a';",
+            "RESTORE DATABASE 'd' FROM DISK = 'a.bak';",
             "BACKUP DATABASE d TO DISK = 'a' WITH STATS = 5 + 5;",
             "SELECT TOP (10) WITH APPROXIMATE t.c1 FROM VECTOR_SEARCH(TABLE = dbo.docs AS t, COLUMN = v1, SIMILAR_TO = @q) AS r;",
         ] {
             assert!(parse(sql).root_node().has_error(), "{sql}");
             let commented = sql.replace(' ', " /* 기밀 C:\\audit */ ");
             assert!(parse(&commented).root_node().has_error(), "{commented}");
-            assert_eq!(rules(&commented), rules(sql), "{commented}");
+            for variant in [
+                sql.to_string(),
+                commented,
+                sql.replace(' ', "\n"),
+                sql.replace(' ', "\t\r\n"),
+            ] {
+                assert!(parse(&variant).root_node().has_error(), "{variant}");
+                assert!(rules(&variant).is_empty(), "{variant}");
+            }
         }
     }
 

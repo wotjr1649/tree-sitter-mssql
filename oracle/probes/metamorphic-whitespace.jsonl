@@ -1,0 +1,110 @@
+{"id":"gap-whitespace/U+0000/after-select","sha256":"1b039455be87c984e677393cdf7bfdb11412706e3e35534183b458fc706adc8d","source":"SELECT\u00001 AS oracle_col;"}
+{"id":"gap-whitespace/U+0000/after-where","sha256":"a1a6436b403ce492a6ab9ca1b5c8c3ae8ee5b0b5994ccc55192ee5808e2ad57b","source":"SELECT 1 WHERE\u00001 = 1;"}
+{"id":"gap-whitespace/U+0001/after-select","sha256":"20b2597bbccf3fb8045da49d1a1e823107a1d0f6e1b78aa681b02541888f50cb","source":"SELECT\u00011 AS oracle_col;"}
+{"id":"gap-whitespace/U+0001/after-where","sha256":"9e5c670656c687e8108a5a85f924f73aac192647b04ef6cc99703a7efbe9b2f5","source":"SELECT 1 WHERE\u00011 = 1;"}
+{"id":"gap-whitespace/U+0008/after-select","sha256":"54b43c4a267b4924fe1bc44d641401de1aad612a89428fb8d56359fe0ea93391","source":"SELECT\b1 AS oracle_col;"}
+{"id":"gap-whitespace/U+0008/after-where","sha256":"f984ad89ef28dd5233e258e5548cacffba35b15dd977119318b9777828b361b2","source":"SELECT 1 WHERE\b1 = 1;"}
+{"id":"gap-whitespace/U+0009/after-select","sha256":"dde169f7008d35d15a770e307aded39f544b94188f888272a79029fbef3627a8","source":"SELECT\t1 AS oracle_col;"}
+{"id":"gap-whitespace/U+0009/after-where","sha256":"9a1031478032b8d7b2c5e8539b0fd193b53a03ece526505293faf276edc88869","source":"SELECT 1 WHERE\t1 = 1;"}
+{"id":"gap-whitespace/U+000A/after-select","sha256":"6d2877ffd07dc704e1f6c1fcd7708769e5764a93b6b708b818b3f04c034120ba","source":"SELECT\n1 AS oracle_col;"}
+{"id":"gap-whitespace/U+000A/after-where","sha256":"f326427919ac5a7b5a7c6540223981fb91b7cb03032414ab2e64dd6914d265ae","source":"SELECT 1 WHERE\n1 = 1;"}
+{"id":"gap-whitespace/U+000B/after-select","sha256":"b4cc44138cd7d611c9c3313845df43bf9b0953c0f13b3f78ae4dbe70f5ffa447","source":"SELECT\u000b1 AS oracle_col;"}
+{"id":"gap-whitespace/U+000B/after-where","sha256":"a4b0084b3d35edec41a818cd222567946161bdfefe99acdaa23d6755a34d0184","source":"SELECT 1 WHERE\u000b1 = 1;"}
+{"id":"gap-whitespace/U+000C/after-select","sha256":"7c44e3b6be1a81f754b14051447aa3034bd66bc878b623b223ef73c33e0f59b7","source":"SELECT\f1 AS oracle_col;"}
+{"id":"gap-whitespace/U+000C/after-where","sha256":"0de846e26385c5b59b2aafab7242d15754780257150b11509d6d09e686053534","source":"SELECT 1 WHERE\f1 = 1;"}
+{"id":"gap-whitespace/U+000D/after-select","sha256":"e4b38ef0dc1002be5e75f7625fabb64cf67411c90175879f42b99518912d8de6","source":"SELECT\r1 AS oracle_col;"}
+{"id":"gap-whitespace/U+000D/after-where","sha256":"80cc126cc1c1a52e63c0919950c5dc77a1d129543c1545c148901f321ae9ad0b","source":"SELECT 1 WHERE\r1 = 1;"}
+{"id":"gap-whitespace/U+001C/after-select","sha256":"d5e2ec0a7178494ba50140ca5885fda87bcb805571d064434d64e60e07e9aaaf","source":"SELECT\u001c1 AS oracle_col;"}
+{"id":"gap-whitespace/U+001C/after-where","sha256":"c463d23030076c65fd3ec0b5919f7df1d1a7617accdb0b81ad363093289ed251","source":"SELECT 1 WHERE\u001c1 = 1;"}
+{"id":"gap-whitespace/U+001F/after-select","sha256":"4486068a006fa93c2cf283dd7c4194043b2ff271f26e19ebdb36a9cf01aa2637","source":"SELECT\u001f1 AS oracle_col;"}
+{"id":"gap-whitespace/U+001F/after-where","sha256":"34de0c0560b613faaf6d77fd995ad4554de831ec5e497deb867432becd48ab4b","source":"SELECT 1 WHERE\u001f1 = 1;"}
+{"id":"gap-whitespace/U+0020/after-select","sha256":"00092b687eadaf8428f8a621b5a29517f9ca9a0a54e80d306ae58c839a9dad31","source":"SELECT 1 AS oracle_col;"}
+{"id":"gap-whitespace/U+0020/after-where","sha256":"bcce108944b3f6f4d47338927c11c61a040661316b9af889fc8d638616f8c1ce","source":"SELECT 1 WHERE 1 = 1;"}
+{"id":"gap-whitespace/U+0085/after-select","sha256":"be950eb153a9d0170708425c3ed0b5a6e2dafb3aabdc361cc8969ad1e17d7146","source":"SELECT1 AS oracle_col;"}
+{"id":"gap-whitespace/U+0085/after-where","sha256":"7f173ae7b19d3ddfcc728d811176df20e39216269441105d5f2a7b2de97beb24","source":"SELECT 1 WHERE1 = 1;"}
+{"id":"gap-whitespace/U+00A0/after-select","sha256":"97b48c244485fb6b8e225d4f98203d893a0a514ac23e004f26c697c8aabe6e3b","source":"SELECT 1 AS oracle_col;"}
+{"id":"gap-whitespace/U+00A0/after-where","sha256":"a28a72bdb1efbabc0f33fae3a6b15e99de73fe133b110c2d862ea19d2adc167b","source":"SELECT 1 WHERE 1 = 1;"}
+{"id":"gap-whitespace/U+1680/after-select","sha256":"b1175f8c724b4f7771f707fba85beab4c491144ad36a5e6ad3a1c2570de9cea6","source":"SELECT 1 AS oracle_col;"}
+{"id":"gap-whitespace/U+1680/after-where","sha256":"21d3bc7d61e0b7eb7d087e094de2dccdc41d4489c089ed3edb69adcb5e22b486","source":"SELECT 1 WHERE 1 = 1;"}
+{"id":"gap-whitespace/U+180E/after-select","sha256":"73c489e9e8040f20f4264c71dc5d0eea8c359b34daea2533b728ccde20481820","source":"SELECT᠎1 AS oracle_col;"}
+{"id":"gap-whitespace/U+180E/after-where","sha256":"0ed9f93207452df74a297881c3b527507c3f9ea99ae604138c5f2806be0048f8","source":"SELECT 1 WHERE᠎1 = 1;"}
+{"id":"gap-whitespace/U+2000/after-select","sha256":"4919ebe00febf6502d674a3e4133f207962265b4e460165b7fb00f7358fb2eaf","source":"SELECT 1 AS oracle_col;"}
+{"id":"gap-whitespace/U+2000/after-where","sha256":"05acb97a55a4e36ccd3e1b8afe4e1c005bb5c47f2958c34939382e81e334cd1e","source":"SELECT 1 WHERE 1 = 1;"}
+{"id":"gap-whitespace/U+2001/after-select","sha256":"393cfa52eea86be0465dad8d4ced12967fd564d36b46869afd71957203fbfa19","source":"SELECT 1 AS oracle_col;"}
+{"id":"gap-whitespace/U+2001/after-where","sha256":"e268f18e593a709e972ad92260cdf40a8815253b37fbbb97ba372a3defe57cae","source":"SELECT 1 WHERE 1 = 1;"}
+{"id":"gap-whitespace/U+2002/after-select","sha256":"db045288a08f6b0121e613e1be9d381b08ebbe513c73316e951d3c1ced91ee80","source":"SELECT 1 AS oracle_col;"}
+{"id":"gap-whitespace/U+2002/after-where","sha256":"ab2ee610c85091a782f1e735226880f32f66fc868d969795589a1b2e4b101f13","source":"SELECT 1 WHERE 1 = 1;"}
+{"id":"gap-whitespace/U+2003/after-select","sha256":"b7809414b73303cfe9d9e755b0ae7a7daf4dbfae060b1e10b5191750c5d423fb","source":"SELECT 1 AS oracle_col;"}
+{"id":"gap-whitespace/U+2003/after-where","sha256":"18d949074811ff1f778db8f7e0db0805fdcdfb0d78ab88e280fda6029d8b8400","source":"SELECT 1 WHERE 1 = 1;"}
+{"id":"gap-whitespace/U+2004/after-select","sha256":"58ce4a496517f3f48cfd2bed5deb91d3bea87c3e1a12b2fc6a57cb7568a3435d","source":"SELECT 1 AS oracle_col;"}
+{"id":"gap-whitespace/U+2004/after-where","sha256":"f18efbbcb6e7365f389b9db03520f972d51dfdcc4597df35a54f31d290c635cf","source":"SELECT 1 WHERE 1 = 1;"}
+{"id":"gap-whitespace/U+2005/after-select","sha256":"654e3d83f4767e479760e100d067dd36c42baf075769f6a04f10234b4fc048ea","source":"SELECT 1 AS oracle_col;"}
+{"id":"gap-whitespace/U+2005/after-where","sha256":"00bce077d38267ade1ab95fa3dba372d4cb99e559dec98e8a4b200e02eb16825","source":"SELECT 1 WHERE 1 = 1;"}
+{"id":"gap-whitespace/U+2006/after-select","sha256":"a54c48c5d9b2740ba99720d685a10a82e87c1c49b690f10db27012345393857c","source":"SELECT 1 AS oracle_col;"}
+{"id":"gap-whitespace/U+2006/after-where","sha256":"14e73b38f58aa1de6206218985ad3f6480d8370dd7ef875f802007b92758c391","source":"SELECT 1 WHERE 1 = 1;"}
+{"id":"gap-whitespace/U+2007/after-select","sha256":"2872625da3b0caab8e82ee5cd47a7ab6f378e866aee0cd99167024184c86d7d3","source":"SELECT 1 AS oracle_col;"}
+{"id":"gap-whitespace/U+2007/after-where","sha256":"c2a173480c28bf607f26ce0a829b74ded9861237ad41935afabb2945731eaee5","source":"SELECT 1 WHERE 1 = 1;"}
+{"id":"gap-whitespace/U+2008/after-select","sha256":"b507f7e10bc839600d793b9161961da1069eb09b48a09a8795b8a9e9931a2a5c","source":"SELECT 1 AS oracle_col;"}
+{"id":"gap-whitespace/U+2008/after-where","sha256":"d439e568032bc4c5a0d62978840e81744deef61dcfc3c8949fbacb223ebb6588","source":"SELECT 1 WHERE 1 = 1;"}
+{"id":"gap-whitespace/U+2009/after-select","sha256":"cdbceae85a15df0e2c84fde65de8be5f28179b515331010dfa3afc0bcf0fa26a","source":"SELECT 1 AS oracle_col;"}
+{"id":"gap-whitespace/U+2009/after-where","sha256":"6f53f2951492ab170e6bebc13689c36a60ce447b5368af2e46a0ec43ce3408a7","source":"SELECT 1 WHERE 1 = 1;"}
+{"id":"gap-whitespace/U+200A/after-select","sha256":"795ce6513726d64aaae4def5db08877a16fed145fe3e3595d6c9117266b608e6","source":"SELECT 1 AS oracle_col;"}
+{"id":"gap-whitespace/U+200A/after-where","sha256":"24505a52d37de7751e4610d8cab29942736884b8f6e3411396bd5cf8479d6ca5","source":"SELECT 1 WHERE 1 = 1;"}
+{"id":"gap-whitespace/U+200B/after-select","sha256":"088d83abcf58bd824c02ddba2f591119b8a8a83b6645dea0de2b04a3c8c22b6e","source":"SELECT​1 AS oracle_col;"}
+{"id":"gap-whitespace/U+200B/after-where","sha256":"1517c059c7dfda8115e5a57c347c49a4aa7d4b7a7e80bc7589445d9d5c6a407f","source":"SELECT 1 WHERE​1 = 1;"}
+{"id":"gap-whitespace/U+2028/after-select","sha256":"796140510e837c305b8284eddae9e61c8fa1de1b1dcff0f1f9c6e2983e3b340a","source":"SELECT 1 AS oracle_col;"}
+{"id":"gap-whitespace/U+2028/after-where","sha256":"a69ad7401bf8ada134b3ccbd2fe9edf33948782943cf2c0e8a333a1544aaf66a","source":"SELECT 1 WHERE 1 = 1;"}
+{"id":"gap-whitespace/U+2029/after-select","sha256":"ad925f413007d15a399933c3a038b1c4f0a868a86cea23dd494ccfc144b98543","source":"SELECT 1 AS oracle_col;"}
+{"id":"gap-whitespace/U+2029/after-where","sha256":"b597d9733fd961452fcf3dd0de47f8086ea6b1c95b484ee195fd9c3064baa1d0","source":"SELECT 1 WHERE 1 = 1;"}
+{"id":"gap-whitespace/U+202F/after-select","sha256":"54514e1b21db06180c463de39fbe14de3079ea6a72c5143e7ac19deea78963dc","source":"SELECT 1 AS oracle_col;"}
+{"id":"gap-whitespace/U+202F/after-where","sha256":"58af423c0051f56327421696cc64f93228200eeda386d281c9388537b41d2b40","source":"SELECT 1 WHERE 1 = 1;"}
+{"id":"gap-whitespace/U+205F/after-select","sha256":"2de097f094effc6179f117add540fcaf3ff204c0c6baba32bef04a764a5e99d9","source":"SELECT 1 AS oracle_col;"}
+{"id":"gap-whitespace/U+205F/after-where","sha256":"fa4d4654938d5508b1be39f034e852b72044a4c52e7d816875afadbfda3a5ffe","source":"SELECT 1 WHERE 1 = 1;"}
+{"id":"gap-whitespace/U+3000/after-select","sha256":"04f086de0ab8d9a0eb105ff7919b3e0b99a87346a74b3664d73e9d1ed333c62c","source":"SELECT　1 AS oracle_col;"}
+{"id":"gap-whitespace/U+3000/after-where","sha256":"2e0138f642f5a33cc40e5db97e86c15319395821b0a85a7eecc0440d07a19090","source":"SELECT 1 WHERE　1 = 1;"}
+{"id":"gap-whitespace/U+FEFF/after-select","sha256":"9a4da03b22c247f9eba8cfbacb7ca25497abc0c7e74a240aa08442a256cdf64b","source":"SELECT﻿1 AS oracle_col;"}
+{"id":"gap-whitespace/U+FEFF/after-where","sha256":"d5e078e648d21156d485134c74be81a9b8683b795904a0b70810fe950d1b7881","source":"SELECT 1 WHERE﻿1 = 1;"}
+{"id":"gap-whitespace/U+0002/after-select","sha256":"6843c116842bc354ba737c9408f1e3ed1a94792a0f4e2d33706610c7e684f059","source":"SELECT\u00021 AS oracle_col;"}
+{"id":"gap-whitespace/U+0002/after-where","sha256":"0e8993b545037e6a61562f77a075bb18fc39ffee278b9811addc29f9adf48ab6","source":"SELECT 1 WHERE\u00021 = 1;"}
+{"id":"gap-whitespace/U+0003/after-select","sha256":"1460a82eecd61fbf6cce83b27a421f2c079cff5731b208c09f6e8d97abea994b","source":"SELECT\u00031 AS oracle_col;"}
+{"id":"gap-whitespace/U+0003/after-where","sha256":"1c1c118eaf96956f00a1a906bdf86ba9d96b31dce199c6d0d85e1c2b7e532558","source":"SELECT 1 WHERE\u00031 = 1;"}
+{"id":"gap-whitespace/U+0004/after-select","sha256":"152bb77a471a47dcf8272cb63c5bf69437196e6c421042229c05a2f8efab2b9c","source":"SELECT\u00041 AS oracle_col;"}
+{"id":"gap-whitespace/U+0004/after-where","sha256":"256def84e0c9a92871b69a207d712747cba489b5d04c2423b1cf683ac06e4fbc","source":"SELECT 1 WHERE\u00041 = 1;"}
+{"id":"gap-whitespace/U+0005/after-select","sha256":"5141ac4885abb9133e3c54fe5d0d1b074b1ee8d1422462fd28aea9e7ca23735a","source":"SELECT\u00051 AS oracle_col;"}
+{"id":"gap-whitespace/U+0005/after-where","sha256":"cbaeec2f12064329297c5f8fa386415e53bc718f147650e4c228bca676742802","source":"SELECT 1 WHERE\u00051 = 1;"}
+{"id":"gap-whitespace/U+0006/after-select","sha256":"c08ecca6bec0531debb6159bd6bbed47981f95b7b31ac2015e6a3a1052298952","source":"SELECT\u00061 AS oracle_col;"}
+{"id":"gap-whitespace/U+0006/after-where","sha256":"03f7cd27180b1ba9e685053b408c8307f45d915580eac07dc9e4e1b32b5a65c1","source":"SELECT 1 WHERE\u00061 = 1;"}
+{"id":"gap-whitespace/U+0007/after-select","sha256":"8e218584a8d9a2f746e9c065fb2e97eb97acd09d03ca01a79c4d34f32ed4b3c5","source":"SELECT\u00071 AS oracle_col;"}
+{"id":"gap-whitespace/U+0007/after-where","sha256":"94cb4481c8935237a855a0165a670cd31776c5c9a645c971203c713014bb8d49","source":"SELECT 1 WHERE\u00071 = 1;"}
+{"id":"gap-whitespace/U+000E/after-select","sha256":"6c167e2900bfd2f8a0b1736e8651f457f1d01f04525ce2bcabc1499cb7349b20","source":"SELECT\u000e1 AS oracle_col;"}
+{"id":"gap-whitespace/U+000E/after-where","sha256":"0f99a28588fa8f2a13558e726a3bb90ab74bf75c6fc77bc646ba94ea8d38d6ca","source":"SELECT 1 WHERE\u000e1 = 1;"}
+{"id":"gap-whitespace/U+000F/after-select","sha256":"28e67350e6e6b002454640267cb57c4208f05e067176b4e105a9f063deefe78d","source":"SELECT\u000f1 AS oracle_col;"}
+{"id":"gap-whitespace/U+000F/after-where","sha256":"c60aec2e655441a21d1ca0fde4e337caa0e80f657a6ae291143bb1a4782522ba","source":"SELECT 1 WHERE\u000f1 = 1;"}
+{"id":"gap-whitespace/U+0010/after-select","sha256":"d90c3ff57901ca03cf266890bee7c71c8432e8f3ce7a42cf07e3c7e6aec4cc68","source":"SELECT\u00101 AS oracle_col;"}
+{"id":"gap-whitespace/U+0010/after-where","sha256":"a21f861e7c30aea387db6263fa3902f3922a3d352fbb5f717066f4e44a7bd602","source":"SELECT 1 WHERE\u00101 = 1;"}
+{"id":"gap-whitespace/U+0011/after-select","sha256":"9d5a2b049670fe02bea706bf9c09948866da89b2347f07d76c90619f3ef151a7","source":"SELECT\u00111 AS oracle_col;"}
+{"id":"gap-whitespace/U+0011/after-where","sha256":"5952bf5280958c16572f68762725957f38b8a5d510b3c47e203f4e061e0911d1","source":"SELECT 1 WHERE\u00111 = 1;"}
+{"id":"gap-whitespace/U+0012/after-select","sha256":"6bfe2156e1add83e5641194d1998755db9a5340d5221889f3e48ce2ea33e5c49","source":"SELECT\u00121 AS oracle_col;"}
+{"id":"gap-whitespace/U+0012/after-where","sha256":"d79e0aa2dfbe0cbda4b8b447c06ca31ccc0f96b7adf9aa0ca322f53618455ea7","source":"SELECT 1 WHERE\u00121 = 1;"}
+{"id":"gap-whitespace/U+0013/after-select","sha256":"3a7cb394747292e82e0fc5cf3a84c2193362870934500753f469d4bafd69d57f","source":"SELECT\u00131 AS oracle_col;"}
+{"id":"gap-whitespace/U+0013/after-where","sha256":"bbe94510335beaf7b0b8c1027f4fcbdb52ba77939099e5ac8872ae4b2bdf439d","source":"SELECT 1 WHERE\u00131 = 1;"}
+{"id":"gap-whitespace/U+0014/after-select","sha256":"0a11966e7a4d1519096f1299834e988e7c2b6bcc241e2f9ddc889a73aa33051a","source":"SELECT\u00141 AS oracle_col;"}
+{"id":"gap-whitespace/U+0014/after-where","sha256":"1ca565184d7d30ae25970e39cf696ecf5b4d9be954e3a554a22a2c9386b3643b","source":"SELECT 1 WHERE\u00141 = 1;"}
+{"id":"gap-whitespace/U+0015/after-select","sha256":"d2d5fbc59fe1208f548fdbb5cc29cde8c258751dd801faa0965962691020ae97","source":"SELECT\u00151 AS oracle_col;"}
+{"id":"gap-whitespace/U+0015/after-where","sha256":"296466f0a702f33a229176e8ca42230d246248aae1bd7186d694deda9cad6861","source":"SELECT 1 WHERE\u00151 = 1;"}
+{"id":"gap-whitespace/U+0016/after-select","sha256":"c3ed2b67ebbef06744fc0e18983dc8357f57d68e9c301fca1171232591c19f8f","source":"SELECT\u00161 AS oracle_col;"}
+{"id":"gap-whitespace/U+0016/after-where","sha256":"8330972c9f4cbf369c42be9ed7917800aa109a0f6b5377118005bd6b2732f9f1","source":"SELECT 1 WHERE\u00161 = 1;"}
+{"id":"gap-whitespace/U+0017/after-select","sha256":"49757c6d3ab641979bc0eef3b6c7d29a094f040b5c81346817f0b80488de45e1","source":"SELECT\u00171 AS oracle_col;"}
+{"id":"gap-whitespace/U+0017/after-where","sha256":"12080e29824be8af84902069fdc82a068230af2e9639cfff77fe26a23be973d5","source":"SELECT 1 WHERE\u00171 = 1;"}
+{"id":"gap-whitespace/U+0018/after-select","sha256":"a1597b6d6f73c4ed696ab9aa6de4c57f80168ef8548e93834cccf6a0a17f50cb","source":"SELECT\u00181 AS oracle_col;"}
+{"id":"gap-whitespace/U+0018/after-where","sha256":"78143563d9db17bf7deb46a0c7a6678ddcaf22c94285f861e624ae306579db97","source":"SELECT 1 WHERE\u00181 = 1;"}
+{"id":"gap-whitespace/U+0019/after-select","sha256":"1384c552d7f5f8b37f2d9f5602bcd55b16b9224abaef117c7c1366079a33bf83","source":"SELECT\u00191 AS oracle_col;"}
+{"id":"gap-whitespace/U+0019/after-where","sha256":"545b802b6e2b71584e1a1c6cef1910c8d5b95a0e77a2735514bbd3b3c3b9f60a","source":"SELECT 1 WHERE\u00191 = 1;"}
+{"id":"gap-whitespace/U+001A/after-select","sha256":"e38c61df5b184df32f0414ebc4e842a378581ef963343fe623c910c0df96da17","source":"SELECT\u001a1 AS oracle_col;"}
+{"id":"gap-whitespace/U+001A/after-where","sha256":"6066a9b099c660c81eef23ac73c8250a5f56a1bffdbaec2952d4e6e19dc31b96","source":"SELECT 1 WHERE\u001a1 = 1;"}
+{"id":"gap-whitespace/U+001B/after-select","sha256":"97e1d83eaebef25441fe89adba63188867a1f14bc39aa7e9ddadbb90f8dec4d3","source":"SELECT\u001b1 AS oracle_col;"}
+{"id":"gap-whitespace/U+001B/after-where","sha256":"3489113e4c77d69d6edf2beccb68ee9c317cf855944d9d56876e87aa541652b9","source":"SELECT 1 WHERE\u001b1 = 1;"}
+{"id":"gap-whitespace/U+001D/after-select","sha256":"fa154ef19216203a97a8c504e43367d1baa4b78a46e71f5e28ea01264ece04bc","source":"SELECT\u001d1 AS oracle_col;"}
+{"id":"gap-whitespace/U+001D/after-where","sha256":"e12df82ce00bd9a4af79c4f9b5ca71e7347c22f1aa3de38e991d05e963ed9c99","source":"SELECT 1 WHERE\u001d1 = 1;"}
+{"id":"gap-whitespace/U+001E/after-select","sha256":"ba09efddb2cf3e31df126952d4d64e64efd0a557e736c314f3911a32215bd08c","source":"SELECT\u001e1 AS oracle_col;"}
+{"id":"gap-whitespace/U+001E/after-where","sha256":"4f9958e51aa019070c9823d1a6b129d85408d2f49654293fda42c2e1802b0bbe","source":"SELECT 1 WHERE\u001e1 = 1;"}

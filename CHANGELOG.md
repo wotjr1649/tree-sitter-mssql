@@ -26,12 +26,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- QUOTED_IDENTIFIER OFF is checked too (ADR-0006). The oracle runner, ScriptDOM and tree-check take `--quoted-identifier on|off` (default on); the wasm module adds `tc_check_v2` with the session (ABI 2, `tc_check` unchanged). The tree stays the same in both sessions; tree-check judges `"text"` as a string under OFF, follows `SET QUOTED_IDENTIFIER` inside the source and the setting a module was created with. Every oracle set is judged under both settings (`.qi-off.json` verdicts, LocalDB 17.0.1000.7, levels 100-170), plus a `quoted-identifier` probe set (122 cases); Verify replays and mutates both sessions. Found on the way: `BULK INSERT ... FROM "path"`, any string as a filegroup name in ON/FILESTREAM_ON/MOVE positions, and string-only positions under ON (RAISERROR message, WAITFOR DELAY, parenthesized dynamic EXEC, COLLATE, CONVERT style type).
+
 ### Changed
 
 - A parenthesized `IF`, `WHILE`, `MERGE ... ON` or `WHEN [NOT] MATCHED ... AND` condition is now one `parenthesized_expression` in the `condition`/`predicate` field (for example `IF (a = 1)` gives `condition: (parenthesized_expression (binary_expression ...))`), instead of the statement owning the parentheses. No node kind or field is added or removed. This removes a duplicated copy of the expression grammar: `parser.c` -11 %, parse states -8.5 %, large states -15 %.
 
 ### Fixed
 
+- Every character SQL Server takes as a token separator is whitespace to the grammar: the 53 code points it accepts between tokens (U+0000-0020, U+0085, U+00A0, U+1680, U+2000-200B, U+2028, U+2029, U+202F, U+205F, U+3000; not U+180E or U+FEFF), oracle set `metamorphic-whitespace` (110 cases, LocalDB 17.0.1000.7, levels 100-170). Keyword case and whitespace no longer change a verdict: `tools/comment-mutate.mjs --axes comment,case,whitespace` gates it in Verify (84,752 variants, 0 changed). tree-check reports no constraint violations on a tree that already has a parse error, instead of re-parsing a normalized copy.
 - tree-check rejects a module that does not start its batch (`batch-module`: CREATE/ALTER PROCEDURE, VIEW, FUNCTION, TRIGGER, CREATE RULE/DEFAULT after another statement, inside IF/BEGIN or another module, and a VIEW/FUNCTION/RULE/DEFAULT followed by another statement; Msg 111/156) and a GO line inside a block comment or string, where every client splits the batch (`go-inside-token`; Msg 113/105). Found on a private real-world corpus; oracle set `batch-rules` (50 cases). Three fixtures that SQL Server rejected for these reasons get the missing `GO`. The oracle runner no longer stops on an empty script.
 - A comment between two tokens no longer changes any verdict. tree-check rules skip comment nodes everywhere (a leading `-- note` inside a parenthesized condition made valid procedures fail `scalar-predicate`; 858 of 20,912 commented variants of the oracle and fixtures changed verdict). `FOR /*c*/ SYSTEM_TIME` parses. `tools/comment-mutate.mjs` gates this in Verify.
 - Parse a foreign key with a column list inside a column definition (`a int CONSTRAINT f FOREIGN KEY (a) REFERENCES r (a)`), which SQL Server also reads when a table constraint follows the last column without a comma; found on real-world procedures, oracle set `column-constraints` (LocalDB 17.0.1000.7, levels 100-170). Reject a foreign key in a table variable, table type or RETURNS table in tree-check (`table-variable-foreign-key`, Msg 156).

@@ -21,6 +21,7 @@ const FUNCTIONS = [
   'tc_alloc',
   'tc_free',
   'tc_check',
+  'tc_check_v2',
   'tc_result_ptr',
   'tc_result_len',
   'tc_result_free',
@@ -50,7 +51,8 @@ export class Checker {
     }
   }
 
-  handle(source) {
+  handle(source, quotedIdentifier = 'on') {
+    assert(['on', 'off'].includes(quotedIdentifier), 'quoted_identifier must be on or off');
     const bytes = Buffer.from(source);
     assert(bytes.length <= 0xffffffff, 'source exceeds the wasm32 length limit');
     const e = this.exports;
@@ -59,14 +61,14 @@ export class Checker {
     try {
       assert(ptr + bytes.length <= e.memory.buffer.byteLength, 'invalid allocation range');
       new Uint8Array(e.memory.buffer, ptr, bytes.length).set(bytes);
-      return e.tc_check(ptr, bytes.length);
+      return e.tc_check_v2(ptr, bytes.length, quotedIdentifier === 'off' ? 1 : 0);
     } finally {
       e.tc_free(ptr, bytes.length);
     }
   }
 
-  check(source) {
-    return this.result(this.handle(source));
+  check(source, quotedIdentifier = 'on') {
+    return this.result(this.handle(source, quotedIdentifier));
   }
 }
 
@@ -90,7 +92,7 @@ export async function loadChecker(bytes) {
   const checker = new Checker(instance.exports);
   wasi.initialize(instance);
   const identity = checker.result(instance.exports.tc_identity());
-  assert.equal(identity.abi_version, 1, 'unsupported ABI version');
+  assert.equal(identity.abi_version, 2, 'unsupported ABI version');
   assert.match(identity.grammar_commit, /^[0-9a-f]{40}$/, 'invalid grammar commit');
   assert.match(identity.rules_sha256, /^[0-9a-f]{64}$/, 'invalid rules hash');
   return { checker, imports, identity };
@@ -99,11 +101,13 @@ export async function loadChecker(bytes) {
 export function checkLifecycle(checker) {
   const e = checker.exports;
   assert.equal(e.tc_check(0, 1), 0, 'unowned input must fail');
+  assert.equal(e.tc_check_v2(0, 1, 1), 0, 'unowned version 2 input must fail');
   assert.equal(e.tc_result_ptr(0), 0, 'invalid result pointer must be zero');
   assert.equal(e.tc_result_len(0), 0, 'invalid result length must be zero');
   const small = e.tc_alloc(1);
   try {
     assert.equal(e.tc_check(small, 2), 0, 'input beyond its allocation must fail');
+    assert.equal(e.tc_check_v2(small, 1, 2), 0, 'unknown session setting must fail');
   } finally {
     e.tc_free(small, 1);
   }
@@ -137,7 +141,7 @@ export function collectInputs() {
   const baseline = JSON.parse(readFileSync('oracle/expected.json', 'utf8')).cases;
   assert.deepEqual(
     cases.map((c) => c.id).sort(),
-    Object.keys(baseline).sort(),
+    [...new Set(Object.keys(baseline).map((id) => id.replace(/@qi-off$/, '')))].sort(),
     'oracle case coverage differs from the baseline',
   );
   const inputs = cases.map((c) => ({ id: c.id, source: Buffer.from(c.source) }));
@@ -210,8 +214,8 @@ async function main(argv) {
   checkLifecycle(checker);
   const { inputs, oracle, fixtures, historyStates } = collectInputs();
   const dir = mkdtempSync(join(tmpdir(), 'tree-check-wasm-parity-'));
-  let nativeMs;
-  let wasmMs;
+  let nativeMs = 0;
+  let wasmMs = 0;
   try {
     const paths = inputs.map((input, i) => {
       const file = join(dir, `${i}.sql`);
@@ -220,35 +224,43 @@ async function main(argv) {
     });
     const list = join(dir, 'paths.txt');
     writeFileSync(list, paths.join('\n'));
-    let start = performance.now();
-    const native = spawnSync(nativeFile, ['--paths', list], {
-      encoding: 'utf8',
-      maxBuffer: 1 << 28,
-    });
-    nativeMs = performance.now() - start;
-    if (native.error || ![0, 1].includes(native.status))
-      throw new Error(
-        `native checker failed without verdicts: ${native.error?.message ?? native.stderr}`,
+    for (const quotedIdentifier of ['on', 'off']) {
+      let start = performance.now();
+      const native = spawnSync(
+        nativeFile,
+        ['--quoted-identifier', quotedIdentifier, '--paths', list],
+        {
+          encoding: 'utf8',
+          maxBuffer: 1 << 28,
+        },
       );
-    const nativeRows = native.stdout
-      .trim()
-      .split('\n')
-      .filter(Boolean)
-      .map((line) => JSON.parse(line));
-    assert.equal(nativeRows.length, paths.length, 'native result count differs');
-    nativeRows.forEach((row, i) => assert.equal(row.path, paths[i], 'native output order differs'));
-    start = performance.now();
-    const wasmRows = inputs.map((input) => checker.check(input.source));
-    wasmMs = performance.now() - start;
-    compareRows(inputs, nativeRows, wasmRows);
+      nativeMs += performance.now() - start;
+      if (native.error || ![0, 1].includes(native.status))
+        throw new Error(
+          `native checker failed without verdicts: ${native.error?.message ?? native.stderr}`,
+        );
+      const nativeRows = native.stdout
+        .trim()
+        .split('\n')
+        .filter(Boolean)
+        .map((line) => JSON.parse(line));
+      assert.equal(nativeRows.length, paths.length, 'native result count differs');
+      nativeRows.forEach((row, i) =>
+        assert.equal(row.path, paths[i], 'native output order differs'),
+      );
+      start = performance.now();
+      const wasmRows = inputs.map((input) => checker.check(input.source, quotedIdentifier));
+      wasmMs += performance.now() - start;
+      compareRows(inputs, nativeRows, wasmRows);
+    }
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
   const summary = [
     '### tree-check native/WASM parity',
-    `- ${inputs.length} inputs match: ${oracle} oracle cases, ${historyStates} edit-history states, ${fixtures} fixtures, 4 ABI edge cases.`,
-    `- Native CLI batch: ${nativeMs.toFixed(2)} ms (${(nativeMs / inputs.length).toFixed(4)} ms/input; includes process startup and file I/O).`,
-    `- WASM host batch: ${wasmMs.toFixed(2)} ms (${(wasmMs / inputs.length).toFixed(4)} ms/input; includes allocation, check and JSON decoding).`,
+    `- ${inputs.length * 2} checks match under QUOTED_IDENTIFIER ON and OFF: ${oracle} oracle cases, ${historyStates} edit-history states, ${fixtures} fixtures, 4 ABI edge cases per setting.`,
+    `- Native CLI batch: ${nativeMs.toFixed(2)} ms (${(nativeMs / (inputs.length * 2)).toFixed(4)} ms/check; includes process startup and file I/O).`,
+    `- WASM host batch: ${wasmMs.toFixed(2)} ms (${(wasmMs / (inputs.length * 2)).toFixed(4)} ms/check; includes allocation, check and JSON decoding).`,
     `- Identity: ${JSON.stringify(identity)}`,
     `- Imports: ${imports.map((i) => `${i.module}.${i.name}`).join(', ') || '(none)'}`,
     '- Reactor lifecycle, invalid handles, empty/Unicode/invalid UTF-8 inputs and memory growth passed.',

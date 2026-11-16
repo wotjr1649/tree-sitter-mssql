@@ -19758,6 +19758,10 @@
         {
           "type": "keyword_on",
           "named": true
+        },
+        {
+          "type": "literal",
+          "named": true
         }
       ]
     }
@@ -24891,6 +24895,10 @@
         "types": [
           {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "literal",
             "named": true
           }
         ]

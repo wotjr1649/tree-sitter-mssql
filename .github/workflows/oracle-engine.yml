@@ -43,7 +43,8 @@ jobs:
     name: ${{ matrix.name }}
     runs-on: ubuntu-24.04
     # SQL Server 2025 on Linux judges slowly (8-11 min for 934 cases, over 15 for 1,574).
-    timeout-minutes: 60
+    # Both initial QUOTED_IDENTIFIER settings are measured.
+    timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
@@ -107,8 +108,11 @@ jobs:
           echo '::error::The engine did not become reachable within 5 minutes.'
           exit 1
 
+      - name: Check the OFF session contract
+        run: dotnet oracle/runner/ParseOnly/bin/Release/net10.0/ParseOnly.dll --self-test --server localhost,1433 --quoted-identifier off
+
       - name: Judge every oracle case set
-        # grammar-kit's cases and every probe set; one verdict file per set.
+        # grammar-kit's cases and every probe set; one verdict file per set and session.
         env:
           LEVELS: ${{ matrix.levels }}
         run: |
@@ -117,20 +121,32 @@ jobs:
           dotnet oracle/runner/ParseOnly/bin/Release/net10.0/ParseOnly.dll \
             --server localhost,1433 --levels "$LEVELS" \
             --cases oracle/kit/cases.jsonl --out verdicts/kit.json
+          dotnet oracle/runner/ParseOnly/bin/Release/net10.0/ParseOnly.dll \
+            --server localhost,1433 --levels "$LEVELS" --quoted-identifier off \
+            --cases oracle/kit/cases.jsonl --out verdicts/kit.qi-off.json
           for set in oracle/probes/*.jsonl; do
             name="$(basename "$set" .jsonl)"
-            dotnet oracle/runner/ParseOnly/bin/Release/net10.0/ParseOnly.dll \
-              --server localhost,1433 --levels "$LEVELS" \
-              --cases "$set" --out "verdicts/${name}.json"
+            for mode in on off; do
+              suffix=""
+              if [ "$name" = quoted-identifier ] || [ "$mode" = off ]; then suffix=".qi-${mode}"; fi
+              dotnet oracle/runner/ParseOnly/bin/Release/net10.0/ParseOnly.dll \
+                --server localhost,1433 --levels "$LEVELS" --quoted-identifier "$mode" \
+                --cases "$set" --out "verdicts/${name}${suffix}.json"
+            done
           done
 
       - name: Compare with the committed LocalDB verdicts
         run: |
           set -euo pipefail
           node tools/verdict-diff.mjs oracle/verdicts/localdb-17.0.1000.7.json verdicts/kit.json
+          node tools/verdict-diff.mjs oracle/verdicts/localdb-17.0.1000.7.qi-off.json verdicts/kit.qi-off.json
           for set in oracle/probes/*.jsonl; do
             name="$(basename "$set" .jsonl)"
-            node tools/verdict-diff.mjs "oracle/verdicts/localdb-17.0.1000.7.${name}.json" "verdicts/${name}.json"
+            for mode in on off; do
+              suffix=""
+              if [ "$name" = quoted-identifier ] || [ "$mode" = off ]; then suffix=".qi-${mode}"; fi
+              node tools/verdict-diff.mjs "oracle/verdicts/localdb-17.0.1000.7.${name}${suffix}.json" "verdicts/${name}${suffix}.json"
+            done
           done
 
       - name: Upload the verdicts

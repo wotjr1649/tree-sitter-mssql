@@ -7,6 +7,7 @@
 // Usage: node tools/scriptdom-compare.mjs
 import { readdirSync, readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
+import { quotedIdentifier, sessionId } from './oracle-replay.mjs';
 
 const accepted = (v) => Object.values(v).some((e) => Array.isArray(e) && e.length === 0);
 
@@ -23,23 +24,50 @@ export function compare(engine, scriptdom, tree) {
   return { cells, bothRejectClean };
 }
 
+export function observations(files, scriptdom = false) {
+  const results = {};
+  for (const v of files) {
+    const session = quotedIdentifier(
+      scriptdom ? { session_set: { quoted_identifier: v.meta.quoted_identifier } } : v.meta,
+    );
+    for (const [id, verdict] of Object.entries(v.verdicts)) {
+      const key = sessionId(id, session);
+      results[key] = (results[key] ?? false) || accepted(verdict);
+    }
+  }
+  return results;
+}
+
 function main() {
   const json = (f) => JSON.parse(readFileSync(f, 'utf8'));
-  const engine = {};
-  for (const f of readdirSync('oracle/verdicts'))
-    for (const [id, v] of Object.entries(json(`oracle/verdicts/${f}`).verdicts))
-      engine[id] = (engine[id] ?? false) || accepted(v);
-  const scriptdom = {};
-  for (const f of readdirSync('oracle/scriptdom/verdicts'))
-    for (const [id, v] of Object.entries(json(`oracle/scriptdom/verdicts/${f}`).verdicts))
-      scriptdom[id] = accepted(v);
+  const engine = observations(
+    readdirSync('oracle/verdicts')
+      .filter((f) => f.endsWith('.json'))
+      .map((f) => json(`oracle/verdicts/${f}`)),
+  );
+  const scriptdom = observations(
+    readdirSync('oracle/scriptdom/verdicts')
+      .filter((f) => f.endsWith('.json'))
+      .map((f) => json(`oracle/scriptdom/verdicts/${f}`)),
+    true,
+  );
   const classes = json('oracle/rejected-clean.json').cases;
-  const { cells, bothRejectClean } = compare(engine, scriptdom, json('oracle/expected.json').cases);
-  for (const [k, n] of Object.entries(cells).sort()) console.log(`${String(n).padStart(6)}  ${k}`);
-  console.log(`\nEngine and ScriptDOM both reject, tree clean: ${bothRejectClean.length}`);
-  for (const id of bothRejectClean)
-    console.log(`  ${(classes[id]?.class ?? 'UNCLASSIFIED').padEnd(12)} ${id}`);
-  if (bothRejectClean.some((id) => !classes[id])) process.exit(1);
+  const tree = json('oracle/expected.json').cases;
+  let unclassified = false;
+  for (const session of ['on', 'off']) {
+    const sessionTree = Object.fromEntries(
+      Object.entries(tree).filter(([id]) => id.endsWith('@qi-off') === (session === 'off')),
+    );
+    const { cells, bothRejectClean } = compare(engine, scriptdom, sessionTree);
+    console.log(`QUOTED_IDENTIFIER ${session.toUpperCase()}`);
+    for (const [k, n] of Object.entries(cells).sort())
+      console.log(`${String(n).padStart(6)}  ${k}`);
+    console.log(`\nEngine and ScriptDOM both reject, tree clean: ${bothRejectClean.length}`);
+    for (const id of bothRejectClean)
+      console.log(`  ${(classes[id]?.class ?? 'UNCLASSIFIED').padEnd(12)} ${id}`);
+    unclassified ||= bothRejectClean.some((id) => !classes[id]);
+  }
+  if (unclassified) process.exit(1);
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) main();

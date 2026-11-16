@@ -311,7 +311,8 @@ export default {
         $.keyword_insert,
         $.object_reference,
         $.keyword_from,
-        $.literal,
+        // The path accepts double quotes even with QUOTED_IDENTIFIER ON (levels 100-170).
+        choice($.literal, alias($._double_quote_string, $.literal)),
         optional($.with_options),
       ),
     ),

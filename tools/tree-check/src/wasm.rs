@@ -1,4 +1,4 @@
-//! Version 1 reactor ABI. All pointers refer to this instance's linear memory.
+//! Version 2 reactor ABI. All pointers refer to this instance's linear memory.
 
 use std::cell::RefCell;
 use std::collections::BTreeMap;
@@ -53,6 +53,17 @@ pub extern "C" fn tc_free(ptr: usize, len: usize) {
 /// Inspect bytes in a live tc_alloc buffer. Zero means an invalid input or internal failure.
 #[unsafe(no_mangle)]
 pub extern "C" fn tc_check(ptr: usize, len: usize) -> u32 {
+    tc_check_v2(ptr, len, 0)
+}
+
+/// Version 2 adds quoted_identifier: 0 = ON (default), 1 = OFF; other values fail.
+#[unsafe(no_mangle)]
+pub extern "C" fn tc_check_v2(ptr: usize, len: usize, quoted_identifier: u32) -> u32 {
+    let setting = match quoted_identifier {
+        0 => crate::QuotedIdentifier::On,
+        1 => crate::QuotedIdentifier::Off,
+        _ => return 0,
+    };
     STATE.with_borrow_mut(|state| {
         let Some((size, bytes)) = state.inputs.get(&ptr) else {
             return 0;
@@ -66,7 +77,7 @@ pub extern "C" fn tc_check(ptr: usize, len: usize) -> u32 {
         let Ok(tree) = crate::parse(&mut parser, &bytes[..len]) else {
             return 0;
         };
-        let report = crate::inspect(&tree, &bytes[..len]);
+        let report = crate::inspect_with_quoted_identifier(&tree, &bytes[..len], setting);
         state.result(crate::json_line("", &report))
     })
 }
@@ -113,7 +124,7 @@ pub extern "C" fn tc_identity() -> u32 {
     STATE.with_borrow_mut(|state| {
         state.result(
             serde_json::json!({
-                "abi_version": 1,
+                "abi_version": 2,
                 "grammar_commit": grammar,
                 "rules_sha256": rules,
             })
@@ -129,6 +140,7 @@ mod tests {
     #[test]
     fn ownership_and_invalid_arguments() {
         assert_eq!(tc_check(0, 0), 0);
+        assert_eq!(tc_check_v2(0, 0, 2), 0);
         assert_eq!(tc_result_ptr(0), 0);
         assert_eq!(tc_result_len(0), 0);
         tc_free(0, 0);
@@ -159,12 +171,33 @@ mod tests {
         STATE.with_borrow(|state| {
             let json: serde_json::Value =
                 serde_json::from_slice(&state.results[&identity]).unwrap();
-            assert_eq!(json["abi_version"], 1);
+            assert_eq!(json["abi_version"], 2);
         });
         tc_result_free(identity);
         STATE.with_borrow(|state| {
             assert!(state.inputs.is_empty());
             assert!(state.results.is_empty());
         });
+    }
+
+    #[test]
+    fn version_two_session_field_and_legacy_default() {
+        let sql = b"SELECT * FROM \"t\";";
+        let ptr = tc_alloc(sql.len());
+        STATE.with_borrow_mut(|state| state.inputs.get_mut(&ptr).unwrap().1.copy_from_slice(sql));
+        for (handle, expected) in [
+            (tc_check(ptr, sql.len()), true),
+            (tc_check_v2(ptr, sql.len(), 0), true),
+            (tc_check_v2(ptr, sql.len(), 1), false),
+        ] {
+            STATE.with_borrow(|state| {
+                let json: serde_json::Value =
+                    serde_json::from_slice(&state.results[&handle]).unwrap();
+                assert_eq!(json["ok"], expected);
+            });
+            tc_result_free(handle);
+        }
+        assert_eq!(tc_check_v2(ptr, sql.len(), 2), 0);
+        tc_free(ptr, sql.len());
     }
 }

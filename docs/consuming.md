@@ -22,6 +22,6 @@ Both bindings expose every query file — `HIGHLIGHTS_QUERY`, `INDENTS_QUERY`, `
 
 Nothing is published to a registry: pin a commit of this repository. The Node binding compiles the committed generated parser through `node-gyp-build`. `src/scanner.c` must be compiled alongside `src/parser.c` — vendoring one without the other produces a link error, or a parser that can lex neither a block comment nor any sqlcmd command (`:setvar`, `:r`, `:on error` and the rest).
 
-## CGO 없는 호스트의 제약 검사
+## Constraint checks on hosts without CGO
 
-문법 트리와 제약 계층을 함께 검사하려면 공유 Rust 라이브러리의 WASI reactor를 사용한다. [WASM ABI·고정 빌드·parity gate](constraint-wasm.md)를 참조한다.
+To check the grammar tree and the constraint layer together, use the WASI reactor of the shared Rust library. See [WASM ABI, pinned build and parity gate](constraint-wasm.md).
