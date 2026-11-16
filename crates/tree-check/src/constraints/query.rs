@@ -375,14 +375,14 @@ pub(super) fn query_rowset_schema(node: Node, source: &[u8], out: &mut Vec<Viola
     }
 }
 
-pub(super) fn query_dml_source(node: Node, out: &mut Vec<Violation>) {
-    if node.parent().is_none_or(|n| n.kind() != "relation") {
+pub(super) fn query_dml_source(node: Node, context: &Context, out: &mut Vec<Violation>) {
+    if context.parent().is_none_or(|n| n.kind() != "relation") {
         return;
     }
     let output = named_children(node)
         .into_iter()
         .any(|n| n.kind() == "output_clause");
-    let insert = ancestors(node).any(|p| p.kind() == "insert");
+    let insert = context.ancestor("insert").is_some();
     // insert-delete-no-output: 10716; select-delete-source: 156.
     if !output || !insert {
         out.push(violation(

@@ -123,6 +123,12 @@ pub(super) fn quoted_strings(node: Node, source: &[u8]) -> bool {
 }
 
 pub(super) fn upper_text(node: Node, source: &[u8]) -> String {
+    if node.child_count() == 0 && !node.is_extra() {
+        return node
+            .utf8_text(source)
+            .unwrap_or_default()
+            .to_ascii_uppercase();
+    }
     let mut text = String::new();
     let mut at = node.start_byte();
     for part in preorder(node).filter(Node::is_extra) {
@@ -209,4 +215,57 @@ pub(super) fn option_name(option: Node, source: &[u8]) -> String {
 
 pub(super) fn ancestor<'a>(node: Node<'a>, kind: &str) -> Option<Node<'a>> {
     ancestors(node).find(|n| n.kind() == kind)
+}
+
+/// The current preorder path: parent lookup never searches from the tree root.
+#[derive(Default)]
+pub(super) struct Context<'tree> {
+    path: Vec<Node<'tree>>,
+    by_kind: std::collections::HashMap<&'tree str, Vec<usize>>,
+}
+
+impl<'tree> Context<'tree> {
+    pub fn enter(&mut self, node: Node<'tree>, depth: usize) {
+        #[cfg(test)]
+        crate::tree::record_visit();
+        while self.path.len() > depth {
+            #[cfg(test)]
+            crate::tree::record_visit();
+            let previous = self.path.pop().unwrap();
+            self.by_kind.get_mut(previous.kind()).unwrap().pop();
+        }
+        self.path.push(node);
+        self.by_kind.entry(node.kind()).or_default().push(depth);
+    }
+
+    pub fn parent(&self) -> Option<Node<'tree>> {
+        #[cfg(test)]
+        crate::tree::record_visit();
+        self.path.iter().rev().nth(1).copied()
+    }
+
+    pub fn grandparent(&self) -> Option<Node<'tree>> {
+        self.path.iter().rev().nth(2).copied()
+    }
+
+    pub fn ancestor(&self, kind: &str) -> Option<Node<'tree>> {
+        self.ancestor_index(kind).map(|i| self.path[i])
+    }
+
+    pub fn ancestor_parent(&self, kind: &str) -> Option<Node<'tree>> {
+        self.ancestor_index(kind)?
+            .checked_sub(1)
+            .map(|i| self.path[i])
+    }
+
+    fn ancestor_index(&self, kind: &str) -> Option<usize> {
+        #[cfg(test)]
+        crate::tree::record_visit();
+        self.by_kind
+            .get(kind)?
+            .iter()
+            .rev()
+            .find(|&&i| i + 1 < self.path.len())
+            .copied()
+    }
 }

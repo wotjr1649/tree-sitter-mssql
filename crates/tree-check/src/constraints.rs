@@ -1,6 +1,6 @@
 //! Syntax constraints checked after parsing (ADR-0003); rule families live in `constraints/`.
 
-use crate::tree::preorder;
+use crate::tree::preorder_with_depth;
 use tree_sitter::Tree;
 mod statements;
 use statements::*;
@@ -49,9 +49,11 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
 fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
     let mut out = Vec::new();
     go_line_inside_token(tree, source, &mut out);
-    for node in preorder(tree.root_node()) {
-        scalar_predicate(node, source, &mut out);
-        surface_shapes(node, source, &mut out);
+    let mut context = util::Context::default();
+    for (node, depth) in preorder_with_depth(tree.root_node()) {
+        context.enter(node, depth);
+        scalar_predicate(node, &context, source, &mut out);
+        surface_shapes(node, &context, source, &mut out);
         match node.kind() {
             "raiserror_statement" | "waitfor_statement" => {
                 quoted_string_argument(node, source, &mut out);
@@ -73,24 +75,24 @@ fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
                 filegroup_name(node, source, &mut out);
             }
             "invocation" => {
-                gap_invocation(node, source, &mut out);
+                gap_invocation(node, &context, source, &mut out);
                 builtin_arity(node, source, &mut out);
                 expression_language(node, source, &mut out);
                 expression_provider(node, source, &mut out);
-                json_aggregate(node, source, &mut out);
+                json_aggregate(node, &context, source, &mut out);
             }
             "binary_expression" => {
-                gap_scalar(node, source, &mut out);
+                gap_scalar(node, &context, source, &mut out);
                 like_escape(node, source, &mut out);
             }
             "term" | "exec_argument" => {
-                gap_scalar(node, source, &mut out);
+                gap_scalar(node, &context, source, &mut out);
             }
             "identifier" => {
-                gap_name(node, source, &mut out);
+                gap_name(node, &context, source, &mut out);
             }
             "object_reference" => {
-                gap_name(node, source, &mut out);
+                gap_name(node, &context, source, &mut out);
                 static_reference(node, source, &mut out);
             }
             "option" => {
@@ -187,7 +189,7 @@ fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
                 query_rowset_schema(node, source, &mut out);
             }
             "delete" | "update" | "insert" => {
-                query_dml_source(node, &mut out);
+                query_dml_source(node, &context, &mut out);
             }
             "assignment" => {
                 query_assignment(node, source, &mut out);
@@ -232,7 +234,7 @@ fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
                 select_into_scope(node, &mut out);
             }
             "set_operation" => {
-                nested_set_clauses(node, &mut out);
+                nested_set_clauses(node, &context, &mut out);
             }
             "field" => {
                 static_reference(node, source, &mut out);

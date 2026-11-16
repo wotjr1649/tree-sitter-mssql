@@ -9,12 +9,17 @@ use tree_sitter::Node;
 /// R20 gap-forms, LocalDB 17.0.1000.7, levels 100-170: tree-local call boundaries
 /// (102/156/174). Qualified user functions are not built-ins; write targets take constants
 /// or local variables, not general expressions. Keep the tree for queries and consumers.
-pub(super) fn gap_invocation(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+pub(super) fn gap_invocation(
+    node: Node,
+    context: &Context,
+    source: &[u8],
+    out: &mut Vec<Violation>,
+) {
     let mut c = node.walk();
     let args: Vec<_> = node.children_by_field_name("parameter", &mut c).collect();
     let name = invocation_name(node, source).unwrap_or_default();
 
-    let target = node
+    let target = context
         .parent()
         .is_some_and(|p| matches!(p.kind(), "delete" | "update"));
     let invalid = match name.as_str() {
@@ -92,8 +97,8 @@ pub(super) fn gap_invocation(node: Node, source: &[u8], out: &mut Vec<Violation>
             .and_then(|a| a.child_by_field_name("value"))
             .is_some_and(|v| upper_text(v, source) == "BULK"),
         "PREDICT" => {
-            node.parent().is_some_and(|p| p.kind() == "relation")
-                && node
+            context.parent().is_some_and(|p| p.kind() == "relation")
+                && context
                     .parent()
                     .and_then(|p| p.syntax_next_named_sibling())
                     .is_none_or(|n| n.kind() != "openjson_schema")
@@ -114,7 +119,7 @@ pub(super) fn gap_invocation(node: Node, source: &[u8], out: &mut Vec<Violation>
         name.as_str(),
         "CONTAINS" | "FREETEXT" | "CONTAINSTABLE" | "FREETEXTTABLE"
     ) || name == "PROPERTY"
-        && ancestor(node, "invocation").is_some_and(|p| {
+        && context.ancestor("invocation").is_some_and(|p| {
             matches!(
                 invocation_name(p, source).as_deref(),
                 Some("CONTAINS" | "CONTAINSTABLE")
@@ -152,7 +157,7 @@ pub(super) fn gap_constant(node: Node, source: &[u8]) -> bool {
 
 /// R20 comparison/* and static/*: a comparison's operands and a select-list value
 /// are scalars, not search conditions (102); EXEC accepts -1 but not +1.
-pub(super) fn gap_scalar(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+pub(super) fn gap_scalar(node: Node, context: &Context, source: &[u8], out: &mut Vec<Violation>) {
     let invalid = match node.kind() {
         "exec_argument" => node
             .child_by_field_name("value")
@@ -160,7 +165,7 @@ pub(super) fn gap_scalar(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         "term" => node.child_by_field_name("value").is_some_and(|n| {
             // A subquery is scalar; avoid a root-to-node parent lookup at every nesting level.
             n.kind() != "subquery"
-                && node
+                && context
                     .parent()
                     .is_some_and(|p| p.kind() == "select_expression")
                 && is_condition(n, source)
@@ -210,8 +215,8 @@ pub(super) fn gap_scalar(node: Node, source: &[u8], out: &mut Vec<Violation>) {
 
 /// R20 name/qualification, engine 117/156: XML collections have at most schema.name,
 /// HISTORY_TABLE has exactly schema.name; XE qualified names have no empty components.
-pub(super) fn gap_name(node: Node, source: &[u8], out: &mut Vec<Violation>) {
-    let Some(parent) = node.parent() else {
+pub(super) fn gap_name(node: Node, context: &Context, source: &[u8], out: &mut Vec<Violation>) {
+    let Some(parent) = context.parent() else {
         return;
     };
     if node.kind() == "identifier" {
@@ -221,10 +226,14 @@ pub(super) fn gap_name(node: Node, source: &[u8], out: &mut Vec<Violation>) {
             "field" | "object_reference" | "column_definition" | "term"
         );
         // TABLE on VECTOR_SEARCH's left-hand assignment is syntax, not a column name.
-        let vector_key = parent.parent().is_some_and(|n| {
+        let vector_key = matches!(
+            text.as_str(),
+            "TABLE" | "ESCAPE" | "FROM" | "FILLFACTOR" | "EXTERNAL"
+        ) && context.grandparent().is_some_and(|n| {
             n.kind() == "binary_expression"
                 && n.child_by_field_name("left") == Some(parent)
-                && ancestor(n, "invocation")
+                && context
+                    .ancestor("invocation")
                     .is_some_and(|a| invocation_name(a, source).as_deref() == Some("VECTOR_SEARCH"))
         });
         if (text == "COALESCE"
@@ -236,11 +245,11 @@ pub(super) fn gap_name(node: Node, source: &[u8], out: &mut Vec<Violation>) {
                     "TABLE" | "ESCAPE" | "FROM" | "FILLFACTOR" | "EXTERNAL"
                 )
                 && !vector_key
-                && ancestor(node, "set_statement").is_none()
+                && context.ancestor("set_statement").is_none()
             || text == "EXTERNAL" && parent.kind() == "relation"
             || text == "USER"
                 && (parent.kind() == "object_reference"
-                    && parent.parent().is_none_or(|p| p.kind() != "field")
+                    && context.grandparent().is_none_or(|p| p.kind() != "field")
                     || parent.kind() == "relation"
                     || parent.kind() == "field"
                         && parent.syntax_named_child_count() > 1

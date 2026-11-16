@@ -11,7 +11,12 @@ use tree_sitter::Node;
 /// EXCEPT or INTERSECT (10734). CREATE SCHEMA owns its batch (111/156).
 /// surface-fix-ddl-classification measures crypto WITH (156/319), reserved USER principals (156),
 /// scalar CTAS variables (112) and CETAS options (102); platform CTAS/CETAS clauses remain outside.
-pub(super) fn surface_shapes(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+pub(super) fn surface_shapes(
+    node: Node,
+    context: &Context,
+    source: &[u8],
+    out: &mut Vec<Violation>,
+) {
     let invalid = match node.kind() {
         "invocation" if invocation_name(node, source).as_deref() == Some("OPENROWSET") => {
             let mut c = node.walk();
@@ -20,10 +25,10 @@ pub(super) fn surface_shapes(node: Node, source: &[u8], out: &mut Vec<Violation>
                 .first()
                 .and_then(|a| a.child_by_field_name("value"))
                 .is_some_and(|v| upper_text(v, source) == "BULK");
-            if !bulk || node.parent().is_none_or(|p| p.kind() != "relation") {
+            if !bulk || context.parent().is_none_or(|p| p.kind() != "relation") {
                 return;
             }
-            let relation = node.parent().unwrap();
+            let relation = context.parent().unwrap();
             let schema = relation
                 .syntax_next_named_sibling()
                 .filter(|n| n.kind() == "openjson_schema");
@@ -75,19 +80,19 @@ pub(super) fn surface_shapes(node: Node, source: &[u8], out: &mut Vec<Violation>
                     .is_some_and(|n| n.kind() == "=")
                 && v.child_by_field_name("left")
                     .is_some_and(|n| local_variable(n, source))
-                && node
+                && context
                     .parent()
                     .is_some_and(|p| p.kind() == "select_expression")
-                && ancestor(node, "query_specification")
-                    .and_then(|q| q.parent())
+                && context
+                    .ancestor_parent("query_specification")
                     .is_some_and(|p| p.kind() == "set_operation")
         }),
         "alter_cryptographic_provider" => has_child(node, "with_clause"),
         "field" => {
             node.syntax_named_child_count() == 1
                 && local_variable(node, source)
-                && ancestor(node, "query_specification").is_some()
-                && ancestor(node, "create_table").is_some_and(|t| {
+                && context.ancestor("query_specification").is_some()
+                && context.ancestor("create_table").is_some_and(|t| {
                     has_child(t, "keyword_as")
                         && !has_child(t, "keyword_external")
                         && !has_child(t, "column_definitions")
@@ -115,8 +120,10 @@ pub(super) fn surface_shapes(node: Node, source: &[u8], out: &mut Vec<Violation>
                 })
         }
         "identifier"
-            if upper_text(node, source) == "USER"
-                && node.parent().is_some_and(|p| p.kind() == "grant_statement") =>
+            if context
+                .parent()
+                .is_some_and(|p| p.kind() == "grant_statement")
+                && upper_text(node, source) == "USER" =>
         {
             let mut previous = node.syntax_prev_named_sibling();
             let mut principal = false;
@@ -133,10 +140,10 @@ pub(super) fn surface_shapes(node: Node, source: &[u8], out: &mut Vec<Violation>
             principal
         }
         "create_schema" => {
-            let Some(statement) = node.parent().filter(|p| p.kind() == "statement") else {
+            let Some(statement) = context.parent().filter(|p| p.kind() == "statement") else {
                 return;
             };
-            if statement.parent().is_none_or(|p| p.kind() != "batch") {
+            if context.grandparent().is_none_or(|p| p.kind() != "batch") {
                 return;
             }
             let previous = statement.syntax_prev_named_sibling();

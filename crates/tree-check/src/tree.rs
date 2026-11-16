@@ -4,21 +4,36 @@ use tree_sitter::{Node, Point};
 
 /// Visit a subtree in document order, including its root and extras.
 pub fn preorder(node: Node<'_>) -> impl Iterator<Item = Node<'_>> {
+    preorder_with_depth(node).map(|(node, _)| node)
+}
+
+/// Visit a subtree with its depth relative to the supplied root.
+pub fn preorder_with_depth(node: Node<'_>) -> impl Iterator<Item = (Node<'_>, usize)> {
     let mut cursor = node.walk();
-    std::iter::successors(Some(node), move |_| {
+    let mut depth = 0;
+    std::iter::successors(Some((node, depth)), move |_| {
         if !cursor.goto_first_child() {
             while !cursor.goto_next_sibling() {
                 if !cursor.goto_parent() {
                     return None;
                 }
+                depth -= 1;
             }
+        } else {
+            depth += 1;
         }
-        Some(cursor.node())
+        #[cfg(test)]
+        record_visit();
+        Some((cursor.node(), depth))
     })
 }
 
 pub fn ancestors(node: Node<'_>) -> impl Iterator<Item = Node<'_>> {
-    std::iter::successors(node.parent(), Node::parent)
+    std::iter::successors(node.parent(), |node| {
+        #[cfg(test)]
+        record_visit();
+        node.parent()
+    })
 }
 
 pub fn named_children(node: Node<'_>) -> Vec<Node<'_>> {
@@ -73,4 +88,19 @@ mod tests {
         assert!(named_children(first).iter().all(|n| !n.is_extra()));
         assert_eq!(point("한\n글".as_bytes(), 7), Point { row: 1, column: 3 });
     }
+}
+
+#[cfg(test)]
+thread_local! {
+    static VISITS: std::cell::Cell<usize> = const { std::cell::Cell::new(0) };
+}
+
+#[cfg(test)]
+pub(crate) fn record_visit() {
+    VISITS.set(VISITS.get() + 1);
+}
+
+#[cfg(test)]
+pub(crate) fn take_visits() -> usize {
+    VISITS.replace(0)
 }

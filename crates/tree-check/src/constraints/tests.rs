@@ -1849,3 +1849,85 @@ fn ddl_rest_closing_neighbours_match_the_engine() {
         assert!(rules(sql).is_empty(), "{sql}");
     }
 }
+
+#[test]
+fn deep_checks_have_linear_node_visit_growth() {
+    for class in ["and", "case", "while", "function"] {
+        let mut previous = 0;
+        let mut first_time = std::time::Duration::ZERO;
+        for n in [256, 512, 1024] {
+            let sql = match class {
+                "and" => format!("SELECT 1 WHERE {};", vec!["a = 1"; n].join(" AND ")),
+                "case" => format!(
+                    "SELECT {}0{};",
+                    "CASE WHEN a = 1 THEN 1 ELSE ".repeat(n),
+                    " END".repeat(n)
+                ),
+                "while" => format!(
+                    "{}SET @a = 0;{}",
+                    "WHILE @a > 0 BEGIN ".repeat(n),
+                    " END".repeat(n)
+                ),
+                _ => format!("SELECT {}a{};", "ISNULL(".repeat(n), ", 0)".repeat(n)),
+            };
+            let tree = parse(&sql);
+            assert!(!tree.root_node().has_error(), "{class}/{n}");
+            crate::tree::take_visits();
+            assert!(check(&tree, sql.as_bytes()).is_empty(), "{class}/{n}");
+            let visits = crate::tree::take_visits();
+            assert!(visits > n, "the guard must exercise the traversal");
+            assert!(
+                previous == 0 || visits * 10 < previous * 23,
+                "{class}/{n}: {previous} -> {visits} visits"
+            );
+            previous = visits;
+            // Minima and a noise floor tolerate CI pauses; catch uncounted FFI parent searches too.
+            let elapsed = (0..5)
+                .map(|_| {
+                    let start = std::time::Instant::now();
+                    assert!(check(&tree, sql.as_bytes()).is_empty());
+                    start.elapsed()
+                })
+                .min()
+                .unwrap();
+            if n == 256 {
+                first_time = elapsed;
+            } else if n == 1024 {
+                assert!(
+                    elapsed < (first_time * 8).max(std::time::Duration::from_millis(20)),
+                    "{class}: 4x input took {first_time:?} -> {elapsed:?}"
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn preorder_context_matches_tree_ancestry() {
+    let tree = parse(
+        "WHILE @a > 0 BEGIN SELECT ISNULL((SELECT CASE WHEN a = 1 THEN 1 ELSE 0 END), 0); END;",
+    );
+    let mut context = util::Context::default();
+    for (node, depth) in crate::tree::preorder_with_depth(tree.root_node()) {
+        context.enter(node, depth);
+        assert_eq!(context.parent(), node.parent());
+        assert_eq!(
+            context.grandparent(),
+            node.parent().and_then(|n| n.parent())
+        );
+        for kind in [
+            "invocation",
+            "query_specification",
+            "while_statement",
+            "literal",
+            node.kind(),
+        ] {
+            let expected = crate::tree::ancestors(node).find(|n| n.kind() == kind);
+            assert_eq!(context.ancestor(kind), expected);
+            assert_eq!(
+                context.ancestor_parent(kind),
+                expected.and_then(|n| n.parent())
+            );
+        }
+    }
+}

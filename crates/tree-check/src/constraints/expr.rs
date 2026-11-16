@@ -31,7 +31,12 @@ pub(super) fn like_escape(node: Node, source: &[u8], out: &mut Vec<Violation>) {
 
 /// R18 last-forms/json*: argument count/shape, NULL/ORDER/RETURNING and window boundaries
 /// measured on LocalDB 17.0.1000.7, levels 100-170 (102/156/174/10759).
-pub(super) fn json_aggregate(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+pub(super) fn json_aggregate(
+    node: Node,
+    context: &Context,
+    source: &[u8],
+    out: &mut Vec<Violation>,
+) {
     let Some(callee) = node.syntax_named_child(0) else {
         return;
     };
@@ -61,7 +66,9 @@ pub(super) fn json_aggregate(node: Node, source: &[u8], out: &mut Vec<Violation>
     }
     let within = has_child(node, "keyword_within");
     let distinct = has_child(node, "keyword_distinct");
-    let window = node.parent().is_some_and(|p| p.kind() == "window_function");
+    let window = context
+        .parent()
+        .is_some_and(|p| p.kind() == "window_function");
     let returning = named_children(node)
         .into_iter()
         .find(|n| n.kind() == "returning_clause");
@@ -216,8 +223,8 @@ pub(super) fn expression_provider(node: Node, source: &[u8], out: &mut Vec<Viola
 }
 
 /// R15 expr-forms/set: an operand cannot carry its own trailing clauses, even with TOP.
-pub(super) fn nested_set_clauses(node: Node, out: &mut Vec<Violation>) {
-    if node
+pub(super) fn nested_set_clauses(node: Node, context: &Context, out: &mut Vec<Violation>) {
+    if context
         .parent()
         .is_some_and(|n| n.kind() == "query_specification")
         && named_children(node).into_iter().any(|n| {
@@ -367,37 +374,43 @@ pub(super) fn window_frame_order(spec: Node, out: &mut Vec<Violation>) {
 /// Evidence: SQL Server 2025 LocalDB 17.0.1000.7, levels 100-170: Msg 4145 for kit if-bit,
 /// if-not-scalar, iif-scalar, merge-arith, merge-paren-scalar, merge-scalar and mut-0028x; every
 /// engine-accepted oracle case passes.
-pub(super) fn scalar_predicate(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+pub(super) fn scalar_predicate(
+    node: Node,
+    context: &Context,
+    source: &[u8],
+    out: &mut Vec<Violation>,
+) {
+    if node.child_count() == 0 {
+        return;
+    }
     let mut cursor = node.walk();
     // An Extended Events WHERE shares the rule but takes event predicates, not search conditions.
-    let in_event_session = || ancestors(node).any(|a| a.kind().ends_with("event_session"));
-    let mut checked: Vec<Node> = if node.kind() == "where" && in_event_session() {
-        Vec::new()
-    } else {
-        node.children_by_field_name("predicate", &mut cursor)
-            .collect()
+    let in_event_session = || {
+        context.ancestor("create_event_session").is_some()
+            || context.ancestor("alter_event_session").is_some()
     };
-    match node.kind() {
-        "if_statement" | "while_statement" => checked.extend(node.child_by_field_name("condition")),
+    let checked = node
+        .children_by_field_name("predicate", &mut cursor)
+        .filter(|_| node.kind() != "where" || !in_event_session());
+    let extra = match node.kind() {
+        "if_statement" | "while_statement" => node.child_by_field_name("condition"),
         "when_clause" => {
-            let searched = node
+            let searched = context
                 .parent()
                 .is_some_and(|case| case.child_by_field_name("input").is_none());
-            if searched {
-                checked.extend(node.child_by_field_name("condition"));
-            }
+            searched
+                .then(|| node.child_by_field_name("condition"))
+                .flatten()
         }
-        "having" => checked.extend(
-            named_children(node)
-                .into_iter()
-                .find(|n| n.kind() != "keyword_having"),
-        ),
+        "having" => node
+            .syntax_named_children(&mut node.walk())
+            .find(|n| n.kind() != "keyword_having"),
         "invocation" if invocation_name(node, source).as_deref() == Some("IIF") => {
-            checked.extend(node.child_by_field_name("parameter"));
+            node.child_by_field_name("parameter")
         }
-        _ => {}
-    }
-    for n in checked {
+        _ => None,
+    };
+    for n in checked.chain(extra) {
         if !is_condition(n, source) {
             out.push(violation(
                 "scalar-predicate",
@@ -420,6 +433,8 @@ pub(super) fn invocation_name(invocation: Node, source: &[u8]) -> Option<String>
 pub(super) fn is_condition(n: Node, source: &[u8]) -> bool {
     let mut pending = vec![n];
     while let Some(n) = pending.pop() {
+        #[cfg(test)]
+        crate::tree::record_visit();
         match n.kind() {
             "exists" | "graph_match_predicate" | "between_expression" => {}
             "invocation" => {
