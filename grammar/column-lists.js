@@ -148,7 +148,8 @@ export default {
         seq($._primary_key, ...index_spec($, { columns: true, optionalColumns: true })),
         seq($.keyword_unique, ...index_spec($, { columns: true, optionalColumns: true })),
         seq(
-          optional(seq($.keyword_foreign, $.keyword_key)),
+          // SQL Server also takes the table form's column list here: a INT FOREIGN KEY (a) REFERENCES r (a).
+          optional(seq($.keyword_foreign, $.keyword_key, optional(paren_list($.identifier, true)))),
           $.keyword_references,
           $.object_reference,
           optional(paren_list($.identifier, true)),
