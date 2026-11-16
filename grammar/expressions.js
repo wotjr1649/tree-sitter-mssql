@@ -66,11 +66,7 @@ export default {
     seq(
       $.keyword_json_object,
       wrapped_in_parenthesis(
-        seq(
-          comma_list($.json_key_value),
-          optional($.json_null_clause),
-          optional($.returning_clause),
-        ),
+        seq(comma_list($.json_key_value), optional($._json_constructor_suffix)),
       ),
     ),
 
@@ -80,9 +76,13 @@ export default {
     seq(
       $.keyword_json_array,
       wrapped_in_parenthesis(
-        seq(comma_list($._expression), optional($.json_null_clause), optional($.returning_clause)),
+        seq(optional($._expression_list), optional($._json_constructor_suffix)),
       ),
     ),
+
+  // Reduce constructor clauses before the closing parenthesis; calls share the same suffix.
+  _json_constructor_suffix: ($) =>
+    choice(seq($.json_null_clause, optional($.returning_clause)), $.returning_clause),
 
   json_null_clause: ($) =>
     seq(choice($.keyword_null, $.keyword_absent), $.keyword_on, $.keyword_null),
@@ -319,13 +319,14 @@ export default {
   // Reduce the argument list before the optional suffix to share expression states.
   _invocation_arguments: ($) =>
     wrapped_in_parenthesis(
-      seq(
-        optional($._invocation_argument_list),
-        optional($.order_by),
-        optional($.json_null_clause),
-        optional($.returning_clause),
-        optional($.json_wrapper_clause),
-      ),
+      seq(optional($._invocation_argument_list), optional($._invocation_suffix)),
+    ),
+  // A nonempty suffix avoids expanding every optional clause in each argument state.
+  _invocation_suffix: ($) =>
+    choice(
+      seq($.order_by, optional($._json_constructor_suffix), optional($.json_wrapper_clause)),
+      seq($._json_constructor_suffix, optional($.json_wrapper_clause)),
+      $.json_wrapper_clause,
     ),
 
   // JSON aggregates share the existing argument reduction and json_key_value node.
@@ -493,7 +494,10 @@ export default {
   // `WHERE id IN (WITH c AS (SELECT 1) SELECT 1)` are not legal T-SQL.
   subquery: ($) => wrapped_in_parenthesis($._query_expression),
 
-  list: ($) => paren_list($._expression),
+  list: ($) => wrapped_in_parenthesis(optional($._expression_list)),
+
+  // JSON_ARRAY and parenthesized lists share the same nonempty expression sequence.
+  _expression_list: ($) => comma_list($._expression, true),
 
   literal: ($) =>
     prec(
