@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- A comment between two tokens no longer changes any verdict. tree-check rules skip comment nodes everywhere (a leading `-- note` inside a parenthesized condition made valid procedures fail `scalar-predicate`; 858 of 20,912 commented variants of the oracle and fixtures changed verdict). `FOR /*c*/ SYSTEM_TIME` parses. `tools/comment-mutate.mjs` gates this in Verify.
 - Parse a foreign key with a column list inside a column definition (`a int CONSTRAINT f FOREIGN KEY (a) REFERENCES r (a)`), which SQL Server also reads when a table constraint follows the last column without a comma; found on real-world procedures, oracle set `column-constraints` (LocalDB 17.0.1000.7, levels 100-170). Reject a foreign key in a table variable, table type or RETURNS table in tree-check (`table-variable-foreign-key`, Msg 156).
 - Parse LIKE ESCAPE, JSON_ARRAYAGG/JSON_OBJECTAGG arguments and INTO on every set branch; preserve existing clean trees and enforce engine-verified syntax boundaries in tree-check.
 - Correct the graph fixture to grouped SHORTEST_PATH and complete MATCH predicates; reject engine-verified XE predicate-source, DROP SEQUENCE qualification and permission-class boundaries in tree-check.

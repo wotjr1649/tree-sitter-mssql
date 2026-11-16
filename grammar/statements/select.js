@@ -401,11 +401,17 @@ export default {
       optional(alias($._bare_table_hint, $.table_hint)),
     ),
 
-  // FOR SYSTEM_TIME <qualifier> — queries a system-versioned temporal
-  // table as of a point or range in its history. Uses the single atomic
-  // `keyword_for_system_time` token rather than `keyword_for` +
-  // `keyword_system_time` — see that token's comment in keywords.js.
-  for_system_time_clause: ($) => seq($.keyword_for_system_time, $.system_time_qualifier),
+  // LocalDB 17.0.1000.7, levels 100-170: comments may split FOR SYSTEM_TIME.
+  // Keep the atomic phrase's existing tree; the split form also accepts comments.
+  for_system_time_clause: ($) =>
+    seq(
+      choice(
+        $.keyword_for_system_time,
+        alias($._separated_for_system_time, $.keyword_for_system_time),
+      ),
+      $.system_time_qualifier,
+    ),
+  _separated_for_system_time: ($) => seq($.keyword_for, $.keyword_system_time),
 
   system_time_qualifier: ($) =>
     choice(

@@ -2,7 +2,72 @@
 //! (ADR-0003): an option at most once, required options, mutually exclusive options. Each rule
 //! cites the engine evidence it was measured against.
 
-use tree_sitter::{Node, Tree};
+use tree_sitter::{Node, Tree, TreeCursor};
+
+/// Constraints inspect syntax; comments are named extras, never positional children or siblings.
+trait SyntaxNode<'tree> {
+    fn syntax_children<'cursor>(
+        &self,
+        cursor: &'cursor mut TreeCursor<'tree>,
+    ) -> impl Iterator<Item = Node<'tree>> + 'cursor;
+    fn syntax_named_children<'cursor>(
+        &self,
+        cursor: &'cursor mut TreeCursor<'tree>,
+    ) -> impl Iterator<Item = Node<'tree>> + 'cursor;
+    fn syntax_child(&self, index: usize) -> Option<Node<'tree>>;
+    fn syntax_named_child(&self, index: usize) -> Option<Node<'tree>>;
+    fn syntax_named_child_count(&self) -> usize;
+    fn syntax_next_sibling(&self) -> Option<Node<'tree>>;
+    fn syntax_prev_sibling(&self) -> Option<Node<'tree>>;
+    fn syntax_next_named_sibling(&self) -> Option<Node<'tree>>;
+    fn syntax_prev_named_sibling(&self) -> Option<Node<'tree>>;
+}
+
+impl<'tree> SyntaxNode<'tree> for Node<'tree> {
+    fn syntax_children<'cursor>(
+        &self,
+        cursor: &'cursor mut TreeCursor<'tree>,
+    ) -> impl Iterator<Item = Node<'tree>> + 'cursor {
+        self.children(cursor).filter(|node| !node.is_extra())
+    }
+
+    fn syntax_named_children<'cursor>(
+        &self,
+        cursor: &'cursor mut TreeCursor<'tree>,
+    ) -> impl Iterator<Item = Node<'tree>> + 'cursor {
+        self.syntax_children(cursor).filter(|node| node.is_named())
+    }
+
+    fn syntax_child(&self, index: usize) -> Option<Node<'tree>> {
+        self.syntax_children(&mut self.walk()).nth(index)
+    }
+
+    fn syntax_named_child(&self, index: usize) -> Option<Node<'tree>> {
+        self.syntax_named_children(&mut self.walk()).nth(index)
+    }
+
+    fn syntax_named_child_count(&self) -> usize {
+        self.syntax_named_children(&mut self.walk()).count()
+    }
+
+    fn syntax_next_sibling(&self) -> Option<Node<'tree>> {
+        std::iter::successors(self.next_sibling(), Node::next_sibling).find(|node| !node.is_extra())
+    }
+
+    fn syntax_prev_sibling(&self) -> Option<Node<'tree>> {
+        std::iter::successors(self.prev_sibling(), Node::prev_sibling).find(|node| !node.is_extra())
+    }
+
+    fn syntax_next_named_sibling(&self) -> Option<Node<'tree>> {
+        std::iter::successors(self.syntax_next_sibling(), SyntaxNode::syntax_next_sibling)
+            .find(Node::is_named)
+    }
+
+    fn syntax_prev_named_sibling(&self) -> Option<Node<'tree>> {
+        std::iter::successors(self.syntax_prev_sibling(), SyntaxNode::syntax_prev_sibling)
+            .find(Node::is_named)
+    }
+}
 
 /// A constraint violation: the rule and the row/column (0-based) of the offending node.
 #[derive(Debug, PartialEq)]
@@ -14,6 +79,108 @@ pub struct Violation {
 }
 
 pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
+    if !tree.root_node().has_error() {
+        return check_syntax(tree, source);
+    }
+    // Whitespace and extras can change error recovery; diagnose the same canonical token stream.
+    let (normalized, origins) = canonical_source(source);
+    let mut parser = tree_sitter::Parser::new();
+    parser
+        .set_language(&tree_sitter_mssql::LANGUAGE.into())
+        .unwrap();
+    let normalized_tree = parser.parse(&normalized, None).unwrap();
+    let mut violations = check_syntax(&normalized_tree, &normalized);
+    for violation in &mut violations {
+        let line_start = normalized
+            .split_inclusive(|byte| *byte == b'\n')
+            .take(violation.row)
+            .map(<[u8]>::len)
+            .sum::<usize>();
+        let at = origins[line_start + violation.column];
+        violation.row = source[..at].iter().filter(|byte| **byte == b'\n').count();
+        violation.column = source[..at]
+            .iter()
+            .rposition(|byte| *byte == b'\n')
+            .map_or(at, |newline| at - newline - 1);
+    }
+    violations
+}
+
+fn canonical_source(source: &[u8]) -> (Vec<u8>, Vec<usize>) {
+    let mut normalized = Vec::with_capacity(source.len());
+    let mut origins = Vec::with_capacity(source.len() + 1);
+    let mut at = 0;
+    while at < source.len() {
+        let start = at;
+        let byte = source[at];
+        if matches!(byte, b'\'' | b'"' | b'[') {
+            let close = if byte == b'[' { b']' } else { byte };
+            at += 1;
+            while at < source.len() {
+                if source[at] == close {
+                    at += 1;
+                    if source.get(at) != Some(&close) {
+                        break;
+                    }
+                }
+                at += 1;
+            }
+            normalized.extend_from_slice(&source[start..at]);
+            origins.extend(start..at);
+            continue;
+        }
+        if byte.is_ascii_whitespace()
+            || source[at..].starts_with(b"--")
+            || source[at..].starts_with(b"/*")
+        {
+            let mut newline = false;
+            loop {
+                if source.get(at).is_some_and(u8::is_ascii_whitespace) {
+                    newline |= source[at] == b'\n';
+                    at += 1;
+                } else if source[at..].starts_with(b"--") {
+                    at += 2;
+                    while at < source.len() && source[at] != b'\n' {
+                        at += 1;
+                    }
+                } else if source[at..].starts_with(b"/*") {
+                    at += 2;
+                    let mut depth = 1;
+                    while at < source.len() && depth > 0 {
+                        if source[at..].starts_with(b"/*") {
+                            depth += 1;
+                            at += 2;
+                        } else if source[at..].starts_with(b"*/") {
+                            depth -= 1;
+                            at += 2;
+                        } else {
+                            newline |= source[at] == b'\n';
+                            at += 1;
+                        }
+                    }
+                    if depth > 0 {
+                        normalized.extend_from_slice(&source[start..]);
+                        origins.extend(start..source.len());
+                        origins.push(source.len());
+                        return (normalized, origins);
+                    }
+                } else {
+                    break;
+                }
+            }
+            normalized.push(if newline { b'\n' } else { b' ' });
+            origins.push(start);
+        } else {
+            normalized.push(byte);
+            origins.push(at);
+            at += 1;
+        }
+    }
+    origins.push(source.len());
+    (normalized, origins)
+}
+
+fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
     let mut out = Vec::new();
     let mut cursor = tree.walk();
     loop {
@@ -198,17 +365,17 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
 /// leading-semicolon, label, IF/ELSE/WHILE-body and first-in-block form.
 fn cte_terminator(statement: Node, out: &mut Vec<Violation>) {
     // `WITH c AS (...) SELECT ...` is a statement whose children start with `keyword_with`, `cte`.
-    let starts_with_cte = statement.named_child(0).map(|n| n.kind()) == Some("keyword_with")
-        && statement.named_child(1).map(|n| n.kind()) == Some("cte");
+    let starts_with_cte = statement.syntax_named_child(0).map(|n| n.kind()) == Some("keyword_with")
+        && statement.syntax_named_child(1).map(|n| n.kind()) == Some("cte");
     if !starts_with_cte {
         return;
     }
-    let Some(prev) = statement.prev_sibling() else {
+    let Some(prev) = statement.syntax_prev_sibling() else {
         return;
     };
     let follows_statement = match prev.kind() {
         "block" => true,
-        "statement" => prev.named_child(0).map(|n| n.kind()) != Some("label_statement"),
+        "statement" => prev.syntax_named_child(0).map(|n| n.kind()) != Some("label_statement"),
         _ => false,
     };
     if follows_statement {
@@ -227,7 +394,7 @@ fn cte_terminator(statement: Node, out: &mut Vec<Violation>) {
 /// `exec_argument` nodes and are not affected.
 fn exec_output_requires_at(statement: Node, out: &mut Vec<Violation>) {
     let mut cursor = statement.walk();
-    let children: Vec<Node> = statement.children(&mut cursor).collect();
+    let children: Vec<Node> = statement.syntax_children(&mut cursor).collect();
     if children.iter().any(|n| n.kind() == "keyword_at") {
         return;
     }
@@ -250,7 +417,7 @@ fn exec_output_requires_at(statement: Node, out: &mut Vec<Violation>) {
 fn exec_output_variable(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
     let is_output = |n: &Node| matches!(n.kind(), "keyword_output" | "keyword_out");
     let local_variable = |n: Node| {
-        let name = if n.kind() == "field" && n.named_child_count() == 1 {
+        let name = if n.kind() == "field" && n.syntax_named_child_count() == 1 {
             n.child_by_field_name("name")
         } else {
             Some(n)
@@ -260,10 +427,13 @@ fn exec_output_variable(statement: Node, source: &[u8], out: &mut Vec<Violation>
             .is_some_and(|text| text.starts_with('@') && !text.starts_with("@@"))
     };
     let mut cursor = statement.walk();
-    for child in statement.children(&mut cursor).collect::<Vec<_>>() {
+    for child in statement.syntax_children(&mut cursor).collect::<Vec<_>>() {
         // EXEC ( string, value OUTPUT ) AT: the value is the named node right before OUTPUT.
         if is_output(&child) {
-            if !child.prev_named_sibling().is_some_and(local_variable) {
+            if !child
+                .syntax_prev_named_sibling()
+                .is_some_and(local_variable)
+            {
                 out.push(violation(
                     "exec-output-variable",
                     "OUTPUT must mark a local variable".into(),
@@ -274,7 +444,7 @@ fn exec_output_variable(statement: Node, source: &[u8], out: &mut Vec<Violation>
         }
         if child.kind() == "exec_argument" {
             let mut c = child.walk();
-            let marked = child.children(&mut c).any(|n| is_output(&n));
+            let marked = child.syntax_children(&mut c).any(|n| is_output(&n));
             if marked
                 && !child
                     .child_by_field_name("value")
@@ -297,11 +467,11 @@ fn exec_output_variable(statement: Node, source: &[u8], out: &mut Vec<Violation>
 /// with columns, in GRANT, DENY and REVOKE [GRANT OPTION FOR]; accepted for the allowed ones.
 fn column_permissions(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
     let mut cursor = statement.walk();
-    let children: Vec<Node> = statement.children(&mut cursor).collect();
+    let children: Vec<Node> = statement.syntax_children(&mut cursor).collect();
     let on_object = children.iter().any(|n| n.kind() == "(");
     for permission in children.iter().filter(|n| n.kind() == "permission") {
         let mut c = permission.walk();
-        let parts: Vec<Node> = permission.named_children(&mut c).collect();
+        let parts: Vec<Node> = permission.syntax_named_children(&mut c).collect();
         if !on_object && !parts.iter().any(|n| n.kind() == "list") {
             continue;
         }
@@ -330,10 +500,7 @@ fn column_permissions(statement: Node, source: &[u8], out: &mut Vec<Violation>) 
 /// REVOKE accepts TO and FROM, with or without GRANT OPTION FOR, and CASCADE/AS.
 fn ddl_rest_permissions(statement: Node, out: &mut Vec<Violation>) {
     let mut cursor = statement.walk();
-    let parts: Vec<Node> = statement
-        .named_children(&mut cursor)
-        .filter(|node| !node.is_extra())
-        .collect();
+    let parts: Vec<Node> = statement.syntax_named_children(&mut cursor).collect();
     let Some(verb) = parts.first().map(|node| node.kind()) else {
         return;
     };
@@ -467,7 +634,7 @@ const SERVER_ONLY_EVENTS: &[&str] = &[
 /// - a DDL trigger cannot `EXECUTE AS OWNER` (Msg 1083).
 fn trigger_scope(trigger: Node, source: &[u8], out: &mut Vec<Violation>) {
     let mut cursor = trigger.walk();
-    let children: Vec<Node> = trigger.children(&mut cursor).collect();
+    let children: Vec<Node> = trigger.syntax_children(&mut cursor).collect();
     let database = children.iter().any(|n| n.kind() == "keyword_database");
     let ddl = database || children.iter().any(|n| n.kind() == "keyword_server");
     if let Some(name) = trigger
@@ -502,7 +669,8 @@ fn trigger_scope(trigger: Node, source: &[u8], out: &mut Vec<Violation>) {
         while let Some(n) = stack.pop() {
             let mut c = n.walk();
             if n.kind() == "execute_as_clause"
-                && n.children(&mut c).any(|k| k.kind() == "keyword_owner")
+                && n.syntax_children(&mut c)
+                    .any(|k| k.kind() == "keyword_owner")
             {
                 out.push(violation(
                     "trigger-scope",
@@ -511,7 +679,7 @@ fn trigger_scope(trigger: Node, source: &[u8], out: &mut Vec<Violation>) {
                 ));
             }
             let mut c = n.walk();
-            stack.extend(n.named_children(&mut c));
+            stack.extend(n.syntax_named_children(&mut c));
         }
     }
 }
@@ -545,7 +713,7 @@ fn like_escape(node: Node, source: &[u8], out: &mut Vec<Violation>) {
 /// R18 last-forms/json*: argument count/shape, NULL/ORDER/RETURNING and window boundaries
 /// measured on LocalDB 17.0.1000.7, levels 100-170 (102/156/174/10759).
 fn json_aggregate(node: Node, source: &[u8], out: &mut Vec<Violation>) {
-    let Some(callee) = node.named_child(0) else {
+    let Some(callee) = node.syntax_named_child(0) else {
         return;
     };
     let name = upper_text(callee, source);
@@ -555,11 +723,11 @@ fn json_aggregate(node: Node, source: &[u8], out: &mut Vec<Violation>) {
     let args: Vec<_> = node.children_by_field_name("parameter", &mut c).collect();
     let pair = args.iter().any(|a| a.kind() == "json_key_value");
     let argument_end = node
-        .children(&mut node.walk())
+        .syntax_children(&mut node.walk())
         .find(|n| n.kind() == ")")
         .map_or(node.end_byte(), |n| n.start_byte());
     let order = node
-        .named_children(&mut node.walk())
+        .syntax_named_children(&mut node.walk())
         .any(|n| n.kind() == "order_by" && n.start_byte() < argument_end);
     let nulls = has_child(node, "json_null_clause");
     if !array && !object {
@@ -576,11 +744,10 @@ fn json_aggregate(node: Node, source: &[u8], out: &mut Vec<Violation>) {
     let distinct = has_child(node, "keyword_distinct");
     let window = node.parent().is_some_and(|p| p.kind() == "window_function");
     let returning = node
-        .named_children(&mut node.walk())
+        .syntax_named_children(&mut node.walk())
         .find(|n| n.kind() == "returning_clause");
     let wrong_return = returning.is_some_and(|n| {
-        n.named_children(&mut n.walk())
-            .filter(|ty| !ty.is_extra())
+        n.syntax_named_children(&mut n.walk())
             .nth(1)
             .is_none_or(|ty| upper_text(ty, source).trim_matches(['[', ']', '"']) != "JSON")
     });
@@ -634,7 +801,7 @@ fn select_into_scope(node: Node, out: &mut Vec<Violation>) {
 /// R15: LocalDB 17.0.1000.7, levels 100-170, expr-forms/language.
 /// Keep argument positions and value restrictions here instead of multiplying grammar states.
 fn expression_language(node: Node, source: &[u8], out: &mut Vec<Violation>) {
-    let Some(callee) = node.named_child(0) else {
+    let Some(callee) = node.syntax_named_child(0) else {
         return;
     };
     let name = upper_text(callee, source);
@@ -690,7 +857,7 @@ fn expression_language(node: Node, source: &[u8], out: &mut Vec<Violation>) {
 
 /// R15 expr-forms/provider: credentials are confined to OPENROWSET's second argument.
 fn expression_provider(node: Node, source: &[u8], out: &mut Vec<Violation>) {
-    let Some(callee) = node.named_child(0) else {
+    let Some(callee) = node.syntax_named_child(0) else {
         return;
     };
     let name = upper_text(callee, source);
@@ -703,7 +870,7 @@ fn expression_provider(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         .enumerate()
         .filter(|(_, arg)| {
             let mut c = arg.walk();
-            arg.children(&mut c).any(|n| n.kind() == ";")
+            arg.syntax_children(&mut c).any(|n| n.kind() == ";")
         })
         .collect();
     if !connections.is_empty() {
@@ -714,8 +881,7 @@ fn expression_provider(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         for (_, connection) in &connections {
             let mut c = connection.walk();
             invalid |= connection
-                .named_children(&mut c)
-                .filter(|n| !n.is_extra())
+                .syntax_named_children(&mut c)
                 .any(|n| !string_literal(n, source));
         }
         invalid |= !args
@@ -773,7 +939,7 @@ fn quoted_strings(node: Node, source: &[u8]) -> bool {
         }
         if n.kind() == "set_statement" {
             let mut c = n.walk();
-            let children: Vec<_> = n.named_children(&mut c).collect();
+            let children: Vec<_> = n.syntax_named_children(&mut c).collect();
             if children.iter().any(|p| {
                 p.kind() == "object_reference" && upper_text(*p, source) == "QUOTED_IDENTIFIER"
             }) {
@@ -804,7 +970,7 @@ fn nested_set_clauses(node: Node, out: &mut Vec<Violation>) {
         .is_some_and(|n| n.kind() == "query_specification")
     {
         let mut c = node.walk();
-        if node.named_children(&mut c).any(|n| {
+        if node.syntax_named_children(&mut c).any(|n| {
             matches!(
                 n.kind(),
                 "order_by" | "offset_fetch" | "option_clause" | "for_clause"
@@ -822,7 +988,7 @@ fn nested_set_clauses(node: Node, out: &mut Vec<Violation>) {
 /// R15 expr-forms/static: type names have at most two parts; variables are not type/member names.
 fn static_reference(node: Node, source: &[u8], out: &mut Vec<Violation>) {
     let mut c = node.walk();
-    if !node.children(&mut c).any(|n| n.kind() == "::") {
+    if !node.syntax_children(&mut c).any(|n| n.kind() == "::") {
         return;
     }
     let Some(ty) = node.child_by_field_name("schema") else {
@@ -832,11 +998,15 @@ fn static_reference(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         return;
     };
     let mut c = ty.walk();
-    let mut invalid = ty.children(&mut c).filter(|n| n.kind() == ".").count() > 1;
+    let mut invalid = ty
+        .syntax_children(&mut c)
+        .filter(|n| n.kind() == ".")
+        .count()
+        > 1;
     for part in [ty, member] {
         let mut c = part.walk();
         invalid |= part
-            .named_children(&mut c)
+            .syntax_named_children(&mut c)
             .any(|n| source[n.byte_range()].starts_with(b"@") || upper_text(n, source) == "NULL");
     }
     if invalid {
@@ -855,8 +1025,8 @@ fn static_reference(node: Node, source: &[u8], out: &mut Vec<Violation>) {
 /// for any other count (Msg 102 for some shapes); accepted otherwise.
 fn builtin_arity(invocation: Node, source: &[u8], out: &mut Vec<Violation>) {
     let Some(name) = invocation
-        .named_child(0)
-        .filter(|n| n.kind() == "object_reference" && n.named_child_count() == 1)
+        .syntax_named_child(0)
+        .filter(|n| n.kind() == "object_reference" && n.syntax_named_child_count() == 1)
     else {
         return;
     };
@@ -900,7 +1070,7 @@ fn builtin_arity(invocation: Node, source: &[u8], out: &mut Vec<Violation>) {
 fn scalar_function_return(function: Node, out: &mut Vec<Violation>) {
     let mut cursor = function.walk();
     if function
-        .children(&mut cursor)
+        .syntax_children(&mut cursor)
         .any(|n| matches!(n.kind(), "keyword_table" | "table_var_declaration"))
     {
         return;
@@ -910,7 +1080,7 @@ fn scalar_function_return(function: Node, out: &mut Vec<Violation>) {
     };
     let mut stack = vec![body];
     while let Some(n) = stack.pop() {
-        if n.kind() == "return_statement" && n.named_child_count() == 1 {
+        if n.kind() == "return_statement" && n.syntax_named_child_count() == 1 {
             out.push(violation(
                 "scalar-function-return",
                 "RETURN in a scalar function needs a value".into(),
@@ -918,7 +1088,7 @@ fn scalar_function_return(function: Node, out: &mut Vec<Violation>) {
             ));
         }
         let mut c = n.walk();
-        stack.extend(n.named_children(&mut c));
+        stack.extend(n.syntax_named_children(&mut c));
     }
 }
 
@@ -930,7 +1100,7 @@ fn scalar_function_return(function: Node, out: &mut Vec<Violation>) {
 /// query (surface-fix-constraints, LocalDB 17.0.1000.7, levels 100-170).
 fn cte_table_source(statement: Node, out: &mut Vec<Violation>) {
     let mut cursor = statement.walk();
-    let children: Vec<Node> = statement.named_children(&mut cursor).collect();
+    let children: Vec<Node> = statement.syntax_named_children(&mut cursor).collect();
     if children.first().map(|n| n.kind()) != Some("keyword_with")
         || !children.iter().any(|n| n.kind() == "cte")
         || !children.iter().any(|n| n.kind() == "query_specification")
@@ -943,7 +1113,7 @@ fn cte_table_source(statement: Node, out: &mut Vec<Violation>) {
             return;
         }
         let mut c = n.walk();
-        stack.extend(n.named_children(&mut c));
+        stack.extend(n.syntax_named_children(&mut c));
     }
     out.push(violation(
         "cte-table-source",
@@ -958,7 +1128,7 @@ fn cte_table_source(statement: Node, out: &mut Vec<Violation>) {
 /// only sits in a nested query; accepted with ORDER BY and, at 160-170, with a base window.
 fn window_frame_order(spec: Node, out: &mut Vec<Violation>) {
     let mut cursor = spec.walk();
-    let children: Vec<Node> = spec.named_children(&mut cursor).collect();
+    let children: Vec<Node> = spec.syntax_named_children(&mut cursor).collect();
     let Some(frame) = children.iter().find(|n| n.kind() == "window_frame") else {
         return;
     };
@@ -1009,8 +1179,7 @@ fn merge_terminator(merge: Node, out: &mut Vec<Violation>) {
     }
     let mut n = merge;
     let next = loop {
-        match n.next_sibling() {
-            Some(s) if s.is_extra() => n = s,
+        match n.syntax_next_sibling() {
             Some(s) => break Some(s),
             None => match n.parent() {
                 Some(p) => n = p,
@@ -1020,7 +1189,7 @@ fn merge_terminator(merge: Node, out: &mut Vec<Violation>) {
     };
     // The token itself: the next node may start with it (`ELSE` clause after `IF ... MERGE ...;`).
     let first_token = next.map(|mut n| {
-        while let Some(c) = n.child(0) {
+        while let Some(c) = n.syntax_child(0) {
             n = c;
         }
         n
@@ -1091,14 +1260,16 @@ const HINT_GROUPS: &[&[&str]] = &[
 ///   10745); READPAST and READCOMMITTEDLOCK on INSERT (Msg 4102, 4140).
 fn table_hints(list: Node, source: &[u8], out: &mut Vec<Violation>) {
     let mut cursor = list.walk();
-    let children: Vec<Node> = list.children(&mut cursor).collect();
+    let children: Vec<Node> = list.syntax_children(&mut cursor).collect();
     if list.kind() == "query_hint" && !children.iter().any(|n| n.kind() == "keyword_table") {
         return;
     }
     // After a rowset function (`OPENJSON(@j) WITH (ROWLOCK int)`) the list is a column schema that
     // parses like hints; the engine accepts it (`table-hints/hint-keyword-schema`).
-    let after_function = list.prev_named_sibling().is_some_and(|r| {
-        r.kind() == "relation" && r.named_child(0).is_some_and(|n| n.kind() == "invocation")
+    let after_function = list.syntax_prev_named_sibling().is_some_and(|r| {
+        r.kind() == "relation"
+            && r.syntax_named_child(0)
+                .is_some_and(|n| n.kind() == "invocation")
     });
     if after_function {
         return;
@@ -1107,7 +1278,7 @@ fn table_hints(list: Node, source: &[u8], out: &mut Vec<Violation>) {
     let mut seen: Vec<String> = Vec::new();
     let (mut index, mut seek, mut seek_with_columns, mut spatial) = (false, 0, 0, 0);
     for item in children.iter().filter(|n| n.kind() == "table_hint_item") {
-        let Some(first) = item.named_child(0) else {
+        let Some(first) = item.syntax_named_child(0) else {
             continue;
         };
         let name = upper_text(first, source);
@@ -1125,7 +1296,7 @@ fn table_hints(list: Node, source: &[u8], out: &mut Vec<Violation>) {
             _ => name,
         };
         let mut c = item.walk();
-        let with_arguments = item.children(&mut c).any(|n| n.kind() == "(");
+        let with_arguments = item.syntax_children(&mut c).any(|n| n.kind() == "(");
         match name.as_str() {
             "INDEX" => index = true,
             "SPATIAL_WINDOW_MAX_CELLS" => spatial += 1,
@@ -1133,7 +1304,7 @@ fn table_hints(list: Node, source: &[u8], out: &mut Vec<Violation>) {
                 seek += 1;
                 if with_arguments {
                     seek_with_columns += 1;
-                    let zero = item.named_child(1).is_some_and(|n| {
+                    let zero = item.syntax_named_child(1).is_some_and(|n| {
                         n.kind() == "literal" && upper_text(n, source).bytes().all(|b| b == b'0')
                     });
                     if zero {
@@ -1198,12 +1369,12 @@ fn dml_target(list: Node) -> Option<&'static str> {
         "merge" => "merge",
         _ => return None,
     };
-    let mut prev = list.prev_sibling();
+    let mut prev = list.syntax_prev_sibling();
     while let Some(p) = prev {
         if p.kind() == "keyword_using" {
             return None;
         }
-        prev = p.prev_sibling();
+        prev = p.syntax_prev_sibling();
     }
     Some(statement)
 }
@@ -1215,11 +1386,11 @@ fn table_hint_aliases(option: Node, source: &[u8], out: &mut Vec<Violation>) {
     let mut seen = Vec::new();
     let mut cursor = option.walk();
     for hint in option
-        .named_children(&mut cursor)
+        .syntax_named_children(&mut cursor)
         .filter(|n| n.kind() == "query_hint")
     {
         let mut c = hint.walk();
-        let kids: Vec<Node> = hint.named_children(&mut c).collect();
+        let kids: Vec<Node> = hint.syntax_named_children(&mut c).collect();
         // keyword_table, the word HINT (an identifier), then the alias.
         if kids.first().map(|n| n.kind()) != Some("keyword_table") {
             continue;
@@ -1249,10 +1420,7 @@ fn external_options(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
     let library = kind.ends_with("_library");
     let mut cursor = statement.walk();
     if language {
-        let children: Vec<Node> = statement
-            .named_children(&mut cursor)
-            .filter(|n| !n.is_extra())
-            .collect();
+        let children: Vec<Node> = statement.syntax_named_children(&mut cursor).collect();
         if children.iter().any(|n| n.kind() == "keyword_remove")
             && let Some(platform) = children.last()
             && !matches!(upper_text(*platform, source).as_str(), "WINDOWS" | "LINUX")
@@ -1266,7 +1434,7 @@ fn external_options(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
     }
     let mut cursor = statement.walk();
     let containers: Vec<Node> = statement
-        .named_children(&mut cursor)
+        .syntax_named_children(&mut cursor)
         .filter(|n| matches!(n.kind(), "external_file_spec" | "with_options"))
         .collect();
     // ALTER DATA SOURCE/MODEL has its option list directly on the statement.
@@ -1323,7 +1491,7 @@ fn external_options(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
         let mut seen = Vec::new();
         let mut c = container.walk();
         for option in container
-            .named_children(&mut c)
+            .syntax_named_children(&mut c)
             .filter(|n| n.kind() == "option")
         {
             let Some(name) = option.child_by_field_name("name") else {
@@ -1348,10 +1516,7 @@ fn external_options(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
             }
             if key == "AFFINITY" {
                 let mut ac = option.walk();
-                let children: Vec<Node> = option
-                    .named_children(&mut ac)
-                    .filter(|n| !n.is_extra())
-                    .collect();
+                let children: Vec<Node> = option.syntax_named_children(&mut ac).collect();
                 if let Some(scalar) = children
                     .iter()
                     .find(|n| n.kind() == "identifier" && n.id() != name.id())
@@ -1366,7 +1531,7 @@ fn external_options(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
                 }
             }
             let mut o = option.walk();
-            if !option.children(&mut o).any(|n| n.kind() == "=") {
+            if !option.syntax_children(&mut o).any(|n| n.kind() == "=") {
                 out.push(violation(
                     "external-option-assignment",
                     format!("{key} requires '='"),
@@ -1415,12 +1580,12 @@ fn fulltext_options(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
     let mut tracking_off = false;
     let mut no_population = None;
     for clause in statement
-        .named_children(&mut cursor)
+        .syntax_named_children(&mut cursor)
         .filter(|n| matches!(n.kind(), "with_clause" | "with_options"))
     {
         let mut c = clause.walk();
         for option in clause
-            .named_children(&mut c)
+            .syntax_named_children(&mut c)
             .filter(|n| n.kind() == "option")
         {
             let Some(name) = option.child_by_field_name("name") else {
@@ -1476,7 +1641,7 @@ fn fulltext_options(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
 fn endpoint_options(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
     let creating = statement.kind() == "create_endpoint";
     let mut cursor = statement.walk();
-    for clause in statement.named_children(&mut cursor) {
+    for clause in statement.syntax_named_children(&mut cursor) {
         let kind = clause.kind();
         if creating
             && kind == "endpoint_state"
@@ -1513,7 +1678,7 @@ fn endpoint_options(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
         let mut seen = std::collections::BTreeSet::new();
         let mut child_cursor = clause.walk();
         for option in clause
-            .named_children(&mut child_cursor)
+            .syntax_named_children(&mut child_cursor)
             .filter(|n| n.kind() == "option")
         {
             let Some(name_node) = option.child_by_field_name("name") else {
@@ -1627,10 +1792,7 @@ fn endpoint_options(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
 // offsets-bogus: Msg 195; offsets-valid/repeat: accepted (same engine and levels as above).
 fn query_offsets(node: Node, source: &[u8], out: &mut Vec<Violation>) {
     let mut c = node.walk();
-    let parts: Vec<Node> = node
-        .named_children(&mut c)
-        .filter(|n| !n.is_extra())
-        .collect();
+    let parts: Vec<Node> = node.syntax_named_children(&mut c).collect();
     if !parts
         .get(1)
         .is_some_and(|n| n.kind() == "object_reference" && upper_text(*n, source) == "OFFSETS")
@@ -1665,10 +1827,7 @@ fn query_offsets(node: Node, source: &[u8], out: &mut Vec<Violation>) {
 
 fn query_cursor(node: Node, source: &[u8], out: &mut Vec<Violation>) {
     let mut c = node.walk();
-    let children: Vec<Node> = node
-        .named_children(&mut c)
-        .filter(|n| !n.is_extra())
-        .collect();
+    let children: Vec<Node> = node.syntax_named_children(&mut c).collect();
     let Some(at) = children.iter().position(|n| n.kind() == "keyword_cursor") else {
         return;
     };
@@ -1714,7 +1873,7 @@ fn query_cursor(node: Node, source: &[u8], out: &mut Vec<Violation>) {
             let mut fc = scan.node().walk();
             for_update |= scan
                 .node()
-                .named_children(&mut fc)
+                .syntax_named_children(&mut fc)
                 .any(|n| n.kind() == "keyword_update");
         }
         if scan.goto_first_child() {
@@ -1754,21 +1913,21 @@ fn query_cursor(node: Node, source: &[u8], out: &mut Vec<Violation>) {
 fn query_atomic(node: Node, source: &[u8], out: &mut Vec<Violation>) {
     let mut c = node.walk();
     let options: Vec<Node> = node
-        .named_children(&mut c)
+        .syntax_named_children(&mut c)
         .filter(|n| n.kind() == "atomic_option")
         .collect();
     let mut seen = Vec::new();
     let mut invalid = false;
     for option in options {
         let mut oc = option.walk();
-        let parts: Vec<Node> = option.children(&mut oc).filter(|n| !n.is_extra()).collect();
+        let parts: Vec<Node> = option.syntax_children(&mut oc).collect();
         let isolation = parts
             .first()
             .is_some_and(|n| n.kind() == "keyword_transaction");
         let item = if isolation {
             option
         } else {
-            option.named_child(0).unwrap_or(option)
+            option.syntax_named_child(0).unwrap_or(option)
         };
         let key = if isolation {
             "ISOLATION".into()
@@ -1787,7 +1946,7 @@ fn query_atomic(node: Node, source: &[u8], out: &mut Vec<Violation>) {
             continue;
         };
         let mut ic = item.walk();
-        invalid |= !item.children(&mut ic).any(|n| n.kind() == "=");
+        invalid |= !item.syntax_children(&mut ic).any(|n| n.kind() == "=");
         invalid |= match key.as_str() {
             "LANGUAGE" => {
                 value.kind() != "literal"
@@ -1844,7 +2003,7 @@ fn query_module(node: Node, out: &mut Vec<Violation>) {
         atomic |= c.node().kind() == "atomic_clause";
         returns_null |= c.node().kind() == "function_option"
             && c.node()
-                .named_child(0)
+                .syntax_named_child(0)
                 .is_some_and(|n| n.kind() == "keyword_returns");
         if c.goto_first_child() {
             continue;
@@ -1877,16 +2036,16 @@ fn query_module(node: Node, out: &mut Vec<Violation>) {
 fn query_select(node: Node, out: &mut Vec<Violation>) {
     let mut c = node.walk();
     if !node
-        .named_children(&mut c)
+        .syntax_named_children(&mut c)
         .any(|n| n.kind() == "keyword_distinct")
     {
         return;
     }
     let mut c = node.walk();
     let first = node
-        .named_children(&mut c)
+        .syntax_named_children(&mut c)
         .find(|n| n.kind() == "select_expression")
-        .and_then(|n| n.named_child(0))
+        .and_then(|n| n.syntax_named_child(0))
         .and_then(|n| n.child_by_field_name("value"));
     if first
         .and_then(|n| n.child_by_field_name("operator"))
@@ -1904,7 +2063,7 @@ fn query_select(node: Node, out: &mut Vec<Violation>) {
 fn query_parameter(node: Node, out: &mut Vec<Violation>) {
     let mut c = node.walk();
     if !node
-        .named_children(&mut c)
+        .syntax_named_children(&mut c)
         .any(|n| n.kind() == "keyword_cursor")
     {
         return;
@@ -1928,7 +2087,7 @@ fn query_parameter(node: Node, out: &mut Vec<Violation>) {
 
 fn query_cast(node: Node, out: &mut Vec<Violation>) {
     let mut c = node.walk();
-    let parts: Vec<Node> = node.named_children(&mut c).collect();
+    let parts: Vec<Node> = node.syntax_named_children(&mut c).collect();
     // cast-using/try-cast-using: 102. PARSE and TRY_PARSE accept USING.
     if parts.iter().any(|n| n.kind() == "keyword_using")
         && !parts
@@ -1947,7 +2106,7 @@ fn query_exec(node: Node, out: &mut Vec<Violation>) {
     let mut c = node.walk();
     let mut recompile = false;
     let mut results = false;
-    for part in node.named_children(&mut c) {
+    for part in node.syntax_named_children(&mut c) {
         let repeated = match part.kind() {
             "keyword_recompile" => std::mem::replace(&mut recompile, true),
             "exec_result_sets" => std::mem::replace(&mut results, true),
@@ -1965,17 +2124,17 @@ fn query_exec(node: Node, out: &mut Vec<Violation>) {
 }
 
 fn query_rowset_schema(node: Node, source: &[u8], out: &mut Vec<Violation>) {
-    let relation = node.prev_named_sibling();
+    let relation = node.syntax_prev_named_sibling();
     let call = relation.and_then(|r| {
         if r.kind() == "invocation" {
             Some(r)
         } else {
-            r.named_child(0)
+            r.syntax_named_child(0)
         }
     });
     let name = call
         .filter(|n| n.kind() == "invocation")
-        .and_then(|n| n.named_child(0))
+        .and_then(|n| n.syntax_named_child(0))
         .map(|n| upper_text(n, source))
         .unwrap_or_default();
     // rowset-56 and expr-forms/provider/schema: provider credentials take no WITH schema (102).
@@ -1984,7 +2143,7 @@ fn query_rowset_schema(node: Node, source: &[u8], out: &mut Vec<Violation>) {
             let mut c = call.walk();
             call.children_by_field_name("parameter", &mut c).any(|arg| {
                 let mut c = arg.walk();
-                arg.children(&mut c).any(|part| part.kind() == ";")
+                arg.syntax_children(&mut c).any(|part| part.kind() == ";")
             })
         })
     {
@@ -2019,14 +2178,14 @@ fn query_rowset_schema(node: Node, source: &[u8], out: &mut Vec<Violation>) {
     }
     let mut c = node.walk();
     for column in node
-        .named_children(&mut c)
+        .syntax_named_children(&mut c)
         .filter(|n| n.kind() == "openjson_column")
     {
         let mut cc = column.walk();
         // predict-schema accepted; OPENJSON/OPENXML nullability: 156/319.
         if (name != "PREDICT"
             && column
-                .named_children(&mut cc)
+                .syntax_named_children(&mut cc)
                 .any(|n| matches!(n.kind(), "keyword_null" | "keyword_not" | "keyword_collate")))
             || (name != "OPENJSON" && has_child(column, "keyword_json"))
             || column.child_by_field_name("path").is_some_and(|p| {
@@ -2055,7 +2214,7 @@ fn query_dml_source(node: Node, out: &mut Vec<Violation>) {
     }
     let mut c = node.walk();
     let output = node
-        .named_children(&mut c)
+        .syntax_named_children(&mut c)
         .any(|n| n.kind() == "output_clause");
     let mut parent = node.parent();
     let mut insert = false;
@@ -2135,7 +2294,7 @@ fn scalar_predicate(node: Node, source: &[u8], out: &mut Vec<Violation>) {
             }
         }
         "having" => checked.extend(
-            node.named_children(&mut cursor)
+            node.syntax_named_children(&mut cursor)
                 .find(|n| n.kind() != "keyword_having"),
         ),
         "invocation" if invocation_name(node, source).as_deref() == Some("IIF") => {
@@ -2157,8 +2316,8 @@ fn scalar_predicate(node: Node, source: &[u8], out: &mut Vec<Violation>) {
 /// The unqualified, upper-cased name of a function call, if it has one.
 fn invocation_name(invocation: Node, source: &[u8]) -> Option<String> {
     invocation
-        .named_child(0)
-        .filter(|n| n.kind() == "object_reference" && n.named_child_count() == 1)
+        .syntax_named_child(0)
+        .filter(|n| n.kind() == "object_reference" && n.syntax_named_child_count() == 1)
         .map(|n| upper_text(n, source))
 }
 
@@ -2177,7 +2336,9 @@ fn is_condition(n: Node, source: &[u8]) -> bool {
                 }
             }
             "term" | "parenthesized_expression" => {
-                let Some(child) = n.child_by_field_name("value").or_else(|| n.named_child(0))
+                let Some(child) = n
+                    .child_by_field_name("value")
+                    .or_else(|| n.syntax_named_child(0))
                 else {
                     return false;
                 };
@@ -2220,9 +2381,27 @@ fn is_condition(n: Node, source: &[u8]) -> bool {
 }
 
 fn upper_text(node: Node, source: &[u8]) -> String {
-    node.utf8_text(source)
-        .unwrap_or_default()
-        .to_ascii_uppercase()
+    let mut text = String::new();
+    let mut at = node.start_byte();
+    let mut cursor = node.walk();
+    loop {
+        let part = cursor.node();
+        if part.is_extra() {
+            text.push_str(std::str::from_utf8(&source[at..part.start_byte()]).unwrap_or_default());
+            at = part.end_byte();
+            text.push(' ');
+        } else if cursor.goto_first_child() {
+            continue;
+        }
+        while !cursor.goto_next_sibling() {
+            if !cursor.goto_parent() {
+                text.push_str(
+                    std::str::from_utf8(&source[at..node.end_byte()]).unwrap_or_default(),
+                );
+                return text.to_ascii_uppercase();
+            }
+        }
+    }
 }
 
 fn violation(rule: &'static str, detail: String, node: Node) -> Violation {
@@ -2242,11 +2421,11 @@ fn violation(rule: &'static str, detail: String, node: Node) -> Violation {
 fn queue_activation(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
     let mut cursor = statement.walk();
     let with_clauses = statement
-        .children(&mut cursor)
+        .syntax_children(&mut cursor)
         .filter(|n| n.kind() == "with_clause");
     for with_clause in with_clauses.collect::<Vec<_>>() {
         let mut c = with_clause.walk();
-        for activation in with_clause.children(&mut c).filter(|n| {
+        for activation in with_clause.syntax_children(&mut c).filter(|n| {
             n.kind() == "option"
                 && n.child_by_field_name("name")
                     .map(|name| upper_text(name, source))
@@ -2255,7 +2434,7 @@ fn queue_activation(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
             let mut seen: Vec<String> = Vec::new();
             let mut drop = false;
             let mut a = activation.walk();
-            for setting in activation.named_children(&mut a) {
+            for setting in activation.syntax_named_children(&mut a) {
                 let key = match setting.kind() {
                     "option" => match setting.child_by_field_name("name") {
                         Some(name) => upper_text(name, source),
@@ -2303,7 +2482,10 @@ fn database_file_options(file: Node, source: &[u8], out: &mut Vec<Violation>) {
     while let Some(statement) = parent {
         if matches!(statement.kind(), "create_database" | "alter_database") {
             let mut c = statement.walk();
-            let kinds: Vec<&str> = statement.named_children(&mut c).map(|n| n.kind()).collect();
+            let kinds: Vec<&str> = statement
+                .syntax_named_children(&mut c)
+                .map(|n| n.kind())
+                .collect();
             required_filename = if statement.kind() == "alter_database" {
                 kinds.contains(&"keyword_add")
             } else {
@@ -2375,7 +2557,7 @@ fn availability_replica_options(replica: Node, source: &[u8], out: &mut Vec<Viol
     let mut c = statement.walk();
     if (statement.kind() == "create_availability_group" && has_child(statement, "keyword_replica"))
         || statement
-            .named_children(&mut c)
+            .syntax_named_children(&mut c)
             .any(|n| n.kind() == "keyword_add")
     {
         option_set(
@@ -2445,7 +2627,7 @@ fn option_set(
     let mut seen = Vec::new();
     let mut c = container.walk();
     for option in container
-        .named_children(&mut c)
+        .syntax_named_children(&mut c)
         .filter(|n| n.kind() == "option")
     {
         let Some(name) = option.child_by_field_name("name") else {
@@ -2474,22 +2656,18 @@ fn option_set(
 
 fn direct_options(node: Node) -> Vec<Node> {
     let mut c = node.walk();
-    node.named_children(&mut c)
+    node.syntax_named_children(&mut c)
         .filter(|n| n.kind() == "option")
         .collect()
 }
 
 fn has_child(node: Node, kind: &str) -> bool {
     let mut c = node.walk();
-    node.children(&mut c).any(|n| n.kind() == kind)
+    node.syntax_children(&mut c).any(|n| n.kind() == kind)
 }
 
 fn next_option_unit(value: Node) -> Option<Node> {
-    let mut next = value.next_named_sibling();
-    while next.is_some_and(|n| n.is_extra()) {
-        next = next.and_then(|n| n.next_named_sibling());
-    }
-    next
+    value.syntax_next_named_sibling()
 }
 
 fn option_name(option: Node, source: &[u8]) -> String {
@@ -2583,7 +2761,7 @@ fn nested_database_options(option: Node, source: &[u8], out: &mut Vec<Violation>
 fn audit_clause_count(statement: Node, out: &mut Vec<Violation>) {
     let mut seen = Vec::new();
     let mut c = statement.walk();
-    for child in statement.named_children(&mut c) {
+    for child in statement.syntax_named_children(&mut c) {
         if !matches!(child.kind(), "keyword_to" | "with_options") {
             continue;
         }
@@ -2664,7 +2842,7 @@ fn buffer_pool_options(options: Node, source: &[u8], out: &mut Vec<Violation>) {
 fn encryption_algorithm(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
     let mut c = statement.walk();
     for clause in statement
-        .named_children(&mut c)
+        .syntax_named_children(&mut c)
         .filter(|n| n.kind() == "with_clause")
     {
         let options = direct_options(clause);
@@ -2699,11 +2877,11 @@ fn encryption_algorithm(statement: Node, source: &[u8], out: &mut Vec<Violation>
 /// (`backup-duplicate-*`, `backup-init-noinit`, `restore-recovery-norecovery`), so no uniqueness.
 fn backup_restore(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
     let restore = statement.kind() == "restore_statement";
-    let Some(form) = statement.child(1) else {
+    let Some(form) = statement.syntax_child(1) else {
         return;
     };
     let mut cursor = statement.walk();
-    let children: Vec<Node> = statement.children(&mut cursor).collect();
+    let children: Vec<Node> = statement.syntax_children(&mut cursor).collect();
     if form.kind() == "keyword_certificate" {
         backup_certificate(&children, source, out);
         return;
@@ -2852,13 +3030,14 @@ fn value_kind(node: Node, source: &[u8]) -> char {
 /// `name = value` with nothing else, and the value's kind; None for any other shape.
 fn assigned_value(option: Node, source: &[u8]) -> Option<char> {
     let value = option.child_by_field_name("value")?;
-    (has_child(option, "=") && option.named_child_count() == 2).then(|| value_kind(value, source))
+    (has_child(option, "=") && option.syntax_named_child_count() == 2)
+        .then(|| value_kind(value, source))
 }
 
 fn backup_file(option: Node, form: &str, source: &[u8], out: &mut Vec<Violation>) {
     let name = option_name(option, source);
     let valid = match name.as_str() {
-        "READ_WRITE_FILEGROUPS" => option.named_child_count() == 1 && form != "keyword_log",
+        "READ_WRITE_FILEGROUPS" => option.syntax_named_child_count() == 1 && form != "keyword_log",
         "FILE" | "FILEGROUP" | "PAGE" => matches!(assigned_value(option, source), Some('s' | 'v')),
         _ => false,
     };
@@ -2876,7 +3055,7 @@ fn backup_file(option: Node, form: &str, source: &[u8], out: &mut Vec<Violation>
 fn backup_device(option: Node, source: &[u8], out: &mut Vec<Violation>) {
     let name = option_name(option, source);
     // A lone name is a logical backup device: a name or a variable.
-    let valid = option.named_child_count() == 1
+    let valid = option.syntax_named_child_count() == 1
         || (matches!(
             name.as_str(),
             "DISK" | "TAPE" | "URL" | "DATABASE_SNAPSHOT" | "VIRTUAL_DEVICE"
@@ -2915,7 +3094,7 @@ fn backup_option(option: Node, restore: bool, source: &[u8], out: &mut Vec<Viola
             _ => Some("takes no parenthesized list here"),
         }
     } else if has_child(option, "keyword_to") {
-        let target = value.and_then(|v| v.next_named_sibling()?.next_named_sibling());
+        let target = value.and_then(|v| v.syntax_next_named_sibling()?.syntax_next_named_sibling());
         if !restore {
             Some("belongs to RESTORE")
         } else if [value, target]
@@ -2935,9 +3114,9 @@ fn backup_option(option: Node, restore: bool, source: &[u8], out: &mut Vec<Viola
     } else {
         let kind = value.map_or('?', |v| value_kind(v, source));
         let after = value
-            .and_then(|v| v.next_named_sibling())
+            .and_then(|v| v.syntax_next_named_sibling())
             .filter(|n| n.kind() == "keyword_after")
-            .and_then(|n| n.next_named_sibling());
+            .and_then(|n| n.syntax_next_named_sibling());
         if after.is_some() && !matches!(name.as_str(), "STOPATMARK" | "STOPBEFOREMARK") {
             Some("AFTER belongs to STOPATMARK and STOPBEFOREMARK")
         } else if after.is_some_and(|a| !matches!(value_kind(a, source), 's' | 'v')) {
@@ -3047,9 +3226,9 @@ fn backup_certificate(children: &[Node], source: &[u8], out: &mut Vec<Violation>
             }
             "encryption_mechanism" => {
                 let name = node
-                    .child(0)
+                    .syntax_child(0)
                     .map_or(String::new(), |k| upper_text(k, source));
-                let ok = node.named_child(2).is_some_and(|o| {
+                let ok = node.syntax_named_child(2).is_some_and(|o| {
                     o.kind() == "option"
                         && option_name(o, source) == "PASSWORD"
                         && assigned_value(o, source) == Some('s')
@@ -3086,16 +3265,13 @@ fn backup_certificate(children: &[Node], source: &[u8], out: &mut Vec<Violation>
 /// Keep legacy raw trees and reject here.
 fn ddl_rest_routes(node: Node, source: &[u8], out: &mut Vec<Violation>) {
     let mut cursor = node.walk();
-    let children: Vec<_> = node
-        .children(&mut cursor)
-        .filter(|n| !n.is_extra())
-        .collect();
+    let children: Vec<_> = node.syntax_children(&mut cursor).collect();
     let problem = match node.kind() {
         "select" => {
             let all_distinct = children
                 .iter()
                 .find(|n| n.kind() == "select_expression")
-                .and_then(|n| n.named_child(0))
+                .and_then(|n| n.syntax_named_child(0))
                 .and_then(|n| n.child_by_field_name("value"))
                 .is_some_and(|n| {
                     n.child_by_field_name("operator")
@@ -3118,7 +3294,7 @@ fn ddl_rest_routes(node: Node, source: &[u8], out: &mut Vec<Violation>) {
             }
             let name = children
                 .first()
-                .and_then(|n| n.named_child(0))
+                .and_then(|n| n.syntax_named_child(0))
                 .map(|n| upper_text(n, source));
             if matches!(
                 name.as_deref(),
@@ -3182,14 +3358,10 @@ fn ddl_rest_routes(node: Node, source: &[u8], out: &mut Vec<Violation>) {
             else {
                 return;
             };
-            let mut previous = batch.prev_named_sibling();
-            while previous.is_some_and(|n| n.is_extra()) {
-                previous = previous.and_then(|n| n.prev_named_sibling());
-            }
+            let previous = batch.syntax_prev_named_sibling();
             let follows_unterminated_batch = previous.is_some_and(|n| {
                 let mut c = n.walk();
-                n.named_children(&mut c)
-                    .filter(|n| !n.is_extra())
+                n.syntax_named_children(&mut c)
                     .last()
                     .is_none_or(|n| n.kind() != "go_statement")
             });
@@ -3216,12 +3388,12 @@ fn ddl_rest_create(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         "create_aggregate" => {
             let mut c = node.walk();
             if let Some(args) = node
-                .named_children(&mut c)
+                .syntax_named_children(&mut c)
                 .find(|n| n.kind() == "function_arguments")
             {
                 let mut c = args.walk();
                 let params: Vec<Node> = args
-                    .named_children(&mut c)
+                    .syntax_named_children(&mut c)
                     .filter(|n| n.kind() == "function_argument")
                     .collect();
                 if params.is_empty() || params.iter().any(|p| has_child(*p, "=")) {
@@ -3236,7 +3408,9 @@ fn ddl_rest_create(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         }
         "create_cryptographic_provider" => {
             let mut c = node.walk();
-            if let Some(file) = node.named_children(&mut c).find(|n| n.kind() == "literal")
+            if let Some(file) = node
+                .syntax_named_children(&mut c)
+                .find(|n| n.kind() == "literal")
                 && !(string_literal(file, source)
                     || (source.get(file.start_byte()) == Some(&b'"')
                         && quoted_strings(file, source)))
@@ -3278,7 +3452,7 @@ fn ddl_rest_create(node: Node, source: &[u8], out: &mut Vec<Violation>) {
 
 fn rest_create_index(node: Node, source: &[u8], out: &mut Vec<Violation>) {
     let mut c = node.walk();
-    let children: Vec<Node> = node.children(&mut c).filter(|n| !n.is_extra()).collect();
+    let children: Vec<Node> = node.syntax_children(&mut c).collect();
     let storage = node
         .child_by_field_name("storage")
         .map(|n| upper_text(n, source))
@@ -3294,7 +3468,7 @@ fn rest_create_index(node: Node, source: &[u8], out: &mut Vec<Violation>) {
     let wrong_columns = (json || spatial)
         && columns.is_some_and(|cols| {
             let mut c = cols.walk();
-            cols.named_children(&mut c)
+            cols.syntax_named_children(&mut c)
                 .filter(|n| n.kind() == "column")
                 .count()
                 != 1
@@ -3342,10 +3516,7 @@ fn rest_create_index(node: Node, source: &[u8], out: &mut Vec<Violation>) {
 fn ddl_rest_alter(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
     let kind = statement.kind();
     let mut cursor = statement.walk();
-    let children: Vec<Node> = statement
-        .children(&mut cursor)
-        .filter(|n| !n.is_extra())
-        .collect();
+    let children: Vec<Node> = statement.syntax_children(&mut cursor).collect();
     let clauses: Vec<Node> = children
         .iter()
         .copied()
@@ -3390,7 +3561,7 @@ fn ddl_rest_alter(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
             if kind == "create_login" {
                 let mut c = option.walk();
                 if option
-                    .named_children(&mut c)
+                    .syntax_named_children(&mut c)
                     .any(|n| n.kind() == "identifier" && upper_text(n, source) == "OLD_PASSWORD")
                 {
                     out.push(violation(
@@ -3486,7 +3657,7 @@ fn ddl_rest_alter(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
 fn ddl_rest_misc(node: Node, source: &[u8], out: &mut Vec<Violation>) {
     let container = node.child_by_field_name("options").or_else(|| {
         let mut c = node.walk();
-        node.named_children(&mut c)
+        node.syntax_named_children(&mut c)
             .find(|n| matches!(n.kind(), "with_options" | "with_clause"))
     });
     let options = container.map(direct_options).unwrap_or_default();
@@ -3514,7 +3685,7 @@ fn ddl_rest_misc(node: Node, source: &[u8], out: &mut Vec<Violation>) {
             if has_child(node, "keyword_query") {
                 let mut c = node.walk();
                 if node
-                    .named_children(&mut c)
+                    .syntax_named_children(&mut c)
                     .filter(|n| n.kind() == "literal")
                     .any(|n| value_kind(n, source) != 'i')
                 {
@@ -3560,11 +3731,11 @@ fn ddl_rest_misc(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         "sensitivity_classification_statement" => {
             let mut c = node.walk();
             for name in node
-                .named_children(&mut c)
+                .syntax_named_children(&mut c)
                 .filter(|n| n.kind() == "object_reference")
             {
                 let mut nc = name.walk();
-                if !name.children(&mut nc).any(|n| n.kind() == ".") {
+                if !name.syntax_children(&mut nc).any(|n| n.kind() == ".") {
                     reject(
                         out,
                         name,
@@ -3636,7 +3807,7 @@ fn ddl_rest_closing(node: Node, source: &[u8], out: &mut Vec<Violation>) {
     match node.kind() {
         "parenthesized_expression" => {
             let mut cursor = node.walk();
-            let mut parts = node.named_children(&mut cursor).filter(|n| !n.is_extra());
+            let mut parts = node.syntax_named_children(&mut cursor);
             if !parts.next().is_some_and(|n| n.kind() == "field") || parts.next().is_some() {
                 return;
             }
@@ -3664,12 +3835,12 @@ fn ddl_rest_closing(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         "drop_sequence" => {
             let mut cursor = node.walk();
             for name in node
-                .named_children(&mut cursor)
+                .syntax_named_children(&mut cursor)
                 .filter(|n| n.kind() == "object_reference")
             {
                 let mut cursor = name.walk();
                 if name
-                    .children(&mut cursor)
+                    .syntax_children(&mut cursor)
                     .filter(|n| n.kind() == ".")
                     .count()
                     > 1
@@ -3684,10 +3855,7 @@ fn ddl_rest_closing(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         }
         "grant_statement" => {
             let mut cursor = node.walk();
-            let children: Vec<Node> = node
-                .children(&mut cursor)
-                .filter(|n| !n.is_extra())
-                .collect();
+            let children: Vec<Node> = node.syntax_children(&mut cursor).collect();
             let Some(on) = children.iter().position(|n| n.kind() == "keyword_on") else {
                 return;
             };
@@ -3718,9 +3886,7 @@ fn ddl_rest_closing(node: Node, source: &[u8], out: &mut Vec<Violation>) {
             }
             for permission in children.iter().filter(|n| n.kind() == "permission") {
                 let mut cursor = permission.walk();
-                let mut words = permission
-                    .named_children(&mut cursor)
-                    .filter(|n| !n.is_extra());
+                let mut words = permission.syntax_named_children(&mut cursor);
                 if words
                     .next()
                     .is_some_and(|n| upper_text(n, source) == "CONNECT")
@@ -3758,15 +3924,15 @@ fn surface_shapes(node: Node, source: &[u8], out: &mut Vec<Violation>) {
             }
             let relation = node.parent().unwrap();
             let schema = relation
-                .next_named_sibling()
+                .syntax_next_named_sibling()
                 .filter(|n| n.kind() == "openjson_schema");
             let alias = relation.child_by_field_name("alias").is_some()
                 || schema
-                    .and_then(|s| s.next_named_sibling())
+                    .and_then(|s| s.syntax_next_named_sibling())
                     .is_some_and(|n| {
                         n.kind() == "identifier"
                             || n.kind() == "keyword_as"
-                                && n.next_named_sibling()
+                                && n.syntax_next_named_sibling()
                                     .is_some_and(|n| n.kind() == "identifier")
                     });
             let mut format = None;
@@ -3817,7 +3983,7 @@ fn surface_shapes(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         }),
         "alter_cryptographic_provider" => has_child(node, "with_clause"),
         "field" => {
-            node.named_child_count() == 1
+            node.syntax_named_child_count() == 1
                 && local_variable(node, source)
                 && ancestor(node, "query_specification").is_some()
                 && ancestor(node, "create_table").is_some_and(|t| {
@@ -3827,7 +3993,7 @@ fn surface_shapes(node: Node, source: &[u8], out: &mut Vec<Violation>) {
                 })
         }
         "create_table" if has_child(node, "keyword_external") && has_child(node, "keyword_as") => {
-            node.named_children(&mut node.walk())
+            node.syntax_named_children(&mut node.walk())
                 .find(|n| n.kind() == "with_options")
                 .map(direct_options)
                 .unwrap_or_default()
@@ -3850,7 +4016,7 @@ fn surface_shapes(node: Node, source: &[u8], out: &mut Vec<Violation>) {
             if upper_text(node, source) == "USER"
                 && node.parent().is_some_and(|p| p.kind() == "grant_statement") =>
         {
-            let mut previous = node.prev_named_sibling();
+            let mut previous = node.syntax_prev_named_sibling();
             let mut principal = false;
             while let Some(n) = previous {
                 if matches!(n.kind(), "keyword_to" | "keyword_from") {
@@ -3860,7 +4026,7 @@ fn surface_shapes(node: Node, source: &[u8], out: &mut Vec<Violation>) {
                 if matches!(n.kind(), "keyword_on" | "keyword_as") {
                     break;
                 }
-                previous = n.prev_named_sibling();
+                previous = n.syntax_prev_named_sibling();
             }
             principal
         }
@@ -3871,14 +4037,16 @@ fn surface_shapes(node: Node, source: &[u8], out: &mut Vec<Violation>) {
             if statement.parent().is_none_or(|p| p.kind() != "batch") {
                 return;
             }
-            let previous = statement.prev_named_sibling().filter(|n| !n.is_extra());
+            let previous = statement.syntax_prev_named_sibling();
             let next = statement
-                .next_named_sibling()
-                .filter(|n| !n.is_extra() && n.kind() != "go_statement");
+                .syntax_next_named_sibling()
+                .filter(|n| n.kind() != "go_statement");
             previous.is_some()
                 || next.is_some_and(|next| {
-                    let terminated = statement.next_sibling().is_some_and(|n| n.kind() == ";");
-                    let element = next.named_child(0);
+                    let terminated = statement
+                        .syntax_next_sibling()
+                        .is_some_and(|n| n.kind() == ";");
+                    let element = next.syntax_named_child(0);
                     terminated
                         || element.is_none_or(|n| match n.kind() {
                             "create_table" => has_child(n, "keyword_external"),
@@ -3889,7 +4057,7 @@ fn surface_shapes(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         }
         "alter_search_property_list" if has_child(node, "keyword_add") => {
             let options = node
-                .named_children(&mut node.walk())
+                .syntax_named_children(&mut node.walk())
                 .find(|n| n.kind() == "with_options")
                 .map(direct_options)
                 .unwrap_or_default();
@@ -3993,8 +4161,8 @@ fn gap_invocation(node: Node, source: &[u8], out: &mut Vec<Violation>) {
                 || args.first().is_some_and(|a| {
                     let v = a.child_by_field_name("value").unwrap_or(*a);
                     v.kind() != "field"
-                        || v.named_child_count() != 1
-                        || v.named_child(0).is_none_or(|n| {
+                        || v.syntax_named_child_count() != 1
+                        || v.syntax_named_child(0).is_none_or(|n| {
                             n.kind() != "identifier" || source[n.byte_range()].starts_with(b"@")
                         })
                 })
@@ -4007,7 +4175,7 @@ fn gap_invocation(node: Node, source: &[u8], out: &mut Vec<Violation>) {
             node.parent().is_some_and(|p| p.kind() == "relation")
                 && node
                     .parent()
-                    .and_then(|p| p.next_named_sibling())
+                    .and_then(|p| p.syntax_next_named_sibling())
                     .is_none_or(|n| n.kind() != "openjson_schema")
         }
         _ if target => args
@@ -4082,8 +4250,9 @@ fn gap_scalar(node: Node, source: &[u8], out: &mut Vec<Violation>) {
                     && n.child_by_field_name("left").is_some_and(|l| {
                         string_literal(l, source)
                             || l.kind() == "field"
-                                && l.named_child_count() == 1
-                                && l.named_child(0).is_some_and(|id| id.kind() == "identifier")
+                                && l.syntax_named_child_count() == 1
+                                && l.syntax_named_child(0)
+                                    .is_some_and(|id| id.kind() == "identifier")
                     }))
         }),
         "binary_expression" => {
@@ -4165,8 +4334,8 @@ fn gap_name(node: Node, source: &[u8], out: &mut Vec<Violation>) {
                     && parent.parent().is_none_or(|p| p.kind() != "field")
                     || parent.kind() == "relation"
                     || parent.kind() == "field"
-                        && parent.named_child_count() > 1
-                        && parent.named_child(0) != Some(node))
+                        && parent.syntax_named_child_count() > 1
+                        && parent.syntax_named_child(0) != Some(node))
         {
             out.push(violation(
                 "gap-reserved-name",
@@ -4177,12 +4346,12 @@ fn gap_name(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         return;
     }
     let mut c = node.walk();
-    let parts = node
-        .named_children(&mut c)
-        .filter(|n| !n.is_extra())
-        .count();
+    let parts = node.syntax_named_children(&mut c).count();
     let mut c = node.walk();
-    let dots = node.children(&mut c).filter(|n| n.kind() == ".").count();
+    let dots = node
+        .syntax_children(&mut c)
+        .filter(|n| n.kind() == ".")
+        .count();
     let collection = matches!(
         parent.kind(),
         "create_xml_schema_collection"
@@ -4196,7 +4365,7 @@ fn gap_name(node: Node, source: &[u8], out: &mut Vec<Violation>) {
     );
     let xml_null = parent.kind() == "alter_table"
         && node
-            .prev_named_sibling()
+            .syntax_prev_named_sibling()
             .is_some_and(|n| n.kind() == "keyword_xml")
         && upper_text(node, source) == "NULL";
     if (collection && (dots > 1 || parts != dots + 1))
@@ -4239,16 +4408,13 @@ fn gap_options(node: Node, source: &[u8], out: &mut Vec<Violation>) {
                 || !has_child(node, "keyword_with")
                     && (target.is_some() || {
                         let mut c = node.walk();
-                        node.named_children(&mut c)
+                        node.syntax_named_children(&mut c)
                             .any(|n| n.kind() == "table_hint_item" && has_child(n, "keyword_index"))
                     })
         }
         "query_hint" => {
             let mut c = node.walk();
-            let parts: Vec<_> = node
-                .named_children(&mut c)
-                .filter(|n| !n.is_extra())
-                .collect();
+            let parts: Vec<_> = node.syntax_named_children(&mut c).collect();
             parts
                 .first()
                 .is_some_and(|n| upper_text(*n, source) == "DISABLE_OPTIMIZED_PLAN_FORCING")
@@ -4288,13 +4454,13 @@ fn gap_options(node: Node, source: &[u8], out: &mut Vec<Violation>) {
             // The engine checks ON PARTITIONS only on the first WITH option (gap-forms/partition).
             let compression_partition = partitions
                 && node
-                    .prev_named_sibling()
+                    .syntax_prev_named_sibling()
                     .is_some_and(|n| n.kind() == "keyword_with")
                 && index.is_some()
                 && (!matches!(name.as_str(), "DATA_COMPRESSION" | "XML_COMPRESSION")
                     || index.is_some_and(|i| {
                         let mut c = i.walk();
-                        let parts: Vec<_> = i.named_children(&mut c).collect();
+                        let parts: Vec<_> = i.syntax_named_children(&mut c).collect();
                         !parts.windows(2).any(|w| {
                             w[0].kind() == "keyword_partition" && upper_text(w[1], source) == "ALL"
                         })
@@ -4373,33 +4539,27 @@ fn gap_statement(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         "block" | "try_block" => {
             let mut c = node.walk();
             !node
-                .named_children(&mut c)
+                .syntax_named_children(&mut c)
                 .any(|n| matches!(n.kind(), "statement" | "block" | "label_statement"))
         }
         "enable_trigger_statement" => node.parent().is_some_and(|s| {
-            let mut next = s.next_sibling();
-            while next.is_some_and(|n| n.is_extra()) {
-                next = next.and_then(|n| n.next_sibling());
-            }
+            let next = s.syntax_next_sibling();
             next.is_some_and(|n| n.kind() != ";" && n.kind() != "go_statement")
         }),
         "window_frame" => {
             !has_child(node, "keyword_between")
-                && node.named_child(1).is_some_and(|f| {
+                && node.syntax_named_child(1).is_some_and(|f| {
                     has_child(f, "keyword_unbounded") && has_child(f, "keyword_following")
                 })
         }
         "create_event_session" => !has_child(node, "event_session_event"),
         "alter_event_session" => {
             let mut c = node.walk();
-            node.named_children(&mut c)
-                .filter(|n| !n.is_extra())
-                .count()
-                == 6
+            node.syntax_named_children(&mut c).count() == 6
         }
         "create_route" | "alter_route" => {
             let options = node
-                .named_children(&mut node.walk())
+                .syntax_named_children(&mut node.walk())
                 .find(|n| n.kind() == "with_clause")
                 .map(direct_options)
                 .unwrap_or_default();
@@ -4414,7 +4574,7 @@ fn gap_statement(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         }
         "alter_database" => {
             let handle = node
-                .named_children(&mut node.walk())
+                .syntax_named_children(&mut node.walk())
                 .find(|n| n.kind() == "keyword_procedure_cache")
                 .and_then(next_option_unit);
             handle
@@ -4434,10 +4594,7 @@ fn gap_statement(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         }
         "create_server_audit" | "alter_server_audit" => {
             let mut c = node.walk();
-            let parts: Vec<_> = node
-                .named_children(&mut c)
-                .filter(|n| !n.is_extra())
-                .collect();
+            let parts: Vec<_> = node.syntax_named_children(&mut c).collect();
             parts.windows(2).any(|w| {
                 w[0].kind() == "keyword_to"
                     && matches!(
@@ -4452,8 +4609,8 @@ fn gap_statement(node: Node, source: &[u8], out: &mut Vec<Violation>) {
             }
             let mut c = node.walk();
             let words: Vec<_> = node
-                .named_children(&mut c)
-                .filter(|n| !n.is_extra() && n.kind() != "list")
+                .syntax_named_children(&mut c)
+                .filter(|n| n.kind() != "list")
                 .map(|n| upper_text(n, source))
                 .collect();
             let head = words.first().map(String::as_str).unwrap_or_default();
@@ -4748,6 +4905,68 @@ mod tests {
             .into_iter()
             .map(|v| v.rule)
             .collect()
+    }
+
+    #[test]
+    fn comments_do_not_change_constraint_rules() {
+        for sql in [
+            "SELECT 1 FROM t WHERE a = 1 AND (\n b = 0 OR c = 1);",
+            "SELECT 1 FROM t WHERE ( b = 0);",
+            "IF (\n 1 = 1) PRINT 1;",
+            "SELECT 1\nWITH c AS (SELECT 1 AS a) SELECT * FROM c;",
+            "GRANT SELECT (a) ON dbo.t TO u;",
+            "GRANT DELETE (a) ON dbo.t TO u;",
+            "BACKUP DATABASE d TO DISK = 'a';",
+            "BACKUP DATABASE d TO PIPE = 'a';",
+            "BACKUP DATABASE d TO DISK = 'a' WITH STATS = + 5;",
+            "BACKUP CERTIFICATE c TO FILE = 'a' WITH FORMAT = 'PFX', FORMAT = 'PFX';",
+            "SELECT * FROM OPENJSON('{}') WITH (a int);",
+            "EXEC ('p', @v OUTPUT) AT s;",
+            "SELECT * FROM dbo.f() WITH (NOLOCK);",
+        ] {
+            let expected = rules(sql);
+            for commented in [
+                sql.replace(' ', " /* c */ ").replace('\n', "\n-- c\n"),
+                sql.replace(' ', " /* outer /* inner */ c */ "),
+            ] {
+                assert!(!parse(&commented).root_node().has_error(), "{commented}");
+                assert_eq!(rules(&commented), expected, "{commented}");
+            }
+        }
+    }
+
+    #[test]
+    fn canonical_error_source_preserves_literals_and_maps_diagnostics() {
+        let sql = b"SELECT  '/* string */'  AS [a  ]] b], \"--quoted\" /* outer /* nested */ */\r\n FROM t;";
+        let (normalized, origins) = canonical_source(sql);
+        assert_eq!(
+            normalized,
+            b"SELECT '/* string */' AS [a  ]] b], \"--quoted\"\nFROM t;"
+        );
+        let token = normalized
+            .windows(4)
+            .position(|part| part == b"FROM")
+            .unwrap();
+        assert_eq!(&sql[origins[token]..origins[token] + 4], b"FROM");
+        let malformed = b"SELECT 1 </* unterminated = 2;\n";
+        assert_eq!(canonical_source(malformed).0, malformed);
+        let invalid_utf8 = b"SELECT 1 /* \xff */\nFROM t;";
+        assert_eq!(canonical_source(invalid_utf8).0, b"SELECT 1\nFROM t;");
+    }
+
+    #[test]
+    fn comments_do_not_change_error_recovery_constraints() {
+        for sql in [
+            "BACKUP DATABASE 'd' TO DISK = 'a.bak';",
+            "BACKUP DATABASE d TO 'a';",
+            "BACKUP DATABASE d TO DISK = 'a' WITH STATS = 5 + 5;",
+            "SELECT TOP (10) WITH APPROXIMATE t.c1 FROM VECTOR_SEARCH(TABLE = dbo.docs AS t, COLUMN = v1, SIMILAR_TO = @q) AS r;",
+        ] {
+            assert!(parse(sql).root_node().has_error(), "{sql}");
+            let commented = sql.replace(' ', " /* 기밀 C:\\audit */ ");
+            assert!(parse(&commented).root_node().has_error(), "{commented}");
+            assert_eq!(rules(&commented), rules(sql), "{commented}");
+        }
     }
 
     #[test]
@@ -5312,7 +5531,7 @@ mod tests {
                         break;
                     }
                     let mut cursor = node.walk();
-                    nodes.extend(node.named_children(&mut cursor));
+                    nodes.extend(node.syntax_named_children(&mut cursor));
                 }
                 assert!(found, "{sql}");
             }

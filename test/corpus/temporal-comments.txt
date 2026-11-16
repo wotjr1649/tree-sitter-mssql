@@ -1,0 +1,204 @@
+================================================================================
+FOR SYSTEM_TIME comment separated words and qualifiers
+================================================================================
+SELECT * FROM t FOR /* outer /* nested */ note */ SYSTEM_TIME AS OF '2020-01-01';
+SELECT * FROM t FOR -- note
+SYSTEM_TIME FROM '2020-01-01' TO '2021-01-01' AS t1;
+SELECT * FROM t FOR /* note */ SYSTEM_TIME BETWEEN '2020-01-01' AND '2021-01-01';
+SELECT * FROM t FOR /* note */ SYSTEM_TIME CONTAINED IN ('2020-01-01', '2021-01-01');
+SELECT * FROM t FOR /* note */ SYSTEM_TIME ALL FOR JSON PATH;
+SELECT * FROM t FOR XML PATH;
+SELECT * FROM t FOR PATH;
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))
+            (for_system_time_clause
+              (keyword_for_system_time
+                (keyword_for)
+                (marginalia)
+                (keyword_system_time))
+              (system_time_qualifier
+                (keyword_as)
+                (keyword_of)
+                (literal)))))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))
+            (for_system_time_clause
+              (keyword_for_system_time
+                (keyword_for)
+                (comment)
+                (keyword_system_time))
+              (system_time_qualifier
+                (keyword_from)
+                (literal)
+                (keyword_to)
+                (literal)))
+            (keyword_as)
+            (identifier)))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))
+            (for_system_time_clause
+              (keyword_for_system_time
+                (keyword_for)
+                (marginalia)
+                (keyword_system_time))
+              (system_time_qualifier
+                (keyword_between)
+                (literal)
+                (keyword_and)
+                (literal)))))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))
+            (for_system_time_clause
+              (keyword_for_system_time
+                (keyword_for)
+                (marginalia)
+                (keyword_system_time))
+              (system_time_qualifier
+                (keyword_contained)
+                (keyword_in)
+                (literal)
+                (literal)))))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))
+            (for_system_time_clause
+              (keyword_for_system_time
+                (keyword_for)
+                (marginalia)
+                (keyword_system_time))
+              (system_time_qualifier
+                (keyword_all))))))
+      (for_clause
+        (keyword_for)
+        (keyword_json)
+        (for_option
+          (identifier))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier)))))
+      (for_clause
+        (keyword_for)
+        (keyword_xml)
+        (for_option
+          (identifier))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))
+            (keyword_for)
+            (keyword_path)))))))
+
+================================================================================
+PERIOD FOR SYSTEM_TIME comment separated every word
+================================================================================
+CREATE TABLE t (a datetime2 GENERATED ALWAYS AS ROW START, b datetime2 GENERATED ALWAYS AS ROW END, PERIOD /* period */ FOR /* for */ SYSTEM_TIME (a, b));
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        (object_reference
+          (identifier))
+        (column_definitions
+          (column_definition
+            (identifier)
+            (datetime2
+              (keyword_datetime2))
+            (generated_always
+              (keyword_generated)
+              (keyword_always)
+              (keyword_as)
+              (keyword_row)
+              (keyword_start)))
+          (column_definition
+            (identifier)
+            (datetime2
+              (keyword_datetime2))
+            (generated_always
+              (keyword_generated)
+              (keyword_always)
+              (keyword_as)
+              (keyword_row)
+              (keyword_end)))
+          (period_for_system_time
+            (keyword_period_for_system_time
+              (keyword_period)
+              (marginalia)
+              (keyword_for)
+              (marginalia)
+              (keyword_system_time))
+            (identifier)
+            (identifier)))))))
