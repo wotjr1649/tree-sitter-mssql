@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Parse the remaining engine-accepted kit routes: permission classes, principal/cryptographic/CLR/Broker/resource/event/index DDL, sensitivity and signature statements, graph paths, NULLS modifiers, implicit batch-first EXEC, COMMIT durability and statistics options. Preserve existing clean trees and add engine-backed syntax constraints.
 - Parse OPENROWSET provider credentials, including omitted user/password, with engine-backed argument constraints.
 - Parse spaced/comment-separated comparison operators and nested set operands while retaining existing clean trees.
 - Parse BACKUP and RESTORE: file lists, MIRROR TO, BACKUP SERVER/GROUP, certificate, master, service master and symmetric key backups and restores, the metadata RESTOREs (FILELISTONLY, HEADERONLY, LABELONLY, VERIFYONLY, REWINDONLY) and their WITH options (MOVE ... TO, STOPATMARK ... AFTER, COMPRESSION/ENCRYPTION/FILESTREAM lists, signed numbers); tree-check checks option names, values, devices and files against the engine. `restore` is now a statement keyword, so a label named `restore` no longer parses (SQL Server rejects it too).

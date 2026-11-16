@@ -1034,7 +1034,20 @@ DECLARE @n int=10; CHECKPOINT @n;
 
 ---
 
-(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int) (literal)))) (statement (checkpoint_statement (keyword_checkpoint))) (statement (label_statement (identifier) (MISSING ":")))))
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (keyword_int)
+          (literal))))
+    (statement
+      (checkpoint_statement
+        (keyword_checkpoint)))
+    (ERROR
+      (identifier))))
 
 ==================
 query-forms/shutdown - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
@@ -1422,7 +1435,15 @@ GO
 
 ---
 
-(program (ERROR (identifier)) (batch (go_statement (keyword_go))))
+(program
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          schema: (identifier)
+          name: (identifier))))
+    (go_statement
+      (keyword_go))))
 
 ==================
 query-forms/open-signature - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
@@ -1536,7 +1557,48 @@ CREATE PROC dbo.p WITH NATIVE_COMPILATION, SCHEMABINDING AS BEGIN ATOMIC WITH (T
 
 ---
 
-(program (batch (statement (create_procedure (keyword_create) (keyword_proc) (object_reference (identifier) (identifier)) (procedure_options (keyword_with) (procedure_option (keyword_native_compilation)) (procedure_option (keyword_schemabinding))) (procedure_body (keyword_as) (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (ERROR (keyword_transaction) (keyword_isolation) (keyword_level)) (atomic_option (option (identifier) (identifier))) (atomic_option (option (identifier) (literal)))) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end)))))))
+(program
+  (batch
+    (statement
+      (create_procedure
+        (keyword_create)
+        (keyword_proc)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (procedure_options
+          (keyword_with)
+          (procedure_option
+            (keyword_native_compilation))
+          (procedure_option
+            (keyword_schemabinding)))
+        body: (procedure_body
+          (keyword_as))))
+    (block
+      (keyword_begin)
+      (atomic_clause
+        (keyword_atomic)
+        (keyword_with)
+        (ERROR
+          (keyword_transaction)
+          (keyword_isolation)
+          (keyword_level))
+        (atomic_option
+          (option
+            name: (identifier)
+            value: (identifier)))
+        (atomic_option
+          (option
+            name: (identifier)
+            value: (literal))))
+      (statement
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))))
+      (keyword_end))))
 
 ==================
 query-forms/atomic-unknown - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102,195,10783

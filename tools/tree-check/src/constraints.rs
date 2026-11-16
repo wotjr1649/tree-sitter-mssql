@@ -3307,6 +3307,83 @@ mod tests {
     }
 
     #[test]
+    fn ddl_rest_routes_match_engine_boundaries() {
+        assert_eq!(
+            rules("SELECT 1 FROM a,e,f,b WHERE MATCH(a-(e|f)->b);"),
+            ["ddl-rest-graph-edge"]
+        );
+        for (sql, rule) in [
+            (
+                "SELECT ALL DISTINCT c FROM dbo.t;",
+                "query-select-quantifier",
+            ),
+            (
+                "SELECT 1 FROM a,e FOR PATH e,b FOR PATH b WHERE MATCH(SHORTEST_PATH(a(-(e)->b){1,0}));",
+                "ddl-rest-graph-bound",
+            ),
+            (
+                "SELECT SUM(v) IGNORE NULLS OVER(ORDER BY id) FROM t;",
+                "ddl-rest-nulls-modifier",
+            ),
+            (
+                "SELECT ROW_NUMBER() RESPECT NULLS OVER(ORDER BY id) FROM t;",
+                "ddl-rest-nulls-modifier",
+            ),
+            (
+                "SELECT 1 FROM a,e,b WHERE MATCH(a-(e)->b,b<-(e)-a);",
+                "ddl-rest-graph-match",
+            ),
+            (
+                "SELECT 1 FROM a,e,b WHERE MATCH(SHORTEST_PATH(a-(e)->b+));",
+                "ddl-rest-graph-shortest",
+            ),
+            (
+                "SELECT 1 FROM a,e FOR PATH e,b FOR PATH b WHERE MATCH(SHORTEST_PATH(a(-(e)->b){0,3}));",
+                "ddl-rest-graph-bound",
+            ),
+            (
+                "SELECT 1 FROM a,e FOR PATH e,b FOR PATH b WHERE MATCH(SHORTEST_PATH(a(-(e)->b){2,3}));",
+                "ddl-rest-graph-bound",
+            ),
+        ] {
+            let mut parser = Parser::new();
+            parser
+                .set_language(&tree_sitter_mssql::LANGUAGE.into())
+                .unwrap();
+            assert!(
+                !parser.parse(sql, None).unwrap().root_node().has_error(),
+                "{sql}: checked by constraints"
+            );
+            assert_eq!(rules(sql), [rule], "{sql}");
+        }
+        for sql in [
+            "SELECT FIRST_VALUE(v) IGNORE NULLS OVER(ORDER BY id) FROM t;",
+            "SELECT LAST_VALUE(v) RESPECT NULLS OVER(ORDER BY id) FROM t;",
+            "SELECT LAG(v) IGNORE NULLS OVER(ORDER BY id) FROM t;",
+            "SELECT LEAD(v) RESPECT NULLS OVER(ORDER BY id) FROM t;",
+            "SELECT 1 FROM a,e,b WHERE MATCH(a-(e)->b AND b<-(e)-a);",
+            "SELECT 1 FROM a,e FOR PATH e,b FOR PATH b WHERE MATCH(SHORTEST_PATH(a(-(e)->b){1,3}));",
+            "SELECT 1 FROM a,e FOR PATH e,b FOR PATH b WHERE MATCH(SHORTEST_PATH((a<-(e)-)+b));",
+            "dbo.p; SELECT 1;",
+            "SELECT 1;\nGO\ndbo.p;",
+            "/* 한글 C:\\work */ dbo.p 1;",
+        ] {
+            assert!(rules(sql).is_empty(), "{sql}");
+        }
+        for sql in ["SELECT 1; dbo.p;", ";dbo.p;", "start: dbo.p;"] {
+            let mut parser = Parser::new();
+            parser
+                .set_language(&tree_sitter_mssql::LANGUAGE.into())
+                .unwrap();
+            let tree = parser.parse(sql, None).unwrap();
+            assert!(
+                tree.root_node().has_error() || rules(sql) == ["ddl-rest-implicit-exec"],
+                "{sql}"
+            );
+        }
+    }
+
+    #[test]
     fn rest_create_constraints_follow_engine_neighbours() {
         for (sql, expected) in [
             (

@@ -15619,7 +15619,7 @@
     },
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "ai_generate_embeddings",

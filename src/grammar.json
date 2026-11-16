@@ -20,98 +20,37 @@
             "type": "SEQ",
             "members": [
               {
-                "type": "REPEAT1",
-                "content": {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SEQ",
-                      "members": [
-                        {
-                          "type": "CHOICE",
-                          "members": [
-                            {
-                              "type": "SYMBOL",
-                              "name": "statement"
-                            },
-                            {
-                              "type": "SYMBOL",
-                              "name": "block"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "CHOICE",
-                          "members": [
-                            {
-                              "type": "STRING",
-                              "value": ";"
-                            },
-                            {
-                              "type": "BLANK"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "type": "STRING",
-                      "value": ";"
-                    },
-                    {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "REPEAT1",
+                    "content": {
                       "type": "SYMBOL",
-                      "name": "sqlcmd_setvar"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "sqlcmd_include"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "sqlcmd_on_error"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "sqlcmd_reset"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "sqlcmd_output"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "sqlcmd_connect"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "sqlcmd_xml"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "sqlcmd_exit"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "sqlcmd_quit"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "sqlcmd_list"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "sqlcmd_listvar"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "sqlcmd_ed"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "sqlcmd_shell"
+                      "name": "_batch_item"
                     }
-                  ]
-                }
+                  },
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "SYMBOL",
+                          "name": "_implicit_execute_statement"
+                        },
+                        "named": true,
+                        "value": "statement"
+                      },
+                      {
+                        "type": "REPEAT",
+                        "content": {
+                          "type": "SYMBOL",
+                          "name": "_batch_item"
+                        }
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "CHOICE",
@@ -133,6 +72,177 @@
           "name": "go_statement"
         }
       ]
+    },
+    "_batch_item": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PREC_RIGHT",
+          "value": 0,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "statement"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "block"
+                  }
+                ]
+              },
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": ";"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": ";"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sqlcmd_setvar"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sqlcmd_include"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sqlcmd_on_error"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sqlcmd_reset"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sqlcmd_output"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sqlcmd_connect"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sqlcmd_xml"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sqlcmd_exit"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sqlcmd_quit"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sqlcmd_list"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sqlcmd_listvar"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sqlcmd_ed"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sqlcmd_shell"
+        }
+      ]
+    },
+    "_implicit_execute_statement": {
+      "type": "ALIAS",
+      "content": {
+        "type": "SYMBOL",
+        "name": "_implicit_execute_body"
+      },
+      "named": true,
+      "value": "execute_statement"
+    },
+    "_implicit_execute_body": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "FIELD",
+            "name": "procedure",
+            "content": {
+              "type": "SYMBOL",
+              "name": "object_reference"
+            }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_exec_procedure_number"
+                },
+                "named": true,
+                "value": "literal"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_exec_arguments"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "keyword_with"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "keyword_recompile"
+                  }
+                ]
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        ]
+      }
     },
     "go_statement": {
       "type": "SEQ",
@@ -45308,9 +45418,6 @@
       "signature_signer"
     ],
     [
-      "relation"
-    ],
-    [
       "alter_assembly"
     ],
     [
@@ -45327,6 +45434,9 @@
     ],
     [
       "_relation_with_hint"
+    ],
+    [
+      "relation"
     ],
     [
       "term"

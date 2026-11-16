@@ -198,3 +198,11 @@ Nested set operands recover on both sides; operand-local trailing clauses are co
 
 Undeclared variables (Msg 137) in the probes remain contextual; syntax is accepted.
 LIKE ESCAPE and JSON aggregates remain outside this change.
+
+## Remaining routes (R17)
+
+R17 recovers all 119 remaining engine-accepted kit routes in scope, including the six R13 open query forms listed above. Positivity merges every committed engine and compatibility level. The excluded first errors remain LIKE ESCAPE (B01-r006) and JSON aggregates (V22-r014). Evidence: oracle/probes/ddl-rest.jsonl and LocalDB 17.0.1000.7 levels 100–170; the committed Linux verdicts identify edition-limited positive routes.
+
+The 493 neighbours include 309 engine positives, all clean. Five engine-negative probes remain clean: three pre-existing permission-name/class gaps (permission-class-bracket, permission-new-permission-words, permission-unknown-permission) and two undeclared-variable cases (routes-implicit-exec-args, commit-off). These are not new negative-to-clean transitions. Do not infer catalog, type, permission or variable resolution from syntax trees.
+
+PARSEONLY accepts PRIORITY_LEVEL = 11, several spatial grid/bounding-box forms, and an application role without PASSWORD; no guessed restrictions are added. Event-session clause reordering beyond the fixed ADD/DROP sequence remains a pre-existing gap. Later set-operation INTO also remains outside this work.

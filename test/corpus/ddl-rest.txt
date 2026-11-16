@@ -9632,6 +9632,154 @@ CREATE TYPE dbo.tt AS TABLE (id int INDEX ix HASH(id,j) WITH(BUCKET_COUNT=64),j 
             value: (keyword_on)))))))
 
 ==================
+ddl-rest/routes-implicit-exec — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+dbo.p;
+
+---
+
+(program
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          schema: (identifier)
+          name: (identifier))))))
+
+==================
+ddl-rest/routes-implicit-exec-args — LocalDB 17.0.1000.7 levels 100-170: rejects 137
+==================
+
+dbo.p 1,@v,@x=2;
+
+---
+
+(program
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (exec_argument
+          value: (literal))
+        (exec_argument
+          value: (field
+            name: (identifier)))
+        (exec_argument
+          name: (identifier)
+          value: (literal))))))
+
+==================
+ddl-rest/routes-implicit-exec-number — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+dbo.p;2 1;
+
+---
+
+(program
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (literal)
+        (exec_argument
+          value: (literal))))))
+
+==================
+ddl-rest/routes-implicit-exec-go — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1;
+GO
+dbo.p;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))))
+    (go_statement
+      (keyword_go)))
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          schema: (identifier)
+          name: (identifier))))))
+
+==================
+ddl-rest/routes-implicit-exec-with — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+dbo.p WITH RECOMPILE;
+
+---
+
+(program
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_with)
+        (keyword_recompile)))))
+
+==================
+ddl-rest/routes-implicit-exec-followed — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+dbo.p; SELECT 1;
+
+---
+
+(program
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          schema: (identifier)
+          name: (identifier))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))))))
+
+==================
+ddl-rest/routes-implicit-exec-comments — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+/* 한글 */ dbo.p /* 경계 */ 1;
+
+---
+
+(program
+  (marginalia)
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (marginalia)
+        (exec_argument
+          value: (literal))))))
+
+==================
 ddl-rest/routes-nulls-first_value-ignore — LocalDB 17.0.1000.7 levels 100-170: accepts
 ==================
 

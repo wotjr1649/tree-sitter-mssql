@@ -470,7 +470,14 @@ BACKUP SERVER s TO DISK = 'a';
 
 ---
 
-(program (batch (statement (backup_statement (keyword_backup) (keyword_server))) (ERROR (identifier) (keyword_to))))
+(program
+  (batch
+    (statement
+      (backup_statement
+        (keyword_backup)
+        (keyword_server)))
+    (ERROR
+      (identifier))))
 
 ================================================================================
 backup-restore/backup-server-files — LocalDB 17.0.1000.7 levels 100-170: rejected 156
@@ -643,7 +650,26 @@ BACKUP CERTIFICATE c TO FILE = 'a' ENCRYPTION BY PASSWORD = 'p';
 
 ---
 
-(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)))) (ERROR (identifier) (keyword_by) (identifier))))
+(program
+  (ERROR
+    (statement
+      (backup_statement
+        (keyword_backup)
+        (keyword_certificate)
+        (identifier)
+        (keyword_to)
+        (option
+          name: (identifier)
+          value: (literal))))
+    (identifier))
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          name: (identifier))
+        (exec_argument
+          name: (identifier)
+          value: (literal))))))
 
 ================================================================================
 backup-restore/backup-master-key-no-encryption — LocalDB 17.0.1000.7 levels 100-170: rejected 102
@@ -694,7 +720,25 @@ BACKUP MASTER KEY TO FILE = 'a' ENCRYPTION BY CERTIFICATE c;
 
 ---
 
-(program (ERROR (keyword_backup) (keyword_master) (keyword_key) (keyword_to) (option name: (identifier) value: (literal)) (keyword_encryption) (keyword_by)) (batch))
+(program
+  (ERROR
+    (keyword_backup)
+    (keyword_master)
+    (keyword_key)
+    (keyword_to)
+    (option
+      name: (identifier)
+      value: (literal))
+    (keyword_encryption)
+    (keyword_by))
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          name: (identifier))
+        (exec_argument
+          value: (field
+            name: (identifier)))))))
 
 ================================================================================
 backup-restore/backup-master-key-force — LocalDB 17.0.1000.7 levels 100-170: rejected 102
@@ -704,7 +748,25 @@ BACKUP MASTER KEY TO FILE = 'a' ENCRYPTION BY PASSWORD = 'p' FORCE;
 
 ---
 
-(program (batch (statement (backup_statement (keyword_backup) (keyword_master) (keyword_key) (keyword_to) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal))))) (statement (label_statement (identifier) (MISSING ":")))))
+(program
+  (batch
+    (statement
+      (backup_statement
+        (keyword_backup)
+        (keyword_master)
+        (keyword_key)
+        (keyword_to)
+        (option
+          name: (identifier)
+          value: (literal))
+        (encryption_mechanism
+          (keyword_encryption)
+          (keyword_by)
+          (option
+            name: (identifier)
+            value: (literal)))))
+    (ERROR
+      (identifier))))
 
 ================================================================================
 backup-restore/backup-service-master-key-url — LocalDB 17.0.1000.7 levels 100-170: rejected 102
@@ -744,7 +806,23 @@ BACKUP ASYMMETRIC KEY k TO FILE = 'a' ENCRYPTION BY PASSWORD = 'p';
 
 ---
 
-(program (ERROR (keyword_backup) (keyword_key) (keyword_to) (keyword_file) (keyword_encryption) (keyword_by) (identifier)) (batch))
+(program
+  (ERROR
+    (keyword_backup))
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          name: (identifier))
+        (exec_argument
+          value: (field
+            name: (identifier)))))
+    (ERROR
+      (identifier)
+      (keyword_file)
+      (keyword_encryption)
+      (keyword_by)
+      (identifier))))
 
 ================================================================================
 backup-restore/backup-master-key-two-encryptions — LocalDB 17.0.1000.7 levels 100-170: rejected 102
@@ -754,7 +832,32 @@ BACKUP MASTER KEY TO FILE = 'a' ENCRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSW
 
 ---
 
-(program (batch (statement (backup_statement (keyword_backup) (keyword_master) (keyword_key) (keyword_to) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal))))) (ERROR (identifier) (keyword_by) (identifier))))
+(program
+  (ERROR
+    (statement
+      (backup_statement
+        (keyword_backup)
+        (keyword_master)
+        (keyword_key)
+        (keyword_to)
+        (option
+          name: (identifier)
+          value: (literal))
+        (encryption_mechanism
+          (keyword_encryption)
+          (keyword_by)
+          (option
+            name: (identifier)
+            value: (literal)))))
+    (identifier))
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          name: (identifier))
+        (exec_argument
+          name: (identifier)
+          value: (literal))))))
 
 ================================================================================
 backup-restore/restore-db-bare — LocalDB 17.0.1000.7 levels 100-170: accepted
@@ -874,7 +977,19 @@ RESTORE DATABASE d FROM DISK = 'a' MIRROR TO DISK = 'b';
 
 ---
 
-(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)))) (ERROR (identifier) (keyword_to))))
+(program
+  (batch
+    (statement
+      (restore_statement
+        (keyword_restore)
+        (keyword_database)
+        (identifier)
+        (keyword_from)
+        (option
+          name: (identifier)
+          value: (literal))))
+    (ERROR
+      (identifier))))
 
 ================================================================================
 backup-restore/restore-db-to — LocalDB 17.0.1000.7 levels 100-170: rejected 156
@@ -1207,7 +1322,18 @@ RESTORE VERIFYONLY FROM DISK = 'a' MIRROR TO DISK = 'b';
 
 ---
 
-(program (batch (statement (restore_statement (keyword_restore) (keyword_verifyonly) (keyword_from) (option name: (identifier) value: (literal)))) (ERROR (identifier) (keyword_to))))
+(program
+  (batch
+    (statement
+      (restore_statement
+        (keyword_restore)
+        (keyword_verifyonly)
+        (keyword_from)
+        (option
+          name: (identifier)
+          value: (literal))))
+    (ERROR
+      (identifier))))
 
 ================================================================================
 backup-restore/restore-master-key-no-encryption — LocalDB 17.0.1000.7 levels 100-170: rejected 102
@@ -1288,7 +1414,33 @@ RESTORE SERVICE MASTER KEY FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p' ENCRYPTI
 
 ---
 
-(program (batch (statement (restore_statement (keyword_restore) (keyword_service) (keyword_master) (keyword_key) (keyword_from) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_decryption) (keyword_by) (option name: (identifier) value: (literal))))) (ERROR (identifier) (keyword_by) (identifier))))
+(program
+  (ERROR
+    (statement
+      (restore_statement
+        (keyword_restore)
+        (keyword_service)
+        (keyword_master)
+        (keyword_key)
+        (keyword_from)
+        (option
+          name: (identifier)
+          value: (literal))
+        (encryption_mechanism
+          (keyword_decryption)
+          (keyword_by)
+          (option
+            name: (identifier)
+            value: (literal)))))
+    (identifier))
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          name: (identifier))
+        (exec_argument
+          name: (identifier)
+          value: (literal))))))
 
 ================================================================================
 backup-restore/restore-service-master-key-url — LocalDB 17.0.1000.7 levels 100-170: rejected 102
@@ -1328,7 +1480,19 @@ RESTORE CERTIFICATE c FROM FILE = 'a';
 
 ---
 
-(program (ERROR (keyword_restore) (keyword_from) (keyword_file)) (batch))
+(program
+  (ERROR
+    (keyword_restore))
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          name: (identifier))
+        (exec_argument
+          value: (field
+            name: (identifier)))))
+    (ERROR
+      (identifier))))
 
 ================================================================================
 backup-restore/restore-asymmetric-key — LocalDB 17.0.1000.7 levels 100-170: rejected 102
@@ -1338,7 +1502,26 @@ RESTORE ASYMMETRIC KEY k FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p' ENCRYPTION
 
 ---
 
-(program (ERROR (keyword_restore) (keyword_key) (keyword_from) (keyword_file) (keyword_decryption) (keyword_by) (identifier) (keyword_encryption) (keyword_by) (identifier)) (batch))
+(program
+  (ERROR
+    (keyword_restore))
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          name: (identifier))
+        (exec_argument
+          value: (field
+            name: (identifier)))))
+    (ERROR
+      (identifier)
+      (keyword_file)
+      (keyword_decryption)
+      (keyword_by)
+      (identifier)
+      (keyword_encryption)
+      (keyword_by)
+      (identifier))))
 
 ================================================================================
 backup-restore/restore-then-cte — LocalDB 17.0.1000.7 levels 100-170: accepted
@@ -1905,7 +2088,24 @@ BACKUP DATABASE d TO DISK = 'a' WITH MAXTRANSFERSIZE = 4 MB;
 
 ---
 
-(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal))))) (statement (label_statement (identifier) (MISSING ":")))))
+(program
+  (batch
+    (statement
+      (backup_statement
+        (keyword_backup)
+        (keyword_database)
+        (identifier)
+        (keyword_to)
+        (option
+          name: (identifier)
+          value: (literal))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)))))
+    (ERROR
+      (identifier))))
 
 ================================================================================
 backup-restore/encryption-cert — LocalDB 17.0.1000.7 levels 100-170: accepted
@@ -2273,7 +2473,26 @@ BACKUP SERVICE MASTER KEY TO FILE = 'a' ENCRYPTION BY PASSWORD = 'p' FORCE;
 
 ---
 
-(program (batch (statement (backup_statement (keyword_backup) (keyword_service) (keyword_master) (keyword_key) (keyword_to) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal))))) (statement (label_statement (identifier) (MISSING ":")))))
+(program
+  (batch
+    (statement
+      (backup_statement
+        (keyword_backup)
+        (keyword_service)
+        (keyword_master)
+        (keyword_key)
+        (keyword_to)
+        (option
+          name: (identifier)
+          value: (literal))
+        (encryption_mechanism
+          (keyword_encryption)
+          (keyword_by)
+          (option
+            name: (identifier)
+            value: (literal)))))
+    (ERROR
+      (identifier))))
 
 ================================================================================
 backup-restore/key-backup-symmetric-var — LocalDB 17.0.1000.7 levels 100-170: rejected 102
@@ -2397,7 +2616,32 @@ RESTORE MASTER KEY FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PA
 
 ---
 
-(program (batch (statement (restore_statement (keyword_restore) (keyword_master) (keyword_key) (keyword_from) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_decryption) (keyword_by) (option name: (identifier) value: (literal))) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal))) (keyword_force))) (statement (label_statement (identifier) (MISSING ":")))))
+(program
+  (batch
+    (statement
+      (restore_statement
+        (keyword_restore)
+        (keyword_master)
+        (keyword_key)
+        (keyword_from)
+        (option
+          name: (identifier)
+          value: (literal))
+        (encryption_mechanism
+          (keyword_decryption)
+          (keyword_by)
+          (option
+            name: (identifier)
+            value: (literal)))
+        (encryption_mechanism
+          (keyword_encryption)
+          (keyword_by)
+          (option
+            name: (identifier)
+            value: (literal)))
+        (keyword_force)))
+    (ERROR
+      (identifier))))
 
 ================================================================================
 backup-restore/cert-pfx-der — LocalDB 17.0.1000.7 levels 100-170: accepted
