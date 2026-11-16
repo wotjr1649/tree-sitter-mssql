@@ -91,6 +91,14 @@ for (const section of ['nodeKinds', 'deprecated']) {
   }
 }
 
+// Every keyword node kind has a highlight, so a new keyword is not left uncoloured.
+const highlights = readFileSync(`${repoRoot}queries/highlights.scm`, 'utf8');
+for (const kind of nodeKinds) {
+  if (kind.startsWith('keyword_') && !highlights.includes(`(${kind})`)) {
+    missing.push(`queries/highlights.scm: no highlight for ${kind}`);
+  }
+}
+
 if (missing.length > 0) {
   console.error('Registry problems:');
   for (const m of missing) console.error(`  ${m}`);
@@ -98,5 +106,5 @@ if (missing.length > 0) {
 }
 
 console.log(
-  'Every create_*/alter_*/drop_* rule is registered, and every versions.json entry names a real node kind and corpus case.',
+  'Every create_*/alter_*/drop_* rule is registered, every versions.json entry names a real node kind and corpus case, and every keyword kind has a highlight.',
 );
