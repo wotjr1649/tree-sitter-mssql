@@ -244,8 +244,8 @@ jobs:
           CARGO_TARGET_DIR: target
           WASI_SDK_PATH: ${{ runner.temp }}/wasi-sdk-34.0-x86_64-linux
         run: |
-          node crates/tree-check-wasm-build.mjs
-          node crates/tree-check-wasm-parity.mjs --wasm target/wasm32-wasip1/release/tree_check.reactor.wasm --tree-check target/debug/tree-check
+          node scripts/tree-check-wasm-build.mjs
+          node scripts/tree-check-wasm-parity.mjs --wasm target/wasm32-wasip1/release/tree_check.reactor.wasm --tree-check target/debug/tree-check
 
       - name: Check the generated parser cost against test/parser-cost.json
         # Fails on any change from the baseline; growth above 10 % needs an approved budget (ADR-0002).

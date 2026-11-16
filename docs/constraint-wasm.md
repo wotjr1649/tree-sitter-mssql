@@ -14,9 +14,9 @@ script does not download tools. On Windows, use the GNU Rust host toolchain.
 ```sh
 export WASI_SDK_PATH=/absolute/path/to/wasi-sdk-34.0-x86_64-linux
 export CARGO_TARGET_DIR=target
-node crates/tree-check-wasm-build.mjs
+node scripts/tree-check-wasm-build.mjs
 cargo build --locked --manifest-path crates/tree-check/Cargo.toml --bin tree-check
-node crates/tree-check-wasm-parity.mjs \
+node scripts/tree-check-wasm-parity.mjs \
   --wasm target/wasm32-wasip1/release/tree_check.reactor.wasm \
   --tree-check target/debug/tree-check
 ```
@@ -139,7 +139,7 @@ With **wasm2go**, convert the same reactor with the fixed translation pipeline o
 remaining WASI imports. The result must preserve the growable linear memory, the exported functions and the reactor
 initialization. This module contains Rust, the constraint rules, the tree-sitter C runtime and the allocator, so a
 grammar-only WASM loader cannot replace it. On the converted Go host too, compare with the same inputs and JSON
-baseline as `crates/tree-check-wasm-parity.mjs`. This change does not implement or verify the Go-side connection.
+baseline as `scripts/tree-check-wasm-parity.mjs`. This change does not implement or verify the Go-side connection.
 
 ## Remaining WASI imports
 

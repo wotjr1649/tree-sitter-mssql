@@ -1,5 +1,5 @@
 // Dependency-free WASI reactor host and full native/WASM JSON parity gate.
-// Usage: node crates/tree-check-wasm-parity.mjs --wasm <module> --tree-check <native>
+// Usage: node scripts/tree-check-wasm-parity.mjs --wasm <module> --tree-check <native>
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import {
