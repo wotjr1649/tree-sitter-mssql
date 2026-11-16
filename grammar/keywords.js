@@ -9,6 +9,7 @@ import { make_keyword } from './helpers.js';
 // are deliberately not keywords; they are identifiers.
 export default {
   keyword_unlock: (_) => make_keyword('unlock'),
+  keyword_unchecked: (_) => make_keyword('unchecked'),
   keyword_old_password: (_) => make_keyword('old_password'),
   keyword_must_change: (_) => make_keyword('must_change'),
   keyword_executable: (_) => make_keyword('executable'),

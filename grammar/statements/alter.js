@@ -461,17 +461,29 @@ export default {
       $.keyword_alter,
       $.keyword_assembly,
       $.identifier,
-      optional(seq($.keyword_from, comma_list($.literal, true))),
-      optional($.with_clause),
       optional(
-        seq($.keyword_drop, $.keyword_file, choice($.keyword_all, comma_list($.identifier, true))),
+        seq(
+          $.keyword_from,
+          comma_list(choice($.literal, alias($._tsql_parameter, $.identifier)), true),
+        ),
+      ),
+      optional(alias($._alter_assembly_with_clause, $.with_clause)),
+      optional(
+        seq(
+          $.keyword_drop,
+          $.keyword_file,
+          choice($.keyword_all, comma_list(choice($.identifier, $.literal), true)),
+        ),
       ),
       optional(
         seq(
           $.keyword_add,
           $.keyword_file,
           $.keyword_from,
-          comma_list(seq($.literal, optional(seq($.keyword_as, $.identifier))), true),
+          comma_list(
+            seq($.literal, optional(seq($.keyword_as, choice($.identifier, $.literal)))),
+            true,
+          ),
         ),
       ),
     ),
@@ -641,6 +653,20 @@ export default {
     seq(
       field('name', alias($.keyword_no, $.identifier)),
       field('value', alias($.keyword_credential, $.identifier)),
+    ),
+
+  _alter_assembly_with_clause: ($) =>
+    prec.right(
+      seq(
+        $.keyword_with,
+        comma_list(choice($.option, alias($._assembly_unchecked_data, $.option)), true),
+      ),
+    ),
+
+  _assembly_unchecked_data: ($) =>
+    seq(
+      field('name', alias($.keyword_unchecked, $.identifier)),
+      field('value', alias($.keyword_data, $.identifier)),
     ),
 
   alter_application_role: ($) =>

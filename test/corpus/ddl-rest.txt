@@ -3046,6 +3046,113 @@ ALTER SYMMETRIC KEY sk1 DROP ENCRYPTION BY CERTIFICATE cert1, ASYMMETRIC KEY ak1
           (identifier))))))
 
 ==================
+ddl-rest/create-route-alt-tsql-B03-r195 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE AGGREGATE dbo.Concat (@value nvarchar(4000), @sep dbo.SepType) RETURNS nvarchar(max) EXTERNAL NAME StringUtils.[StringUtils.Concat];
+CREATE AGGREGATE MergePoints (@p dbo.Point) RETURNS dbo.Point EXTERNAL NAME GeoUtils;
+CREATE APPLICATION ROLE app_sales WITH PASSWORD = 'S3cure!pw', DEFAULT_SCHEMA = Sales;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_aggregate
+        (keyword_create)
+        (keyword_aggregate)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (function_arguments
+          (function_argument
+            (identifier)
+            (nvarchar
+              (keyword_nvarchar)
+              size: (literal)))
+          (function_argument
+            (identifier)
+            (custom_type
+              (object_reference
+                schema: (identifier)
+                name: (identifier)))))
+        (keyword_returns)
+        (nvarchar
+          (keyword_nvarchar)
+          size: (keyword_max))
+        (external_name
+          (keyword_external)
+          (keyword_name)
+          method: (object_reference
+            schema: (identifier)
+            name: (identifier)))))
+    (statement
+      (create_aggregate
+        (keyword_create)
+        (keyword_aggregate)
+        name: (object_reference
+          name: (identifier))
+        (function_arguments
+          (function_argument
+            (identifier)
+            (custom_type
+              (object_reference
+                schema: (identifier)
+                name: (identifier)))))
+        (keyword_returns)
+        (custom_type
+          (object_reference
+            schema: (identifier)
+            name: (identifier)))
+        (external_name
+          (keyword_external)
+          (keyword_name)
+          method: (object_reference
+            name: (identifier)))))
+    (statement
+      (create_application_role
+        (keyword_create)
+        (keyword_application)
+        (keyword_role)
+        name: (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (identifier)))))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r197 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @bits varbinary(max) = 0x4D5A90000300;
+CREATE ASSEMBLY ExprAsm FROM @bits;
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (varbinary
+            (keyword_varbinary)
+            size: (keyword_max))
+          (literal))))
+    (statement
+      (create_assembly
+        (keyword_create)
+        (keyword_assembly)
+        name: (identifier)
+        (keyword_from)
+        (identifier)))))
+
+==================
 ddl-rest/create-route-alt-tsql-B03-r198 — LocalDB 17.0.1000.7 levels 100-170: accepts
 ==================
 
@@ -3150,6 +3257,303 @@ CREATE CRYPTOGRAPHIC PROVIDER ekm_prov FROM FILE = 'C:\EKM\ekm_provider.dll';
         (literal)))))
 
 ==================
+ddl-rest/create-route-alt-tsql-B03-r218 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE DEFAULT dbo.df_zero AS 0;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_default
+        (keyword_create)
+        (keyword_default)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_as)
+        (literal)))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r253 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE RULE dbo.range_rule AS @value >= 0 AND @value < 1000;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_rule
+        (keyword_create)
+        (keyword_rule)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_as)
+        (binary_expression
+          left: (binary_expression
+            left: (field
+              name: (identifier))
+            right: (literal))
+          operator: (keyword_and)
+          right: (binary_expression
+            left: (field
+              name: (identifier))
+            right: (literal)))))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r283 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TYPE dbo.Amount FROM decimal(10, 2) NOT NULL;
+CREATE TYPE Note FROM nvarchar(max) NULL;
+CREATE TYPE dbo.GeoPoint EXTERNAL NAME GeoAsm.[Geo.Point];
+
+---
+
+(program
+  (batch
+    (statement
+      (create_type
+        (keyword_create)
+        (keyword_type)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_from)
+        (decimal
+          (keyword_decimal)
+          precision: (literal)
+          scale: (literal))
+        (keyword_not)
+        (keyword_null)))
+    (statement
+      (create_type
+        (keyword_create)
+        (keyword_type)
+        name: (object_reference
+          name: (identifier))
+        (keyword_from)
+        (nvarchar
+          (keyword_nvarchar)
+          size: (keyword_max))
+        (keyword_null)))
+    (statement
+      (create_type
+        (keyword_create)
+        (keyword_type)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (external_name
+          (keyword_external)
+          (keyword_name)
+          method: (object_reference
+            schema: (identifier)
+            name: (identifier)))))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r286 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TYPE dbo.MemLines AS TABLE (ID int NOT NULL PRIMARY KEY NONCLUSTERED HASH WITH (BUCKET_COUNT = 1024),
+  Code nvarchar(10) COLLATE Latin1_General_100_BIN2 NULL INDEX ix_code HASH (Code) WITH (BUCKET_COUNT = 64),
+  Qty decimal(10, 2) NOT NULL INDEX ix_qty NONCLUSTERED (Qty DESC), Seq int IDENTITY(1, 1) INDEX ix_seq NONCLUSTERED (Seq ASC),
+  INDEX ix_id HASH (ID) WITH (BUCKET_COUNT = 8), INDEX ix_qs NONCLUSTERED (Qty ASC, Seq DESC)) WITH (MEMORY_OPTIMIZED = ON);
+CREATE TYPE dbo.MemLines2 AS TABLE (ID int NOT NULL, Seq int NOT NULL, PRIMARY KEY NONCLUSTERED HASH (ID, Seq) WITH (BUCKET_COUNT = 16)) WITH (MEMORY_OPTIMIZED = OFF);
+CREATE TYPE dbo.MemLines3 AS TABLE (ID int NOT NULL, Seq int NOT NULL, PRIMARY KEY NONCLUSTERED (ID ASC, Seq DESC)) WITH (MEMORY_OPTIMIZED = ON);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_type
+        (keyword_create)
+        (keyword_type)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_as)
+        (keyword_table)
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)
+            (keyword_not)
+            (keyword_null)
+            (keyword_primary)
+            (keyword_key)
+            (keyword_nonclustered)
+            (keyword_hash)
+            (with_options
+              (keyword_with)
+              (option
+                name: (identifier)
+                value: (literal))))
+          (column_definition
+            name: (identifier)
+            type: (nvarchar
+              (keyword_nvarchar)
+              size: (literal))
+            (keyword_collate)
+            (identifier)
+            (keyword_null)
+            (keyword_index)
+            name: (identifier)
+            (keyword_hash)
+            (ordered_columns
+              (column
+                name: (identifier)))
+            (with_options
+              (keyword_with)
+              (option
+                name: (identifier)
+                value: (literal))))
+          (column_definition
+            name: (identifier)
+            type: (decimal
+              (keyword_decimal)
+              precision: (literal)
+              scale: (literal))
+            (keyword_not)
+            (keyword_null)
+            (keyword_index)
+            name: (identifier)
+            (keyword_nonclustered)
+            (ordered_columns
+              (column
+                name: (identifier)
+                (direction
+                  (keyword_desc)))))
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)
+            (keyword_identity)
+            seed: (literal)
+            increment: (literal)
+            (keyword_index)
+            name: (identifier)
+            (keyword_nonclustered)
+            (ordered_columns
+              (column
+                name: (identifier)
+                (direction
+                  (keyword_asc)))))
+          (constraint
+            (keyword_index)
+            name: (identifier)
+            (keyword_hash)
+            (ordered_columns
+              (column
+                name: (identifier)))
+            (with_options
+              (keyword_with)
+              (option
+                name: (identifier)
+                value: (literal))))
+          (constraint
+            (keyword_index)
+            name: (identifier)
+            (keyword_nonclustered)
+            (ordered_columns
+              (column
+                name: (identifier)
+                (direction
+                  (keyword_asc)))
+              (column
+                name: (identifier)
+                (direction
+                  (keyword_desc))))))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_on)))))
+    (statement
+      (create_type
+        (keyword_create)
+        (keyword_type)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_as)
+        (keyword_table)
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)
+            (keyword_not)
+            (keyword_null))
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)
+            (keyword_not)
+            (keyword_null))
+          (constraint
+            (keyword_primary)
+            (keyword_key)
+            (keyword_nonclustered)
+            (keyword_hash)
+            (ordered_columns
+              (column
+                name: (identifier))
+              (column
+                name: (identifier)))
+            (with_options
+              (keyword_with)
+              (option
+                name: (identifier)
+                value: (literal)))))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_off)))))
+    (statement
+      (create_type
+        (keyword_create)
+        (keyword_type)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_as)
+        (keyword_table)
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)
+            (keyword_not)
+            (keyword_null))
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)
+            (keyword_not)
+            (keyword_null))
+          (constraint
+            (keyword_primary)
+            (keyword_key)
+            (keyword_nonclustered)
+            (ordered_columns
+              (column
+                name: (identifier)
+                (direction
+                  (keyword_asc)))
+              (column
+                name: (identifier)
+                (direction
+                  (keyword_desc))))))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_on)))))))
+
+==================
 ddl-rest/create-route-alt-tsql-B03-r289 — LocalDB 17.0.1000.7 levels 100-170: accepts
 ==================
 
@@ -3235,6 +3639,94 @@ CREATE USER u13 FOR ASYMMETRIC KEY ak_sign;
         (keyword_asymmetric)
         (keyword_key)
         (identifier)))))
+
+==================
+ddl-rest/create-aggregate — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE AGGREGATE dbo.a (@v int) RETURNS int EXTERNAL NAME asm.[Ns.Class];
+
+---
+
+(program
+  (batch
+    (statement
+      (create_aggregate
+        (keyword_create)
+        (keyword_aggregate)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (function_arguments
+          (function_argument
+            (identifier)
+            (keyword_int)))
+        (keyword_returns)
+        (keyword_int)
+        (external_name
+          (keyword_external)
+          (keyword_name)
+          method: (object_reference
+            schema: (identifier)
+            name: (identifier)))))))
+
+==================
+ddl-rest/create-aggregate-empty-args — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+CREATE AGGREGATE dbo.a () RETURNS int EXTERNAL NAME asm.[Ns.Class];
+
+---
+
+(program
+  (batch
+    (statement
+      (create_aggregate
+        (keyword_create)
+        (keyword_aggregate)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (function_arguments)
+        (keyword_returns)
+        (keyword_int)
+        (external_name
+          (keyword_external)
+          (keyword_name)
+          method: (object_reference
+            schema: (identifier)
+            name: (identifier)))))))
+
+==================
+ddl-rest/create-aggregate-default-arg — LocalDB 17.0.1000.7 levels 100-170: rejects 10726
+==================
+
+CREATE AGGREGATE dbo.a (@v int = 1) RETURNS int EXTERNAL NAME asm.[Ns.Class];
+
+---
+
+(program
+  (batch
+    (statement
+      (create_aggregate
+        (keyword_create)
+        (keyword_aggregate)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (function_arguments
+          (function_argument
+            (identifier)
+            (keyword_int)
+            (literal)))
+        (keyword_returns)
+        (keyword_int)
+        (external_name
+          (keyword_external)
+          (keyword_name)
+          method: (object_reference
+            schema: (identifier)
+            name: (identifier)))))))
 
 ==================
 ddl-rest/create-application-role — LocalDB 17.0.1000.7 levels 100-170: accepts
@@ -3417,6 +3909,49 @@ CREATE CRYPTOGRAPHIC PROVIDER p FROM FILE = 0x1234;
         (literal)))))
 
 ==================
+ddl-rest/create-default — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE DEFAULT dbo.d AS 0;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_default
+        (keyword_create)
+        (keyword_default)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_as)
+        (literal)))))
+
+==================
+ddl-rest/create-rule — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE RULE dbo.r AS @v > 0;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_rule
+        (keyword_create)
+        (keyword_rule)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_as)
+        (binary_expression
+          left: (field
+            name: (identifier))
+          right: (literal))))))
+
+==================
 ddl-rest/create-event-session-server — LocalDB 17.0.1000.7 levels 100-170: accepts
 ==================
 
@@ -3459,6 +3994,33 @@ CREATE EVENT SESSION e ON SERVER;
         name: (identifier)
         (keyword_on)
         (keyword_server)))))
+
+==================
+ddl-rest/create-assembly-variable — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @b varbinary(max) = 0x1234; CREATE ASSEMBLY a FROM @b;
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (varbinary
+            (keyword_varbinary)
+            size: (keyword_max))
+          (literal))))
+    (statement
+      (create_assembly
+        (keyword_create)
+        (keyword_assembly)
+        name: (identifier)
+        (keyword_from)
+        (identifier)))))
 
 ==================
 ddl-rest/create-key-executable — LocalDB 17.0.1000.7 levels 100-170: accepts
@@ -3896,6 +4458,71 @@ ALTER DATABASE SCOPED CREDENTIAL c WITH IDENTITY = 'SHARED ACCESS SIGNATURE', SE
             value: (literal)))))))
 
 ==================
+ddl-rest/alter-assembly-file — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER ASSEMBLY a FROM 'C:\clr\a.dll' WITH PERMISSION_SET = SAFE, VISIBILITY = ON, UNCHECKED DATA DROP FILE N'a.pdb', N'readme.txt' ADD FILE FROM 0x4D5A AS N'a.pdb';
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_assembly
+        (keyword_alter)
+        (keyword_assembly)
+        (identifier)
+        (keyword_from)
+        (literal)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (identifier)))
+        (keyword_drop)
+        (keyword_file)
+        (literal)
+        (literal)
+        (keyword_add)
+        (keyword_file)
+        (keyword_from)
+        (literal)
+        (keyword_as)
+        (literal)))))
+
+==================
+ddl-rest/alter-assembly-var — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @bits varbinary(max); ALTER ASSEMBLY a FROM @bits;
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (varbinary
+            (keyword_varbinary)
+            size: (keyword_max)))))
+    (statement
+      (alter_assembly
+        (keyword_alter)
+        (keyword_assembly)
+        (identifier)
+        (keyword_from)
+        (identifier)))))
+
+==================
 ddl-rest/alter-assembly-drop-all — LocalDB 17.0.1000.7 levels 100-170: accepts
 ==================
 
@@ -3913,6 +4540,28 @@ ALTER ASSEMBLY a DROP FILE ALL;
         (keyword_drop)
         (keyword_file)
         (keyword_all)))))
+
+==================
+ddl-rest/alter-assembly-add-file — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER ASSEMBLY a ADD FILE FROM 'C:\clr\a.pdb' AS N'a.pdb';
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_assembly
+        (keyword_alter)
+        (keyword_assembly)
+        (identifier)
+        (keyword_add)
+        (keyword_file)
+        (keyword_from)
+        (literal)
+        (keyword_as)
+        (literal)))))
 
 ==================
 ddl-rest/alter-authorization-multi — LocalDB 17.0.1000.7 levels 100-170: accepts
@@ -4748,6 +5397,83 @@ SELECT 1 FROM dbo.a a,dbo.e e,dbo.b b WHERE MATCH(a-(e)->b,b<-(e)-a);
                   node: (identifier))))))))))
 
 ==================
+ddl-rest/routes-inline-hash — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TYPE dbo.tt AS TABLE (id int INDEX ix HASH(id) WITH(BUCKET_COUNT=64)) WITH(MEMORY_OPTIMIZED=ON);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_type
+        (keyword_create)
+        (keyword_type)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_as)
+        (keyword_table)
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)
+            (keyword_index)
+            name: (identifier)
+            (keyword_hash)
+            (ordered_columns
+              (column
+                name: (identifier)))
+            (with_options
+              (keyword_with)
+              (option
+                name: (identifier)
+                value: (literal)))))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_on)))))))
+
+==================
+ddl-rest/routes-inline-nonclustered — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TYPE dbo.tt AS TABLE (id int INDEX ix NONCLUSTERED(id DESC)) WITH(MEMORY_OPTIMIZED=ON);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_type
+        (keyword_create)
+        (keyword_type)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_as)
+        (keyword_table)
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)
+            (keyword_index)
+            name: (identifier)
+            (keyword_nonclustered)
+            (ordered_columns
+              (column
+                name: (identifier)
+                (direction
+                  (keyword_desc))))))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_on)))))))
+
+==================
 ddl-rest/routes-inline-implicit — LocalDB 17.0.1000.7 levels 100-170: accepts
 ==================
 
@@ -4770,6 +5496,91 @@ CREATE TABLE t(id int INDEX ix NONCLUSTERED);
             (keyword_index)
             name: (identifier)
             (keyword_nonclustered)))))))
+
+==================
+ddl-rest/routes-inline-wrong-column — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TYPE dbo.tt AS TABLE (id int INDEX ix HASH(other) WITH(BUCKET_COUNT=64)) WITH(MEMORY_OPTIMIZED=ON);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_type
+        (keyword_create)
+        (keyword_type)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_as)
+        (keyword_table)
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)
+            (keyword_index)
+            name: (identifier)
+            (keyword_hash)
+            (ordered_columns
+              (column
+                name: (identifier)))
+            (with_options
+              (keyword_with)
+              (option
+                name: (identifier)
+                value: (literal)))))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_on)))))))
+
+==================
+ddl-rest/routes-inline-two-columns — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TYPE dbo.tt AS TABLE (id int INDEX ix HASH(id,j) WITH(BUCKET_COUNT=64),j int) WITH(MEMORY_OPTIMIZED=ON);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_type
+        (keyword_create)
+        (keyword_type)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_as)
+        (keyword_table)
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)
+            (keyword_index)
+            name: (identifier)
+            (keyword_hash)
+            (ordered_columns
+              (column
+                name: (identifier))
+              (column
+                name: (identifier)))
+            (with_options
+              (keyword_with)
+              (option
+                name: (identifier)
+                value: (literal))))
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_on)))))))
 
 ==================
 ddl-rest/commit-basic — LocalDB 17.0.1000.7 levels 100-170: accepts

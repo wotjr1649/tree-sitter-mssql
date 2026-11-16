@@ -88,10 +88,12 @@ export default {
       $.create_column_master_key,
       $.create_security_policy,
       $.create_xml_schema_collection,
-
+      $.create_aggregate,
       $.create_application_role,
       $.create_credential,
       $.create_cryptographic_provider,
+      $.create_default,
+      $.create_rule,
     ),
 
   // CREATE XML SCHEMA COLLECTION name AS expression
@@ -260,6 +262,7 @@ export default {
         choice(
           seq($.keyword_from, $._type, optional(choice($.keyword_null, $._not_null))),
           seq($.keyword_as, $.keyword_table, $.column_definitions, optional($.with_options)),
+          $.external_name,
         ),
       ),
     ),
@@ -478,7 +481,7 @@ export default {
         field('name', $.identifier),
         optional(seq($.keyword_authorization, $.identifier)),
         $.keyword_from,
-        comma_list($.literal, true),
+        comma_list(choice($.literal, alias($._tsql_parameter, $.identifier)), true),
         optional($.with_clause),
       ),
     ),
@@ -716,6 +719,17 @@ export default {
         optional(wrapped_in_parenthesis(seq($.keyword_set, comma_list($.option, true)))),
       ),
     ),
+  create_aggregate: ($) =>
+    seq(
+      $.keyword_create,
+      $.keyword_aggregate,
+      field('name', $.object_reference),
+      $.function_arguments,
+      $.keyword_returns,
+      $._type,
+      $.external_name,
+    ),
+
   create_application_role: ($) =>
     seq(
       $.keyword_create,
@@ -735,5 +749,23 @@ export default {
         $.with_clause,
         optional(seq($.keyword_for, $.keyword_cryptographic, $.keyword_provider, $.identifier)),
       ),
+    ),
+
+  create_default: ($) =>
+    seq(
+      $.keyword_create,
+      $.keyword_default,
+      field('name', $.object_reference),
+      $.keyword_as,
+      $._expression,
+    ),
+
+  create_rule: ($) =>
+    seq(
+      $.keyword_create,
+      $.keyword_rule,
+      field('name', $.object_reference),
+      $.keyword_as,
+      $._expression,
     ),
 };

@@ -103,7 +103,10 @@ export default {
         seq(
           $.keyword_index,
           field('name', $.identifier),
-          ...index_spec($),
+          optional($._constraint_index_kind),
+          optional($.ordered_columns),
+          optional($._constraint_index_options),
+          optional($.on_filegroup),
           optional($._index_filestream),
         ),
         $.generated_always,

@@ -1,11 +1,11 @@
 {
-  "parser_c_bytes": 29225754,
-  "state_count": 14403,
-  "large_state_count": 4579,
-  "symbol_count": 1285,
-  "token_count": 602,
+  "parser_c_bytes": 29547939,
+  "state_count": 14529,
+  "large_state_count": 4644,
+  "symbol_count": 1294,
+  "token_count": 603,
   "field_count": 76,
-  "production_id_count": 338,
+  "production_id_count": 341,
   "field_map_entries": 648,
   "inherited_field_map_entries": 253
 }

@@ -83,6 +83,7 @@ continue_statement
 contract_message
 conversation_timer_statement
 covering_columns
+create_aggregate{name}
 create_application_role{name}
 create_assembly{name}
 create_asymmetric_key{name}
@@ -96,6 +97,7 @@ create_cryptographic_provider{name}
 create_database{name}
 create_database_audit_specification{name}
 create_database_encryption_key
+create_default{name}
 create_endpoint{name}
 create_event_session{name}
 create_external_data_source{name}
@@ -118,6 +120,7 @@ create_procedure{body,name,number}
 create_queue{name}
 create_role{name}
 create_route{name}
+create_rule{name}
 create_schema{name}
 create_search_property_list{name}
 create_security_policy{name}
