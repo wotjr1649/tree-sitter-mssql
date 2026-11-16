@@ -1,4 +1,4 @@
-import { comma_list, optional_parenthesis, write_target } from '../helpers.js';
+import { comma_list, optional_parenthesis, paren_pair, write_target } from '../helpers.js';
 
 // T-SQL INSERT:
 //
@@ -29,7 +29,7 @@ export default {
   // SELECT/set-operation branch already carries its own trailing OPTION
   // clause, and adding a second one after it would let a single statement
   // carry two sibling OPTION clauses where SQL Server permits only one.
-  insert_rowset: ($) => seq($.keyword_openquery, '(', $.identifier, ',', $.literal, ')'),
+  insert_rowset: ($) => seq($.keyword_openquery, paren_pair($.identifier, $.literal)),
 
   _insert_source: ($) =>
     choice(

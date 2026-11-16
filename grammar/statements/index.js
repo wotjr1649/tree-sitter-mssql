@@ -1,8 +1,9 @@
 import {
-  optional_parenthesis,
-  wrapped_in_parenthesis,
-  paren_list,
   comma_list,
+  optional_parenthesis,
+  paren_list,
+  paren_pair,
+  wrapped_in_parenthesis,
 } from '../helpers.js';
 
 import create_rules from './create.js';
@@ -282,9 +283,7 @@ export default {
       $.keyword_begin,
       $.keyword_conversation,
       $.keyword_timer,
-      '(',
-      $.identifier,
-      ')',
+      wrapped_in_parenthesis($.identifier),
       $.keyword_timeout,
       '=',
       $._expression,
@@ -483,11 +482,7 @@ export default {
   _backup_encryption_option: ($) =>
     seq(
       field('name', alias($.keyword_encryption, $.identifier)),
-      '(',
-      $.option,
-      ',',
-      alias($._backup_server_encryptor, $.option),
-      ')',
+      paren_pair($.option, alias($._backup_server_encryptor, $.option)),
     ),
 
   // SERVER CERTIFICATE = name | SERVER ASYMMETRIC KEY = name

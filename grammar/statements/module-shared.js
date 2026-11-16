@@ -1,9 +1,8 @@
-import { comma_list } from '../helpers.js';
+import { paren_list } from '../helpers.js';
 
 // Rules shared by more than one module kind (procedure, function, trigger).
 export default {
-  atomic_clause: ($) =>
-    seq($.keyword_atomic, $.keyword_with, '(', comma_list($.atomic_option, true), ')'),
+  atomic_clause: ($) => seq($.keyword_atomic, $.keyword_with, paren_list($.atomic_option, true)),
 
   atomic_option: ($) =>
     choice(

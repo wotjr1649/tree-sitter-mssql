@@ -1,4 +1,4 @@
-import { make_keyword, wrapped_in_parenthesis } from '../helpers.js';
+import { make_keyword, paren_list, wrapped_in_parenthesis } from '../helpers.js';
 
 export default {
   create_endpoint: ($) =>
@@ -35,13 +35,7 @@ export default {
 
   // Uniqueness and CREATE requirements are checked by tree-check (ADR-0003).
   endpoint_transport: ($) =>
-    seq(
-      $.keyword_as,
-      alias($._endpoint_tcp, $.identifier),
-      wrapped_in_parenthesis(
-        optional(seq($._endpoint_tcp_option, repeat(seq(',', $._endpoint_tcp_option)))),
-      ),
-    ),
+    seq($.keyword_as, alias($._endpoint_tcp, $.identifier), paren_list($._endpoint_tcp_option)),
 
   _endpoint_tcp_option: ($) =>
     choice(
@@ -65,9 +59,7 @@ export default {
     seq(
       $.keyword_for,
       field('type', alias($._endpoint_payload_type, $.identifier)),
-      wrapped_in_parenthesis(
-        optional(seq($._endpoint_payload_option, repeat(seq(',', $._endpoint_payload_option)))),
-      ),
+      paren_list($._endpoint_payload_option),
     ),
 
   _endpoint_payload_option: ($) =>

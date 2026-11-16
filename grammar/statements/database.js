@@ -1,4 +1,4 @@
-import { comma_list, paren_list } from '../helpers.js';
+import { comma_list, paren_list, wrapped_in_parenthesis } from '../helpers.js';
 
 // Database-only options keep the shared table/index option contract untouched.
 export default {
@@ -306,18 +306,18 @@ export default {
             $.keyword_modify,
             $.keyword_listener,
             $.literal,
-            '(',
-            choice(
-              seq(choice($.keyword_add, $.keyword_remove), $.keyword_ip, $.listener_ip),
-              seq($.keyword_port, '=', $.literal),
+            wrapped_in_parenthesis(
+              choice(
+                seq(choice($.keyword_add, $.keyword_remove), $.keyword_ip, $.listener_ip),
+                seq($.keyword_port, '=', $.literal),
+              ),
             ),
-            ')',
           ),
           seq(choice($.keyword_remove, $.keyword_restart), $.keyword_listener, $.literal),
         ),
       ),
     ),
-  listener_ip: ($) => seq('(', $.literal, optional(seq(',', $.literal)), ')'),
+  listener_ip: ($) => wrapped_in_parenthesis(seq($.literal, optional(seq(',', $.literal)))),
   availability_listener: ($) =>
     seq(
       '(',
