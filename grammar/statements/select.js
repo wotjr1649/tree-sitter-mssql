@@ -248,14 +248,15 @@ export default {
   // previously-declared named window (see window_clause below) this
   // specification refines, e.g. `WINDOW w AS (w2 ORDER BY a)` or
   // `SUM(x) OVER (w2 ORDER BY a)`.
-  window_specification: ($) =>
-    wrapped_in_parenthesis(
-      seq(
-        optional(field('base_window', $.identifier)),
-        optional($.partition_by),
-        optional($.order_by),
-        optional($.window_frame),
-      ),
+  window_specification: ($) => seq($._window_specification_prefix, optional($.window_frame), ')'),
+
+  // Reduce the optional window prefix before expanding the frame.
+  _window_specification_prefix: ($) =>
+    seq(
+      '(',
+      optional(field('base_window', $.identifier)),
+      optional($.partition_by),
+      optional($.order_by),
     ),
 
   // OVER may reference a named window declared in the query's own WINDOW

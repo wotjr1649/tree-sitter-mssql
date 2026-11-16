@@ -277,23 +277,28 @@ export default {
   _invocation_arguments: ($) =>
     wrapped_in_parenthesis(
       seq(
-        comma_list(
-          seq(
-            optional($.keyword_distinct),
-            field(
-              'parameter',
-              choice(
-                $.term,
-                alias($._rowset_connection, $.term),
-                $.keyword_default,
-                alias($._fulltext_language, $.term),
-              ),
-            ),
-          ),
-        ),
+        optional($._invocation_argument_list),
         optional($.returning_clause),
         optional($.json_wrapper_clause),
       ),
+    ),
+
+  // Reduce parameters before the optional JSON suffixes to share expression states.
+  _invocation_argument_list: ($) =>
+    comma_list(
+      seq(
+        optional($.keyword_distinct),
+        field(
+          'parameter',
+          choice(
+            $.term,
+            alias($._rowset_connection, $.term),
+            $.keyword_default,
+            alias($._fulltext_language, $.term),
+          ),
+        ),
+      ),
+      true,
     ),
 
   // Match the existing LANGUAGE 'name' term/field/alias tree also for LCIDs and variables.
