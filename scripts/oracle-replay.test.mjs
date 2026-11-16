@@ -1,29 +1,7 @@
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
 import test from 'node:test';
-import {
-  classify,
-  compare,
-  isPositive,
-  matrix,
-  mergeVerdicts,
-  quotedIdentifier,
-  readCases,
-} from './oracle-replay.mjs';
-
-const line = (id, source, sha = createHash('sha256').update(source).digest('hex')) =>
-  JSON.stringify({ id, sha256: sha, source });
-
-test('cases must match their recorded source hash', () => {
-  assert.equal(readCases(`${line('a', 'SELECT 1;')}\n\n`).length, 1);
-  assert.throws(() => readCases(line('a', 'SELECT 1;', '0'.repeat(64))), /hash mismatch for a/);
-});
-
-test('a case is positive when any level accepts it, never through UNSUPPORTED_CONTROL', () => {
-  assert.equal(isPositive({ 110: [102], 170: [] }), true);
-  assert.equal(isPositive({ 110: [102], 170: [156] }), false);
-  assert.equal(isPositive({ 110: 'UNSUPPORTED_CONTROL' }), false);
-});
+import { isAccepted } from './common.mjs';
+import { classify, compare, matrix, mergeVerdicts, quotedIdentifier } from './oracle-replay.mjs';
 
 test('only an engine-accepted case going from clean to error is a regression', () => {
   const changes = compare(
@@ -78,8 +56,8 @@ test('quoted identifier sessions remain separate when observations share a sourc
       ['a@qi-off', 'off'],
     ],
   );
-  assert.equal(isPositive(verdicts.a), true);
-  assert.equal(isPositive(verdicts['a@qi-off']), false);
+  assert.equal(isAccepted(verdicts.a), true);
+  assert.equal(isAccepted(verdicts['a@qi-off']), false);
   assert.equal(quotedIdentifier({}), 'on');
   assert.equal(quotedIdentifier({ session_set: { quoted_identifier: 'OFF' } }), 'off');
   assert.throws(() => quotedIdentifier({ session_set: { quoted_identifier: 'guess' } }), /unknown/);

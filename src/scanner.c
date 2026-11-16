@@ -27,6 +27,7 @@ enum TokenType {
   SPACED_NOT_EQUAL_ALT,
   SPACED_NOT_LESS,
   SPACED_NOT_GREATER,
+  ELSE_SEMICOLON,
 };
 
 void *tree_sitter_mssql_external_scanner_create(void) { return NULL; }
@@ -55,6 +56,60 @@ static bool is_operator_space(int32_t c) {
   return (c >= 0 && c <= 0x20) || c == 0x85 || c == 0xa0 || c == 0x1680 ||
          (c >= 0x2000 && c <= 0x200b) || c == 0x2028 || c == 0x2029 ||
          c == 0x202f || c == 0x205f || c == 0x3000;
+}
+
+static bool is_identifier_char(int32_t c) {
+  return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
+         c == '_' || c == '@' || c == '#' || c == '$' || (c > 0x7f && !is_operator_space(c));
+}
+
+// Skips spaces, `--` comments, nested block comments and `;`. False at an
+// unterminated block comment or a lone `-` or `/`.
+static bool skip_to_next_token(TSLexer *lexer) {
+  for (;;) {
+    int32_t c = lexer->lookahead;
+    if (!lexer->eof(lexer) && (is_operator_space(c) || c == ';')) {
+      lexer->advance(lexer, false);
+    } else if (c == '-') {
+      lexer->advance(lexer, false);
+      if (lexer->lookahead != '-') return false;
+      while (!lexer->eof(lexer) && lexer->lookahead != '\n') lexer->advance(lexer, false);
+    } else if (c == '/') {
+      lexer->advance(lexer, false);
+      if (lexer->lookahead != '*') return false;
+      lexer->advance(lexer, false);
+      unsigned depth = 1;
+      while (depth) {
+        if (lexer->eof(lexer)) return false;
+        c = lexer->lookahead;
+        lexer->advance(lexer, false);
+        if (c == '/' && lexer->lookahead == '*') {
+          depth++;
+          lexer->advance(lexer, false);
+        } else if (c == '*' && lexer->lookahead == '/') {
+          depth--;
+          lexer->advance(lexer, false);
+        }
+      }
+    } else {
+      return true;
+    }
+  }
+}
+
+// The lookahead is a `;`. Accept it when ELSE follows, past spaces, comments
+// and more `;`: that is the `;` of an `IF ... ;; ELSE` clause (see else_clause).
+static bool scan_else_semicolon(TSLexer *lexer) {
+  lexer->advance(lexer, false);
+  lexer->mark_end(lexer);
+  if (!skip_to_next_token(lexer)) return false;
+  for (const char *word = "ELSE"; *word; word++) {
+    if (lexer->lookahead != *word && lexer->lookahead != *word + 32) return false;
+    lexer->advance(lexer, false);
+  }
+  if (!lexer->eof(lexer) && is_identifier_char(lexer->lookahead)) return false;
+  lexer->result_symbol = ELSE_SEMICOLON;
+  return true;
 }
 
 // Keep joined operators on their existing lexer path and public anonymous kinds.
@@ -183,6 +238,10 @@ bool tree_sitter_mssql_external_scanner_scan(void *payload, TSLexer *lexer, cons
     while (is_space(lexer->lookahead)) lexer->advance(lexer, true);
     if (lexer->lookahead == '!' || lexer->lookahead == '<' || lexer->lookahead == '>')
       return scan_spaced_comparison(lexer, valid_symbols);
+  }
+  if (valid_symbols[ELSE_SEMICOLON] && !recovering) {
+    while (is_space(lexer->lookahead)) lexer->advance(lexer, true);
+    if (lexer->lookahead == ';') return scan_else_semicolon(lexer);
   }
   if (!valid_symbols[MARGINALIA]) {
     return false;

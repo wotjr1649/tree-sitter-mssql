@@ -1,9 +1,21 @@
-import { comma_list, paren_list } from '../helpers.js';
+import { comma_list, paren_list, write_target } from '../helpers.js';
 
 // Rules shared by more than one DML writer. `output_clause` is used by
 // INSERT, UPDATE, DELETE and MERGE; `assignment`/`_set_values` are used by
 // UPDATE and MERGE's `WHEN MATCHED THEN UPDATE SET` action, but not INSERT.
 export default {
+  // DELETE and UPDATE share these nonempty suffixes, including their clause order.
+  _dml_write_tail: ($) =>
+    prec.right(
+      choice(seq($.output_clause, optional($._dml_write_after_output)), $._dml_write_after_output),
+    ),
+  _dml_write_after_output: ($) =>
+    prec.right(choice(seq($.from, optional($._dml_write_after_from)), $._dml_write_after_from)),
+  _dml_write_after_from: ($) =>
+    prec.right(choice(seq($.where, optional($.option_clause)), $.option_clause)),
+
+  _rowset_write_target: ($) => prec.right(write_target($, { allowRowsetFunction: true })),
+
   // OUTPUT term [, ...] [INTO table [(columns)] [OUTPUT term [, ...]]] — on INSERT, UPDATE, DELETE
   // and MERGE. The terms reference the `inserted`/`deleted` pseudo-tables
   // and `$action`, all of which are ordinary identifiers here.

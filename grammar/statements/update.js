@@ -1,5 +1,3 @@
-import { write_target } from '../helpers.js';
-
 // T-SQL UPDATE:
 //
 //   UPDATE [TOP (n)] target [WITH (hints)] SET assignments [OUTPUT ...] [FROM ...]
@@ -21,12 +19,9 @@ export default {
       seq(
         $.keyword_update,
         optional($.top_clause),
-        write_target($, { allowRowsetFunction: true }),
+        $._rowset_write_target,
         $._set_values,
-        optional($.output_clause),
-        optional($.from),
-        optional($.where),
-        optional($.option_clause),
+        optional($._dml_write_tail),
       ),
     ),
 };

@@ -88,5 +88,6 @@ export default {
   // prec.right keeps a real item's trailing `;` bound to the
   // body item it follows rather than to `program`'s own separator —
   // otherwise a bare body would end at its first semicolon.
-  _body_item: ($) => choice(prec.right(seq(choice($.statement, $.block), optional(';'))), ';'),
+  _body_item: ($) =>
+    choice(prec.right(seq(choice($.statement, $.block), optional($._semicolon))), ';'),
 };

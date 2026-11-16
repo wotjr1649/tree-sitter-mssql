@@ -4,7 +4,7 @@
 // derived here: `--check` fails when they drift, `--print` prints the two strings to paste.
 // Usage: node scripts/identifier-charclass.mjs --check | --print
 import { readFileSync } from 'node:fs';
-import { pathToFileURL } from 'node:url';
+import { isMain } from './common.mjs';
 
 const esc = (cp) => `\\u${cp.toString(16).toUpperCase().padStart(4, '0')}`;
 
@@ -40,7 +40,7 @@ export function grammarConstant(source, name) {
   return m[1].replace(/\\\\/g, '\\');
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+if (isMain(import.meta.url)) {
   const data = JSON.parse(readFileSync('oracle/data/unicode/identifier-chars.json', 'utf8'));
   const want = classes(data);
   if (process.argv.includes('--print')) {

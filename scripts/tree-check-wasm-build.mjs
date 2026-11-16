@@ -5,7 +5,8 @@ import { createHash } from 'node:crypto';
 import { copyFileSync, readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
+import { isMain } from './common.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const pins = JSON.parse(readFileSync(join(root, 'crates/tree-check/wasm-pins.json'), 'utf8'));
@@ -83,8 +84,21 @@ export function build() {
   const rulesHash = createHash('sha256');
   for (const file of [
     'crates/tree-check/src/constraints.rs',
+    'crates/tree-check/src/constraints/backup_restore.rs',
+    'crates/tree-check/src/constraints/database.rs',
+    'crates/tree-check/src/constraints/ddl_rest.rs',
+    'crates/tree-check/src/constraints/expr.rs',
+    'crates/tree-check/src/constraints/external.rs',
+    'crates/tree-check/src/constraints/gap.rs',
+    'crates/tree-check/src/constraints/hints.rs',
+    'crates/tree-check/src/constraints/module_batch.rs',
+    'crates/tree-check/src/constraints/query.rs',
+    'crates/tree-check/src/constraints/statements.rs',
+    'crates/tree-check/src/constraints/surface.rs',
+    'crates/tree-check/src/constraints/util.rs',
     'crates/tree-check/src/lib.rs',
     'crates/tree-check/src/session.rs',
+    'crates/tree-check/src/tree.rs',
     'crates/tree-check/src/wasm.rs',
   ]) {
     rulesHash
@@ -160,4 +174,4 @@ export function build() {
   return report;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) build();
+if (isMain(import.meta.url)) build();

@@ -3,6 +3,8 @@
 mod constraints;
 pub mod edits;
 mod session;
+#[doc(hidden)]
+pub mod tree;
 #[cfg(any(target_arch = "wasm32", test))]
 mod wasm;
 
@@ -77,12 +79,8 @@ pub fn inspect_with_quoted_identifier(
             .map(<[u8]>::len)
             .sum();
         let at = origins[start + column];
-        let row = source[..at].iter().filter(|b| **b == b'\n').count();
-        let column = source[..at]
-            .iter()
-            .rposition(|b| *b == b'\n')
-            .map_or(at, |p| at - p - 1);
-        (row, column)
+        let point = tree::point(source, at);
+        (point.row, point.column)
     };
     if let Some((_, row, column)) = &mut report.first_problem {
         (*row, *column) = position(*row, *column);
@@ -105,9 +103,7 @@ fn inspect_tree(tree: &Tree, source: &[u8]) -> Report {
         violations: constraints::check(tree, source),
         ..Report::default()
     };
-    let mut cursor = root.walk();
-    loop {
-        let node = cursor.node();
+    for node in tree::preorder(root) {
         let error = node.is_error();
         let missing = node.is_missing();
         // A missing node is zero-width by construction; count it once, as missing.
@@ -124,15 +120,8 @@ fn inspect_tree(tree: &Tree, source: &[u8]) -> Report {
             };
             report.first_problem = Some((kind, at.row, at.column));
         }
-        if cursor.goto_first_child() {
-            continue;
-        }
-        while !cursor.goto_next_sibling() {
-            if !cursor.goto_parent() {
-                return report;
-            }
-        }
     }
+    report
 }
 
 pub fn json_string(s: &str) -> String {

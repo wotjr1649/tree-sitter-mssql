@@ -1,5 +1,8 @@
 //! Spell OFF double-quoted strings as single-quoted strings for internal validation only.
-use crate::QuotedIdentifier;
+use crate::{
+    QuotedIdentifier,
+    tree::{ancestors, preorder},
+};
 use std::ops::Range;
 use tree_sitter::Tree;
 
@@ -17,9 +20,7 @@ fn space_len(source: &[u8]) -> usize {
 
 pub fn module_ranges(tree: &Tree) -> Vec<Range<usize>> {
     let mut ranges = Vec::new();
-    let mut cursor = tree.walk();
-    loop {
-        let node = cursor.node();
+    for node in preorder(tree.root_node()) {
         if matches!(
             node.kind(),
             "create_procedure"
@@ -29,20 +30,13 @@ pub fn module_ranges(tree: &Tree) -> Vec<Range<usize>> {
                 | "create_trigger"
                 | "alter_trigger"
         ) {
-            let end = std::iter::successors(node.parent(), |n| n.parent())
+            let end = ancestors(node)
                 .find(|n| n.kind() == "batch")
                 .map_or(node.end_byte(), |n| n.end_byte());
             ranges.push(node.start_byte()..end);
         }
-        if cursor.goto_first_child() {
-            continue;
-        }
-        while !cursor.goto_next_sibling() {
-            if !cursor.goto_parent() {
-                return ranges;
-            }
-        }
     }
+    ranges
 }
 
 pub fn project(

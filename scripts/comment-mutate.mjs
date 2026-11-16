@@ -2,21 +2,11 @@
 // Usage: node scripts/comment-mutate.mjs --tree-check <exe> [--axes comment,case,whitespace] [--quoted-identifier on|off] [inputs.jsonl | sql-directory ...]
 // Defaults: every oracle case and SQL fixture. GO/sqlcmd lines are client directives, not token gaps.
 import assert from 'node:assert/strict';
-import { spawnSync } from 'node:child_process';
-import {
-  appendFileSync,
-  mkdtempSync,
-  readFileSync,
-  readdirSync,
-  rmSync,
-  statSync,
-  writeFileSync,
-} from 'node:fs';
+import { mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { performance } from 'node:perf_hooks';
-import { pathToFileURL } from 'node:url';
-import { readCases } from './oracle-replay.mjs';
+import { caseSetFiles, checkPaths, isMain, readCases, readRows, writeSummary } from './common.mjs';
 
 // LocalDB 17.0.1000.7, levels 100-170: oracle/data/probes/metamorphic-whitespace.jsonl.
 // The engine takes control characters U+0000-0020 as separators too, so the class names them on purpose.
@@ -139,41 +129,30 @@ export function variants(sql, keywordRanges = [], tokenRanges = keywordRanges) {
 }
 
 export function readVerdicts(result, paths) {
-  assert(
-    !result.error && !result.signal && [0, 1].includes(result.status),
-    `tree-check failed without verdicts: ${result.error?.message || result.stderr || result.signal || result.status}`,
-  );
-  const rows = result.stdout
-    .split('\n')
-    .filter((line) => line.trim())
-    .map((line) => JSON.parse(line));
-  assert.equal(rows.length, paths.length, 'tree-check returned a different number of results');
-  return rows.map((row, i) => {
-    assert.equal(row.path, paths[i], 'tree-check returned an unexpected path');
-    assert.equal(typeof row.root_has_error, 'boolean', 'invalid root_has_error');
-    for (const field of ['error_nodes', 'missing_nodes', 'zero_width_nodes', 'root_end', 'len'])
-      assert(Number.isSafeInteger(row[field]) && row[field] >= 0, `invalid ${field}`);
-    assert(Array.isArray(row.constraint_violations), 'invalid constraint_violations');
-    const rules = [
-      ...new Set(
-        row.constraint_violations.map((v) => {
-          assert(typeof v.rule === 'string' && v.rule.length, 'invalid constraint rule');
-          return v.rule;
-        }),
-      ),
-    ].sort();
-    return {
-      parse:
-        row.root_has_error ||
-        row.error_nodes > 0 ||
-        row.missing_nodes > 0 ||
-        row.zero_width_nodes > 0 ||
-        row.root_end !== row.len
-          ? 'ERROR'
-          : 'clean',
-      rules,
-    };
-  });
+  return readRows(result, paths).map(verdictOf);
+}
+
+function verdictOf(row) {
+  assert(Array.isArray(row.constraint_violations), 'invalid constraint_violations');
+  const rules = [
+    ...new Set(
+      row.constraint_violations.map((v) => {
+        assert(typeof v.rule === 'string' && v.rule.length, 'invalid constraint rule');
+        return v.rule;
+      }),
+    ),
+  ].sort();
+  return {
+    parse:
+      row.root_has_error ||
+      row.error_nodes > 0 ||
+      row.missing_nodes > 0 ||
+      row.zero_width_nodes > 0 ||
+      row.root_end !== row.len
+        ? 'ERROR'
+        : 'clean',
+    rules,
+  };
 }
 
 export function compare(inputs, verdicts, kinds = AXES.comment) {
@@ -215,31 +194,17 @@ export function checkCases(checker, inputs, axes = Object.keys(AXES), quotedIden
       writeFileSync(path, c.source);
       return path;
     });
-    const run = (paths, args = []) => {
-      writeFileSync(list, paths.join('\n'));
-      return spawnSync(
-        checker,
-        ['--quoted-identifier', quotedIdentifier, ...args, '--paths', list],
-        {
-          encoding: 'utf8',
-          maxBuffer: 1 << 28,
-          timeout: 180000,
-        },
-      );
-    };
-    const originals = run(originalPaths, ['--keyword-ranges']);
-    readVerdicts(originals, originalPaths);
-    const ranges = originals.stdout
-      .trim()
-      .split('\n')
-      .map((line) => {
-        const row = JSON.parse(line);
-        assert(
-          Array.isArray(row.keyword_ranges) && Array.isArray(row.token_ranges),
-          'tree-check must support --keyword-ranges',
-        );
-        return row;
+    const run = (paths, args = []) =>
+      checkPaths(checker, paths, list, ['--quoted-identifier', quotedIdentifier, ...args], {
+        timeout: 180000,
       });
+    const ranges = run(originalPaths, ['--keyword-ranges']).map((row) => {
+      assert(
+        Array.isArray(row.keyword_ranges) && Array.isArray(row.token_ranges),
+        'tree-check must support --keyword-ranges',
+      );
+      return row;
+    });
     const kinds = axes.flatMap((axis) => {
       assert(AXES[axis], `unknown mutation axis: ${axis}`);
       return AXES[axis];
@@ -258,7 +223,7 @@ export function checkCases(checker, inputs, axes = Object.keys(AXES), quotedIden
         return paths.length - 1;
       });
     });
-    const uniqueVerdicts = readVerdicts(run(paths), paths);
+    const uniqueVerdicts = run(paths).map(verdictOf);
     const result = compare(
       inputs,
       indices.map((i) => uniqueVerdicts[i]),
@@ -300,16 +265,7 @@ function main(argv) {
     } else throw new Error(`unknown option: ${flag}`);
     sources = sources.slice(2);
   }
-  sources = sources.length
-    ? sources
-    : [
-        'oracle/data/kit/cases.jsonl',
-        ...readdirSync('oracle/data/probes')
-          .filter((f) => f.endsWith('.jsonl'))
-          .sort()
-          .map((f) => join('oracle/data/probes', f)),
-        'test/fixtures',
-      ];
+  sources = sources.length ? sources : [...caseSetFiles(), 'test/fixtures'];
   const inputs = sources.flatMap((source) =>
     statSync(source).isDirectory()
       ? readdirSync(source)
@@ -327,12 +283,11 @@ function main(argv) {
   for (const [rule, counts] of Object.entries(result.rules).sort(([a], [b]) => a.localeCompare(b)))
     console.log(`${rule}: +${counts.added} -${counts.removed}`);
   for (const change of result.changes) console.log(JSON.stringify(change));
-  if (process.env.GITHUB_STEP_SUMMARY)
-    appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${summary}\n`);
+  writeSummary(summary);
   process.exitCode = result.changes.length ? 1 : 0;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+if (isMain(import.meta.url)) {
   try {
     main(process.argv.slice(2));
   } catch (error) {

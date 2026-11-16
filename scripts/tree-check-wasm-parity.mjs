@@ -1,21 +1,21 @@
 // Dependency-free WASI reactor host and full native/WASM JSON parity gate.
 // Usage: node scripts/tree-check-wasm-parity.mjs --wasm <module> --tree-check <native>
 import assert from 'node:assert/strict';
-import { spawnSync } from 'node:child_process';
-import {
-  appendFileSync,
-  mkdtempSync,
-  readFileSync,
-  readdirSync,
-  rmSync,
-  writeFileSync,
-} from 'node:fs';
+import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { performance } from 'node:perf_hooks';
-import { pathToFileURL } from 'node:url';
 import { WASI } from 'node:wasi';
-import { readCases } from './oracle-replay.mjs';
+import {
+  applyEdit,
+  caseSetFiles,
+  checkPaths,
+  editHistoryFiles,
+  isMain,
+  readCases,
+  readJsonl,
+  writeSummary,
+} from './common.mjs';
 
 const FUNCTIONS = [
   'tc_alloc',
@@ -128,13 +128,7 @@ export function checkLifecycle(checker) {
 }
 
 export function collectInputs() {
-  const files = [
-    'oracle/data/kit/cases.jsonl',
-    ...readdirSync('oracle/data/probes')
-      .filter((f) => f.endsWith('.jsonl'))
-      .sort()
-      .map((f) => join('oracle/data/probes', f)),
-  ];
+  const files = caseSetFiles();
   const cases = files.flatMap((file) => readCases(readFileSync(file, 'utf8')));
   assert(cases.length > 0, 'no oracle cases');
   assert.equal(new Set(cases.map((c) => c.id)).size, cases.length, 'duplicate oracle case IDs');
@@ -145,21 +139,14 @@ export function collectInputs() {
     'oracle case coverage differs from the baseline',
   );
   const inputs = cases.map((c) => ({ id: c.id, source: Buffer.from(c.source) }));
-  const histories = readdirSync('oracle/data/kit')
-    .filter((f) => f.endsWith('edits.jsonl'))
-    .sort();
-  for (const file of histories) {
-    for (const line of readFileSync(join('oracle/data/kit', file), 'utf8')
-      .split('\n')
-      .filter((l) => l.trim())) {
-      const history = JSON.parse(line);
+  for (const file of editHistoryFiles()) {
+    const name = file.slice('oracle/data/kit/'.length);
+    for (const history of readJsonl(readFileSync(file, 'utf8'))) {
       let source = history.source;
-      inputs.push({ id: `${file}:${history.id}:0`, source: Buffer.from(source) });
-      for (const [i, edit] of history.edits.entries()) {
-        const at = source.indexOf(edit.find);
-        assert(at >= 0, `${file}:${history.id}:${i + 1}: edit target missing`);
-        source = source.slice(0, at) + edit.replace + source.slice(at + edit.find.length);
-        inputs.push({ id: `${file}:${history.id}:${i + 1}`, source: Buffer.from(source) });
+      inputs.push({ id: `${name}:${history.id}:0`, source: Buffer.from(source) });
+      for (const [i, step] of history.edits.entries()) {
+        source = applyEdit(source, step);
+        inputs.push({ id: `${name}:${history.id}:${i + 1}`, source: Buffer.from(source) });
       }
     }
   }
@@ -223,31 +210,13 @@ async function main(argv) {
       return file;
     });
     const list = join(dir, 'paths.txt');
-    writeFileSync(list, paths.join('\n'));
     for (const quotedIdentifier of ['on', 'off']) {
       let start = performance.now();
-      const native = spawnSync(
-        nativeFile,
-        ['--quoted-identifier', quotedIdentifier, '--paths', list],
-        {
-          encoding: 'utf8',
-          maxBuffer: 1 << 28,
-        },
-      );
+      const nativeRows = checkPaths(nativeFile, paths, list, [
+        '--quoted-identifier',
+        quotedIdentifier,
+      ]);
       nativeMs += performance.now() - start;
-      if (native.error || ![0, 1].includes(native.status))
-        throw new Error(
-          `native checker failed without verdicts: ${native.error?.message ?? native.stderr}`,
-        );
-      const nativeRows = native.stdout
-        .trim()
-        .split('\n')
-        .filter(Boolean)
-        .map((line) => JSON.parse(line));
-      assert.equal(nativeRows.length, paths.length, 'native result count differs');
-      nativeRows.forEach((row, i) =>
-        assert.equal(row.path, paths[i], 'native output order differs'),
-      );
       start = performance.now();
       const wasmRows = inputs.map((input) => checker.check(input.source, quotedIdentifier));
       wasmMs += performance.now() - start;
@@ -266,11 +235,10 @@ async function main(argv) {
     '- Reactor lifecycle, invalid handles, empty/Unicode/invalid UTF-8 inputs and memory growth passed.',
   ].join('\n');
   console.log(summary);
-  if (process.env.GITHUB_STEP_SUMMARY)
-    appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary + '\n');
+  writeSummary(summary);
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+if (isMain(import.meta.url)) {
   main(process.argv.slice(2)).catch((error) => {
     console.error(`tree-check-wasm-parity: ${error.message}`);
     process.exitCode = 1;

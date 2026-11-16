@@ -6,10 +6,8 @@ import create_procedure_rules from './create-procedure.js';
 // The ADD EVENT / ADD TARGET / DROP EVENT / DROP TARGET / WITH clause body
 // shared by CREATE EVENT SESSION and the non-STATE form of ALTER EVENT
 // SESSION (alter_event_session in alter.js — STATE = value must be that
-// statement's only clause, so it is not part of this body). A plain
-// function rather than a named grammar rule, since every segment here is
-// optional and a named rule that can match the empty string is rejected by
-// tree-sitter unless it is the grammar's start rule.
+// statement's only clause, so it is not part of this body). Nonempty
+// suffix rules share the optional clause combinations between both statements.
 // Fixes the clause order to ADD EVENT*, ADD TARGET*, DROP EVENT*, DROP
 // TARGET*, WITH — SQL Server itself allows these in any order and
 // interleaved, but every generated script (SSMS, DDL-triggers) emits them
@@ -18,13 +16,7 @@ import create_procedure_rules from './create-procedure.js';
 // interleaves these clauses hits an ERROR node; widen the order here if
 // that turns up in real use.
 export function event_session_body($) {
-  return seq(
-    optional(comma_list($._add_event_clause, true)),
-    optional(comma_list($._add_target_clause, true)),
-    optional(comma_list($._drop_event_clause, true)),
-    optional(comma_list($._drop_target_clause, true)),
-    optional($.with_options),
-  );
+  return optional($._event_session_body);
 }
 
 // The `TO { FILE (options) | APPLICATION_LOG | SECURITY_LOG }` audit-target
@@ -39,6 +31,35 @@ export function server_audit_target_clause($) {
 }
 
 export default {
+  _event_session_body: ($) =>
+    prec.right(
+      choice(
+        seq(comma_list($._add_event_clause, true), optional($._event_session_after_events)),
+        $._event_session_after_events,
+      ),
+    ),
+  _event_session_after_events: ($) =>
+    prec.right(
+      choice(
+        seq(comma_list($._add_target_clause, true), optional($._event_session_after_targets)),
+        $._event_session_after_targets,
+      ),
+    ),
+  _event_session_after_targets: ($) =>
+    prec.right(
+      choice(
+        seq(comma_list($._drop_event_clause, true), optional($._event_session_after_drop_events)),
+        $._event_session_after_drop_events,
+      ),
+    ),
+  _event_session_after_drop_events: ($) =>
+    prec.right(
+      choice(
+        seq(comma_list($._drop_target_clause, true), optional($.with_options)),
+        $.with_options,
+      ),
+    ),
+
   _create_statement: ($) =>
     choice(
       $.create_table,

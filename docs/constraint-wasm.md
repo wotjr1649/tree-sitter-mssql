@@ -36,7 +36,10 @@ recipe or host toolchain; rebuild from the same pinned inputs to check.
 
 `grammar_commit` is the last commit that changed the grammar source, the generated parser or the scanner. The script
 rejects uncommitted grammar changes and shallow clones. `rules_sha256` is the SHA-256 of a concatenation, in this
-order, of `crates/tree-check/src/constraints.rs` and then `lib.rs`, `session.rs` and `wasm.rs` from the same directory.
+order, of these files under `crates/tree-check/src/`: `constraints.rs`, then
+`constraints/{backup_restore,database,ddl_rest,expr,external,gap,hints,module_batch,query,statements,surface,util}.rs`
+(in that expanded order), then `lib.rs`, `session.rs`, `tree.rs` and `wasm.rs`. The test module is excluded.
+The rule-family split changes this identity even when the checker output is unchanged.
 For each file it concatenates the full relative path, NUL, the UTF-8 content with CRLF normalized to LF, and NUL. It
 also identifies rule changes that are not yet committed. Keep the repository commit together with the module SHA-256.
 The identity is not a signature of the artifact and not a means of authenticating it.

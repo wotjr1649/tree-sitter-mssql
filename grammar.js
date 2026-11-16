@@ -41,6 +41,7 @@ export default grammar({
     $._spaced_not_equal_alt,
     $._spaced_not_less,
     $._spaced_not_greater,
+    $._else_semicolon,
   ],
 
   // Every entry arbitrates a real fork the parser must carry a few tokens
@@ -94,9 +95,6 @@ export default grammar({
     [$.term],
     // A cursor variable starts with a parameter token, like table variables and named cursors.
     [$.identifier, $.var_declaration],
-    // `IF cond stmt ;` — the `;` may start a `; ELSE` clause or end the IF;
-    // see else_clause.
-    [$.if_statement],
     // Keep an empty AS body open as a fork until a leading semicolon is disambiguated.
     [$.procedure_body],
   ],
@@ -121,6 +119,61 @@ export default grammar({
       'clause_connective',
       'clause_disjunctive',
     ],
+  ],
+
+  // Aliased helpers stay factored to preserve their trees and fields.
+  inline: ($) => [
+    $._semicolon,
+    $._alter_database_file,
+    $._alter_service_contracts,
+    $._alter_statement,
+    $._audit_specification_target,
+    $._body_item,
+    $._broker_priority_body,
+    $._check_option,
+    $._column_alias,
+    $._column_key_constraint,
+    $._create_statement,
+    $._cte,
+    $._current_row,
+    $._database_encryptor,
+    $._ddl_statement,
+    $._delete_statement,
+    $._dml_write,
+    $._drop_event_clause,
+    $._drop_statement,
+    $._drop_target_clause,
+    $._event_notification_scope,
+    $._exec_option,
+    $._forceseek_hint,
+    $._graph_edge_names,
+    $._graph_quantifier,
+    $._graph_reverse_hop,
+    $._hint_index,
+    $._if_exists,
+    $._index_filestream,
+    $._index_hint,
+    $._index_kind,
+    $._insert_statement,
+    $._key_encryptor_continuation,
+    $._merge_source,
+    $._merge_statement,
+    $._merge_when_clause,
+    $._not_null,
+    $._or_alter,
+    $._period_phrase,
+    $._permission_name,
+    $._procedure_arguments,
+    $._queue_common_option,
+    $._security_predicate_body,
+    $._spatial_hint,
+    $._sqlcmd_exit_query,
+    $._table_hint_list,
+    $._transaction_keyword,
+    $._update_statement,
+    $._workload_group_using,
+    $._xml_path_length,
+    $._xml_type,
   ],
 
   word: ($) => $._identifier,
@@ -157,9 +210,15 @@ export default grammar({
         $.go_statement,
       ),
 
+    // A statement terminator. The scanner lexes a `;` that is followed by ELSE as
+    // `_else_semicolon` (see else_clause); every other place that accepts `;`
+    // after a statement accepts it too, so one token kind never narrows a
+    // lookahead set and the parse table does not split its states.
+    _semicolon: ($) => choice(';', alias($._else_semicolon, ';')),
+
     _batch_item: ($) =>
       choice(
-        prec.right(seq(choice($.statement, $.block), optional(';'))),
+        prec.right(seq(choice($.statement, $.block), optional($._semicolon))),
         ';',
         $.sqlcmd_setvar,
         $.sqlcmd_include,

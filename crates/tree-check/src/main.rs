@@ -16,6 +16,7 @@ use std::{env, fs};
 use tree_check::{
     QuotedIdentifier, edits, grammar_parser, inspect_with_quoted_identifier, json_line,
     json_string, parse,
+    tree::{preorder, preorder_with_depth},
 };
 
 fn run_edits(file: &str) -> Result<bool, String> {
@@ -39,15 +40,12 @@ fn run_edits(file: &str) -> Result<bool, String> {
 
 fn keyword_ranges(tree: &tree_sitter::Tree, source: &[u8]) -> Vec<[usize; 2]> {
     let mut ranges = Vec::new();
-    let mut cursor = tree.walk();
-    loop {
-        let node = cursor.node();
-        if node.child_count() == 0
-            && !node.is_extra()
-            && !node.is_missing()
-            && std::iter::successors(Some(node), |n| n.parent())
-                .any(|n| n.kind().starts_with("keyword_"))
-        {
+    let mut keywords = Vec::new();
+    for (node, depth) in preorder_with_depth(tree.root_node()) {
+        keywords.truncate(depth);
+        let keyword = node.kind().starts_with("keyword_") || keywords.last() == Some(&true);
+        keywords.push(keyword);
+        if node.child_count() == 0 && !node.is_extra() && !node.is_missing() && keyword {
             ranges.push([node.start_byte(), node.end_byte()]);
         }
         if node.kind().starts_with("keyword_") && node.child_count() > 0 {
@@ -74,24 +72,15 @@ fn keyword_ranges(tree: &tree_sitter::Tree, source: &[u8]) -> Vec<[usize; 2]> {
                 start = end.1;
             }
         }
-        if cursor.goto_first_child() {
-            continue;
-        }
-        while !cursor.goto_next_sibling() {
-            if !cursor.goto_parent() {
-                ranges.sort_unstable();
-                ranges.dedup();
-                return ranges;
-            }
-        }
     }
+    ranges.sort_unstable();
+    ranges.dedup();
+    ranges
 }
 
 fn token_ranges(tree: &tree_sitter::Tree) -> Vec<[usize; 2]> {
     let mut ranges = Vec::new();
-    let mut cursor = tree.walk();
-    loop {
-        let node = cursor.node();
+    for node in preorder(tree.root_node()) {
         if node.child_count() == 0
             && !node.is_missing()
             && !node.is_error()
@@ -99,15 +88,8 @@ fn token_ranges(tree: &tree_sitter::Tree) -> Vec<[usize; 2]> {
         {
             ranges.push([node.start_byte(), node.end_byte()]);
         }
-        if cursor.goto_first_child() {
-            continue;
-        }
-        while !cursor.goto_next_sibling() {
-            if !cursor.goto_parent() {
-                return ranges;
-            }
-        }
     }
+    ranges
 }
 
 fn run(args: &[String]) -> Result<bool, String> {
