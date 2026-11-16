@@ -80,6 +80,9 @@ Child iteration is unchanged. `ChildByFieldName` now finds them.
   2017, 2019, 2022 and 2025 at compatibility levels 100–170; acceptance at any recorded engine/level counts.
   All 7,504 accepted cases parse cleanly. One runner-controlled input was not submitted to the engines. Inputs that
   1.0.0 parsed with an `ERROR` may now parse cleanly, and their trees are new.
+- **Incremental reparsing.** Use a tree-sitter runtime that contains upstream commit `f932671a5` (released after
+  0.27.2). Older runtimes can give a reparse that differs from a fresh parse when a reused node starts with a keyword
+  that must be read as a name; this is a runtime defect, the same for 1.0.0, and no grammar can avoid it.
 - **Error recovery of invalid input.** Trees of inputs SQL Server rejects may differ inside their `ERROR` nodes. They
   were never a contract.
 - **Validation is a separate layer.** The grammar alone rejects 852 of the 2,795 engine-rejected inputs (30.48 %).
