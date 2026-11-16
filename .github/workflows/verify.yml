@@ -226,6 +226,10 @@ jobs:
             echo "- \`src/parser.c\`: ${parser_bytes} bytes"
           } >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Check the imported grammar-kit queries against their recorded captures
+        # ADR-0004: grammar-kit's T-SQL queries, run on oracle sources (test/queries/kit/README.md).
+        run: node tools/query-check.mjs --tree-sitter node_modules/tree-sitter-cli/tree-sitter
+
       - name: Check the parser runtime cost against the milestone
         # Compiles the milestone's and the current parser with the same compiler and compares library size,
         # parse time and peak memory over every fixture and oracle case (ADR-0002 §6).
