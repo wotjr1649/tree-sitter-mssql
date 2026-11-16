@@ -2138,56 +2138,59 @@ fn invocation_name(invocation: Node, source: &[u8]) -> Option<String> {
 
 /// Whether an expression is a search condition (true/false/unknown) rather than a scalar value.
 fn is_condition(n: Node, source: &[u8]) -> bool {
-    match n.kind() {
-        "exists" | "graph_match_predicate" | "between_expression" => true,
-        "invocation" => matches!(
-            invocation_name(n, source).as_deref(),
-            Some("UPDATE" | "CONTAINS" | "FREETEXT" | "REGEXP_LIKE")
-        ),
-        "term" | "parenthesized_expression" => n
-            .child_by_field_name("value")
-            .or_else(|| n.named_child(0))
-            .is_some_and(|c| is_condition(c, source)),
-        "binary_expression" => {
-            let operator = n.child_by_field_name("operator").map(|o| o.kind());
-            match operator {
-                Some("keyword_and" | "keyword_or") => {
-                    n.child_by_field_name("left")
-                        .is_some_and(|c| is_condition(c, source))
-                        && n.child_by_field_name("right")
-                            .is_some_and(|c| is_condition(c, source))
+    let mut pending = vec![n];
+    while let Some(n) = pending.pop() {
+        match n.kind() {
+            "exists" | "graph_match_predicate" | "between_expression" => {}
+            "invocation" => {
+                if !matches!(
+                    invocation_name(n, source).as_deref(),
+                    Some("UPDATE" | "CONTAINS" | "FREETEXT" | "REGEXP_LIKE")
+                ) {
+                    return false;
                 }
-                Some(op) => matches!(
-                    op,
-                    "=" | "<"
-                        | "<="
-                        | ">"
-                        | ">="
-                        | "<>"
-                        | "!="
-                        | "!<"
-                        | "!>"
-                        | "keyword_is"
-                        | "is_not"
-                        | "keyword_like"
-                        | "not_like"
-                        | "keyword_in"
-                        | "not_in"
-                        | "distinct_from"
-                        | "not_distinct_from"
-                        | "keyword_between"
-                        | "keyword_escape"
-                ),
-                None => false,
             }
+            "term" | "parenthesized_expression" => {
+                let Some(child) = n.child_by_field_name("value").or_else(|| n.named_child(0))
+                else {
+                    return false;
+                };
+                pending.push(child);
+            }
+            "binary_expression" => {
+                let operator = n.child_by_field_name("operator").map(|o| o.kind());
+                match operator {
+                    Some("keyword_and" | "keyword_or") => {
+                        let (Some(left), Some(right)) = (
+                            n.child_by_field_name("left"),
+                            n.child_by_field_name("right"),
+                        ) else {
+                            return false;
+                        };
+                        pending.extend([left, right]);
+                    }
+                    Some(
+                        "=" | "<" | "<=" | ">" | ">=" | "<>" | "!=" | "!<" | "!>" | "keyword_is"
+                        | "is_not" | "keyword_like" | "not_like" | "keyword_in" | "not_in"
+                        | "distinct_from" | "not_distinct_from" | "keyword_between"
+                        | "keyword_escape",
+                    ) => {}
+                    _ => return false,
+                }
+            }
+            "unary_expression" => {
+                if n.child_by_field_name("operator").map(|o| o.kind()) != Some("keyword_not") {
+                    return false;
+                }
+                let Some(operand) = n.child_by_field_name("operand") else {
+                    return false;
+                };
+                pending.push(operand);
+            }
+            _ => return false,
         }
-        "unary_expression" => {
-            n.child_by_field_name("operator").map(|o| o.kind()) == Some("keyword_not")
-                && n.child_by_field_name("operand")
-                    .is_some_and(|c| is_condition(c, source))
-        }
-        _ => false,
     }
+    true
 }
 
 fn upper_text(node: Node, source: &[u8]) -> String {
@@ -3773,22 +3776,19 @@ fn surface_shapes(node: Node, source: &[u8], out: &mut Vec<Violation>) {
                         _ => false,
                     }
         }
-        "term"
-            if node
-                .parent()
-                .is_some_and(|p| p.kind() == "select_expression") =>
-        {
-            node.child_by_field_name("value").is_some_and(|v| {
-                v.kind() == "binary_expression"
-                    && v.child_by_field_name("operator")
-                        .is_some_and(|n| n.kind() == "=")
-                    && v.child_by_field_name("left")
-                        .is_some_and(|n| local_variable(n, source))
-                    && ancestor(node, "query_specification")
-                        .and_then(|q| q.parent())
-                        .is_some_and(|p| p.kind() == "set_operation")
-            })
-        }
+        "term" => node.child_by_field_name("value").is_some_and(|v| {
+            v.kind() == "binary_expression"
+                && v.child_by_field_name("operator")
+                    .is_some_and(|n| n.kind() == "=")
+                && v.child_by_field_name("left")
+                    .is_some_and(|n| local_variable(n, source))
+                && node
+                    .parent()
+                    .is_some_and(|p| p.kind() == "select_expression")
+                && ancestor(node, "query_specification")
+                    .and_then(|q| q.parent())
+                    .is_some_and(|p| p.kind() == "set_operation")
+        }),
         "alter_cryptographic_provider" => has_child(node, "with_clause"),
         "field" => {
             node.named_child_count() == 1
@@ -4043,23 +4043,23 @@ fn gap_scalar(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         "exec_argument" => node
             .child_by_field_name("value")
             .is_some_and(|n| n.kind() == "unary_expression" && has_child(n, "+")),
-        "term" => {
-            node.parent()
-                .is_some_and(|p| p.kind() == "select_expression")
-                && node.child_by_field_name("value").is_some_and(|n| {
-                    is_condition(n, source)
-                        && !(n.kind() == "binary_expression"
-                            && n.child_by_field_name("operator")
-                                .is_some_and(|o| o.kind() == "=")
-                            && n.child_by_field_name("left").is_some_and(|l| {
-                                string_literal(l, source)
-                                    || l.kind() == "field"
-                                        && l.named_child_count() == 1
-                                        && l.named_child(0)
-                                            .is_some_and(|id| id.kind() == "identifier")
-                            }))
-                })
-        }
+        "term" => node.child_by_field_name("value").is_some_and(|n| {
+            // A subquery is scalar; avoid a root-to-node parent lookup at every nesting level.
+            n.kind() != "subquery"
+                && node
+                    .parent()
+                    .is_some_and(|p| p.kind() == "select_expression")
+                && is_condition(n, source)
+                && !(n.kind() == "binary_expression"
+                    && n.child_by_field_name("operator")
+                        .is_some_and(|o| o.kind() == "=")
+                    && n.child_by_field_name("left").is_some_and(|l| {
+                        string_literal(l, source)
+                            || l.kind() == "field"
+                                && l.named_child_count() == 1
+                                && l.named_child(0).is_some_and(|id| id.kind() == "identifier")
+                    }))
+        }),
         "binary_expression" => {
             node.child_by_field_name("operator").is_some_and(|n| {
                 matches!(
@@ -4722,6 +4722,20 @@ mod tests {
             .into_iter()
             .map(|v| v.rule)
             .collect()
+    }
+
+    #[test]
+    fn long_search_conditions_do_not_overflow_the_stack() {
+        std::thread::Builder::new()
+            .stack_size(64 * 1024)
+            .spawn(|| {
+                let predicates = vec!["1=1"; 16_384].join(" AND ");
+                let sql = format!("SELECT 1 WHERE {predicates};");
+                assert!(rules(&sql).is_empty());
+            })
+            .unwrap()
+            .join()
+            .unwrap();
     }
 
     #[test]
