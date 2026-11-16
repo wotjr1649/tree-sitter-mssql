@@ -2909,6 +2909,97 @@ GRANT NONEXISTENT PERMISSION TO u;
         (identifier)))))
 
 ==================
+ddl-rest/create-route-alt-tsql-V22-r007 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE JSON INDEX jx1 ON dbo.t1 (j1) FOR (N'$.a', N'$.b.c') WITH (OPTIMIZE_FOR_ARRAY_SEARCH = ON, FILLFACTOR = 80, DROP_EXISTING = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = OFF, MAXDOP = 4, DATA_COMPRESSION = ROW);
+CREATE JSON INDEX jx2 ON db1.s1.t1 (j1) WITH (OPTIMIZE_FOR_ARRAY_SEARCH = OFF, DATA_COMPRESSION = PAGE);
+CREATE JSON INDEX jx3 ON t1 (j1) WITH (DATA_COMPRESSION = NONE);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_for)
+        (literal)
+        (literal)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (keyword_off))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (keyword_off))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (identifier)))))
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_off))
+          (option
+            name: (identifier)
+            value: (identifier)))))
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier)))))))
+
+==================
 ddl-rest/create-route-alt-tsql-B03-r126 — LocalDB 17.0.1000.7 levels 100-170: accepts
 ==================
 
@@ -3511,6 +3602,319 @@ CREATE EVENT SESSION xe_waits ON SERVER ADD EVENT sqlos.wait_completed WITH (EVE
             value: (identifier)))))))
 
 ==================
+ddl-rest/create-route-alt-tsql-B03-r240 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE UNIQUE CLUSTERED INDEX ix1 ON db1.dbo.t1 (c1 ASC, c2 DESC) WITH (PAD_INDEX = ON, FILLFACTOR = 80, SORT_IN_TEMPDB = ON, IGNORE_DUP_KEY = ON, STATISTICS_NORECOMPUTE = ON, STATISTICS_INCREMENTAL = ON, DROP_EXISTING = ON, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = ON, MAXDOP = 4, DATA_COMPRESSION = ROW ON PARTITIONS (1, 3 TO 5)) ON ps1 (c1) FILESTREAM_ON fs_ps1;
+CREATE NONCLUSTERED INDEX ix2 ON dbo.t1 (c3) INCLUDE (c4, c5) WITH (PAD_INDEX = OFF, DATA_COMPRESSION = PAGE, XML_COMPRESSION = ON ON PARTITIONS (2)) ON fg1 FILESTREAM_ON fs_fg1;
+CREATE INDEX ix3 ON t1 (c1) WITH (DATA_COMPRESSION = NONE ON PARTITIONS (1 TO 2)) ON "default" FILESTREAM_ON "NULL";
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        (keyword_unique)
+        (keyword_clustered)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)
+            (direction
+              (keyword_asc)))
+          (column
+            name: (identifier)
+            (direction
+              (keyword_desc))))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (identifier)
+            (keyword_on)
+            (keyword_partitions)
+            (truncate_partition_range
+              low: (literal))
+            (truncate_partition_range
+              low: (literal)
+              (keyword_to)
+              high: (literal))))
+        (on_filegroup
+          (keyword_on)
+          (identifier)
+          (identifier))
+        (table_data_placement
+          option: (identifier)
+          filegroup: (identifier))))
+    (statement
+      (create_index
+        (keyword_create)
+        (keyword_nonclustered)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (covering_columns
+          (keyword_include)
+          (identifier)
+          (identifier))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_off))
+          (option
+            name: (identifier)
+            value: (identifier))
+          (option
+            name: (identifier)
+            value: (keyword_on)
+            (keyword_on)
+            (keyword_partitions)
+            (truncate_partition_range
+              low: (literal))))
+        (on_filegroup
+          (keyword_on)
+          (identifier))
+        (table_data_placement
+          option: (identifier)
+          filegroup: (identifier))))
+    (statement
+      (create_index
+        (keyword_create)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier)
+            (keyword_on)
+            (keyword_partitions)
+            (truncate_partition_range
+              low: (literal)
+              (keyword_to)
+              high: (literal))))
+        (on_filegroup
+          (keyword_on)
+          (identifier))
+        (table_data_placement
+          option: (identifier)
+          filegroup: (identifier))))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r241 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE NONCLUSTERED INDEX ix4 ON dbo.t1 (c1) WHERE c1 IS NULL AND c2 IS NOT NULL AND c3 = 1 AND c4 <> 1 AND c5 != 1 AND c6 > 1 AND c7 >= 1 AND c8 !> 1 AND c9 < 1 AND c10 <= 1 AND c11 !< 1 AND c12 IN (1, 2, 3);
+CREATE UNIQUE CLUSTERED INDEX ix5 ON db1..t2 (c1 ASC) WITH PAD_INDEX, FILLFACTOR = 70, SORT_IN_TEMPDB, IGNORE_DUP_KEY, STATISTICS_NORECOMPUTE, DROP_EXISTING ON fg1;
+CREATE NONCLUSTERED INDEX ix6 ON dbo.t2 (c2 DESC) ON "default";
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        (keyword_nonclustered)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (binary_expression
+                left: (binary_expression
+                  left: (binary_expression
+                    left: (binary_expression
+                      left: (binary_expression
+                        left: (binary_expression
+                          left: (binary_expression
+                            left: (binary_expression
+                              left: (binary_expression
+                                left: (binary_expression
+                                  left: (field
+                                    name: (identifier))
+                                  operator: (keyword_is)
+                                  right: (literal
+                                    (keyword_null)))
+                                operator: (keyword_and)
+                                right: (binary_expression
+                                  left: (field
+                                    name: (identifier))
+                                  operator: (is_not
+                                    (keyword_is)
+                                    (keyword_not))
+                                  right: (literal
+                                    (keyword_null))))
+                              operator: (keyword_and)
+                              right: (binary_expression
+                                left: (field
+                                  name: (identifier))
+                                right: (literal)))
+                            operator: (keyword_and)
+                            right: (binary_expression
+                              left: (field
+                                name: (identifier))
+                              right: (literal)))
+                          operator: (keyword_and)
+                          right: (binary_expression
+                            left: (field
+                              name: (identifier))
+                            right: (literal)))
+                        operator: (keyword_and)
+                        right: (binary_expression
+                          left: (field
+                            name: (identifier))
+                          right: (literal)))
+                      operator: (keyword_and)
+                      right: (binary_expression
+                        left: (field
+                          name: (identifier))
+                        right: (literal)))
+                    operator: (keyword_and)
+                    right: (binary_expression
+                      left: (field
+                        name: (identifier))
+                      right: (literal)))
+                  operator: (keyword_and)
+                  right: (binary_expression
+                    left: (field
+                      name: (identifier))
+                    right: (literal)))
+                operator: (keyword_and)
+                right: (binary_expression
+                  left: (field
+                    name: (identifier))
+                  right: (literal)))
+              operator: (keyword_and)
+              right: (binary_expression
+                left: (field
+                  name: (identifier))
+                right: (literal)))
+            operator: (keyword_and)
+            right: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_in)
+              right: (list
+                (literal)
+                (literal)
+                (literal)))))))
+    (statement
+      (create_index
+        (keyword_create)
+        (keyword_unique)
+        (keyword_clustered)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          database: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)
+            (direction
+              (keyword_asc))))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier))
+          (option
+            name: (identifier))
+          (option
+            name: (identifier))
+          (option
+            name: (identifier)))
+        (on_filegroup
+          (keyword_on)
+          (identifier))))
+    (statement
+      (create_index
+        (keyword_create)
+        (keyword_nonclustered)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)
+            (direction
+              (keyword_desc))))
+        (on_filegroup
+          (keyword_on)
+          (identifier))))))
+
+==================
 ddl-rest/create-route-alt-tsql-B03-r248 — LocalDB 17.0.1000.7 levels 100-170: accepts
 ==================
 
@@ -3733,6 +4137,353 @@ CREATE RULE dbo.range_rule AS @value >= 0 AND @value < 1000;
             left: (field
               name: (identifier))
             right: (literal)))))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r256 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE SELECTIVE XML INDEX sxi1 ON db1.dbo.docs (xcol) WITH XMLNAMESPACES ('https://schemas.example/order' AS o, 'https://schemas.example/item' AS i) FOR (p1 = '/o:order/o:id' AS XQUERY 'xs:string' MAXLENGTH(20) SINGLETON, p2 = '/o:order/i:item' AS XQUERY 'node()', p3 = '/o:order/o:total' AS SQL int SINGLETON, p4 = '/o:order/o:note') WITH (PAD_INDEX = ON, FILLFACTOR = 80, SORT_IN_TEMPDB = ON, IGNORE_DUP_KEY = OFF, DROP_EXISTING = ON, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, MAXDOP = 2);
+CREATE SELECTIVE XML INDEX sxi2 ON dbo.docs (xcol) FOR (p1 = '/order/id') WITH (PAD_INDEX = OFF);
+CREATE SELECTIVE XML INDEX sxi3 ON docs (xcol) FOR (p1 = '/order/id' AS XQUERY 'xs:double');
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        (keyword_selective)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_with)
+        (xmlnamespaces
+          (keyword_xmlnamespaces)
+          (xmlnamespace
+            uri: (literal)
+            (keyword_as)
+            prefix: (identifier))
+          (xmlnamespace
+            uri: (literal)
+            (keyword_as)
+            prefix: (identifier)))
+        (keyword_for)
+        (selective_xml_path
+          name: (identifier)
+          (literal)
+          (keyword_as)
+          (keyword_xquery)
+          (literal)
+          (keyword_maxlength)
+          (literal)
+          (keyword_singleton))
+        (selective_xml_path
+          name: (identifier)
+          (literal)
+          (keyword_as)
+          (keyword_xquery)
+          (literal))
+        (selective_xml_path
+          name: (identifier)
+          (literal)
+          (keyword_as)
+          (keyword_sql)
+          (keyword_int)
+          (keyword_singleton))
+        (selective_xml_path
+          name: (identifier)
+          (literal))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (keyword_off))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (keyword_off))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (literal)))))
+    (statement
+      (create_index
+        (keyword_create)
+        (keyword_selective)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_for)
+        (selective_xml_path
+          name: (identifier)
+          (literal))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_off)))))
+    (statement
+      (create_index
+        (keyword_create)
+        (keyword_selective)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_for)
+        (selective_xml_path
+          name: (identifier)
+          (literal)
+          (keyword_as)
+          (keyword_xquery)
+          (literal))))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r263 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE SPATIAL INDEX six1 ON db1.dbo.shapes (geom) USING GEOMETRY_AUTO_GRID WITH (BOUNDING_BOX = (0, 0, 500, 200), CELLS_PER_OBJECT = 64, PAD_INDEX = ON, FILLFACTOR = 80, SORT_IN_TEMPDB = ON, IGNORE_DUP_KEY = OFF, STATISTICS_NORECOMPUTE = ON, DROP_EXISTING = ON, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, MAXDOP = 2, DATA_COMPRESSION = ROW) ON fg1;
+CREATE SPATIAL INDEX six2 ON dbo.shapes (geom) USING GEOMETRY_GRID WITH (BOUNDING_BOX = (XMIN = 0, YMIN = 0, XMAX = 500, YMAX = 200), GRIDS = (LEVEL_1 = LOW, LEVEL_2 = MEDIUM, LEVEL_3 = HIGH, LEVEL_4 = HIGH), CELLS_PER_OBJECT = 16, PAD_INDEX = OFF, DATA_COMPRESSION = PAGE) ON "default";
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            (literal)
+            (literal)
+            (literal)
+            (literal))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (keyword_off))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (keyword_off))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (identifier)))
+        (on_filegroup
+          (keyword_on)
+          (identifier))))
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (literal))
+            (option
+              name: (identifier)
+              value: (literal))
+            (option
+              name: (identifier)
+              value: (literal))
+            (option
+              name: (identifier)
+              value: (literal)))
+          (option
+            name: (identifier)
+            (option
+              name: (identifier)
+              value: (identifier))
+            (option
+              name: (identifier)
+              value: (identifier))
+            (option
+              name: (identifier)
+              value: (identifier))
+            (option
+              name: (identifier)
+              value: (identifier)))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (keyword_off))
+          (option
+            name: (identifier)
+            value: (identifier)))
+        (on_filegroup
+          (keyword_on)
+          (identifier))))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r264 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE SPATIAL INDEX six3 ON places (geog) USING GEOGRAPHY_AUTO_GRID WITH (CELLS_PER_OBJECT = 12, DATA_COMPRESSION = NONE);
+CREATE SPATIAL INDEX six4 ON dbo.places (geog) USING GEOGRAPHY_GRID WITH (GRIDS = (MEDIUM, LOW, HIGH, MEDIUM), CELLS_PER_OBJECT = 16);
+CREATE SPATIAL INDEX six5 ON dbo.places (geog);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (identifier)))))
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            (option
+              name: (identifier))
+            (option
+              name: (identifier))
+            (option
+              name: (identifier))
+            (option
+              name: (identifier)))
+          (option
+            name: (identifier)
+            value: (literal)))))
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))))))
 
 ==================
 ddl-rest/create-route-alt-tsql-B03-r283 — LocalDB 17.0.1000.7 levels 100-170: accepts
@@ -4142,6 +4893,431 @@ CREATE WORKLOAD GROUP wg_etl WITH (IMPORTANCE = HIGH);
           (option
             name: (identifier)
             value: (identifier)))))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r294 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE PRIMARY XML INDEX pxi_doc ON db1.dbo.Docs (Doc) WITH (PAD_INDEX = ON, FILLFACTOR = 80, SORT_IN_TEMPDB = ON, IGNORE_DUP_KEY = OFF,
+  DROP_EXISTING = ON, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = OFF, MAXDOP = 2, XML_COMPRESSION = ON);
+CREATE XML INDEX xi_value ON dbo.Docs (Doc) USING XML INDEX pxi_doc FOR VALUE;
+CREATE XML INDEX xi_path ON Docs (Doc) USING XML INDEX pxi_doc FOR PATH;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        (keyword_primary)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (keyword_off))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (keyword_off))
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (keyword_off))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (keyword_on)))))
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (keyword_xml)
+        (keyword_index)
+        (identifier)
+        (keyword_for)
+        (keyword_value)))
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (keyword_xml)
+        (keyword_index)
+        (identifier)
+        (keyword_for)
+        (identifier)))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r295 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE XML INDEX sxi_a ON db1.dbo.Docs (Doc) USING XML INDEX sxi_doc FOR (pathabc) WITH (PAD_INDEX = OFF);
+CREATE XML INDEX sxi_b ON dbo.Docs (Doc) USING XML INDEX sxi_doc FOR (pathabc) WITH (FILLFACTOR = 80);
+CREATE XML INDEX sxi_c ON Docs (Doc) USING XML INDEX sxi_doc FOR (pathabc) WITH (SORT_IN_TEMPDB = ON);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (keyword_xml)
+        (keyword_index)
+        (identifier)
+        (keyword_for)
+        (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_off)))))
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (keyword_xml)
+        (keyword_index)
+        (identifier)
+        (keyword_for)
+        (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)))))
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (keyword_xml)
+        (keyword_index)
+        (identifier)
+        (keyword_for)
+        (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_on)))))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r296 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE XML INDEX sxi_d ON dbo.Docs (Doc) USING XML INDEX sxi_doc FOR (pathabc) WITH (IGNORE_DUP_KEY = OFF);
+CREATE XML INDEX sxi_e ON dbo.Docs (Doc) USING XML INDEX sxi_doc FOR (pathabc) WITH (DROP_EXISTING = ON);
+CREATE XML INDEX sxi_f ON dbo.Docs (Doc) USING XML INDEX sxi_doc FOR (pathabc) WITH (ONLINE = OFF);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (keyword_xml)
+        (keyword_index)
+        (identifier)
+        (keyword_for)
+        (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_off)))))
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (keyword_xml)
+        (keyword_index)
+        (identifier)
+        (keyword_for)
+        (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_on)))))
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (keyword_xml)
+        (keyword_index)
+        (identifier)
+        (keyword_for)
+        (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_off)))))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r297 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE XML INDEX sxi_g ON dbo.Docs (Doc) USING XML INDEX sxi_doc FOR (pathabc) WITH (ALLOW_ROW_LOCKS = ON);
+CREATE XML INDEX sxi_h ON dbo.Docs (Doc) USING XML INDEX sxi_doc FOR (pathabc) WITH (ALLOW_PAGE_LOCKS = ON);
+CREATE XML INDEX sxi_i ON dbo.Docs (Doc) USING XML INDEX sxi_doc FOR (pathabc) WITH (MAXDOP = 2);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (keyword_xml)
+        (keyword_index)
+        (identifier)
+        (keyword_for)
+        (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_on)))))
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (keyword_xml)
+        (keyword_index)
+        (identifier)
+        (keyword_for)
+        (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_on)))))
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (keyword_xml)
+        (keyword_index)
+        (identifier)
+        (keyword_for)
+        (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r298 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE XML INDEX xi_prop ON dbo.Docs (Doc) USING XML INDEX pxi_doc FOR PROPERTY;
+CREATE SELECTIVE XML INDEX sxi_doc ON dbo.Docs (Doc) WITH XMLNAMESPACES ('urn:orders' AS o, 'urn:items' AS i) FOR (pathabc = '/o:order/i:item');
+CREATE XML SCHEMA COLLECTION dbo.OrderSchema AS N'<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>';
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (keyword_xml)
+        (keyword_index)
+        (identifier)
+        (keyword_for)
+        (keyword_property)))
+    (statement
+      (create_index
+        (keyword_create)
+        (keyword_selective)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_with)
+        (xmlnamespaces
+          (keyword_xmlnamespaces)
+          (xmlnamespace
+            uri: (literal)
+            (keyword_as)
+            prefix: (identifier))
+          (xmlnamespace
+            uri: (literal)
+            (keyword_as)
+            prefix: (identifier)))
+        (keyword_for)
+        (selective_xml_path
+          name: (identifier)
+          (literal))))
+    (statement
+      (create_xml_schema_collection
+        (keyword_create)
+        (keyword_xml)
+        (keyword_schema)
+        (keyword_collection)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_as)
+        (literal)))))
 
 ==================
 ddl-rest/create-aggregate — LocalDB 17.0.1000.7 levels 100-170: accepts
@@ -5168,6 +6344,457 @@ CREATE LOGIN l WITH PASSWORD = 'dummy' OLD_PASSWORD = 'other';
             (literal)))))))
 
 ==================
+ddl-rest/create-index-legacy — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE UNIQUE CLUSTERED INDEX i ON dbo.t (c) WITH PAD_INDEX, FILLFACTOR = 70 ON fg;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        (keyword_unique)
+        (keyword_clustered)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier))
+          (option
+            name: (identifier)
+            value: (literal)))
+        (on_filegroup
+          (keyword_on)
+          (identifier))))))
+
+==================
+ddl-rest/create-index-filestream — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE INDEX i ON dbo.t (c) ON fg FILESTREAM_ON fs;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (on_filegroup
+          (keyword_on)
+          (identifier))
+        (table_data_placement
+          option: (identifier)
+          filegroup: (identifier))))))
+
+==================
+ddl-rest/create-index-spatial — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE SPATIAL INDEX i ON dbo.t (g) USING GEOMETRY_GRID WITH (BOUNDING_BOX = (0,0,10,10), GRIDS = (LOW, MEDIUM, HIGH, HIGH));
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            (literal)
+            (literal)
+            (literal)
+            (literal))
+          (option
+            name: (identifier)
+            (option
+              name: (identifier))
+            (option
+              name: (identifier))
+            (option
+              name: (identifier))
+            (option
+              name: (identifier))))))))
+
+==================
+ddl-rest/create-index-json-paths — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE JSON INDEX i ON dbo.t(j) FOR (N'$.a', N'$.b');
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_for)
+        (literal)
+        (literal)))))
+
+==================
+ddl-rest/create-index-selective — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE SELECTIVE XML INDEX i ON dbo.t(x) FOR (p = '/a' AS XQUERY 'xs:string' MAXLENGTH(20) SINGLETON);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        (keyword_selective)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_for)
+        (selective_xml_path
+          name: (identifier)
+          (literal)
+          (keyword_as)
+          (keyword_xquery)
+          (literal)
+          (keyword_maxlength)
+          (literal)
+          (keyword_singleton))))))
+
+==================
+ddl-rest/create-index-primary-xml — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE PRIMARY XML INDEX i ON dbo.t(x);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        (keyword_primary)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))))))
+
+==================
+ddl-rest/create-index-secondary-xml — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE XML INDEX i ON dbo.t(x) USING XML INDEX p FOR PATH;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (keyword_xml)
+        (keyword_index)
+        (identifier)
+        (keyword_for)
+        (identifier)))))
+
+==================
+ddl-rest/create-index-selective-secondary — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE XML INDEX i ON dbo.t(x) USING XML INDEX p FOR (a);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (keyword_xml)
+        (keyword_index)
+        (identifier)
+        (keyword_for)
+        (identifier)))))
+
+==================
+ddl-rest/create-index-spatial-grid-bad — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE SPATIAL INDEX i ON dbo.t(g) USING BOGUS;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (identifier)))))
+
+==================
+ddl-rest/create-index-spatial-box-three — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE SPATIAL INDEX i ON dbo.t(g) USING GEOMETRY_GRID WITH (BOUNDING_BOX = (0,0,10));
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            (literal)
+            (literal)
+            (literal)))))))
+
+==================
+ddl-rest/create-index-json-selective-path — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+CREATE JSON INDEX i ON dbo.t(j) FOR (p = '$.a');
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_for)
+        (selective_xml_path
+          name: (identifier)
+          (literal))))))
+
+==================
+ddl-rest/create-index-normal-using-grid — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+CREATE INDEX i ON dbo.t(c) USING GEOMETRY_GRID;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (identifier)))))
+
+==================
+ddl-rest/create-index-xml-unknown-mode — LocalDB 17.0.1000.7 levels 100-170: rejects 487
+==================
+
+CREATE XML INDEX i ON dbo.t(x) USING XML INDEX p FOR WRONG;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (keyword_xml)
+        (keyword_index)
+        (identifier)
+        (keyword_for)
+        (identifier)))))
+
+==================
+ddl-rest/create-index-selective-missing-path — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+CREATE SELECTIVE XML INDEX i ON dbo.t(x);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        (keyword_selective)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))))))
+
+==================
+ddl-rest/create-index-primary-with-using — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+CREATE PRIMARY XML INDEX i ON dbo.t(x) USING XML INDEX p;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        (keyword_primary)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_using)
+        (keyword_xml)
+        (keyword_index)
+        (identifier)))))
+
+==================
 ddl-rest/create-index-json-multiple-columns — LocalDB 17.0.1000.7 levels 100-170: rejects 102
 ==================
 
@@ -5220,6 +6847,31 @@ CREATE SPATIAL INDEX i ON dbo.t(a,b);
             name: (identifier)))))))
 
 ==================
+ddl-rest/create-index-nonxml-path — LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+CREATE INDEX i ON dbo.t(c) FOR ('$.a');
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (keyword_for)
+        (literal)))))
+
+==================
 ddl-rest/create-index-primary-no-xml — LocalDB 17.0.1000.7 levels 100-170: rejects 1018
 ==================
 
@@ -5232,7 +6884,7 @@ CREATE PRIMARY INDEX i ON dbo.t(c);
     (statement
       (create_index
         (keyword_create)
-        storage: (identifier)
+        (keyword_primary)
         (keyword_index)
         name: (identifier)
         (keyword_on)
@@ -5256,7 +6908,7 @@ CREATE SELECTIVE INDEX i ON dbo.t(c);
     (statement
       (create_index
         (keyword_create)
-        storage: (identifier)
+        (keyword_selective)
         (keyword_index)
         name: (identifier)
         (keyword_on)
@@ -6835,6 +8487,97 @@ DROP EVENT SESSION e ON DATABASE;
         name: (identifier)
         (keyword_on)
         (keyword_database)))))
+
+==================
+ddl-rest/drop-index-options — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP INDEX i ON db.dbo.t WITH (MAXDOP = 2, ONLINE = OFF);
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_index
+        (keyword_drop)
+        (keyword_index)
+        name: (object_reference
+          name: (identifier))
+        (keyword_on)
+        (object_reference
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (keyword_off)))))))
+
+==================
+ddl-rest/drop-index-move — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP INDEX i ON dbo.t WITH (MOVE TO p (c), FILESTREAM_ON fg);
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_index
+        (keyword_drop)
+        (keyword_index)
+        name: (object_reference
+          name: (identifier))
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            (keyword_to)
+            value: (identifier)
+            (identifier))
+          (option
+            name: (identifier)
+            value: (identifier)))))))
+
+==================
+ddl-rest/drop-index-default — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP INDEX i ON dbo.t WITH (MOVE TO "default", FILESTREAM_ON "default");
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_index
+        (keyword_drop)
+        (keyword_index)
+        name: (object_reference
+          name: (identifier))
+        (keyword_on)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            (keyword_to)
+            value: (identifier))
+          (option
+            name: (identifier)
+            value: (identifier)))))))
 
 ==================
 ddl-rest/routes-select-all — LocalDB 17.0.1000.7 levels 100-170: accepts

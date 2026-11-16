@@ -193,19 +193,101 @@ export default {
       seq(
         $.keyword_create,
         optional($.keyword_unique),
+        optional(choice($.keyword_primary, $.keyword_selective)),
         optional($._index_kind),
-        optional(field('storage', choice($.keyword_columnstore, $.identifier))),
+        optional(
+          field(
+            'storage',
+            choice($.keyword_columnstore, alias($.keyword_xml, $.identifier), $.identifier),
+          ),
+        ),
         $.keyword_index,
         field('name', $.identifier),
         $.keyword_on,
         $.object_reference,
         optional($.ordered_columns),
-        optional(seq($.keyword_order, paren_list($.identifier, true))),
-        optional($.covering_columns),
-        optional($.where),
-        optional($.with_options),
-        optional($.on_filegroup),
+        optional($._create_index_suffix),
       ),
+    ),
+
+  // A nonempty suffix shares trailing states without inheriting header fields.
+  _create_index_suffix: ($) => {
+    const clauses = [
+      seq($.keyword_order, paren_list($.identifier, true)),
+      $.covering_columns,
+      $.where,
+      $._index_using_or_paths,
+      choice(
+        alias($._create_index_with_options, $.with_options),
+        alias($._legacy_index_with_clause, $.with_clause),
+      ),
+      $.on_filegroup,
+      alias($._index_filestream_placement, $.table_data_placement),
+    ];
+    return prec.right(
+      choice(...clauses.map((clause, i) => seq(clause, ...clauses.slice(i + 1).map(optional)))),
+    );
+  },
+
+  _legacy_index_with_clause: ($) =>
+    seq($.keyword_with, comma_list(alias($._legacy_index_option, $.option), true)),
+
+  // Bare legacy switches have no whitespace-separated value; ON starts data placement.
+  _legacy_index_option: ($) =>
+    seq(field('name', $.identifier), optional(seq('=', field('value', $._option_value)))),
+
+  _index_using_or_paths: ($) =>
+    choice(
+      seq(
+        $.keyword_using,
+        choice(
+          $.identifier,
+          seq(
+            $.keyword_xml,
+            $.keyword_index,
+            $.identifier,
+            optional(
+              seq(
+                $.keyword_for,
+                choice(
+                  $.identifier,
+                  $.keyword_value,
+                  $.keyword_property,
+                  paren_list($.identifier, true),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+      seq(
+        optional(seq($.keyword_with, $.xmlnamespaces)),
+        $.keyword_for,
+        paren_list(choice($.selective_xml_path, $.literal), true),
+      ),
+    ),
+
+  _create_index_with_options: ($) =>
+    seq(
+      $.keyword_with,
+      paren_list(
+        choice(
+          $.option,
+          alias($._compression_partitions, $.option),
+          alias($._move_to_option, $.option),
+          alias($._index_tuple_option, $.option),
+        ),
+        true,
+      ),
+    ),
+
+  _index_tuple_option: ($) =>
+    seq(field('name', $.identifier), '=', paren_list(choice($.literal, $.option), true)),
+
+  _index_filestream_placement: ($) =>
+    seq(
+      field('option', alias($.keyword_filestream_on, $.identifier)),
+      field('filegroup', $.identifier),
     ),
 
   covering_columns: ($) => seq($.keyword_include, paren_list($.identifier, true)),

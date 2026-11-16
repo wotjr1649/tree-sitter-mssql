@@ -23,6 +23,7 @@ export default {
   keyword_rule: (_) => make_keyword('rule'),
   keyword_cryptographic: (_) => make_keyword('cryptographic'),
   keyword_aggregate: (_) => make_keyword('aggregate'),
+  keyword_selective: (_) => make_keyword('selective'),
   keyword_binding: (_) => make_keyword('binding'),
   keyword_credential: (_) => make_keyword('credential'),
   keyword_application: (_) => make_keyword('application'),
