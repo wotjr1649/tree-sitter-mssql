@@ -138,12 +138,23 @@ export default {
         field('name', $.identifier),
         optional(seq($.keyword_authorization, $.identifier)),
         choice(
-          seq($._key_source, optional($.private_key_clause)),
+          seq(
+            $._key_source,
+            optional(
+              choice($.private_key_clause, alias($._certificate_import_options, $.with_clause)),
+            ),
+          ),
           seq(optional($.encryption_mechanism), $.with_clause),
         ),
         optional($.active_for_clause),
       ),
     ),
+
+  _certificate_import_options: ($) =>
+    seq($.keyword_with, alias($._certificate_format, $.option), optional(seq(',', $._private_key))),
+
+  _certificate_format: ($) =>
+    seq(field('name', alias($.keyword_format, $.identifier)), '=', field('value', $.literal)),
 
   // ALTER CERTIFICATE name { REMOVE PRIVATE KEY | WITH PRIVATE KEY (...) | WITH ACTIVE FOR BEGIN_DIALOG = { ON | OFF } }
   alter_certificate: ($) =>

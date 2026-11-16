@@ -1,0 +1,34 @@
+{"id":"surface-fix-ddl/timestamp_unnamed","sha256":"bc0c605e652d58301c60a7316f6a9d2a04d952758af5970d7947a65c51fe3a1b","source":"CREATE TABLE t (id int, timestamp);"}
+{"id":"surface-fix-ddl/timestamp_named","sha256":"95501a3e7bf5e3720342ad9e626d403f60b6d9b8c3ec175210bddc7f66be7930","source":"CREATE TABLE t (v timestamp);"}
+{"id":"surface-fix-ddl/timestamp_null","sha256":"93c7e04f4c7feab5664885925d377ffc2327efda0db1b3df4f41f2aa585bc2dc","source":"CREATE TABLE t (timestamp NULL);"}
+{"id":"surface-fix-ddl/rowversion_unnamed","sha256":"b17de7b44c4eeecc8f89b6fb9cef455057e90984c5696b059a2e611fa532593b","source":"CREATE TABLE t (id int, rowversion);"}
+{"id":"surface-fix-ddl/timestamp_only","sha256":"e3a34f071b80eadad3772fa0f55727c5f4ee9f665bdc476fb3721e8bd981b3bb","source":"CREATE TABLE t (timestamp);"}
+{"id":"surface-fix-ddl/timestamp_duplicate","sha256":"ed2f36adf746aac13f40526c137219d69661f805d5d0736e0904d7975c9b3d5b","source":"CREATE TABLE t (timestamp, timestamp);"}
+{"id":"surface-fix-ddl/table_trailing","sha256":"269b216f392fe0d5df6dbb65970083258200fe03e05c5d0aaa48a7ce937f7d73","source":"CREATE TABLE t (id int,);"}
+{"id":"surface-fix-ddl/table_double_comma","sha256":"33a246eed367281af5f4db9a6cd1b208bd89c4993264283b51e6e5a1f9e3dd9d","source":"CREATE TABLE t (id int,,);"}
+{"id":"surface-fix-ddl/table_var_trailing","sha256":"a7bf5f32991563687f2051b80bb69c5e06cb1b91e86bf2d664979ec710a32d2e","source":"DECLARE @t TABLE (id int,);"}
+{"id":"surface-fix-ddl/column_pk_columns","sha256":"febf3fa5bb37b66cd38520d6284ae7ad743b90943c2bc460c4d46101558237c2","source":"CREATE TABLE t (id int CONSTRAINT pk PRIMARY KEY (id));"}
+{"id":"surface-fix-ddl/column_unique_columns","sha256":"33d88ca2699a44097c9e5373e321ff4cc1c4edff16c8277d05766f24d93ae5c7","source":"CREATE TABLE t (id int UNIQUE (id));"}
+{"id":"surface-fix-ddl/column_pk_other","sha256":"cdc93b6398af9805828225a283553ddd3ffe5e50e6b79c60d1f7b23ad8477302","source":"CREATE TABLE t (id int PRIMARY KEY (other));"}
+{"id":"surface-fix-ddl/column_pk_multiple","sha256":"f80d7d51b5413def62f6cf88a383f77feddfa7b9eaa93c5ca06bed18c5c8c726","source":"CREATE TABLE t (id int PRIMARY KEY (id, other), other int);"}
+{"id":"surface-fix-ddl/assembly_concat","sha256":"4beda87b528e705fa1a17f27b8e039722b997827a0db873a5d843e1fd583834e","source":"DECLARE @path nvarchar(100) = N'C:\\'; CREATE ASSEMBLY a FROM @path + 'a.dll';"}
+{"id":"surface-fix-ddl/assembly_multiple","sha256":"2bb5321500610660e1e0dc857c26fa020d3376102bb5d8893bf5f3cf4b6240d0","source":"CREATE ASSEMBLY a FROM 'a.dll', 'b.dll';"}
+{"id":"surface-fix-ddl/assembly_arithmetic","sha256":"82f679304432c51bb3cd06871c90ab27dcb0f1f428559af58bfa97888e901e46","source":"CREATE ASSEMBLY a FROM 1+2;"}
+{"id":"surface-fix-ddl/partition_string","sha256":"79a9e624ad733147840500da939426169fbf6b77ed6535bcf7cfc4af491a71d6","source":"CREATE PARTITION SCHEME ps AS PARTITION pf ALL TO ('PRIMARY');"}
+{"id":"surface-fix-ddl/partition_numeric","sha256":"ab108908bc37b444904773032dcc5c919b90b5131a68e462e88e3ead62fa1ec1","source":"CREATE PARTITION SCHEME ps AS PARTITION pf TO (1);"}
+{"id":"surface-fix-ddl/crypto_from","sha256":"68e407bd068e672d15fd7f51c551b45d9a36662f0c850f7e7a428860ee840269","source":"ALTER CRYPTOGRAPHIC PROVIDER p FROM FILE = 'p.dll';"}
+{"id":"surface-fix-ddl/crypto_from_with","sha256":"9518ad55d0c67517912a104d735d21675cb9675d6b81999b4d032fe3cda9b148","source":"ALTER CRYPTOGRAPHIC PROVIDER p FROM FILE = 'p.dll' WITH ENABLE;"}
+{"id":"surface-fix-ddl/crypto_enable","sha256":"2a9abb59c3bc9f4960ea6a7be07ea16b71b9418e16feb71cabf0d8c1ea7ea83e","source":"ALTER CRYPTOGRAPHIC PROVIDER p ENABLE;"}
+{"id":"surface-fix-ddl/crypto_with_enable","sha256":"67b5f7d039be9e50b30383b665d75307f1ae4995d02b0ae83828f501d57d830b","source":"ALTER CRYPTOGRAPHIC PROVIDER p WITH ENABLE;"}
+{"id":"surface-fix-ddl/external_language","sha256":"a77f83540a6fc22fba6a1583e942cc9d0394d3a6a38aead0e6789ed816d373e3","source":"GRANT EXECUTE EXTERNAL SCRIPT ON EXTERNAL LANGUAGE::Java TO u;"}
+{"id":"surface-fix-ddl/external_library","sha256":"c0cf4fa628bb59cccd248cd5979c48fd4baaae37441f67c650133255c36984d4","source":"GRANT EXECUTE ON EXTERNAL LIBRARY::lib TO u;"}
+{"id":"surface-fix-ddl/drop_ag","sha256":"70ecd4db477ae3cbbadc2907569713b8c8a150a09bcea6ea8572751ecb780de6","source":"DROP AVAILABILITY GROUP g;"}
+{"id":"surface-fix-ddl/drop_ag_exists","sha256":"89510a20a34dde71f740abccf50761c15cf2538036fd8f248b8c582c348262cc","source":"DROP AVAILABILITY GROUP IF EXISTS g;"}
+{"id":"surface-fix-ddl/spatial_negative","sha256":"062407d3daae72d8d1f290b630be552873a8bd1e2ee9e9bdbf92c29cf3d08558","source":"CREATE SPATIAL INDEX ix ON t(g) WITH (BOUNDING_BOX=(-1,-2,3,4));"}
+{"id":"surface-fix-ddl/certificate_pfx","sha256":"715a2d5d36a6c8a771b282eb2cedf4115d612ed407456265bcef782c2f513838","source":"CREATE CERTIFICATE c FROM FILE = 'c.pfx' WITH FORMAT = 'PFX', PRIVATE KEY (DECRYPTION BY PASSWORD = 'p');"}
+{"id":"surface-fix-ddl/certificate_format_only","sha256":"0311da12674604efee944fc023a5be5c2dd0d7567208ffa6c97c6e195e5755c3","source":"CREATE CERTIFICATE c FROM FILE = 'c.pfx' WITH FORMAT = 'PFX';"}
+{"id":"surface-fix-ddl/certificate_private_only","sha256":"36e3da345e0f9ebbf5270af0b6525d240fc4c0fdbfb7e0bb558712ed31d71b88","source":"CREATE CERTIFICATE c FROM FILE = 'c.pfx' WITH PRIVATE KEY (DECRYPTION BY PASSWORD = 'p');"}
+{"id":"surface-fix-ddl/ctas","sha256":"9915d2b08bb7492093edf4b536308f18095060baf76c00d799047695acd47655","source":"CREATE TABLE t WITH (DISTRIBUTION = ROUND_ROBIN) AS SELECT 1 AS x;"}
+{"id":"surface-fix-ddl/ctas_cte","sha256":"2b2ca00e53679f5d57740f30854e50de8e7bb654bb433d299f1a06499de48ff9","source":"CREATE TABLE t WITH (DISTRIBUTION = HASH(x)) AS WITH q AS (SELECT 1 AS x) SELECT x FROM q;"}
+{"id":"surface-fix-ddl/ctas_bare","sha256":"62bed3eceb9af27874ce5a9093f203cdce7836da94fe03e2b6720c615a9a4465","source":"CREATE TABLE t AS SELECT 1 AS x;"}
+{"id":"surface-fix-ddl/column_encrypted","sha256":"cf1e3b8db8d8f22cd7bc3bc5fc5c13b6079220cd6d9f46b8d3cf2608790bfc70","source":"ALTER TABLE t ALTER COLUMN c VARCHAR(50) ENCRYPTED WITH (COLUMN_ENCRYPTION_KEY=k,ENCRYPTION_TYPE=RANDOMIZED,ALGORITHM='AEAD_AES_256_CBC_HMAC_SHA_256') NULL;"}

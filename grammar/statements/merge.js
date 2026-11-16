@@ -1,4 +1,9 @@
-import { aliased_with_columns, comma_list, write_target } from '../helpers.js';
+import {
+  aliased_with_columns,
+  comma_list,
+  wrapped_in_parenthesis,
+  write_target,
+} from '../helpers.js';
 
 // The optional `AND <predicate>` a match condition may carry, shared by
 // all three `_when_*` rules below.
@@ -42,9 +47,18 @@ export default {
       write_target($),
       optional($._alias),
       $.keyword_using,
-      choice($.subquery, $.invocation, $.object_reference),
-      optional($.table_hint),
-      aliased_with_columns($),
+      $._merge_source,
+    ),
+
+  // Keep source alternatives outside the optional target prefix to bound inherited field maps.
+  _merge_source: ($) =>
+    choice(
+      seq(
+        choice($.subquery, $.invocation, $.object_reference, wrapped_in_parenthesis($.values)),
+        optional($.table_hint),
+        aliased_with_columns($),
+      ),
+      wrapped_in_parenthesis(seq($._relation_with_hint, repeat1(choice($.join, $.cross_join)))),
     ),
 
   // SQL Server allows INSERT only under NOT MATCHED [BY TARGET], and

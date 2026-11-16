@@ -19,6 +19,7 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
     loop {
         let node = cursor.node();
         scalar_predicate(node, source, &mut out);
+        surface_shapes(node, source, &mut out);
         match node.kind() {
             "invocation" => gap_invocation(node, source, &mut out),
             "binary_expression" | "term" | "exec_argument" => gap_scalar(node, source, &mut out),
@@ -924,18 +925,20 @@ fn scalar_function_return(function: Node, out: &mut Vec<Violation>) {
 /// in the query, subqueries included). A set operation is exempt. Evidence: SQL Server 2025 LocalDB
 /// 17.0.1000.7, levels 100-170, oracle set `context/cte-*` and cte-none: Msg 422 for a FROM-less
 /// SELECT (also with two CTEs); accepted with FROM in the query or a subquery, for UNION, and for
-/// INSERT and UPDATE.
+/// INSERT and UPDATE. A WITH XMLNAMESPACES alone is not a CTE; FOR also permits a FROM-less
+/// query (surface-fix-constraints, LocalDB 17.0.1000.7, levels 100-170).
 fn cte_table_source(statement: Node, out: &mut Vec<Violation>) {
     let mut cursor = statement.walk();
     let children: Vec<Node> = statement.named_children(&mut cursor).collect();
     if children.first().map(|n| n.kind()) != Some("keyword_with")
+        || !children.iter().any(|n| n.kind() == "cte")
         || !children.iter().any(|n| n.kind() == "query_specification")
     {
         return;
     }
     let mut stack: Vec<Node> = children.into_iter().filter(|n| n.kind() != "cte").collect();
     while let Some(n) = stack.pop() {
-        if matches!(n.kind(), "from" | "relation") {
+        if matches!(n.kind(), "from" | "relation" | "for_clause") {
             return;
         }
         let mut c = n.walk();
@@ -2972,14 +2975,16 @@ fn assigned_keyword(option: Option<&Node>, key: &str, words: &[&str], source: &[
 }
 
 /// BACKUP CERTIFICATE ... WITH: one FORMAT = 'string'; the PRIVATE KEY lists together need FILE =
-/// 'string' and take FILE, ALGORITHM = 'string', ENCRYPTION BY and DECRYPTION BY PASSWORD =
-/// 'string' once each (`cert-pk-*`: Msg 102 for a repeat, a variable, an unknown key or no FILE).
+/// 'string' with DER (also the default), and take FILE, ALGORITHM = 'string', ENCRYPTION BY and
+/// DECRYPTION BY PASSWORD = 'string' once each. Any non-DER format permits an inline key at parse
+/// time (surface-fix-constraints, LocalDB 17.0.1000.7, levels 100-170).
 fn backup_certificate(children: &[Node], source: &[u8], out: &mut Vec<Violation>) {
     let Some(with) = children.iter().position(|n| n.kind() == "keyword_with") else {
         return;
     };
     let mut in_key = false;
     let mut any_key = false;
+    let mut inline_key = false;
     let mut seen: Vec<String> = Vec::new();
     for node in &children[with..] {
         let (name, ok) = match node.kind() {
@@ -2993,6 +2998,17 @@ fn backup_certificate(children: &[Node], source: &[u8], out: &mut Vec<Violation>
             }
             "option" => {
                 let name = option_name(*node, source);
+                if !in_key && name == "FORMAT" {
+                    inline_key = node.child_by_field_name("value").is_some_and(|v| {
+                        let text = upper_text(v, source);
+                        let text = text.strip_prefix('N').unwrap_or(&text);
+                        string_literal(v, source)
+                            && text
+                                .strip_prefix('\'')
+                                .and_then(|s| s.strip_suffix('\''))
+                                .is_some_and(|s| s.trim_end_matches(' ') != "DER")
+                    });
+                }
                 let ok = if in_key {
                     matches!(name.as_str(), "FILE" | "ALGORITHM")
                 } else {
@@ -3025,10 +3041,10 @@ fn backup_certificate(children: &[Node], source: &[u8], out: &mut Vec<Violation>
         };
         out.push(violation("backup-certificate-options", problem, *node));
     }
-    if any_key && !seen.iter().any(|n| n == "FILE") {
+    if any_key && !inline_key && !seen.iter().any(|n| n == "FILE") {
         out.push(violation(
             "backup-certificate-options",
-            "PRIVATE KEY needs FILE = 'path'".into(),
+            "DER PRIVATE KEY needs FILE = 'path'".into(),
             children[with],
         ));
     }
@@ -3277,6 +3293,7 @@ fn rest_create_index(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         || (json && has_child(node, "keyword_unique"))
         || wrong_columns
         || wrong_mode
+        || columns.is_none() && !(storage == "COLUMNSTORE" && has_child(node, "keyword_clustered"))
     {
         out.push(violation(
             "ddl-rest-index-form",
@@ -3692,6 +3709,192 @@ fn ddl_rest_closing(node: Node, source: &[u8], out: &mut Vec<Violation>) {
     }
 }
 
+/// Surface gaps, LocalDB 17.0.1000.7, levels 100-170 (surface-fix-gaps): a BULK rowset
+/// needs an alias (491); without an explicit schema, CSV needs FORMATFILE and the legacy
+/// form needs FORMATFILE or SINGLE_* (472/15808). SET assignments cannot feed UNION,
+/// EXCEPT or INTERSECT (10734). CREATE SCHEMA owns its batch (111/156).
+/// surface-fix-ddl-classification measures crypto WITH (156/319), reserved USER principals (156),
+/// scalar CTAS variables (112) and CETAS options (102); platform CTAS/CETAS clauses remain outside.
+fn surface_shapes(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let invalid = match node.kind() {
+        "invocation" if invocation_name(node, source).as_deref() == Some("OPENROWSET") => {
+            let mut c = node.walk();
+            let args: Vec<_> = node.children_by_field_name("parameter", &mut c).collect();
+            let bulk = args
+                .first()
+                .and_then(|a| a.child_by_field_name("value"))
+                .is_some_and(|v| upper_text(v, source) == "BULK");
+            if !bulk || node.parent().is_none_or(|p| p.kind() != "relation") {
+                return;
+            }
+            let relation = node.parent().unwrap();
+            let schema = relation
+                .next_named_sibling()
+                .filter(|n| n.kind() == "openjson_schema");
+            let alias = relation.child_by_field_name("alias").is_some()
+                || schema
+                    .and_then(|s| s.next_named_sibling())
+                    .is_some_and(|n| {
+                        n.kind() == "identifier"
+                            || n.kind() == "keyword_as"
+                                && n.next_named_sibling()
+                                    .is_some_and(|n| n.kind() == "identifier")
+                    });
+            let mut format = None;
+            let mut formatfile = false;
+            let mut single = false;
+            for arg in args {
+                let v = arg.child_by_field_name("value").unwrap_or(arg);
+                if v.kind() == "binary_expression" {
+                    if let Some(left) = v.child_by_field_name("left") {
+                        match upper_text(left, source).as_str() {
+                            "FORMATFILE" => formatfile = true,
+                            "FORMAT" => {
+                                format = v
+                                    .child_by_field_name("right")
+                                    .map(|r| upper_text(r, source))
+                            }
+                            _ => {}
+                        }
+                    }
+                } else {
+                    single |= matches!(
+                        upper_text(v, source).as_str(),
+                        "SINGLE_BLOB" | "SINGLE_CLOB" | "SINGLE_NCLOB"
+                    );
+                }
+            }
+            !alias
+                || schema.is_none()
+                    && !formatfile
+                    && match format.as_deref() {
+                        None => !single,
+                        Some("'CSV'" | "N'CSV'") => true,
+                        _ => false,
+                    }
+        }
+        "term"
+            if node
+                .parent()
+                .is_some_and(|p| p.kind() == "select_expression") =>
+        {
+            node.child_by_field_name("value").is_some_and(|v| {
+                v.kind() == "binary_expression"
+                    && v.child_by_field_name("operator")
+                        .is_some_and(|n| n.kind() == "=")
+                    && v.child_by_field_name("left")
+                        .is_some_and(|n| local_variable(n, source))
+                    && ancestor(node, "query_specification")
+                        .and_then(|q| q.parent())
+                        .is_some_and(|p| p.kind() == "set_operation")
+            })
+        }
+        "alter_cryptographic_provider" => has_child(node, "with_clause"),
+        "field" => {
+            node.named_child_count() == 1
+                && local_variable(node, source)
+                && ancestor(node, "query_specification").is_some()
+                && ancestor(node, "create_table").is_some_and(|t| {
+                    has_child(t, "keyword_as")
+                        && !has_child(t, "keyword_external")
+                        && !has_child(t, "column_definitions")
+                })
+        }
+        "create_table" if has_child(node, "keyword_external") && has_child(node, "keyword_as") => {
+            node.named_children(&mut node.walk())
+                .find(|n| n.kind() == "with_options")
+                .map(direct_options)
+                .unwrap_or_default()
+                .iter()
+                .any(|o| {
+                    !matches!(
+                        option_name(*o, source).as_str(),
+                        // Preserve documented SQL Server/Synapse and MI options, even when this engine lacks the platform feature.
+                        "LOCATION"
+                            | "DATA_SOURCE"
+                            | "FILE_FORMAT"
+                            | "PARTITION"
+                            | "REJECT_TYPE"
+                            | "REJECT_VALUE"
+                            | "REJECT_SAMPLE_VALUE"
+                    )
+                })
+        }
+        "identifier"
+            if upper_text(node, source) == "USER"
+                && node.parent().is_some_and(|p| p.kind() == "grant_statement") =>
+        {
+            let mut previous = node.prev_named_sibling();
+            let mut principal = false;
+            while let Some(n) = previous {
+                if matches!(n.kind(), "keyword_to" | "keyword_from") {
+                    principal = true;
+                    break;
+                }
+                if matches!(n.kind(), "keyword_on" | "keyword_as") {
+                    break;
+                }
+                previous = n.prev_named_sibling();
+            }
+            principal
+        }
+        "create_schema" => {
+            let Some(statement) = node.parent().filter(|p| p.kind() == "statement") else {
+                return;
+            };
+            if statement.parent().is_none_or(|p| p.kind() != "batch") {
+                return;
+            }
+            let previous = statement.prev_named_sibling().filter(|n| !n.is_extra());
+            let next = statement
+                .next_named_sibling()
+                .filter(|n| !n.is_extra() && n.kind() != "go_statement");
+            previous.is_some()
+                || next.is_some_and(|next| {
+                    let terminated = statement.next_sibling().is_some_and(|n| n.kind() == ";");
+                    let element = next.named_child(0);
+                    terminated
+                        || element.is_none_or(|n| match n.kind() {
+                            "create_table" => has_child(n, "keyword_external"),
+                            "create_view" | "grant_statement" => false,
+                            _ => true,
+                        })
+                })
+        }
+        "alter_search_property_list" if has_child(node, "keyword_add") => {
+            let options = node
+                .named_children(&mut node.walk())
+                .find(|n| n.kind() == "with_options")
+                .map(direct_options)
+                .unwrap_or_default();
+            let names: Vec<_> = options.iter().map(|n| option_name(*n, source)).collect();
+            let ordered = names == ["PROPERTY_SET_GUID", "PROPERTY_INT_ID"]
+                || names
+                    == [
+                        "PROPERTY_SET_GUID",
+                        "PROPERTY_INT_ID",
+                        "PROPERTY_DESCRIPTION",
+                    ];
+            !ordered
+                || options.iter().any(|o| {
+                    if option_name(*o, source) == "PROPERTY_INT_ID" {
+                        o.child_by_field_name("value").is_none_or(|v| {
+                            v.kind() != "literal"
+                                || !upper_text(v, source).bytes().all(|b| b.is_ascii_digit())
+                                || !upper_text(v, source).parse::<i32>().is_ok_and(|n| n >= 0)
+                        }) || !has_child(*o, "=")
+                    } else {
+                        assigned_value(*o, source) != Some('s')
+                    }
+                })
+        }
+        _ => false,
+    };
+    if invalid {
+        out.push(violation("surface-shape", "rowset, set assignment, schema batch or search-property shape is rejected by the engine".into(), node));
+    }
+}
+
 /// R20 gap-forms, LocalDB 17.0.1000.7, levels 100-170: tree-local call boundaries
 /// (102/156/174). Qualified user functions are not built-ins; write targets take constants
 /// or local variables, not general expressions. Keep the tree for queries and consumers.
@@ -3706,6 +3909,59 @@ fn gap_invocation(node: Node, source: &[u8], out: &mut Vec<Violation>) {
     let invalid = match name.as_str() {
         "[COUNT]" | "\"COUNT\"" | "[COALESCE]" | "\"COALESCE\"" => true,
         "COALESCE" => args.len() < 2,
+        "DATENAME" => args.first().is_some_and(|a| {
+            let v = a.child_by_field_name("value").unwrap_or(*a);
+            let text = upper_text(v, source);
+            let text = text
+                .strip_prefix('[')
+                .and_then(|s| s.strip_suffix(']'))
+                .or_else(|| text.strip_prefix('"').and_then(|s| s.strip_suffix('"')))
+                .unwrap_or(&text);
+            v.kind() != "field"
+                || !matches!(
+                    text,
+                    "YEAR"
+                        | "YY"
+                        | "YYYY"
+                        | "QUARTER"
+                        | "QQ"
+                        | "Q"
+                        | "MONTH"
+                        | "MM"
+                        | "M"
+                        | "DAYOFYEAR"
+                        | "DY"
+                        | "Y"
+                        | "DAY"
+                        | "DD"
+                        | "D"
+                        | "WEEK"
+                        | "WK"
+                        | "WW"
+                        | "WEEKDAY"
+                        | "DW"
+                        | "W"
+                        | "HOUR"
+                        | "HH"
+                        | "MINUTE"
+                        | "MI"
+                        | "N"
+                        | "SECOND"
+                        | "SS"
+                        | "S"
+                        | "MILLISECOND"
+                        | "MS"
+                        | "MICROSECOND"
+                        | "MCS"
+                        | "NANOSECOND"
+                        | "NS"
+                        | "TZOFFSET"
+                        | "TZ"
+                        | "ISO_WEEK"
+                        | "ISOWK"
+                        | "ISOWW"
+                )
+        }),
         "OPENQUERY" => {
             args.len() != 2
                 || args.first().is_some_and(|a| {
@@ -3796,9 +4052,11 @@ fn gap_scalar(node: Node, source: &[u8], out: &mut Vec<Violation>) {
                             && n.child_by_field_name("operator")
                                 .is_some_and(|o| o.kind() == "=")
                             && n.child_by_field_name("left").is_some_and(|l| {
-                                l.kind() == "field"
-                                    && l.named_child_count() == 1
-                                    && l.named_child(0).is_some_and(|id| id.kind() == "identifier")
+                                string_literal(l, source)
+                                    || l.kind() == "field"
+                                        && l.named_child_count() == 1
+                                        && l.named_child(0)
+                                            .is_some_and(|id| id.kind() == "identifier")
                             }))
                 })
         }
@@ -3869,9 +4127,20 @@ fn gap_name(node: Node, source: &[u8], out: &mut Vec<Violation>) {
             && parent.kind() == "object_reference"
             && parent.child_by_field_name("schema").is_some())
             || in_name
-                && matches!(text.as_str(), "TABLE" | "ESCAPE" | "FROM" | "FILLFACTOR")
+                && matches!(
+                    text.as_str(),
+                    "TABLE" | "ESCAPE" | "FROM" | "FILLFACTOR" | "EXTERNAL"
+                )
                 && !vector_key
                 && ancestor(node, "set_statement").is_none()
+            || text == "EXTERNAL" && parent.kind() == "relation"
+            || text == "USER"
+                && (parent.kind() == "object_reference"
+                    && parent.parent().is_none_or(|p| p.kind() != "field")
+                    || parent.kind() == "relation"
+                    || parent.kind() == "field"
+                        && parent.named_child_count() > 1
+                        && parent.named_child(0) != Some(node))
         {
             out.push(violation(
                 "gap-reserved-name",
@@ -3956,14 +4225,17 @@ fn gap_options(node: Node, source: &[u8], out: &mut Vec<Violation>) {
                 .collect();
             parts
                 .first()
-                .is_some_and(|n| upper_text(*n, source) == "MAXDOP")
-                && (parts.len() != 2
-                    || !upper_text(parts[1], source)
-                        .bytes()
-                        .all(|b| b.is_ascii_digit())
-                    || !upper_text(parts[1], source)
-                        .parse::<u32>()
-                        .is_ok_and(|n| n <= 32767))
+                .is_some_and(|n| upper_text(*n, source) == "DISABLE_OPTIMIZED_PLAN_FORCING")
+                || parts
+                    .first()
+                    .is_some_and(|n| upper_text(*n, source) == "MAXDOP")
+                    && (parts.len() != 2
+                        || !upper_text(parts[1], source)
+                            .bytes()
+                            .all(|b| b.is_ascii_digit())
+                        || !upper_text(parts[1], source)
+                            .parse::<u32>()
+                            .is_ok_and(|n| n <= 32767))
         }
         "constraint" => {
             has_child(node, "keyword_columnstore")
@@ -4029,6 +4301,12 @@ fn gap_options(node: Node, source: &[u8], out: &mut Vec<Violation>) {
                 && value.is_some_and(|v| v.kind() != "object_reference" || !has_child(v, "."));
             compression_partition
                 || history
+                || (ancestor(node, "create_table")
+                    .is_some_and(|t| has_child(t, "keyword_external"))
+                    && matches!(name.as_str(), "DATA_SOURCE" | "FILE_FORMAT")
+                    && value.is_none_or(|v| {
+                        v.kind() != "identifier" || upper_text(v, source).starts_with('@')
+                    }))
                 || bad_key_option
                 || table_rebuild
                 || lock_escalation
@@ -4444,6 +4722,137 @@ mod tests {
             .into_iter()
             .map(|v| v.rule)
             .collect()
+    }
+
+    #[test]
+    fn surface_constraint_neighbours_match_the_engine() {
+        let verdict: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../oracle/verdicts/localdb-17.0.1000.7.surface-fix-constraints.json"
+        ))
+        .unwrap();
+        for line in include_str!("../../../oracle/probes/surface-fix-constraints.jsonl").lines() {
+            let case: serde_json::Value = serde_json::from_str(line).unwrap();
+            let id = case["id"].as_str().unwrap();
+            let sql = case["source"].as_str().unwrap();
+            let accepted = verdict["verdicts"][id]
+                .as_object()
+                .unwrap()
+                .values()
+                .any(|v| v.as_array().is_some_and(|a| a.is_empty()));
+            assert_eq!(rules(sql).is_empty(), accepted, "{id}: {:?}", rules(sql));
+        }
+    }
+
+    #[test]
+    fn surface_gap_neighbours_match_the_engine() {
+        let verdict: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../oracle/verdicts/localdb-17.0.1000.7.surface-fix-gaps.json"
+        ))
+        .unwrap();
+        for line in include_str!("../../../oracle/probes/surface-fix-gaps.jsonl").lines() {
+            let case: serde_json::Value = serde_json::from_str(line).unwrap();
+            let id = case["id"].as_str().unwrap();
+            let sql = case["source"].as_str().unwrap();
+            let accepted = verdict["verdicts"][id]
+                .as_object()
+                .unwrap()
+                .values()
+                .any(|v| v.as_array().is_some_and(|a| a.is_empty()));
+            let tree = parse(sql);
+            assert_eq!(
+                !tree.root_node().has_error() && rules(sql).is_empty(),
+                accepted,
+                "{id}: {:?}",
+                rules(sql)
+            );
+        }
+    }
+
+    #[test]
+    fn surface_ddl_classification_neighbours_match_the_engine() {
+        let verdict: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../oracle/verdicts/localdb-17.0.1000.7.surface-fix-ddl-classification.json"
+        ))
+        .unwrap();
+        for line in
+            include_str!("../../../oracle/probes/surface-fix-ddl-classification.jsonl").lines()
+        {
+            let case: serde_json::Value = serde_json::from_str(line).unwrap();
+            let id = case["id"].as_str().unwrap();
+            let sql = case["source"].as_str().unwrap();
+            let accepted = verdict["verdicts"][id]
+                .as_object()
+                .unwrap()
+                .values()
+                .any(|v| v.as_array().is_some_and(|a| a.is_empty()));
+            let tree = parse(sql);
+            if accepted {
+                assert!(
+                    !tree.root_node().has_error() && rules(sql).is_empty(),
+                    "{id}: {:?}",
+                    rules(sql)
+                );
+            } else if id.ends_with("crypto_with_enable")
+                || id.ends_with("crypto_with_disable")
+                || id.ends_with("crypto_with_file")
+                || id.ends_with("grant_language_user")
+                || id.ends_with("grant_library_user")
+                || id.ends_with("cetas_format_options")
+                || id.ends_with("cetas_format_options_file")
+                || id.ends_with("cetas_bad_option")
+                || id.ends_with("ctas_declared_variable")
+                || id.ends_with("ctas_undeclared_variable")
+                || id.ends_with("ctas_variable_where")
+                || id.ends_with("ctas_variable_function")
+                || id.ends_with("ctas_subquery_variable")
+                || id.ends_with("ctas_cte_variable")
+            {
+                assert!(!rules(sql).is_empty(), "{id}");
+            } else {
+                assert!(
+                    rules(sql).is_empty(),
+                    "platform/context rejection {id}: {:?}",
+                    rules(sql)
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn cetas_options_preserve_documented_platform_shapes() {
+        let verdict: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../oracle/verdicts/localdb-17.0.1000.7.surface-fix-cetas-options.json"
+        ))
+        .unwrap();
+        for line in include_str!("../../../oracle/probes/surface-fix-cetas-options.jsonl").lines() {
+            let case: serde_json::Value = serde_json::from_str(line).unwrap();
+            let id = case["id"].as_str().unwrap();
+            let sql = case["source"].as_str().unwrap();
+            let invalid = id.ends_with("/inline-format-options") || id.ends_with("/unknown-option");
+            assert!(!parse(sql).root_node().has_error(), "{id}");
+            assert_eq!(rules(sql).is_empty(), !invalid, "{id}: {:?}", rules(sql));
+            if invalid {
+                assert!(
+                    verdict["verdicts"][id]
+                        .as_object()
+                        .unwrap()
+                        .values()
+                        .all(|v| v.as_array().is_some_and(|a| a == &[serde_json::json!(102)])),
+                    "{id}"
+                );
+            } else {
+                assert!(
+                    verdict["verdicts"][id]
+                        .as_object()
+                        .unwrap()
+                        .values()
+                        .all(|v| v.as_array().is_some_and(|a| a.is_empty()
+                            || a == &[serde_json::json!(46553)]
+                            || id.ends_with("/mi-partition"))),
+                    "{id}"
+                );
+            }
+        }
     }
 
     #[test]

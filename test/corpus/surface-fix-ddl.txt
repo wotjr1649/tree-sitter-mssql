@@ -1,0 +1,848 @@
+==================
+surface-fix-ddl/timestamp_unnamed — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TABLE t (id int, timestamp);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        name: (object_reference
+          name: (identifier))
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (keyword_int))
+          (column_definition
+            type: (keyword_timestamp)))))))
+
+==================
+surface-fix-ddl/timestamp_named — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TABLE t (v timestamp);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        name: (object_reference
+          name: (identifier))
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (keyword_timestamp)))))))
+
+==================
+surface-fix-ddl/timestamp_null — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TABLE t (timestamp NULL);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        name: (object_reference
+          name: (identifier))
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (custom_type
+              (object_reference
+                name: (identifier)))))))))
+
+
+==================
+surface-fix-ddl/rowversion_unnamed — LocalDB 17.0.1000.7 levels 100-170: rejects
+==================
+
+CREATE TABLE t (id int, rowversion);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        name: (object_reference
+          name: (identifier))
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (keyword_int))
+          (column_definition
+            name: (identifier)
+            type: (custom_type
+              (object_reference
+                name: (identifier
+                      (MISSING _identifier))))))))))
+
+==================
+surface-fix-ddl/timestamp_only — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TABLE t (timestamp);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        name: (object_reference
+          name: (identifier))
+        (column_definitions
+          (column_definition
+            type: (keyword_timestamp)))))))
+
+==================
+surface-fix-ddl/timestamp_duplicate — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TABLE t (timestamp, timestamp);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        name: (object_reference
+          name: (identifier))
+        (column_definitions
+          (column_definition
+            type: (keyword_timestamp))
+          (column_definition
+            type: (keyword_timestamp)))))))
+
+==================
+surface-fix-ddl/table_trailing — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TABLE t (id int,);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        name: (object_reference
+          name: (identifier))
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)))))))
+
+==================
+surface-fix-ddl/table_double_comma — LocalDB 17.0.1000.7 levels 100-170: rejects
+==================
+
+CREATE TABLE t (id int,,);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        name: (object_reference
+          name: (identifier))
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (keyword_int))
+          (ERROR))))))
+
+==================
+surface-fix-ddl/table_var_trailing — LocalDB 17.0.1000.7 levels 100-170: rejects
+==================
+
+DECLARE @t TABLE (id int,);
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (table_var_declaration
+          (identifier)
+          (keyword_table)
+          (column_definitions
+            (column_definition
+              name: (identifier)
+              type: (keyword_int))
+            (ERROR)))))))
+
+==================
+surface-fix-ddl/column_pk_columns — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TABLE t (id int CONSTRAINT pk PRIMARY KEY (id));
+
+---
+
+(program
+  (batch
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        name: (object_reference
+          name: (identifier))
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)
+            (keyword_constraint)
+            name: (identifier)
+            (keyword_primary)
+            (keyword_key)
+            (ordered_columns
+              (column
+                name: (identifier)))))))))
+
+==================
+surface-fix-ddl/column_unique_columns — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TABLE t (id int UNIQUE (id));
+
+---
+
+(program
+  (batch
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        name: (object_reference
+          name: (identifier))
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)
+            (keyword_unique)
+            (ordered_columns
+              (column
+                name: (identifier)))))))))
+
+==================
+surface-fix-ddl/column_pk_other — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TABLE t (id int PRIMARY KEY (other));
+
+---
+
+(program
+  (batch
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        name: (object_reference
+          name: (identifier))
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)
+            (keyword_primary)
+            (keyword_key)
+            (ordered_columns
+              (column
+                name: (identifier)))))))))
+
+==================
+surface-fix-ddl/column_pk_multiple — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TABLE t (id int PRIMARY KEY (id, other), other int);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        name: (object_reference
+          name: (identifier))
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)
+            (keyword_primary)
+            (keyword_key)
+            (ordered_columns
+              (column
+                name: (identifier))
+              (column
+                name: (identifier))))
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)))))))
+
+==================
+surface-fix-ddl/assembly_concat — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @path nvarchar(100) = N'C:\'; CREATE ASSEMBLY a FROM @path + 'a.dll';
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (nvarchar
+            (keyword_nvarchar)
+            size: (literal))
+          (literal))))
+    (statement
+      (create_assembly
+        (keyword_create)
+        (keyword_assembly)
+        name: (identifier)
+        (keyword_from)
+        (binary_expression
+          left: (field
+            name: (identifier))
+          right: (literal))))))
+
+==================
+surface-fix-ddl/assembly_multiple — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE ASSEMBLY a FROM 'a.dll', 'b.dll';
+
+---
+
+(program
+  (batch
+    (statement
+      (create_assembly
+        (keyword_create)
+        (keyword_assembly)
+        name: (identifier)
+        (keyword_from)
+        (literal)
+        (literal)))))
+
+==================
+surface-fix-ddl/assembly_arithmetic — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE ASSEMBLY a FROM 1+2;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_assembly
+        (keyword_create)
+        (keyword_assembly)
+        name: (identifier)
+        (keyword_from)
+        (binary_expression
+          left: (literal)
+          right: (literal))))))
+
+==================
+surface-fix-ddl/partition_string — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE PARTITION SCHEME ps AS PARTITION pf ALL TO ('PRIMARY');
+
+---
+
+(program
+  (batch
+    (statement
+      (create_partition_scheme
+        (keyword_create)
+        (keyword_partition)
+        (keyword_scheme)
+        name: (identifier)
+        (keyword_as)
+        (keyword_partition)
+        (identifier)
+        (keyword_all)
+        (keyword_to)
+        (literal)))))
+
+==================
+surface-fix-ddl/partition_numeric — LocalDB 17.0.1000.7 levels 100-170: rejects
+==================
+
+CREATE PARTITION SCHEME ps AS PARTITION pf TO (1);
+
+---
+
+(program
+  (ERROR
+    (keyword_create)
+    (keyword_partition)
+    (keyword_scheme)
+    (identifier)
+    (keyword_as)
+    (keyword_partition)
+    (identifier)
+    (keyword_to))
+  (batch))
+
+==================
+surface-fix-ddl/crypto_from — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER CRYPTOGRAPHIC PROVIDER p FROM FILE = 'p.dll';
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_cryptographic_provider
+        (keyword_alter)
+        (keyword_cryptographic)
+        (keyword_provider)
+        (identifier)
+        (keyword_from)
+        (keyword_file)
+        (literal)))))
+
+==================
+surface-fix-ddl/crypto_from_with — LocalDB 17.0.1000.7 levels 100-170: rejects
+==================
+
+ALTER CRYPTOGRAPHIC PROVIDER p FROM FILE = 'p.dll' WITH ENABLE;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_cryptographic_provider
+        (keyword_alter)
+        (keyword_cryptographic)
+        (keyword_provider)
+        (identifier)
+        (keyword_from)
+        (keyword_file)
+        (literal)))
+    (ERROR
+      (keyword_with)
+      (identifier))))
+
+==================
+surface-fix-ddl/crypto_enable — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER CRYPTOGRAPHIC PROVIDER p ENABLE;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_cryptographic_provider
+        (keyword_alter)
+        (keyword_cryptographic)
+        (keyword_provider)
+        (identifier)
+        (keyword_enable)))))
+
+==================
+surface-fix-ddl/crypto_with_enable — LocalDB 17.0.1000.7 levels 100-170: rejects
+==================
+
+ALTER CRYPTOGRAPHIC PROVIDER p WITH ENABLE;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_cryptographic_provider
+        (keyword_alter)
+        (keyword_cryptographic)
+        (keyword_provider)
+        (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)))))))
+
+==================
+surface-fix-ddl/external_language — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT EXECUTE EXTERNAL SCRIPT ON EXTERNAL LANGUAGE::Java TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_execute)
+          (identifier)
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+surface-fix-ddl/external_library — LocalDB 17.0.1000.7 levels 100-170: rejects
+==================
+
+GRANT EXECUTE ON EXTERNAL LIBRARY::lib TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_execute))
+        (keyword_on)
+        (ERROR
+          (keyword_external))
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+surface-fix-ddl/drop_ag — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP AVAILABILITY GROUP g;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_availability_group
+        (keyword_drop)
+        (keyword_availability)
+        (keyword_group)
+        name: (identifier)))))
+
+==================
+surface-fix-ddl/drop_ag_exists — LocalDB 17.0.1000.7 levels 100-170: rejects
+==================
+
+DROP AVAILABILITY GROUP IF EXISTS g;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_availability_group
+        (keyword_drop)
+        (keyword_availability)
+        (keyword_group)
+        name: (identifier)))
+    (ERROR
+      (identifier))))
+
+==================
+surface-fix-ddl/spatial_negative — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE SPATIAL INDEX ix ON t(g) WITH (BOUNDING_BOX=(-1,-2,3,4));
+
+---
+
+(program
+  (batch
+    (statement
+      (create_index
+        (keyword_create)
+        storage: (identifier)
+        (keyword_index)
+        name: (identifier)
+        (keyword_on)
+        (object_reference
+          name: (identifier))
+        (ordered_columns
+          (column
+            name: (identifier)))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            (unary_expression
+              operand: (literal))
+            (unary_expression
+              operand: (literal))
+            (literal)
+            (literal)))))))
+
+==================
+surface-fix-ddl/certificate_pfx — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE CERTIFICATE c FROM FILE = 'c.pfx' WITH FORMAT = 'PFX', PRIVATE KEY (DECRYPTION BY PASSWORD = 'p');
+
+---
+
+(program
+  (batch
+    (statement
+      (create_certificate
+        (keyword_create)
+        (keyword_certificate)
+        name: (identifier)
+        (keyword_from)
+        (option
+          name: (identifier)
+          value: (literal))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (keyword_private)
+          (keyword_key)
+          (encryption_mechanism
+            (keyword_decryption)
+            (keyword_by)
+            (option
+              name: (identifier)
+              value: (literal))))))))
+
+==================
+surface-fix-ddl/certificate_format_only — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE CERTIFICATE c FROM FILE = 'c.pfx' WITH FORMAT = 'PFX';
+
+---
+
+(program
+  (batch
+    (statement
+      (create_certificate
+        (keyword_create)
+        (keyword_certificate)
+        name: (identifier)
+        (keyword_from)
+        (option
+          name: (identifier)
+          value: (literal))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
+surface-fix-ddl/certificate_private_only — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE CERTIFICATE c FROM FILE = 'c.pfx' WITH PRIVATE KEY (DECRYPTION BY PASSWORD = 'p');
+
+---
+
+(program
+  (batch
+    (statement
+      (create_certificate
+        (keyword_create)
+        (keyword_certificate)
+        name: (identifier)
+        (keyword_from)
+        (option
+          name: (identifier)
+          value: (literal))
+        (private_key_clause
+          (keyword_with)
+          (keyword_private)
+          (keyword_key)
+          (encryption_mechanism
+            (keyword_decryption)
+            (keyword_by)
+            (option
+              name: (identifier)
+              value: (literal))))))))
+
+==================
+surface-fix-ddl/ctas — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TABLE t WITH (DISTRIBUTION = ROUND_ROBIN) AS SELECT 1 AS x;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        name: (object_reference
+          name: (identifier))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier)))
+        (keyword_as)
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal)
+                (keyword_as)
+                alias: (identifier)))))))))
+
+==================
+surface-fix-ddl/ctas_cte — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TABLE t WITH (DISTRIBUTION = HASH(x)) AS WITH q AS (SELECT 1 AS x) SELECT x FROM q;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        name: (object_reference
+          name: (identifier))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier)
+            value: (option
+              name: (identifier))))
+        (keyword_as)
+        (keyword_with)
+        (cte
+          name: (identifier)
+          (keyword_as)
+          (statement
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    value: (literal)
+                    (keyword_as)
+                    alias: (identifier)))))))
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (field
+                  name: (identifier)))))
+          (from
+            (keyword_from)
+            (relation
+              (object_reference
+                name: (identifier)))))))))
+
+==================
+surface-fix-ddl/ctas_bare — LocalDB 17.0.1000.7 levels 100-170: rejects
+==================
+
+CREATE TABLE t AS SELECT 1 AS x;
+
+---
+
+(program
+  (ERROR
+    (keyword_create)
+    (keyword_table)
+    (object_reference
+      name: (identifier))
+    (keyword_as)
+    (literal)
+    (keyword_as))
+  (batch))
+
+==================
+surface-fix-ddl/column_encrypted — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER TABLE t ALTER COLUMN c VARCHAR(50) ENCRYPTED WITH (COLUMN_ENCRYPTION_KEY=k,ENCRYPTION_TYPE=RANDOMIZED,ALGORITHM='AEAD_AES_256_CBC_HMAC_SHA_256') NULL;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_table
+        (keyword_alter)
+        (keyword_table)
+        (object_reference
+          name: (identifier))
+        (keyword_alter)
+        (keyword_column)
+        name: (identifier)
+        type: (varchar
+          (keyword_varchar)
+          size: (literal))
+        (encrypted_with
+          (keyword_encrypted)
+          (with_options
+            (keyword_with)
+            (option
+              name: (identifier)
+              value: (identifier))
+            (option
+              name: (identifier)
+              value: (identifier))
+            (option
+              name: (identifier)
+              value: (literal))))
+        (keyword_null)))))
