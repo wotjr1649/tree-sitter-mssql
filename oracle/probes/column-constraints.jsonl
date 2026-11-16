@@ -1,0 +1,28 @@
+{"id":"column-constraints/fk-named","sha256":"e3be1874ed4d73b1133986af0e80b8b83313cceaf7b6edeb927273e0baf49f1e","source":"CREATE TABLE t (a int CONSTRAINT f FOREIGN KEY (a) REFERENCES r (a));"}
+{"id":"column-constraints/fk-cascade","sha256":"cb72c8243440051f891a2f048245a063ffff96d0e6de6a3bf14e7a539a23e2ae","source":"CREATE TABLE t (a int FOREIGN KEY (a) REFERENCES r (a) ON DELETE CASCADE);"}
+{"id":"column-constraints/fk-no-comma-last","sha256":"59421f6469de12d96c95e5a05462f3b27f28a757aeded513ae746ef3a106d9d8","source":"CREATE TABLE t (a int, b int NOT NULL\n CONSTRAINT f FOREIGN KEY (a) REFERENCES r (a) ON DELETE CASCADE,\n CONSTRAINT g FOREIGN KEY (b) REFERENCES r (b));"}
+{"id":"column-constraints/fk-two-cols","sha256":"9ee6a9f509e7454ebe07b8d2ed9caaa89fb3f7b682ef7e524d34b47f41a1cea6","source":"CREATE TABLE t (a int, b int FOREIGN KEY (a, b) REFERENCES r);"}
+{"id":"column-constraints/pk-list","sha256":"edb83efc2ab339f0253d4f38c633ba6868ffa779e55825cd7b324c6a2bc10bc5","source":"CREATE TABLE t (a int PRIMARY KEY (a));"}
+{"id":"column-constraints/pk-clustered-list","sha256":"0da77f3f364b842e40663ec9229d2a735dc7631010ac397ab094fe4882fe2e23","source":"CREATE TABLE t (a int, b int PRIMARY KEY CLUSTERED (a, b));"}
+{"id":"column-constraints/pk-list-desc","sha256":"9c3ecf887cfc387bd09e00b320b41ae4a0cd493c075172a2bdec3cc72e19eab9","source":"CREATE TABLE t (a int, b int CONSTRAINT p PRIMARY KEY (a DESC, b));"}
+{"id":"column-constraints/unique-list","sha256":"b7c8c2ce0f3dab8f1ebd847f82cf0950719bf89b391c5a4364b44842bda37c00","source":"CREATE TABLE t (a int, b int UNIQUE (a, b));"}
+{"id":"column-constraints/unique-nc-list-with","sha256":"5f9e2c0b06cbea6b2d4042df7a88935b8683ccdc87bafae5fe632fc95a9cc492","source":"CREATE TABLE t (a int, b int UNIQUE NONCLUSTERED (a) WITH (FILLFACTOR = 80));"}
+{"id":"column-constraints/check-normal","sha256":"dd432cc063d0149dad73b79948fc8af98648fa01313527a50dee921b5363d02e","source":"CREATE TABLE t (a int CHECK (a > 0));"}
+{"id":"column-constraints/pk-then-fk","sha256":"11d40ea28e5234658055fd9607b5fd8fd69a0d2fdd752e805d86e0872a09a2c6","source":"CREATE TABLE t (a int NOT NULL CONSTRAINT p PRIMARY KEY (a) CONSTRAINT f FOREIGN KEY (a) REFERENCES r (a));"}
+{"id":"column-constraints/alter-add-col","sha256":"3824605ad18e96978e391b1d2cea5469355cfb23be9ce24cb873d8a760961ce8","source":"ALTER TABLE t ADD b int CONSTRAINT f FOREIGN KEY (b) REFERENCES r (b);"}
+{"id":"column-constraints/tablevar-pk-list","sha256":"afa1667a5a790657e77687a99f2920764b003f4739d416fa7bc987f529487d49","source":"DECLARE @t TABLE (a int, b int PRIMARY KEY (a, b));"}
+{"id":"column-constraints/tablevar-fk-list","sha256":"47c42a8e6d403af4d286055f9a632c418e8059ff8e0e574fc76daa1784af28ff","source":"DECLARE @t TABLE (a int FOREIGN KEY (a) REFERENCES r (a));"}
+{"id":"column-constraints/neg-fk-empty","sha256":"592068020b3c3b0df51f98288f34a824f48ad836f7408240c84468468a4b8a9c","source":"CREATE TABLE t (a int FOREIGN KEY () REFERENCES r);"}
+{"id":"column-constraints/neg-pk-empty","sha256":"f706f3ca68a385e957382c8d1bbe1281a160172339ab7e85340a1e5908cab0a9","source":"CREATE TABLE t (a int PRIMARY KEY ());"}
+{"id":"column-constraints/neg-default-list","sha256":"2e55929848cc1123ce3bc10e82b13756416adbd3e0b4fffcbff8efaf3b803dbb","source":"CREATE TABLE t (a int DEFAULT (a) (1));"}
+{"id":"column-constraints/neg-fk-list-no-ref","sha256":"7a0bab54a9a18a0d5c8674355d316a345975baff1ad1f135e63df38f2d98fb4a","source":"CREATE TABLE t (a int FOREIGN KEY (a));"}
+{"id":"column-constraints/computed-pk-list","sha256":"048518fe2f91a8db5d9e1eda7c16b9dc12cdf3e98cee5261ee2dd6b24e24a2da","source":"CREATE TABLE t (a int, b AS a + 1 PERSISTED PRIMARY KEY (a));"}
+{"id":"column-constraints/tablevar-fk-column","sha256":"2984175e4738ed1fd2e6f51df07e81df55905c99fe46c4be3cf46c70da877f22","source":"DECLARE @t TABLE (a int FOREIGN KEY REFERENCES r (a));"}
+{"id":"column-constraints/tablevar-references","sha256":"375cefb4a78f63833c36d437f73475011db0cf9d7fc7cabe3b6b29526e7fec1e","source":"DECLARE @t TABLE (a int REFERENCES r (a));"}
+{"id":"column-constraints/tablevar-fk-table","sha256":"24943ec7568b2484069c17a0db5c47ad67092445f7e8f965326ad150b0ca0554","source":"DECLARE @t TABLE (a int, FOREIGN KEY (a) REFERENCES r (a));"}
+{"id":"column-constraints/tabletype-fk","sha256":"fbf191d0b1fcdb7f04b3a104712baabdfa512f362f22c60dbb8cc5ac0d575db4","source":"CREATE TYPE tt AS TABLE (a int FOREIGN KEY (a) REFERENCES r (a));"}
+{"id":"column-constraints/tabletype-references","sha256":"860ff24cceb4b2f2bb5bda5ce7ba076634fe779945499a00f5e7c19a7123b837","source":"CREATE TYPE tt AS TABLE (a int REFERENCES r (a));"}
+{"id":"column-constraints/tvf-returns-references","sha256":"91725ad5b96421b91353c5978b0f6f4f14495fc230fdbc894cec8b801504cf5a","source":"CREATE FUNCTION f() RETURNS @t TABLE (a int REFERENCES r (a)) AS BEGIN RETURN END;"}
+{"id":"column-constraints/tvf-returns-fk-table","sha256":"4bb4f073818e0d5aa950a4ee9014b6cb5229bdf4c8d7bc4f9cc6309f0553ac22","source":"CREATE FUNCTION f() RETURNS @t TABLE (a int, FOREIGN KEY (a) REFERENCES r (a)) AS BEGIN RETURN END;"}
+{"id":"column-constraints/tablevar-check","sha256":"fc6e26941785959ae93c1e22ebfecb22b92533ab7ebcf45b0a988dcc4767dcad","source":"DECLARE @t TABLE (a int CHECK (a > 0));"}
+{"id":"column-constraints/temp-table-fk","sha256":"4172954aa426272047ca73159530b96c869b060d88c2ef5eab983233a6b49572","source":"CREATE TABLE #t (a int FOREIGN KEY (a) REFERENCES r (a));"}

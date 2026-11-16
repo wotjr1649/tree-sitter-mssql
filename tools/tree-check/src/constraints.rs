@@ -153,6 +153,7 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
                 ddl_rest_routes(node, source, &mut out);
             }
             "merge" => merge_terminator(node, &mut out),
+            "column_definitions" => table_variable_foreign_key(node, &mut out),
             "table_hint" | "query_hint" => table_hints(node, source, &mut out),
             "option_clause" => table_hint_aliases(node, source, &mut out),
             "database_file" => database_file_options(node, source, &mut out),
@@ -969,6 +970,31 @@ fn window_frame_order(spec: Node, out: &mut Vec<Violation>) {
             "a window frame needs ORDER BY".into(),
             *frame,
         ));
+    }
+}
+
+/// A table variable, a table type and a function's RETURNS table cannot have a foreign key, in a
+/// column or a table constraint. Evidence: SQL Server 2025 LocalDB 17.0.1000.7, levels 100-170,
+/// oracle set `column-constraints/tablevar-*`, `tabletype-*`, `tvf-*`: Msg 156 at REFERENCES; a
+/// CHECK constraint there and a foreign key on a #temp table are accepted.
+fn table_variable_foreign_key(columns: Node, out: &mut Vec<Violation>) {
+    if !matches!(
+        columns.parent().map(|p| p.kind()),
+        Some("table_var_declaration" | "create_type")
+    ) {
+        return;
+    }
+    let mut stack = vec![columns];
+    while let Some(n) = stack.pop() {
+        if n.kind() == "keyword_references" {
+            out.push(violation(
+                "table-variable-foreign-key",
+                "a table variable or table type cannot have a foreign key".into(),
+                n,
+            ));
+            return;
+        }
+        stack.extend(n.children(&mut n.walk()));
     }
 }
 
@@ -5755,6 +5781,25 @@ mod tests {
             "WITH c AS (SELECT 1 AS a), d AS (SELECT a FROM c) SELECT 1;",
         ] {
             assert_eq!(rules(bad), ["cte-table-source"], "{bad}");
+        }
+    }
+
+    #[test]
+    fn a_table_variable_or_type_has_no_foreign_key() {
+        for ok in [
+            "DECLARE @t TABLE (a int CHECK (a > 0), b int PRIMARY KEY (b));",
+            "CREATE TABLE #t (a int FOREIGN KEY (a) REFERENCES r (a));",
+            "CREATE TABLE t (a int, b int NOT NULL CONSTRAINT f FOREIGN KEY (a) REFERENCES r (a));",
+        ] {
+            assert!(rules(ok).is_empty(), "{ok}");
+        }
+        for bad in [
+            "DECLARE @t TABLE (a int REFERENCES r (a));",
+            "DECLARE @t TABLE (a int, FOREIGN KEY (a) REFERENCES r (a));",
+            "CREATE TYPE tt AS TABLE (a int FOREIGN KEY (a) REFERENCES r (a));",
+            "CREATE FUNCTION f() RETURNS @t TABLE (a int REFERENCES r (a)) AS BEGIN RETURN END;",
+        ] {
+            assert_eq!(rules(bad), ["table-variable-foreign-key"], "{bad}");
         }
     }
 

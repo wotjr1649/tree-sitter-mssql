@@ -1268,3 +1268,55 @@ CREATE TABLE t (
                   (literal))))
             (keyword_not)
             (keyword_null)))))))
+
+============================================================
+Foreign key with a column list inside a column definition
+============================================================
+
+CREATE TABLE t (
+  a int CONSTRAINT f FOREIGN KEY (a) REFERENCES r (a) ON DELETE CASCADE,
+  b int NOT NULL
+  CONSTRAINT g FOREIGN KEY (b) REFERENCES r (b)
+);
+
+---
+
+(program
+  (batch
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        name: (object_reference
+          name: (identifier))
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)
+            (keyword_constraint)
+            name: (identifier)
+            (keyword_foreign)
+            (keyword_key)
+            (identifier)
+            (keyword_references)
+            (object_reference
+              name: (identifier))
+            (identifier)
+            (referential_action
+              (keyword_on)
+              (keyword_delete)
+              (keyword_cascade)))
+          (column_definition
+            name: (identifier)
+            type: (keyword_int)
+            (keyword_not)
+            (keyword_null)
+            (keyword_constraint)
+            name: (identifier)
+            (keyword_foreign)
+            (keyword_key)
+            (identifier)
+            (keyword_references)
+            (object_reference
+              name: (identifier))
+            (identifier)))))))
