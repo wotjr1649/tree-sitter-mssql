@@ -1260,7 +1260,15 @@ KILL QUERY NOTIFICATION SUBSCRIPTION ALL;
 
 ---
 
-(program (ERROR (keyword_kill) (keyword_all)) (batch))
+(program
+  (batch
+    (statement
+      (kill_statement
+        (keyword_kill)
+        (keyword_query)
+        (keyword_notification)
+        (keyword_subscription)
+        (keyword_all)))))
 
 ==================
 query-forms/open-stats-partitions - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
@@ -1270,7 +1278,29 @@ UPDATE STATISTICS dbo.t WITH RESAMPLE ON PARTITIONS (1,3 TO 5), COLUMNS;
 
 ---
 
-(program (batch (statement (update_statistics_statement (keyword_update) (keyword_statistics) (object_reference (identifier) (identifier)) (with_clause (keyword_with) (option (identifier) (keyword_on))))) (ERROR (identifier) (literal) (literal) (keyword_to) (literal))))
+(program
+  (batch
+    (statement
+      (update_statistics_statement
+        (keyword_update)
+        (keyword_statistics)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (keyword_on)
+            (keyword_partitions)
+            (truncate_partition_range
+              low: (literal))
+            (truncate_partition_range
+              low: (literal)
+              (keyword_to)
+              high: (literal)))
+          (option
+            name: (identifier)))))))
 
 ==================
 query-forms/open-offsets - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
@@ -1301,7 +1331,21 @@ ADD SIGNATURE TO OBJECT::dbo.p BY CERTIFICATE c;
 
 ---
 
-(program (ERROR (identifier) (keyword_to) (keyword_object) (keyword_by) (keyword_certificate)) (batch))
+(program
+  (batch
+    (statement
+      (signature_statement
+        (keyword_add)
+        (keyword_signature)
+        (keyword_to)
+        (keyword_object)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_by)
+        (signature_signer
+          (keyword_certificate)
+          (identifier))))))
 
 ==================
 query-forms/open-spaced-comparison - LocalDB 17.0.1000.7 levels 100-170 - engine accepts

@@ -31,6 +31,7 @@ export default {
             $.keyword_work,
           ),
         ),
+        optional($.with_options),
       ),
     ),
 

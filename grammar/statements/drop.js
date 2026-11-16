@@ -6,6 +6,30 @@ export default {
   _drop_statement: ($) =>
     choice(
       $.drop_table,
+      $.drop_aggregate,
+      $.drop_default,
+      $.drop_rule,
+      $.drop_application_role,
+      $.drop_broker_priority,
+      $.drop_contract,
+      $.drop_credential,
+      $.drop_cryptographic_provider,
+      $.drop_database_audit_specification,
+      $.drop_database_encryption_key,
+      $.drop_message_type,
+      $.drop_partition_function,
+      $.drop_partition_scheme,
+      $.drop_queue,
+      $.drop_remote_service_binding,
+      $.drop_resource_pool,
+      $.drop_route,
+      $.drop_search_property_list,
+      $.drop_server_audit,
+      $.drop_server_audit_specification,
+      $.drop_service,
+      $.drop_workload_group,
+      $.drop_event_notification,
+
       $.drop_endpoint,
       $.drop_external_data_source,
       $.drop_external_model,
@@ -180,6 +204,121 @@ export default {
       optional($._if_exists),
       field('name', $.identifier),
       $.keyword_on,
+      choice($.keyword_server, $.keyword_database),
+    ),
+  drop_aggregate: ($) =>
+    seq(
+      $.keyword_drop,
+      $.keyword_aggregate,
+      optional($._if_exists),
+      comma_list(field('name', $.object_reference), true),
+    ),
+
+  drop_default: ($) =>
+    seq(
+      $.keyword_drop,
+      $.keyword_default,
+      optional($._if_exists),
+      comma_list(field('name', $.object_reference), true),
+    ),
+
+  drop_rule: ($) =>
+    seq(
+      $.keyword_drop,
+      $.keyword_rule,
+      optional($._if_exists),
+      comma_list(field('name', $.object_reference), true),
+    ),
+
+  drop_application_role: ($) =>
+    seq($.keyword_drop, $.keyword_application, $.keyword_role, field('name', $.identifier)),
+
+  drop_broker_priority: ($) =>
+    seq($.keyword_drop, $.keyword_broker, $.keyword_priority, field('name', $.identifier)),
+
+  drop_contract: ($) => seq($.keyword_drop, $.keyword_contract, field('name', $.identifier)),
+
+  drop_credential: ($) =>
+    seq(
+      $.keyword_drop,
+      optional(seq($.keyword_database, $.keyword_scoped)),
+      $.keyword_credential,
+      field('name', $.identifier),
+    ),
+
+  drop_cryptographic_provider: ($) =>
+    seq($.keyword_drop, $.keyword_cryptographic, $.keyword_provider, field('name', $.identifier)),
+
+  drop_database_audit_specification: ($) =>
+    seq(
+      $.keyword_drop,
+      $.keyword_database,
+      $.keyword_audit,
+      $.keyword_specification,
+      field('name', $.identifier),
+    ),
+
+  drop_database_encryption_key: ($) =>
+    seq($.keyword_drop, $.keyword_database, $.keyword_encryption, $.keyword_key),
+
+  drop_message_type: ($) =>
+    seq($.keyword_drop, $.keyword_message, $.keyword_type, field('name', $.identifier)),
+
+  drop_partition_function: ($) =>
+    seq($.keyword_drop, $.keyword_partition, $.keyword_function, field('name', $.identifier)),
+
+  drop_partition_scheme: ($) =>
+    seq($.keyword_drop, $.keyword_partition, $.keyword_scheme, field('name', $.identifier)),
+
+  drop_queue: ($) => seq($.keyword_drop, $.keyword_queue, field('name', $.object_reference)),
+
+  drop_remote_service_binding: ($) =>
+    seq(
+      $.keyword_drop,
+      $.keyword_remote,
+      $.keyword_service,
+      $.keyword_binding,
+      field('name', $.identifier),
+    ),
+
+  drop_resource_pool: ($) =>
+    seq($.keyword_drop, $.keyword_resource, $.keyword_pool, field('name', $.identifier)),
+
+  drop_route: ($) => seq($.keyword_drop, $.keyword_route, field('name', $.identifier)),
+
+  drop_search_property_list: ($) =>
+    seq(
+      $.keyword_drop,
+      $.keyword_search,
+      $.keyword_property,
+      $.keyword_list,
+      field('name', $.identifier),
+    ),
+
+  drop_server_audit: ($) =>
+    seq($.keyword_drop, $.keyword_server, $.keyword_audit, field('name', $.identifier)),
+
+  drop_server_audit_specification: ($) =>
+    seq(
+      $.keyword_drop,
       $.keyword_server,
+      $.keyword_audit,
+      $.keyword_specification,
+      field('name', $.identifier),
+    ),
+
+  drop_service: ($) => seq($.keyword_drop, $.keyword_service, field('name', $.identifier)),
+
+  drop_workload_group: ($) =>
+    seq($.keyword_drop, $.keyword_workload, $.keyword_group, field('name', $.identifier)),
+
+  drop_event_notification: ($) =>
+    seq(
+      $.keyword_drop,
+      $.keyword_event,
+      $.keyword_notification,
+      comma_list(field('name', $.identifier), true),
+      $.keyword_on,
+      choice($.keyword_server, $.keyword_database, seq($.keyword_queue, $.object_reference)),
     ),
 };

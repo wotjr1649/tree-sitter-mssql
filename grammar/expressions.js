@@ -482,21 +482,8 @@ export default {
       $._double_quote_string,
       $._tsql_parameter,
       $._temporary_table,
-      // $action: T-SQL's pseudo-column for the action taken by a MERGE's
-      // OUTPUT clause (INSERT/UPDATE/DELETE). Not a valid _identifier on its
-      // own, since identifiers can't start with `$`.
-      $._dollar_action,
-      // $PARTITION: the pseudo-function prefix for querying which partition
-      // a value belongs to ($PARTITION.fn(col)). Follows the same pattern as
-      // $action — not a valid _identifier on its own, modeled as one more
-      // identifier spelling so it can stand in object_reference's leading part.
-      $._dollar_partition,
-      // $IDENTITY and $ROWGUID: pseudo-columns naming a table's identity
-      // column and its ROWGUIDCOL column, bare or table-qualified
-      // (`t.$IDENTITY`). The same treatment as $action, so the `$` is not
-      // lexed apart from an `IDENTITY` keyword.
-      $._dollar_identity,
-      $._dollar_rowguid,
+      // These pseudo-identifiers share one token without changing their identifier nodes.
+      $._dollar_identifier,
       // $(var): a SQLCMD scripting variable, substituted by the sqlcmd/SSMS
       // client before the batch reaches the server. Textual substitution, so
       // it can appear anywhere an identifier or literal can — modeled as one
@@ -513,10 +500,7 @@ export default {
       $._bracketed_identifier,
       $._double_quote_string,
       $._temporary_table,
-      $._dollar_action,
-      $._dollar_partition,
-      $._dollar_identity,
-      $._dollar_rowguid,
+      $._dollar_identifier,
       $._sqlcmd_variable,
     ),
   // A regular identifier: letters, digits, `_`, `#` and `$` after the first
@@ -532,9 +516,7 @@ export default {
   // which the grammar does not track. A double quote inside is doubled to
   // escape it, the same convention `_bracketed_identifier` follows for `]]`.
   _double_quote_string: (_) => /"([^"]|"")+"/,
-  _dollar_action: (_) => /\$[aA][cC][tT][iI][oO][nN]/,
-  _dollar_partition: (_) => /\$[pP][aA][rR][tT][iI][tT][iI][oO][nN]/,
-  _dollar_identity: (_) => /\$[iI][dD][eE][nN][tT][iI][tT][yY]/,
-  _dollar_rowguid: (_) => /\$[rR][oO][wW][gG][uU][iI][dD]/,
+  _dollar_identifier: (_) =>
+    /(\$[aA][cC][tT][iI][oO][nN]|\$[pP][aA][rR][tT][iI][tT][iI][oO][nN]|\$[iI][dD][eE][nN][tT][iI][tT][yY]|\$[rR][oO][wW][gG][uU][iI][dD])/,
   _sqlcmd_variable: (_) => /\$\([A-Za-z_][0-9A-Za-z_]*\)/,
 };

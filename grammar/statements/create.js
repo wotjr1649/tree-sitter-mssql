@@ -88,6 +88,18 @@ export default {
       $.create_column_master_key,
       $.create_security_policy,
       $.create_xml_schema_collection,
+      $.create_aggregate,
+      $.create_application_role,
+      $.create_credential,
+      $.create_cryptographic_provider,
+      $.create_default,
+      $.create_rule,
+      $.create_broker_priority,
+      $.create_service,
+      $.create_remote_service_binding,
+      $.create_resource_pool,
+      $.create_workload_group,
+      $.create_event_notification,
     ),
 
   // CREATE XML SCHEMA COLLECTION name AS expression
@@ -256,6 +268,7 @@ export default {
         choice(
           seq($.keyword_from, $._type, optional(choice($.keyword_null, $._not_null))),
           seq($.keyword_as, $.keyword_table, $.column_definitions, optional($.with_options)),
+          $.external_name,
         ),
       ),
     ),
@@ -319,7 +332,14 @@ export default {
         field('name', $.identifier),
         optional(
           choice(
-            seq(choice($.keyword_for, $.keyword_from), $.keyword_login, $.identifier),
+            seq(
+              choice($.keyword_for, $.keyword_from),
+              choice(
+                seq(choice($.keyword_login, $.keyword_certificate), $.identifier),
+                seq($.keyword_asymmetric, $.keyword_key, $.identifier),
+                seq($.keyword_external, $.keyword_provider),
+              ),
+            ),
             seq($.keyword_without, $.keyword_login),
           ),
         ),
@@ -348,7 +368,7 @@ export default {
             ),
           ),
         ),
-        optional($.with_clause),
+        optional(alias($._login_with_clause, $.with_clause)),
       ),
     ),
 
@@ -467,7 +487,7 @@ export default {
         field('name', $.identifier),
         optional(seq($.keyword_authorization, $.identifier)),
         $.keyword_from,
-        comma_list($.literal, true),
+        comma_list(choice($.literal, alias($._tsql_parameter, $.identifier)), true),
         optional($.with_clause),
       ),
     ),
@@ -523,6 +543,7 @@ export default {
       $.keyword_create,
       $.keyword_contract,
       field('name', $.identifier),
+      optional(seq($.keyword_authorization, $.identifier)),
       paren_list($.contract_message, true),
     ),
 
@@ -659,7 +680,7 @@ export default {
         $.keyword_session,
         field('name', $.identifier),
         $.keyword_on,
-        $.keyword_server,
+        choice($.keyword_server, $.keyword_database),
         event_session_body($),
       ),
     ),
@@ -704,5 +725,166 @@ export default {
         field('name', $.object_reference),
         optional(wrapped_in_parenthesis(seq($.keyword_set, comma_list($.option, true)))),
       ),
+    ),
+  create_aggregate: ($) =>
+    seq(
+      $.keyword_create,
+      $.keyword_aggregate,
+      field('name', $.object_reference),
+      $.function_arguments,
+      $.keyword_returns,
+      $._type,
+      $.external_name,
+    ),
+
+  create_application_role: ($) =>
+    seq(
+      $.keyword_create,
+      $.keyword_application,
+      $.keyword_role,
+      field('name', $.identifier),
+      $.with_clause,
+    ),
+
+  create_credential: ($) =>
+    prec.right(
+      seq(
+        $.keyword_create,
+        optional(seq($.keyword_database, $.keyword_scoped)),
+        $.keyword_credential,
+        field('name', $.identifier),
+        $.with_clause,
+        optional(seq($.keyword_for, $.keyword_cryptographic, $.keyword_provider, $.identifier)),
+      ),
+    ),
+
+  create_default: ($) =>
+    seq(
+      $.keyword_create,
+      $.keyword_default,
+      field('name', $.object_reference),
+      $.keyword_as,
+      $._expression,
+    ),
+
+  create_rule: ($) =>
+    seq(
+      $.keyword_create,
+      $.keyword_rule,
+      field('name', $.object_reference),
+      $.keyword_as,
+      $._expression,
+    ),
+
+  create_broker_priority: ($) => seq($.keyword_create, $._broker_priority_body),
+
+  _broker_priority_body: ($) =>
+    seq(
+      $.keyword_broker,
+      $.keyword_priority,
+      field('name', $.identifier),
+      $.keyword_for,
+      $.keyword_conversation,
+      $.keyword_set,
+      paren_list($.option, true),
+    ),
+
+  create_service: ($) =>
+    prec.right(
+      seq(
+        $.keyword_create,
+        $.keyword_service,
+        field('name', $.identifier),
+        optional(seq($.keyword_authorization, $.identifier)),
+        $.keyword_on,
+        $.keyword_queue,
+        $.object_reference,
+        optional(paren_list($.identifier, true)),
+      ),
+    ),
+
+  create_remote_service_binding: ($) =>
+    seq(
+      $.keyword_create,
+      $.keyword_remote,
+      $.keyword_service,
+      $.keyword_binding,
+      field('name', $.identifier),
+      optional(seq($.keyword_authorization, $.identifier)),
+      $.keyword_to,
+      $.keyword_service,
+      $.literal,
+      alias($._remote_binding_with_clause, $.with_clause),
+    ),
+
+  create_resource_pool: ($) =>
+    prec.right(
+      seq(
+        $.keyword_create,
+        $.keyword_resource,
+        $.keyword_pool,
+        field('name', $.identifier),
+        optional(alias($._resource_pool_options, $.with_options)),
+      ),
+    ),
+
+  _resource_pool_options: ($) =>
+    seq(
+      $.keyword_with,
+      paren_list(choice($.option, alias($._resource_pool_affinity, $.option)), true),
+    ),
+
+  _resource_pool_affinity: ($) =>
+    seq(
+      field('name', alias($.keyword_affinity, $.identifier)),
+      choice($.keyword_scheduler, $.keyword_numanode),
+      '=',
+      choice($.identifier, paren_list($.external_cpu_range, true)),
+    ),
+
+  create_workload_group: ($) =>
+    prec.right(
+      seq(
+        $.keyword_create,
+        $.keyword_workload,
+        $.keyword_group,
+        field('name', $.identifier),
+        optional($._workload_group_tail),
+      ),
+    ),
+
+  _workload_group_tail: ($) =>
+    choice(seq($.with_options, optional($._workload_group_using)), $._workload_group_using),
+
+  _workload_group_using: ($) =>
+    seq(
+      $.keyword_using,
+      choice(
+        seq($.identifier, optional(seq(',', $.keyword_external, $.identifier))),
+        seq($.keyword_external, $.identifier),
+      ),
+    ),
+
+  create_event_notification: ($) =>
+    seq(
+      $.keyword_create,
+      $.keyword_event,
+      $.keyword_notification,
+      field('name', $.identifier),
+      $._event_notification_scope,
+      optional(seq($.keyword_with, $.keyword_fan_in)),
+      $.keyword_for,
+      comma_list($.identifier, true),
+      $.keyword_to,
+      $.keyword_service,
+      $.literal,
+      ',',
+      $.literal,
+    ),
+
+  _event_notification_scope: ($) =>
+    seq(
+      $.keyword_on,
+      choice($.keyword_server, $.keyword_database, seq($.keyword_queue, $.object_reference)),
     ),
 };

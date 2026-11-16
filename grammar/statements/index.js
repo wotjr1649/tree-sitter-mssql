@@ -23,6 +23,7 @@ import database_rules from './database.js';
 import external_rules from './external.js';
 import endpoint_rules from './endpoint.js';
 import fulltext_rules from './fulltext.js';
+import rest_rules from './rest.js';
 
 export default {
   // A bare BEGIN ... END grouping block. Body items are `;`-optional, as
@@ -62,6 +63,8 @@ export default {
       $.revert_statement,
       $.enable_trigger_statement,
       $.grant_statement,
+      $.sensitivity_classification_statement,
+      $.signature_statement,
       $.update_statistics_statement,
       $.kill_statement,
       $.checkpoint_statement,
@@ -248,7 +251,25 @@ export default {
   // KILL { session_id | 'UOW' } [WITH STATUSONLY]. The argument is a
   // constant: SQL Server does not accept a variable there.
   kill_statement: ($) =>
-    prec.right(seq($.keyword_kill, $.literal, optional(seq($.keyword_with, $.identifier)))),
+    prec.right(
+      seq(
+        $.keyword_kill,
+        choice(
+          seq($.literal, optional(choice(seq($.keyword_with, $.identifier), $.keyword_rollback))),
+          seq(
+            $.keyword_query,
+            $.keyword_notification,
+            $.keyword_subscription,
+            choice($.keyword_all, $.literal),
+          ),
+          seq(
+            $.keyword_stats,
+            $.keyword_job,
+            choice($.literal, alias($._signed_literal, $.unary_expression)),
+          ),
+        ),
+      ),
+    ),
 
   checkpoint_statement: ($) =>
     prec.right(seq($.keyword_checkpoint, optional(alias($._natural_number, $.literal)))),
@@ -735,7 +756,7 @@ export default {
         optional(
           seq(
             $.keyword_on,
-            optional(seq($.identifier, '::')),
+            optional(seq($._securable_class, '::')),
             $.object_reference,
             optional(paren_list($.identifier, true)),
           ),
@@ -746,6 +767,41 @@ export default {
         optional($.keyword_cascade),
         optional(seq($.keyword_as, $.identifier)),
       ),
+    ),
+
+  // Keep class words as identifiers, like the existing single-word qualifier.
+  _securable_class: ($) =>
+    choice(
+      $.identifier,
+      alias($.keyword_database, $.identifier),
+      seq(alias($.keyword_application, $.identifier), alias($.keyword_role, $.identifier)),
+      seq(alias($.keyword_asymmetric, $.identifier), alias($.keyword_key, $.identifier)),
+      seq(alias($.keyword_symmetric, $.identifier), alias($.keyword_key, $.identifier)),
+      seq(
+        alias($.keyword_database, $.identifier),
+        alias($.keyword_scoped, $.identifier),
+        alias($.keyword_credential, $.identifier),
+      ),
+      seq(alias($.keyword_fulltext, $.identifier), alias($.keyword_catalog, $.identifier)),
+      seq(alias($.keyword_fulltext, $.identifier), alias($.keyword_stoplist, $.identifier)),
+      seq(alias($.keyword_message, $.identifier), alias($.keyword_type, $.identifier)),
+      seq(
+        alias($.keyword_remote, $.identifier),
+        alias($.keyword_service, $.identifier),
+        alias($.keyword_binding, $.identifier),
+      ),
+      seq(
+        alias($.keyword_search, $.identifier),
+        alias($.keyword_property, $.identifier),
+        alias($.keyword_list, $.identifier),
+      ),
+      seq(alias($.keyword_server, $.identifier), alias($.keyword_role, $.identifier)),
+      seq(
+        alias($.keyword_xml, $.identifier),
+        alias($.keyword_schema, $.identifier),
+        alias($.keyword_collection, $.identifier),
+      ),
+      seq(alias($.keyword_availability, $.identifier), alias($.keyword_group, $.identifier)),
     ),
 
   // The column list is aliased to a named `list` node (the same pattern
@@ -812,8 +868,34 @@ export default {
         $.keyword_statistics,
         $.object_reference,
         optional(choice($.identifier, paren_list($.identifier, true))),
-        optional($.with_clause),
+        optional(alias($._statistics_with_clause, $.with_clause)),
       ),
+    ),
+
+  _statistics_with_clause: ($) =>
+    seq(
+      $.keyword_with,
+      comma_list(
+        choice(
+          $.option,
+          alias($._statistics_resample, $.option),
+          alias($._statistics_target, $.option),
+        ),
+        true,
+      ),
+    ),
+  _statistics_target: ($) =>
+    field(
+      'name',
+      choice(alias($.keyword_columns, $.identifier), alias($.keyword_index, $.identifier)),
+    ),
+
+  _statistics_resample: ($) =>
+    seq(
+      field('name', $.identifier),
+      $.keyword_on,
+      $.keyword_partitions,
+      paren_list($.truncate_partition_range, true),
     ),
 
   // T-SQL table hint, e.g. WITH (NOLOCK), WITH (READUNCOMMITTED, INDEX(ix1)).
@@ -932,4 +1014,5 @@ export default {
   ...external_rules,
   ...endpoint_rules,
   ...fulltext_rules,
+  ...rest_rules,
 };

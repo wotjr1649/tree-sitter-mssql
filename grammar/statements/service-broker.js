@@ -13,6 +13,17 @@ import { comma_list, make_keyword, paren_list, wrapped_in_parenthesis } from '..
 // a label (`send: SELECT 1` errors, `GOTO send` still parses), for the
 // same reason: a label is another thing a statement may begin with.
 export default {
+  _remote_binding_with_clause: ($) =>
+    prec.right(
+      seq(
+        $.keyword_with,
+        comma_list(choice($.option, alias($._remote_binding_user_option, $.option)), true),
+      ),
+    ),
+
+  _remote_binding_user_option: ($) =>
+    seq(field('name', alias($.keyword_user, $.identifier)), '=', field('value', $.identifier)),
+
   _create_queue_with_clause: ($) =>
     seq($.keyword_with, comma_list(alias($._create_queue_option, $.option), true)),
 
