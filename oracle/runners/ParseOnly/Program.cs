@@ -82,12 +82,24 @@ static class Program
         return b.ConnectionString;
     }
 
+    // Every case gets a fresh, unpooled session, so a run makes tens of thousands of logins; an engine under that
+    // load occasionally drops one during the pre-login handshake. A failed Open ran no SQL, so retrying is safe.
+    const int OpenAttempts = 5;
+
     static SqlConnection Open(Dictionary<string, string?> opts, string database)
     {
-        var conn = new SqlConnection(ConnectionString(opts, database));
-        try { conn.Open(); }
-        catch (SqlException e) { conn.Dispose(); throw new InfraException($"cannot connect to {database}: {e.Message}"); }
-        return conn;
+        for (var attempt = 1; ; attempt++)
+        {
+            var conn = new SqlConnection(ConnectionString(opts, database));
+            try { conn.Open(); return conn; }
+            catch (SqlException e)
+            {
+                conn.Dispose();
+                if (attempt == OpenAttempts)
+                    throw new InfraException($"cannot connect to {database} after {OpenAttempts} attempts: {e.Message}");
+                Thread.Sleep(500 * attempt);
+            }
+        }
     }
 
     static object? Scalar(SqlConnection conn, string sql)
