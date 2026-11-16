@@ -12212,3 +12212,1038 @@ WHERE MATCH(Person1-(likes)->Person2) OR MATCH(Person1-(reports_to)->Person2);
                   (graph_hop
                     edge: (identifier)
                     node: (identifier)))))))))))
+
+==================
+ddl-rest/closing-xe-wrapped-source — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+ALTER EVENT SESSION es ON DATABASE ADD EVENT sqlserver.sql_statement_completed (WHERE (sqlserver.database_id) < 8);
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_event_session
+        (keyword_alter)
+        (keyword_event)
+        (keyword_session)
+        name: (identifier)
+        (keyword_on)
+        (keyword_database)
+        (keyword_add)
+        (keyword_event)
+        (event_session_event
+          name: (object_reference
+            schema: (identifier)
+            name: (identifier))
+          (where
+            (keyword_where)
+            predicate: (binary_expression
+              left: (parenthesized_expression
+                (field
+                  (object_reference
+                    name: (identifier))
+                  name: (identifier)))
+              right: (literal))))))))
+
+==================
+ddl-rest/closing-xe-plain-source — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER EVENT SESSION es ON DATABASE ADD EVENT sqlserver.sql_statement_completed (WHERE sqlserver.database_id < 8);
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_event_session
+        (keyword_alter)
+        (keyword_event)
+        (keyword_session)
+        name: (identifier)
+        (keyword_on)
+        (keyword_database)
+        (keyword_add)
+        (keyword_event)
+        (event_session_event
+          name: (object_reference
+            schema: (identifier)
+            name: (identifier))
+          (where
+            (keyword_where)
+            predicate: (binary_expression
+              left: (field
+                (object_reference
+                  name: (identifier))
+                name: (identifier))
+              right: (literal))))))))
+
+==================
+ddl-rest/closing-xe-wrapped-comparison — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER EVENT SESSION es ON DATABASE ADD EVENT sqlserver.sql_statement_completed (WHERE (sqlserver.database_id < 8));
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_event_session
+        (keyword_alter)
+        (keyword_event)
+        (keyword_session)
+        name: (identifier)
+        (keyword_on)
+        (keyword_database)
+        (keyword_add)
+        (keyword_event)
+        (event_session_event
+          name: (object_reference
+            schema: (identifier)
+            name: (identifier))
+          (where
+            (keyword_where)
+            predicate: (parenthesized_expression
+              (binary_expression
+                left: (field
+                  (object_reference
+                    name: (identifier))
+                  name: (identifier))
+                right: (literal)))))))))
+
+==================
+ddl-rest/closing-xe-double-comparison — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER EVENT SESSION es ON DATABASE ADD EVENT sqlserver.sql_statement_completed (WHERE ((sqlserver.database_id < 8)));
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_event_session
+        (keyword_alter)
+        (keyword_event)
+        (keyword_session)
+        name: (identifier)
+        (keyword_on)
+        (keyword_database)
+        (keyword_add)
+        (keyword_event)
+        (event_session_event
+          name: (object_reference
+            schema: (identifier)
+            name: (identifier))
+          (where
+            (keyword_where)
+            predicate: (parenthesized_expression
+              (parenthesized_expression
+                (binary_expression
+                  left: (field
+                    (object_reference
+                      name: (identifier))
+                    name: (identifier))
+                  right: (literal))))))))))
+
+==================
+ddl-rest/closing-xe-plain-field — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER EVENT SESSION es ON DATABASE ADD EVENT sqlserver.sql_statement_completed (WHERE duration < 8);
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_event_session
+        (keyword_alter)
+        (keyword_event)
+        (keyword_session)
+        name: (identifier)
+        (keyword_on)
+        (keyword_database)
+        (keyword_add)
+        (keyword_event)
+        (event_session_event
+          name: (object_reference
+            schema: (identifier)
+            name: (identifier))
+          (where
+            (keyword_where)
+            predicate: (binary_expression
+              left: (field
+                name: (identifier))
+              right: (literal))))))))
+
+==================
+ddl-rest/closing-xe-wrapped-field — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+ALTER EVENT SESSION es ON DATABASE ADD EVENT sqlserver.sql_statement_completed (WHERE (duration) < 8);
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_event_session
+        (keyword_alter)
+        (keyword_event)
+        (keyword_session)
+        name: (identifier)
+        (keyword_on)
+        (keyword_database)
+        (keyword_add)
+        (keyword_event)
+        (event_session_event
+          name: (object_reference
+            schema: (identifier)
+            name: (identifier))
+          (where
+            (keyword_where)
+            predicate: (binary_expression
+              left: (parenthesized_expression
+                (field
+                  name: (identifier)))
+              right: (literal))))))))
+
+==================
+ddl-rest/closing-xe-conjunction — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER EVENT SESSION es ON DATABASE ADD EVENT sqlserver.sql_statement_completed (WHERE (sqlserver.database_id < 8) AND NOT (duration > 5));
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_event_session
+        (keyword_alter)
+        (keyword_event)
+        (keyword_session)
+        name: (identifier)
+        (keyword_on)
+        (keyword_database)
+        (keyword_add)
+        (keyword_event)
+        (event_session_event
+          name: (object_reference
+            schema: (identifier)
+            name: (identifier))
+          (where
+            (keyword_where)
+            predicate: (binary_expression
+              left: (parenthesized_expression
+                (binary_expression
+                  left: (field
+                    (object_reference
+                      name: (identifier))
+                    name: (identifier))
+                  right: (literal)))
+              operator: (keyword_and)
+              right: (unary_expression
+                operator: (keyword_not)
+                operand: (parenthesized_expression
+                  (binary_expression
+                    left: (field
+                      name: (identifier))
+                    right: (literal)))))))))))
+
+==================
+ddl-rest/closing-xe-compare-function — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER EVENT SESSION es ON DATABASE ADD EVENT sqlserver.sql_statement_completed (WHERE sqlserver.equal_i_sql_unicode_string(sqlserver.client_app_name, N'x'));
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_event_session
+        (keyword_alter)
+        (keyword_event)
+        (keyword_session)
+        name: (identifier)
+        (keyword_on)
+        (keyword_database)
+        (keyword_add)
+        (keyword_event)
+        (event_session_event
+          name: (object_reference
+            schema: (identifier)
+            name: (identifier))
+          (where
+            (keyword_where)
+            predicate: (invocation
+              (object_reference
+                schema: (identifier)
+                name: (identifier))
+              parameter: (term
+                value: (field
+                  (object_reference
+                    name: (identifier))
+                  name: (identifier)))
+              parameter: (term
+                value: (literal)))))))))
+
+==================
+ddl-rest/closing-xe-function-wrapped-source — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+ALTER EVENT SESSION es ON DATABASE ADD EVENT sqlserver.sql_statement_completed (WHERE sqlserver.equal_i_sql_unicode_string((sqlserver.client_app_name), N'x'));
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_event_session
+        (keyword_alter)
+        (keyword_event)
+        (keyword_session)
+        name: (identifier)
+        (keyword_on)
+        (keyword_database)
+        (keyword_add)
+        (keyword_event)
+        (event_session_event
+          name: (object_reference
+            schema: (identifier)
+            name: (identifier))
+          (where
+            (keyword_where)
+            predicate: (invocation
+              (object_reference
+                schema: (identifier)
+                name: (identifier))
+              parameter: (term
+                value: (parenthesized_expression
+                  (field
+                    (object_reference
+                      name: (identifier))
+                    name: (identifier))))
+              parameter: (term
+                value: (literal)))))))))
+
+==================
+ddl-rest/closing-xe-server-wrapped-source — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+ALTER EVENT SESSION es ON SERVER ADD EVENT sqlserver.sql_statement_completed (WHERE (sqlserver.database_id) < 8);
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_event_session
+        (keyword_alter)
+        (keyword_event)
+        (keyword_session)
+        name: (identifier)
+        (keyword_on)
+        (keyword_server)
+        (keyword_add)
+        (keyword_event)
+        (event_session_event
+          name: (object_reference
+            schema: (identifier)
+            name: (identifier))
+          (where
+            (keyword_where)
+            predicate: (binary_expression
+              left: (parenthesized_expression
+                (field
+                  (object_reference
+                    name: (identifier))
+                  name: (identifier)))
+              right: (literal))))))))
+
+==================
+ddl-rest/closing-drop-sequence-schema — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP SEQUENCE dbo.seq_a;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_sequence
+        (keyword_drop)
+        (keyword_sequence)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))))))
+
+==================
+ddl-rest/closing-drop-sequence-database — LocalDB 17.0.1000.7 levels 100-170: rejects 166
+==================
+
+DROP SEQUENCE db1.dbo.seq_a;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_sequence
+        (keyword_drop)
+        (keyword_sequence)
+        name: (object_reference
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))))))
+
+==================
+ddl-rest/closing-drop-sequence-default-schema — LocalDB 17.0.1000.7 levels 100-170: rejects 166
+==================
+
+DROP SEQUENCE db1..seq_a;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_sequence
+        (keyword_drop)
+        (keyword_sequence)
+        name: (object_reference
+          database: (identifier)
+          name: (identifier))))))
+
+==================
+ddl-rest/closing-drop-sequence-server — LocalDB 17.0.1000.7 levels 100-170: rejects 117
+==================
+
+DROP SEQUENCE srv.db1.dbo.seq_a;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_sequence
+        (keyword_drop)
+        (keyword_sequence)
+        name: (object_reference
+          server: (identifier)
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))))))
+
+==================
+ddl-rest/closing-drop-sequence-multiple — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP SEQUENCE dbo.seq_a, seq_b;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_sequence
+        (keyword_drop)
+        (keyword_sequence)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        name: (object_reference
+          name: (identifier))))))
+
+==================
+ddl-rest/closing-drop-sequence-mixed — LocalDB 17.0.1000.7 levels 100-170: rejects 166
+==================
+
+DROP SEQUENCE dbo.seq_a, db1.dbo.seq_b;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_sequence
+        (keyword_drop)
+        (keyword_sequence)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        name: (object_reference
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))))))
+
+==================
+ddl-rest/closing-drop-sequence-if-exists-database — LocalDB 17.0.1000.7 levels 100-170: rejects 166
+==================
+
+DROP SEQUENCE IF EXISTS db1.dbo.seq_a;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_sequence
+        (keyword_drop)
+        (keyword_sequence)
+        (keyword_if)
+        (keyword_exists)
+        name: (object_reference
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))))))
+
+==================
+ddl-rest/closing-drop-sequence-if-exists-schema — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP SEQUENCE IF EXISTS dbo.seq_a;
+
+---
+
+(program
+  (batch
+    (statement
+      (drop_sequence
+        (keyword_drop)
+        (keyword_sequence)
+        (keyword_if)
+        (keyword_exists)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))))))
+
+==================
+ddl-rest/closing-ag-revoke-connect-to — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+REVOKE CONNECT ON AVAILABILITY GROUP::ag TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-revoke-connect-from — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+REVOKE CONNECT ON AVAILABILITY GROUP::ag FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-revoke-alter-to — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE ALTER ON AVAILABILITY GROUP::ag TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-revoke-alter-from — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE ALTER ON AVAILABILITY GROUP::ag FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-revoke-control-to — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE CONTROL ON AVAILABILITY GROUP::ag TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-revoke-control-from — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE CONTROL ON AVAILABILITY GROUP::ag FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-grant-connect-to — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+GRANT CONNECT ON AVAILABILITY GROUP::ag TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-grant-connect-from — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+GRANT CONNECT ON AVAILABILITY GROUP::ag FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-grant-alter-to — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT ALTER ON AVAILABILITY GROUP::ag TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-grant-alter-from — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+GRANT ALTER ON AVAILABILITY GROUP::ag FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-grant-control-to — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT CONTROL ON AVAILABILITY GROUP::ag TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-grant-control-from — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+GRANT CONTROL ON AVAILABILITY GROUP::ag FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_grant)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-deny-connect-to — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+DENY CONNECT ON AVAILABILITY GROUP::ag TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-deny-connect-from — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+DENY CONNECT ON AVAILABILITY GROUP::ag FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-deny-alter-to — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY ALTER ON AVAILABILITY GROUP::ag TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-deny-alter-from — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+DENY ALTER ON AVAILABILITY GROUP::ag FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-deny-control-to — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DENY CONTROL ON AVAILABILITY GROUP::ag TO u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-deny-control-from — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+DENY CONTROL ON AVAILABILITY GROUP::ag FROM u;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_deny)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-revoke-connect-tail — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+REVOKE GRANT OPTION FOR CONNECT ON AVAILABILITY GROUP::ag_sales FROM l_app, [CONTOSO\Mary], l_cert, l_akey CASCADE AS l_admin;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_for)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)
+        (identifier)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-revoke-control-tail — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE GRANT OPTION FOR CONTROL ON AVAILABILITY GROUP::ag_sales FROM l_app, [CONTOSO\Mary], l_cert, l_akey CASCADE AS l_admin;
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (keyword_grant)
+        (keyword_option)
+        (keyword_for)
+        (permission
+          (identifier))
+        (keyword_on)
+        (identifier)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_from)
+        (identifier)
+        (identifier)
+        (identifier)
+        (identifier)
+        (keyword_cascade)
+        (keyword_as)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-qualifier-comment — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+REVOKE ALTER ON AVAILABILITY/* 한국어 C:\audit */GROUP::[ag_sales] TO [CONTOSO\Mary];
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (marginalia)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))
+
+==================
+ddl-rest/closing-ag-qualifier-quoted — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+REVOKE ALTER ON [AVAILABILITY GROUP]::[ag_sales] TO [CONTOSO\Mary];
+
+---
+
+(program
+  (batch
+    (statement
+      (grant_statement
+        (keyword_revoke)
+        (permission
+          (keyword_alter))
+        (keyword_on)
+        (identifier)
+        (object_reference
+          name: (identifier))
+        (keyword_to)
+        (identifier)))))

@@ -20,6 +20,12 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
         let node = cursor.node();
         if matches!(
             node.kind(),
+            "parenthesized_expression" | "drop_sequence" | "grant_statement"
+        ) {
+            ddl_rest_closing(node, source, &mut out);
+        }
+        if matches!(
+            node.kind(),
             "create_credential"
                 | "alter_credential"
                 | "create_login"
@@ -3285,6 +3291,118 @@ fn ddl_rest_misc(node: Node, source: &[u8], out: &mut Vec<Violation>) {
     }
 }
 
+/// Closing neighbours, SQL Server 2025 LocalDB 17.0.1000.7, levels 100-170:
+/// ddl-rest/closing-xe-* rejects a parenthesized scalar predicate source (102), but accepts
+/// parentheses around the whole comparison. closing-drop-sequence-* rejects database/server
+/// prefixes (166/117). closing-ag-* rejects CONNECT on AG (102), accepting ALTER and CONTROL.
+/// The measured AG CONNECT result differs from the current documentation; do not infer a
+/// complete permission whitelist. The quoted-class probes reject joined multiword classes (102).
+fn ddl_rest_closing(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+    match node.kind() {
+        "parenthesized_expression" => {
+            let mut cursor = node.walk();
+            let mut parts = node.named_children(&mut cursor).filter(|n| !n.is_extra());
+            if !parts.next().is_some_and(|n| n.kind() == "field") || parts.next().is_some() {
+                return;
+            }
+            let mut ancestor = node.parent();
+            let mut predicate = false;
+            while let Some(parent) = ancestor {
+                match parent.kind() {
+                    "where" => predicate = true,
+                    "event_session_event" => {
+                        if predicate {
+                            out.push(violation(
+                                "ddl-rest-xe-source",
+                                "an XE scalar predicate source is not parenthesized; the whole comparison may be".into(),
+                                node,
+                            ));
+                        }
+                        return;
+                    }
+                    "statement" | "batch" => return,
+                    _ => {}
+                }
+                ancestor = parent.parent();
+            }
+        }
+        "drop_sequence" => {
+            let mut cursor = node.walk();
+            for name in node
+                .named_children(&mut cursor)
+                .filter(|n| n.kind() == "object_reference")
+            {
+                let mut cursor = name.walk();
+                if name
+                    .children(&mut cursor)
+                    .filter(|n| n.kind() == ".")
+                    .count()
+                    > 1
+                {
+                    out.push(violation(
+                        "ddl-rest-drop-sequence",
+                        "DROP SEQUENCE takes name or schema.name, without database or server prefixes".into(),
+                        name,
+                    ));
+                }
+            }
+        }
+        "grant_statement" => {
+            let mut cursor = node.walk();
+            let children: Vec<Node> = node
+                .children(&mut cursor)
+                .filter(|n| !n.is_extra())
+                .collect();
+            let Some(on) = children.iter().position(|n| n.kind() == "keyword_on") else {
+                return;
+            };
+            let Some(separator) = children[on + 1..].iter().position(|n| n.kind() == "::") else {
+                return;
+            };
+            let class = &children[on + 1..on + 1 + separator];
+            if let [word] = class {
+                let text = word.utf8_text(source).unwrap_or_default();
+                if (text.starts_with('[') || text.starts_with('"'))
+                    && text.split_whitespace().count() > 1
+                {
+                    out.push(violation(
+                        "ddl-rest-securable-class",
+                        "a multiword securable class is separate unquoted words, not one quoted identifier".into(),
+                        *word,
+                    ));
+                }
+                return;
+            }
+            let [availability, group] = class else {
+                return;
+            };
+            if upper_text(*availability, source) != "AVAILABILITY"
+                || upper_text(*group, source) != "GROUP"
+            {
+                return;
+            }
+            for permission in children.iter().filter(|n| n.kind() == "permission") {
+                let mut cursor = permission.walk();
+                let mut words = permission
+                    .named_children(&mut cursor)
+                    .filter(|n| !n.is_extra());
+                if words
+                    .next()
+                    .is_some_and(|n| upper_text(n, source) == "CONNECT")
+                    && words.next().is_none()
+                {
+                    out.push(violation(
+                        "ddl-rest-ag-connect",
+                        "CONNECT ON AVAILABILITY GROUP is rejected by the measured SQL Server parsers".into(),
+                        *permission,
+                    ));
+                }
+            }
+        }
+        _ => {}
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -4703,6 +4821,83 @@ mod tests {
         ] {
             assert!(!parse(good).root_node().has_error(), "{good}");
             assert!(rules(good).is_empty(), "{good}");
+        }
+    }
+    #[test]
+    fn ddl_rest_closing_neighbours_match_the_engine() {
+        for (sql, rule) in [
+            (
+                "ALTER EVENT SESSION es ON DATABASE ADD EVENT sqlserver.sql_statement_completed (WHERE (sqlserver.database_id) < 8);",
+                "ddl-rest-xe-source",
+            ),
+            (
+                "ALTER EVENT SESSION es ON SERVER ADD EVENT sqlserver.sql_statement_completed (WHERE (duration) < 8);",
+                "ddl-rest-xe-source",
+            ),
+            (
+                "ALTER EVENT SESSION es ON DATABASE ADD EVENT sqlserver.sql_statement_completed (WHERE sqlserver.equal_i_sql_unicode_string((sqlserver.client_app_name), N'x'));",
+                "ddl-rest-xe-source",
+            ),
+            ("DROP SEQUENCE db1.dbo.seq_a;", "ddl-rest-drop-sequence"),
+            ("DROP SEQUENCE db1..seq_a;", "ddl-rest-drop-sequence"),
+            ("DROP SEQUENCE srv.db1.dbo.seq_a;", "ddl-rest-drop-sequence"),
+            (
+                "DROP SEQUENCE dbo.seq_a, db1.dbo.seq_b;",
+                "ddl-rest-drop-sequence",
+            ),
+            (
+                "DROP SEQUENCE IF EXISTS db1.dbo.seq_a;",
+                "ddl-rest-drop-sequence",
+            ),
+            (
+                "REVOKE CONNECT ON AVAILABILITY GROUP::ag FROM u;",
+                "ddl-rest-ag-connect",
+            ),
+            (
+                "REVOKE CONNECT ON AVAILABILITY GROUP::ag TO u;",
+                "ddl-rest-ag-connect",
+            ),
+            (
+                "GRANT CONNECT ON AVAILABILITY GROUP::ag TO u;",
+                "ddl-rest-ag-connect",
+            ),
+            (
+                "DENY CONNECT ON AVAILABILITY GROUP::ag TO u;",
+                "ddl-rest-ag-connect",
+            ),
+            (
+                "GRANT CONTROL ON [ASYMMETRIC KEY]::ak TO u;",
+                "ddl-rest-securable-class",
+            ),
+            (
+                r"REVOKE ALTER ON [AVAILABILITY GROUP]::[ag_sales] TO [CONTOSO\Mary];",
+                "ddl-rest-securable-class",
+            ),
+        ] {
+            let tree = parse(sql);
+            assert!(
+                !tree.root_node().has_error(),
+                "{sql}: this boundary is enforced by constraints"
+            );
+            assert_eq!(rules(sql), [rule], "{sql}");
+        }
+        for sql in [
+            "ALTER EVENT SESSION es ON DATABASE ADD EVENT sqlserver.sql_statement_completed (WHERE sqlserver.database_id < 8);",
+            "ALTER EVENT SESSION es ON DATABASE ADD EVENT sqlserver.sql_statement_completed (WHERE ((sqlserver.database_id < 8)));",
+            "ALTER EVENT SESSION es ON DATABASE ADD EVENT sqlserver.sql_statement_completed (WHERE (sqlserver.database_id < 8) AND NOT (duration > 5));",
+            "ALTER EVENT SESSION es ON DATABASE ADD EVENT sqlserver.sql_statement_completed (WHERE sqlserver.equal_i_sql_unicode_string(sqlserver.client_app_name, N'x'));",
+            "DROP SEQUENCE dbo.seq_a, seq_b;",
+            "DROP SEQUENCE IF EXISTS dbo.seq_a;",
+            "REVOKE ALTER ON AVAILABILITY GROUP::ag TO u;",
+            "REVOKE CONTROL ON AVAILABILITY GROUP::ag FROM u;",
+            "GRANT ALTER ON AVAILABILITY GROUP::ag TO u;",
+            "DENY CONTROL ON AVAILABILITY GROUP::ag TO u;",
+            r"REVOKE GRANT OPTION FOR CONTROL ON AVAILABILITY GROUP::ag_sales FROM l_app, [CONTOSO\Mary], l_cert, l_akey CASCADE AS l_admin;",
+            r"REVOKE ALTER ON AVAILABILITY/* 한국어 C:\audit */GROUP::[ag_sales] TO [CONTOSO\Mary];",
+        ] {
+            let tree = parse(sql);
+            assert!(!tree.root_node().has_error(), "{sql}");
+            assert!(rules(sql).is_empty(), "{sql}");
         }
     }
 }
