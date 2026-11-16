@@ -21,6 +21,12 @@ enum TokenType {
   SQLCMD_EMPTY,
   HINT_INTEGER,
   HINT_NUMERIC,
+  SPACED_NOT_EQUAL,
+  SPACED_LESS_EQUAL,
+  SPACED_GREATER_EQUAL,
+  SPACED_NOT_EQUAL_ALT,
+  SPACED_NOT_LESS,
+  SPACED_NOT_GREATER,
 };
 
 void *tree_sitter_mssql_external_scanner_create(void) { return NULL; }
@@ -42,6 +48,69 @@ static inline bool is_space(int32_t c) {
 
 static inline bool at_line_end(TSLexer *lexer) {
   return lexer->eof(lexer) || lexer->lookahead == '\r' || lexer->lookahead == '\n';
+}
+
+// LocalDB 17.0.1000.7 treats controls and these Unicode spaces as operator separators.
+static bool is_operator_space(int32_t c) {
+  return (c >= 0 && c <= 0x20) || c == 0x85 || c == 0xa0 || c == 0x1680 ||
+         (c >= 0x2000 && c <= 0x200b) || c == 0x2028 || c == 0x2029 ||
+         c == 0x202f || c == 0x205f || c == 0x3000;
+}
+
+// Keep joined operators on their existing lexer path and public anonymous kinds.
+static bool scan_spaced_comparison(TSLexer *lexer, const bool *valid_symbols) {
+  while (is_space(lexer->lookahead)) lexer->advance(lexer, true);
+  int32_t first = lexer->lookahead;
+  if (first != '!' && first != '<' && first != '>') return false;
+  lexer->advance(lexer, false);
+  bool separated = false;
+  for (;;) {
+    if (lexer->eof(lexer)) return false;
+    if (is_operator_space(lexer->lookahead)) {
+      separated = true;
+      lexer->advance(lexer, false);
+    } else if (lexer->lookahead == '/') {
+      lexer->advance(lexer, false);
+      if (lexer->lookahead != '*') return false;
+      lexer->advance(lexer, false);
+      unsigned depth = 1;
+      while (depth) {
+        if (lexer->eof(lexer)) return false;
+        int32_t c = lexer->lookahead;
+        lexer->advance(lexer, false);
+        if (c == '/' && lexer->lookahead == '*') {
+          depth++;
+          lexer->advance(lexer, false);
+        } else if (c == '*' && lexer->lookahead == '/') {
+          depth--;
+          lexer->advance(lexer, false);
+        }
+      }
+      separated = true;
+    } else if (lexer->lookahead == '-') {
+      lexer->advance(lexer, false);
+      if (lexer->lookahead != '-') return false;
+      while (!at_line_end(lexer)) lexer->advance(lexer, false);
+      separated = true;
+    } else {
+      break;
+    }
+  }
+  if (!separated) return false;
+  int32_t second = lexer->lookahead;
+  enum TokenType kind;
+  if (first == '!' && second == '=') kind = SPACED_NOT_EQUAL;
+  else if (first == '<' && second == '=') kind = SPACED_LESS_EQUAL;
+  else if (first == '>' && second == '=') kind = SPACED_GREATER_EQUAL;
+  else if (first == '<' && second == '>') kind = SPACED_NOT_EQUAL_ALT;
+  else if (first == '!' && second == '<') kind = SPACED_NOT_LESS;
+  else if (first == '!' && second == '>') kind = SPACED_NOT_GREATER;
+  else return false;
+  if (!valid_symbols[kind]) return false;
+  lexer->advance(lexer, false);
+  lexer->mark_end(lexer);
+  lexer->result_symbol = kind;
+  return true;
 }
 
 bool tree_sitter_mssql_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
@@ -107,6 +176,13 @@ bool tree_sitter_mssql_external_scanner_scan(void *payload, TSLexer *lexer, cons
       lexer->result_symbol = valid_symbols[HINT_INTEGER] ? HINT_INTEGER : HINT_NUMERIC;
       return true;
     }
+  }
+  if (!recovering && (valid_symbols[SPACED_NOT_EQUAL] || valid_symbols[SPACED_LESS_EQUAL] ||
+      valid_symbols[SPACED_GREATER_EQUAL] || valid_symbols[SPACED_NOT_EQUAL_ALT] ||
+      valid_symbols[SPACED_NOT_LESS] || valid_symbols[SPACED_NOT_GREATER])) {
+    while (is_space(lexer->lookahead)) lexer->advance(lexer, true);
+    if (lexer->lookahead == '!' || lexer->lookahead == '<' || lexer->lookahead == '>')
+      return scan_spaced_comparison(lexer, valid_symbols);
   }
   if (!valid_symbols[MARGINALIA]) {
     return false;

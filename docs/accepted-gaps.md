@@ -171,14 +171,12 @@ change is needed or that every shape has had a full alternate implementation att
 | --- | --- |
 | open-like-escape | LIKE ... ESCAPE |
 | open-json-arrayagg, open-json-objectagg | JSON aggregates with ORDER BY, NULL handling and key:value |
-| open-nested-set | A set operation used as another set operation's parenthesized operand |
 | open-rowset-semicolon | OPENROWSET provider connection with semicolon-separated credentials |
 | open-graph-columns, open-graph-path | Graph pseudo-columns, FOR PATH and recursive MATCH patterns |
 | open-kill-query | KILL QUERY NOTIFICATION/SUBSCRIPTION (also KILL STATS JOB in kit routes) |
 | open-stats-partitions | UPDATE STATISTICS ... RESAMPLE ON PARTITIONS |
 | open-implicit-exec | Implicit procedure invocation at the start of a batch |
 | open-signature | ADD [COUNTER] SIGNATURE |
-| open-spaced-comparison | Spaced comparison operators: < >, ! >, ! < |
 | select-all-top | Explicit ALL before TOP (plain SELECT ALL keeps the existing quantified-expression tree) |
 | select-into-later-branch | Existing later-UNION-branch INTO restriction; PARSEONLY accepts it |
 
@@ -188,9 +186,16 @@ corpus, existing tree shapes and its constraint rules remain gates.
 
 ## Expression forms (R15)
 
-Recovered forms: language, static. Engine evidence: `oracle/probes/expr-forms.jsonl`,
+Recovered forms: language, static, comparison, set. Engine evidence: `oracle/probes/expr-forms.jsonl`,
 LocalDB 17.0.1000.7 PARSEONLY, compatibility levels 100–170. The term/field/alias structure
 of existing LANGUAGE string arguments is retained. No existing clean tree changes.
+
+Spaced comparisons retain the joined operator kinds. The external scanner consumes the complete
+operator including whitespace and nested/line comments; comments inside it are not separate nodes.
+The comparison-word and scalar-comparison probes retain the existing boolean/scalar contextual gap.
+
+`expr-forms/set/intoLast` retains the pre-existing later-branch INTO restriction (engine accepts).
+Nested set operands recover on both sides; operand-local trailing clauses are constraint violations.
 
 Undeclared variables (Msg 137) in the probes remain contextual; syntax is accepted.
 LIKE ESCAPE and JSON aggregates remain outside this change.

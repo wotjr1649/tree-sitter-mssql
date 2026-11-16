@@ -1,4 +1,190 @@
 ==================
+expr-forms/comparison/bangeq-space - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 ! = 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/bangeq-line - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 !--gap
+= 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/bangeq-nested - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 !/* a /* b */ c */= 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/lteq-space - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 < = 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/lteq-line - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 <--gap
+= 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/lteq-nested - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 </* a /* b */ c */= 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/gteq-space - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 > = 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/gteq-line - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 >--gap
+= 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/gteq-nested - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 >/* a /* b */ c */= 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/ltgt-space - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 < > 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/ltgt-line - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 <--gap
+> 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/ltgt-nested - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 </* a /* b */ c */> 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/banglt-space - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 ! < 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/banglt-line - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 !--gap
+< 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/banglt-nested - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 !/* a /* b */ c */< 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/banggt-space - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 ! > 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/banggt-line - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 !--gap
+> 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/banggt-nested - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 !/* a /* b */ c */> 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
 expr-forms/language/contains-integer - LocalDB 17.0.1000.7 levels 100-170 accepts
 ==================
 
@@ -167,6 +353,126 @@ SELECT * FROM t WHERE CONTAINS(PROPERTY(c,'title'),'x',LANGUAGE 1033);
 ---
 
 (program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (object_reference name: (identifier)))) (where (keyword_where) predicate: (invocation (object_reference name: (identifier)) parameter: (term value: (invocation (object_reference name: (identifier)) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal))))))))
+
+==================
+expr-forms/set/left - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+(SELECT 1 UNION SELECT 2) EXCEPT SELECT 3;
+
+---
+
+(program (batch (statement (set_operation (query_specification (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal))))) operation: (keyword_union) (query_specification (select (keyword_select) (select_expression (term value: (literal))))))) operation: (keyword_except) (query_specification (select (keyword_select) (select_expression (term value: (literal)))))))))
+
+==================
+expr-forms/set/right - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 UNION (SELECT 2 EXCEPT SELECT 3);
+
+---
+
+(program (batch (statement (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal))))) operation: (keyword_union) (query_specification (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal))))) operation: (keyword_except) (query_specification (select (keyword_select) (select_expression (term value: (literal)))))))))))
+
+==================
+expr-forms/set/both - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+(SELECT 1 UNION SELECT 2) EXCEPT (SELECT 3 INTERSECT SELECT 4);
+
+---
+
+(program (batch (statement (set_operation (query_specification (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal))))) operation: (keyword_union) (query_specification (select (keyword_select) (select_expression (term value: (literal))))))) operation: (keyword_except) (query_specification (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal))))) operation: (keyword_intersect) (query_specification (select (keyword_select) (select_expression (term value: (literal)))))))))))
+
+==================
+expr-forms/set/outer - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+(SELECT 1 UNION SELECT 2);
+
+---
+
+(program (batch (statement (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal))))) operation: (keyword_union) (query_specification (select (keyword_select) (select_expression (term value: (literal)))))))))
+
+==================
+expr-forms/set/double - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+((SELECT 1 UNION SELECT 2));
+
+---
+
+(program (batch (statement (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal))))) operation: (keyword_union) (query_specification (select (keyword_select) (select_expression (term value: (literal)))))))))
+
+==================
+expr-forms/set/deep - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 UNION ((SELECT 2 EXCEPT SELECT 3) INTERSECT SELECT 4);
+
+---
+
+(program (batch (statement (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal))))) operation: (keyword_union) (query_specification (set_operation (query_specification (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal))))) operation: (keyword_except) (query_specification (select (keyword_select) (select_expression (term value: (literal))))))) operation: (keyword_intersect) (query_specification (select (keyword_select) (select_expression (term value: (literal)))))))))))
+
+==================
+expr-forms/set/derived - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM (SELECT 1 AS x UNION (SELECT 2 EXCEPT SELECT 3)) AS t;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (subquery (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal) (keyword_as) alias: (identifier))))) operation: (keyword_union) (query_specification (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal))))) operation: (keyword_except) (query_specification (select (keyword_select) (select_expression (term value: (literal))))))))) (keyword_as) alias: (identifier)))))))
+
+==================
+expr-forms/set/cte - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+WITH c AS (SELECT 1 AS x UNION (SELECT 2 EXCEPT SELECT 3)) SELECT * FROM c;
+
+---
+
+(program (batch (statement (keyword_with) (cte name: (identifier) (keyword_as) (statement (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal) (keyword_as) alias: (identifier))))) operation: (keyword_union) (query_specification (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal))))) operation: (keyword_except) (query_specification (select (keyword_select) (select_expression (term value: (literal)))))))))) (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (object_reference name: (identifier))))))))
+
+==================
+expr-forms/set/insert - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+INSERT INTO t SELECT 1 UNION (SELECT 2 EXCEPT SELECT 3);
+
+---
+
+(program (batch (statement (insert (keyword_insert) (keyword_into) (object_reference name: (identifier)) (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal))))) operation: (keyword_union) (query_specification (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal))))) operation: (keyword_except) (query_specification (select (keyword_select) (select_expression (term value: (literal))))))))))))
+
+==================
+expr-forms/set/sort - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 UNION (SELECT 2 EXCEPT SELECT 3) ORDER BY 1;
+
+---
+
+(program (batch (statement (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal))))) operation: (keyword_union) (query_specification (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal))))) operation: (keyword_except) (query_specification (select (keyword_select) (select_expression (term value: (literal))))))) (order_by (keyword_order) (keyword_by) (order_target (literal)))))))
+
+==================
+expr-forms/set/intoFirst - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+(SELECT 1 AS x INTO #t UNION SELECT 2) EXCEPT SELECT 3;
+
+---
+
+(program (batch (statement (set_operation (query_specification (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal) (keyword_as) alias: (identifier)))) (keyword_into) (object_reference name: (identifier))) operation: (keyword_union) (query_specification (select (keyword_select) (select_expression (term value: (literal))))))) operation: (keyword_except) (query_specification (select (keyword_select) (select_expression (term value: (literal)))))))))
+
+==================
+expr-forms/set/intoLater - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 UNION (SELECT 2 INTO #t UNION SELECT 3);
+
+---
+
+(program (batch (statement (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal))))) operation: (keyword_union) (query_specification (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (keyword_into) (object_reference name: (identifier))) operation: (keyword_union) (query_specification (select (keyword_select) (select_expression (term value: (literal)))))))))))
 
 ==================
 expr-forms/static/hierarchy - LocalDB 17.0.1000.7 levels 100-170 accepts
@@ -447,3 +753,69 @@ SELECT dbo.t::p(1).x(2).y(3);
 ---
 
 (program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (method_call (method_call (invocation (object_reference schema: (object_reference schema: (identifier) name: (identifier)) name: (object_reference name: (identifier))) parameter: (term value: (literal))) method: (identifier) parameter: (term value: (literal))) method: (identifier) parameter: (term value: (literal))))))))))
+
+==================
+expr-forms/comparison/mixed-bangeq - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 !​/* a /* b */ c */-- d
+= 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/mixed-lteq - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 <​/* a /* b */ c */-- d
+= 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/mixed-gteq - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 >​/* a /* b */ c */-- d
+= 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/mixed-ltgt - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 <​/* a /* b */ c */-- d
+> 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/mixed-banglt - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 !​/* a /* b */ c */-- d
+< 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))
+
+==================
+expr-forms/comparison/mixed-banggt - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 WHERE 1 !​/* a /* b */ c */-- d
+> 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (literal) right: (literal)))))))

@@ -1190,7 +1190,7 @@ query-forms/open-nested-set - LocalDB 17.0.1000.7 levels 100-170 - engine accept
 
 ---
 
-(program (batch (statement (set_operation (query_specification (select (keyword_select) (select_expression (term (literal))))) (keyword_union) (query_specification (select (keyword_select) (select_expression (term (literal))))))) (statement (label_statement (identifier) (MISSING ":"))) (statement (query_specification (select (keyword_select) (select_expression (term (literal))))))))
+(program (batch (statement (set_operation (query_specification (set_operation (query_specification (select (keyword_select) (select_expression (term value: (literal))))) operation: (keyword_union) (query_specification (select (keyword_select) (select_expression (term value: (literal))))))) operation: (keyword_intersect) (query_specification (select (keyword_select) (select_expression (term value: (literal)))))))))
 
 ==================
 query-forms/open-rowset-semicolon - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
@@ -1311,7 +1311,7 @@ SELECT 1 WHERE 1 < > 2 AND 1 ! > 2 AND 2 ! < 1;
 
 ---
 
-(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (literal)))) (where (keyword_where) (binary_expression (binary_expression (binary_expression (binary_expression (literal) (field (identifier (MISSING _identifier)))) (literal)) (keyword_and) (binary_expression (literal) (ERROR (UNEXPECTED ' ')) (literal))) (keyword_and) (binary_expression (literal) (ERROR (UNEXPECTED ' ')) (literal))))))))
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (literal)))) (where (keyword_where) predicate: (binary_expression left: (binary_expression left: (binary_expression left: (literal) right: (literal)) operator: (keyword_and) right: (binary_expression left: (literal) right: (literal))) operator: (keyword_and) right: (binary_expression left: (literal) right: (literal))))))))
 
 ==================
 query-forms/atomic-minimal - LocalDB 17.0.1000.7 levels 100-170 - engine accepts

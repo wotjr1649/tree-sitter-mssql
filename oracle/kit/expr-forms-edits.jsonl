@@ -1,5 +1,25 @@
+{"id":"expr-forms/comparison-bangeq","source":"-- 한글 경로 C:\\임시\nSELECT 1 WHERE 1 ! = 2;\n","edits":[{"find":"! =","replace":"!/* 한글 /* x */ y */="},{"find":"!/* 한글 /* x */ y */=","replace":"! ="}]}
+{"id":"expr-forms/comparison-broken-bangeq","source":"-- 한글 경로 C:\\임시\nSELECT 1 WHERE 1 ! = 2;\n","edits":[{"find":"! =","replace":"!/* 한글 ="},{"find":"!/* 한글 =","replace":"! ="}]}
+{"id":"expr-forms/comparison-unicode-bangeq","source":"-- 한글 경로 C:\\임시\nSELECT 1 WHERE 1 ! = 2;\n","edits":[{"find":"! =","replace":"!​-- 한글\r\n="},{"find":"!​-- 한글\r\n=","replace":"! ="}]}
+{"id":"expr-forms/comparison-lteq","source":"-- 한글 경로 C:\\임시\nSELECT 1 WHERE 1 < = 2;\n","edits":[{"find":"< =","replace":"</* 한글 /* x */ y */="},{"find":"</* 한글 /* x */ y */=","replace":"< ="}]}
+{"id":"expr-forms/comparison-broken-lteq","source":"-- 한글 경로 C:\\임시\nSELECT 1 WHERE 1 < = 2;\n","edits":[{"find":"< =","replace":"</* 한글 ="},{"find":"</* 한글 =","replace":"< ="}]}
+{"id":"expr-forms/comparison-unicode-lteq","source":"-- 한글 경로 C:\\임시\nSELECT 1 WHERE 1 < = 2;\n","edits":[{"find":"< =","replace":"<​-- 한글\r\n="},{"find":"<​-- 한글\r\n=","replace":"< ="}]}
+{"id":"expr-forms/comparison-gteq","source":"-- 한글 경로 C:\\임시\nSELECT 1 WHERE 1 > = 2;\n","edits":[{"find":"> =","replace":">/* 한글 /* x */ y */="},{"find":">/* 한글 /* x */ y */=","replace":"> ="}]}
+{"id":"expr-forms/comparison-broken-gteq","source":"-- 한글 경로 C:\\임시\nSELECT 1 WHERE 1 > = 2;\n","edits":[{"find":"> =","replace":">/* 한글 ="},{"find":">/* 한글 =","replace":"> ="}]}
+{"id":"expr-forms/comparison-unicode-gteq","source":"-- 한글 경로 C:\\임시\nSELECT 1 WHERE 1 > = 2;\n","edits":[{"find":"> =","replace":">​-- 한글\r\n="},{"find":">​-- 한글\r\n=","replace":"> ="}]}
+{"id":"expr-forms/comparison-ltgt","source":"-- 한글 경로 C:\\임시\nSELECT 1 WHERE 1 < > 2;\n","edits":[{"find":"< >","replace":"</* 한글 /* x */ y */>"},{"find":"</* 한글 /* x */ y */>","replace":"< >"}]}
+{"id":"expr-forms/comparison-broken-ltgt","source":"-- 한글 경로 C:\\임시\nSELECT 1 WHERE 1 < > 2;\n","edits":[{"find":"< >","replace":"</* 한글 >"},{"find":"</* 한글 >","replace":"< >"}]}
+{"id":"expr-forms/comparison-unicode-ltgt","source":"-- 한글 경로 C:\\임시\nSELECT 1 WHERE 1 < > 2;\n","edits":[{"find":"< >","replace":"<​-- 한글\r\n>"},{"find":"<​-- 한글\r\n>","replace":"< >"}]}
+{"id":"expr-forms/comparison-banglt","source":"-- 한글 경로 C:\\임시\nSELECT 1 WHERE 1 ! < 2;\n","edits":[{"find":"! <","replace":"!/* 한글 /* x */ y */<"},{"find":"!/* 한글 /* x */ y */<","replace":"! <"}]}
+{"id":"expr-forms/comparison-broken-banglt","source":"-- 한글 경로 C:\\임시\nSELECT 1 WHERE 1 ! < 2;\n","edits":[{"find":"! <","replace":"!/* 한글 <"},{"find":"!/* 한글 <","replace":"! <"}]}
+{"id":"expr-forms/comparison-unicode-banglt","source":"-- 한글 경로 C:\\임시\nSELECT 1 WHERE 1 ! < 2;\n","edits":[{"find":"! <","replace":"!​-- 한글\r\n<"},{"find":"!​-- 한글\r\n<","replace":"! <"}]}
+{"id":"expr-forms/comparison-banggt","source":"-- 한글 경로 C:\\임시\nSELECT 1 WHERE 1 ! > 2;\n","edits":[{"find":"! >","replace":"!/* 한글 /* x */ y */>"},{"find":"!/* 한글 /* x */ y */>","replace":"! >"}]}
+{"id":"expr-forms/comparison-broken-banggt","source":"-- 한글 경로 C:\\임시\nSELECT 1 WHERE 1 ! > 2;\n","edits":[{"find":"! >","replace":"!/* 한글 >"},{"find":"!/* 한글 >","replace":"! >"}]}
+{"id":"expr-forms/comparison-unicode-banggt","source":"-- 한글 경로 C:\\임시\nSELECT 1 WHERE 1 ! > 2;\n","edits":[{"find":"! >","replace":"!​-- 한글\r\n>"},{"find":"!​-- 한글\r\n>","replace":"! >"}]}
 {"id":"expr-forms/language-lcid","source":"-- 한글 경로 C:\\임시\nSELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE 1033);\n","edits":[{"find":"1033","replace":"1033.0"},{"find":"1033.0","replace":"1033"}]}
 {"id":"expr-forms/language-top","source":"-- 한글 경로 C:\\임시\nSELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE 1033, 10);\n","edits":[{"find":", 10","replace":", -1"},{"find":", -1","replace":", 10"}]}
 {"id":"expr-forms/language-quoted","source":"-- 한글 경로 C:\\임시\nSET/*a*/QUOTED_IDENTIFIER/*b*/OFF; SELECT * FROM t WHERE CONTAINS(c,'x',LANGUAGE \"English\");\n","edits":[{"find":"OFF","replace":"ON"},{"find":"ON","replace":"OFF"}]}
+{"id":"expr-forms/set-right","source":"-- 한글 경로 C:\\임시\nSELECT 1 UNION (SELECT 2 EXCEPT SELECT 3);\n","edits":[{"find":"EXCEPT SELECT 3","replace":"EXCEPT"},{"find":"EXCEPT","replace":"EXCEPT SELECT 3"}]}
+{"id":"expr-forms/set-both","source":"-- 한글 경로 C:\\임시\n(SELECT 1 UNION SELECT 2) EXCEPT (SELECT 3 INTERSECT SELECT 4);\n","edits":[{"find":"(SELECT 3 INTERSECT SELECT 4)","replace":"((SELECT 3 INTERSECT SELECT 4))"},{"find":"((SELECT 3 INTERSECT SELECT 4))","replace":"(SELECT 3 INTERSECT SELECT 4)"}]}
 {"id":"expr-forms/static-type","source":"-- 한글 경로 C:\\임시\nSELECT dbo.t::f(1);\n","edits":[{"find":"dbo.t","replace":"db.dbo.t"},{"find":"db.dbo.t","replace":"dbo.t"}]}
 {"id":"expr-forms/static-member","source":"-- 한글 경로 C:\\임시\nSELECT geometry::Point(1,2,0).STAsText();\n","edits":[{"find":"STAsText()","replace":"STAsText("},{"find":"STAsText(","replace":"STAsText()"}]}

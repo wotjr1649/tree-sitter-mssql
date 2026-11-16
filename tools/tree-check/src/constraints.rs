@@ -74,6 +74,7 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
                 builtin_arity(node, source, &mut out);
                 expression_language(node, source, &mut out);
             }
+            "set_operation" => nested_set_clauses(node, &mut out),
             "object_reference" | "field" => static_reference(node, source, &mut out),
             "create_function" | "alter_function" => scalar_function_return(node, &mut out),
             "window_specification" => window_frame_order(node, &mut out),
@@ -522,6 +523,28 @@ fn quoted_strings(node: Node, source: &[u8]) -> bool {
         }
     }
     strings
+}
+
+/// R15 expr-forms/set: an operand cannot carry its own trailing clauses, even with TOP.
+fn nested_set_clauses(node: Node, out: &mut Vec<Violation>) {
+    if node
+        .parent()
+        .is_some_and(|n| n.kind() == "query_specification")
+    {
+        let mut c = node.walk();
+        if node.named_children(&mut c).any(|n| {
+            matches!(
+                n.kind(),
+                "order_by" | "offset_fetch" | "option_clause" | "for_clause"
+            )
+        }) {
+            out.push(violation(
+                "expression-nested-set-clause",
+                "a nested set operand has no trailing sort, hint or FOR clause".into(),
+                node,
+            ));
+        }
+    }
 }
 
 /// R15 expr-forms/static: type names have at most two parts; variables are not type/member names.
@@ -2613,6 +2636,7 @@ mod tests {
             ("static/database", "expression-static-reference"),
             ("static/extra-methodVariable", "expression-static-reference"),
             ("static/nullCall", "expression-static-reference"),
+            ("set/innerTop", "expression-nested-set-clause"),
         ] {
             let case = cases
                 .iter()
@@ -2628,12 +2652,47 @@ mod tests {
             "language/qi-options",
             "static/schema",
             "static/nullQuoted",
+            "set/deep",
         ] {
             let case = cases
                 .iter()
                 .find(|c| c["id"] == format!("expr-forms/{id}"))
                 .unwrap();
             assert!(rules(case["source"].as_str().unwrap()).is_empty(), "{id}");
+        }
+    }
+
+    #[test]
+    fn spaced_comparisons_keep_the_operator_kinds() {
+        for op in ["!=", "<=", ">=", "<>", "!<", "!>"] {
+            for gap in [
+                " ",
+                "\r\n",
+                "-- 한글\n",
+                "/* a /* b */ c */",
+                "\u{200b}/*c*/",
+            ] {
+                let sql = format!("SELECT 1 WHERE 1 {}{gap}{} 2;", &op[..1], &op[1..]);
+                let mut parser = Parser::new();
+                parser
+                    .set_language(&tree_sitter_mssql::LANGUAGE.into())
+                    .unwrap();
+                let tree = parser.parse(&sql, None).unwrap();
+                assert!(!tree.root_node().has_error(), "{sql}");
+                let mut nodes = vec![tree.root_node()];
+                let mut found = false;
+                while let Some(node) = nodes.pop() {
+                    if let Some(operator) = node.child_by_field_name("operator") {
+                        assert_eq!(operator.kind(), op, "{sql}");
+                        assert!(!operator.is_named());
+                        found = true;
+                        break;
+                    }
+                    let mut cursor = node.walk();
+                    nodes.extend(node.named_children(&mut cursor));
+                }
+                assert!(found, "{sql}");
+            }
         }
     }
 
