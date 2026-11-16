@@ -84,7 +84,7 @@ The goal is complete T-SQL support with zero defects (ADR-0001: SQL Server's par
    - Runtime cost is also bounded against a milestone (owner decision, 2026-11-16): `scripts/runtime-cost.mjs` compiles
      the milestone commit's parser and the current one with the same compiler in the same CI job, and compares the
      library size, the median time to parse every fixture and oracle case, and the peak memory of that parse. Each
-     ratio must stay within `max_ratio` of `test/runtime-cost.json` (1.5x of the M2 end, `e8a398e`). Per-change growth
+     ratio must stay within `max_ratio` of `test/runtime-cost.json` (1.5x of the M3 end, `4ff4c5f`, since ADR-0005; the M2 end `e8a398e` before). Per-change growth
      is what the budget above limits; this bounds the sum. Passing the ratio needs a recorded decision and a new
      milestone, normally after a refactor that pays the growth back.
 7. **grammar-kit patches.**

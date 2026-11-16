@@ -276,7 +276,7 @@
     "surface/expressions/execute-transact-sql/example-029@qi-off": {"class":"context","errors":"137","reason":"문서의 독립 코드 블록에 필요한 변수 선언이 없거나 같은 배치에서 중복 선언된다(Msg 137). 선언/배치 문맥이 필요한 거부다."},
     "surface/expressions/set-local-variable-transact-sql/example-012": {"class":"context","errors":"134","reason":"문서의 독립 코드 블록에 필요한 변수 선언이 없거나 같은 배치에서 중복 선언된다(Msg 134). 선언/배치 문맥이 필요한 거부다."},
     "surface/expressions/set-local-variable-transact-sql/example-012@qi-off": {"class":"context","errors":"134","reason":"문서의 독립 코드 블록에 필요한 변수 선언이 없거나 같은 배치에서 중복 선언된다(Msg 134). 선언/배치 문맥이 필요한 거부다."},
-    "surface/expressions/sql-server-utilities-statements-go/example-002": {"class":"runner","errors":"102","reason":"GO;는 runner의 GO 분리 패턴 밖인 클라이언트 행이다. T-SQL 본문 문법 결함으로 단정하지 않는다."},
+    "surface/expressions/sql-server-utilities-statements-go/example-002": {"class":"runner","errors":"102","reason":"GO; is a client line outside the runner's GO split pattern, not a defect of the T-SQL text"},
     "surface/expressions/sql-server-utilities-statements-go/example-002@qi-off": {"class":"runner","errors":"102","reason":"GO;는 runner의 GO 분리 패턴 밖인 클라이언트 행이다. T-SQL 본문 문법 결함으로 단정하지 않는다."},
     "surface/expressions/variables-transact-sql/example-004": {"class":"context","errors":"137","reason":"문서의 독립 코드 블록에 필요한 변수 선언이 없거나 같은 배치에서 중복 선언된다(Msg 137). 선언/배치 문맥이 필요한 거부다."},
     "surface/expressions/variables-transact-sql/example-004@qi-off": {"class":"context","errors":"137","reason":"문서의 독립 코드 블록에 필요한 변수 선언이 없거나 같은 배치에서 중복 선언된다(Msg 137). 선언/배치 문맥이 필요한 거부다."},

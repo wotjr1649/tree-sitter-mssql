@@ -12,11 +12,30 @@ An owner-maintained [tree-sitter](https://tree-sitter.github.io/tree-sitter/) gr
 
 **Correctness reference.** Valid T-SQL means what SQL Server's own parser accepts under `SET PARSEONLY ON` at a stated compatibility level. Where upstream tests or [docs/accepted-gaps.md](docs/accepted-gaps.md) disagree with SQL Server, SQL Server wins. [docs/roadmap.md](docs/roadmap.md) lists the planned work, starting with a SQL Server oracle.
 
+## What it guarantees
+
+SQL Server's own parser is the reference (`SET PARSEONLY ON`, ADR-0002). The oracle in `oracle/` holds 10,300
+cases judged by SQL Server 2017, 2019, 2022 and 2025 at compatibility levels 100–170. From 2.0.0:
+
+- every case SQL Server accepts parses without an error;
+- every case SQL Server rejects is rejected by the grammar or by the constraint layer in `tools/tree-check` (also a
+  WebAssembly module for CGO-free hosts, [docs/constraint-wasm.md](docs/constraint-wasm.md)), or is listed with its
+  reason in `oracle/rejected-clean.json`. Those reasons are declarations or the catalog, the edition, platform or
+  server configuration, a feature these builds lack, or a limit of the oracle runner; no grammar gap is open.
+
+Scope and known limits:
+
+- default session settings (QUOTED_IDENTIFIER ON);
+- Azure Synapse and Data Warehouse syntax kept from upstream is accepted although SQL Server rejects it;
+- after an edit, the error recovery of an invalid input may differ between an incremental and a fresh parse.
+
+Moving from 1.0.0: [docs/migrating-from-1.0.md](docs/migrating-from-1.0.md).
+
 ## Using it
 
 Nothing is published to crates.io, npm or any other registry. Pin a commit of this repository: the generated parser (`src/parser.c`, `src/grammar.json`, `src/node-types.json`) is committed, and `src/scanner.c` must be compiled alongside `src/parser.c`.
 
-For Rust, as a Git dependency pinned to a commit:
+For Rust, as a Git dependency pinned to a release tag (`v2.0.0`) or a commit:
 
 ```toml
 [dependencies]
