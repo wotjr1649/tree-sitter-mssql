@@ -7,7 +7,7 @@
 // failures, timeouts and fatal errors stop the run (exit 2): they are never recorded as rejections.
 //
 // Usage:
-//   ParseOnly --cases oracle/kit/cases.jsonl --out verdicts.json [--server S] [--levels 100,...] [--quoted-identifier on|off]
+//   ParseOnly --cases oracle/data/kit/cases.jsonl --out verdicts.json [--server S] [--levels 100,...] [--quoted-identifier on|off]
 //   ParseOnly --self-test [--server S]
 // Without --server the runner uses (localdb)\MSSQLLocalDB with Windows authentication. With a server,
 // it uses SQL authentication: user from MSSQL_USER (default "sa"), password from MSSQL_PASSWORD.
@@ -230,7 +230,7 @@ static class Program
             ["session_set"] = sessionSet,
             ["levels"] = new JsonArray(levels.Select(x => (JsonNode)x).ToArray()),
             ["cases_sha256"] = Convert.ToHexStringLower(SHA256.HashData(casesBytes)),
-            ["runner"] = "oracle/runner/ParseOnly (C#, Microsoft.Data.SqlClient)",
+            ["runner"] = "oracle/runners/ParseOnly (C#, Microsoft.Data.SqlClient)",
             ["runner_sha256"] = RunnerSha256(),
             ["observed_utc"] = DateTime.UtcNow.ToString("yyyy-MM-dd"),
         };

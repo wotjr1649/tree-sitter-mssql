@@ -1,5 +1,5 @@
 // Dependency-free WASI reactor host and full native/WASM JSON parity gate.
-// Usage: node tools/tree-check-wasm-parity.mjs --wasm <module> --tree-check <native>
+// Usage: node crates/tree-check-wasm-parity.mjs --wasm <module> --tree-check <native>
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import {
@@ -129,27 +129,27 @@ export function checkLifecycle(checker) {
 
 export function collectInputs() {
   const files = [
-    'oracle/kit/cases.jsonl',
-    ...readdirSync('oracle/probes')
+    'oracle/data/kit/cases.jsonl',
+    ...readdirSync('oracle/data/probes')
       .filter((f) => f.endsWith('.jsonl'))
       .sort()
-      .map((f) => join('oracle/probes', f)),
+      .map((f) => join('oracle/data/probes', f)),
   ];
   const cases = files.flatMap((file) => readCases(readFileSync(file, 'utf8')));
   assert(cases.length > 0, 'no oracle cases');
   assert.equal(new Set(cases.map((c) => c.id)).size, cases.length, 'duplicate oracle case IDs');
-  const baseline = JSON.parse(readFileSync('oracle/expected.json', 'utf8')).cases;
+  const baseline = JSON.parse(readFileSync('oracle/data/expected.json', 'utf8')).cases;
   assert.deepEqual(
     cases.map((c) => c.id).sort(),
     [...new Set(Object.keys(baseline).map((id) => id.replace(/@qi-off$/, '')))].sort(),
     'oracle case coverage differs from the baseline',
   );
   const inputs = cases.map((c) => ({ id: c.id, source: Buffer.from(c.source) }));
-  const histories = readdirSync('oracle/kit')
+  const histories = readdirSync('oracle/data/kit')
     .filter((f) => f.endsWith('edits.jsonl'))
     .sort();
   for (const file of histories) {
-    for (const line of readFileSync(join('oracle/kit', file), 'utf8')
+    for (const line of readFileSync(join('oracle/data/kit', file), 'utf8')
       .split('\n')
       .filter((l) => l.trim())) {
       const history = JSON.parse(line);

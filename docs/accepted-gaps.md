@@ -2,7 +2,7 @@
 
 ## R20: current status of the rejected-but-clean ledger
 
-The historical measurements below are superseded by `oracle/rejected-clean.json` for current status.
+The historical measurements below are superseded by `oracle/data/rejected-clean.json` for current status.
 R20 closes 125 of its original 127 `gap` entries through tree-local constraints, without changing
 any grammar, scanner, node kind, field or concrete tree. `gap-forms.jsonl` remeasures all 127 originals
 and adjacent accepted/rejected forms at LocalDB 17.0.1000.7 compatibility levels 100-170;
@@ -92,7 +92,7 @@ from NOEXEC Msg 196; compile-time rejection is not a syntax verdict.
 
 ## Table hints: remaining gaps
 
-The table-hint probes (`oracle/probes/table-hints.jsonl`, 165 cases) were measured with LocalDB
+The table-hint probes (`oracle/data/probes/table-hints.jsonl`, 165 cases) were measured with LocalDB
 17.0.1000.7, PARSEONLY at levels 100–170. INDEX takes a name or a 0..2147483647 integer;
 FORCESEEK also takes a non-empty column list. Their numbers allow up to 11 digits (leading zeros
 included); SPATIAL_WINDOW_MAX_CELLS allows up to 128 digits, still bounded by 2147483647. WITH
@@ -100,7 +100,7 @@ accepts comma, space and mixed separators; TABLE HINT in OPTION requires commas 
 inner hint list.
 
 Names, conflicts, FORCESEEK arguments and DML-target restrictions are enforced by the
-`table-hint` constraint (ADR-0003, measured in `oracle/probes/hint-rules.jsonl`). These rejected
+`table-hint` constraint (ADR-0003, measured in `oracle/data/probes/hint-rules.jsonl`). These rejected
 cases still have a clean tree:
 
 | Oracle cases | Engine verdict | Disposition |
@@ -112,7 +112,7 @@ cases still have a clean tree:
 
 ## Table and index DDL: measured residual gaps (R10)
 
-The table/index forms in `oracle/probes/ddl-table.jsonl` were measured with the committed
+The table/index forms in `oracle/data/probes/ddl-table.jsonl` were measured with the committed
 PARSEONLY runner on LocalDB 17.0.1000.7 at levels 100–170. All 90 engine-accepted probes
 parse cleanly. Ten rejected probes still parse cleanly; the five existing route rejections
 that become clean are also listed below. These are not claims of syntax validity.
@@ -142,7 +142,7 @@ are outside this defect family.
 
 ## EXTERNAL/FULLTEXT/ENDPOINT probes (R12)
 
-The 184 cases in `oracle/probes/ddl-external.jsonl` were measured on LocalDB 17.0.1000.7,
+The 184 cases in `oracle/data/probes/ddl-external.jsonl` were measured on LocalDB 17.0.1000.7,
 compatibility levels 100–170. Tree-check applies the option-set rules of ADR-0003; the raw
 corpus trees in `test/corpus/ddl-external.txt` also pin the structural trees of constraint
 negatives, whose case titles name the constraint. Full-Text component error 7609 and endpoint
@@ -162,7 +162,7 @@ again.
 ## Database and server DDL (R11)
 
 Measured with SQL Server 2025 LocalDB 17.0.1000.7, PARSEONLY at levels 100–170.
-The 259 cases in `oracle/probes/ddl-database.jsonl` are pinned in `test/corpus/ddl-database.txt`;
+The 259 cases in `oracle/data/probes/ddl-database.jsonl` are pinned in `test/corpus/ddl-database.txt`;
 148 engine-accepted cases are clean. The remaining four engine-rejected clean probes are contextual:
 
 | Cases | Verdict | Disposition |
@@ -184,7 +184,7 @@ value bounds, and the wider remaining oracle failures are open inventory work.
 
 ## Query forms (R13): budget-stopped and preserved gaps
 
-These positive cases are pinned in oracle/probes/query-forms.jsonl and test/corpus/query-forms.txt,
+These positive cases are pinned in oracle/data/probes/query-forms.jsonl and test/corpus/query-forms.txt,
 with LocalDB 17.0.1000.7 PARSEONLY verdicts at levels 100–170. They were tree errors at R13; R17 and R18 recovery status is recorded below.
 The R13 patch stays within every +10% parser-cost limit. This list does not imply that a scanner
 change is needed or that every shape has had a full alternate implementation attempted.
@@ -207,7 +207,7 @@ corpus, existing tree shapes and its constraint rules remain gates.
 
 ## Expression forms (R15)
 
-Recovered forms: language, static, comparison, set, provider. Engine evidence: `oracle/probes/expr-forms.jsonl`,
+Recovered forms: language, static, comparison, set, provider. Engine evidence: `oracle/data/probes/expr-forms.jsonl`,
 LocalDB 17.0.1000.7 PARSEONLY, compatibility levels 100–170. The term/field/alias structure
 of existing LANGUAGE string arguments is retained. No existing clean tree changes.
 
@@ -223,7 +223,7 @@ LIKE ESCAPE and JSON aggregates remain outside this change.
 
 ## Remaining routes (R17)
 
-R17 recovers all 119 remaining engine-accepted kit routes in scope, including the six R13 open query forms listed above. Positivity merges every committed engine and compatibility level. At R17, LIKE ESCAPE (B01-r006) and JSON aggregates (V22-r014) were excluded; R18 recovers both. Evidence: oracle/probes/ddl-rest.jsonl and LocalDB 17.0.1000.7 levels 100–170; the committed Linux verdicts identify edition-limited positive routes.
+R17 recovers all 119 remaining engine-accepted kit routes in scope, including the six R13 open query forms listed above. Positivity merges every committed engine and compatibility level. At R17, LIKE ESCAPE (B01-r006) and JSON aggregates (V22-r014) were excluded; R18 recovers both. Evidence: oracle/data/probes/ddl-rest.jsonl and LocalDB 17.0.1000.7 levels 100–170; the committed Linux verdicts identify edition-limited positive routes.
 
 The 533 neighbours include 328 engine positives, all clean. Four engine-negative probes remain clean: two pre-existing permission-name gaps (permission-new-permission-words, permission-unknown-permission) and two undeclared-variable cases newly supported syntactically (routes-implicit-exec-args, commit-off). The existing committed issue151-implicit-local case also remains a contextual error-to-clean transition. Do not infer catalog, type, permission or variable resolution from syntax trees.
 

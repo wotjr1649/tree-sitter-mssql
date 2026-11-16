@@ -41,7 +41,7 @@ The goal is complete T-SQL support with zero defects (ADR-0001: SQL Server's par
 
    A known exception that remains is reported as "no new regressions, N known exceptions", not as zero.
    Context-dependent rejections (conflicting hints, boolean versus scalar, names, permissions) are not grammar
-   defects. The check layer in `tools/tree-check` rejects those the parse tree alone decides (ADR-0003, ADR-0004);
+   defects. The check layer in `crates/tree-check` rejects those the parse tree alone decides (ADR-0003, ADR-0004);
    the rest, which need names, types or the catalog, are classified `contextual`.
 3. **Verified engine profile.** SQL Server 2025 (17.x) at every compatibility level it supports: 100, 110, 120,
    130, 140, 150, 160 and 170 (owner decision, 2026-11-15; first measured the same day on LocalDB 17.0.1000.7: levels
@@ -81,7 +81,7 @@ The goal is complete T-SQL support with zero defects (ADR-0001: SQL Server's par
    - More than 5 % growth warns, and more than 10 % needs the budget raised in the same pull request with the owner's
      approval.
    - Parse time is measured in alternating runs, and a median slowdown above 10 % is investigated.
-   - Runtime cost is also bounded against a milestone (owner decision, 2026-11-16): `tools/runtime-cost.mjs` compiles
+   - Runtime cost is also bounded against a milestone (owner decision, 2026-11-16): `scripts/runtime-cost.mjs` compiles
      the milestone commit's parser and the current one with the same compiler in the same CI job, and compares the
      library size, the median time to parse every fixture and oracle case, and the peak memory of that parse. Each
      ratio must stay within `max_ratio` of `test/runtime-cost.json` (1.5x of the M2 end, `e8a398e`). Per-change growth

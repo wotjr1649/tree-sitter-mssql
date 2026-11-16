@@ -21,20 +21,20 @@ cargo build
 
 ```sh
 npx --yes --package=tree-sitter-cli@0.27.2 -- tree-sitter test
-node test/generate-node-kinds.mjs
-node test/check-registries.mjs
-node tools/parser-cost.mjs
+node scripts/generate-node-kinds.mjs
+node scripts/check-registries.mjs
+node scripts/parser-cost.mjs
 npm run lint
 npm run format:check
 cargo fmt --check
 cargo clippy --all-targets -- -D warnings
 cargo test
-cargo run --manifest-path tools/tree-check/Cargo.toml -- test/fixtures/*.sql
-cargo clippy --all-targets --manifest-path tools/tree-check/Cargo.toml -- -D warnings
-cargo test --manifest-path tools/tree-check/Cargo.toml
+cargo run --manifest-path crates/tree-check/Cargo.toml -- test/fixtures/*.sql
+cargo clippy --all-targets --manifest-path crates/tree-check/Cargo.toml -- -D warnings
+cargo test --manifest-path crates/tree-check/Cargo.toml
 ```
 
-`test/corpus/` holds per-construct tree assertions and `test/fixtures/*.sql` are larger files that `tools/tree-check` checks through the tree-sitter API (root `has_error`, `ERROR`, `MISSING`, zero-width nodes, full coverage); [docs/development.md](docs/development.md) has the details. CI (`Verify`) runs all of this, plus the Node binding tests (`npm test`), secret scanning, and workflow linting.
+`test/corpus/` holds per-construct tree assertions and `test/fixtures/*.sql` are larger files that `crates/tree-check` checks through the tree-sitter API (root `has_error`, `ERROR`, `MISSING`, zero-width nodes, full coverage); [docs/development.md](docs/development.md) has the details. CI (`Verify`) runs all of this, plus the Node binding tests (`npm test`), secret scanning, and workflow linting.
 
 ## Pull requests
 

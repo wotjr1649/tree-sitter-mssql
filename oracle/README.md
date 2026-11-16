@@ -23,7 +23,7 @@ The query-forms set adds 174 query, DML, cursor, EXEC and native-module neighbou
 LocalDB 17.0.1000.7, levels 100–170 (108 accepted, 66 rejected). Every case is pinned in
 test/corpus/query-forms.txt. The set deliberately retains engine-accepted budget-stopped and pre-existing
 gaps; a corpus tree containing ERROR is not a claim that SQL Server rejects its source.
-The matching constraints and their engine evidence live in tools/tree-check/src/constraints.rs.
+The matching constraints and their engine evidence live in crates/tree-check/src/constraints.rs.
 
 ## Reading the verdicts
 
@@ -47,8 +47,8 @@ The matching constraints and their engine evidence live in tools/tree-check/src/
 ## Checking the grammar
 
 ```sh
-cargo build --locked --manifest-path tools/tree-check/Cargo.toml
-node tools/oracle-replay.mjs --tree-check target/debug/tree-check   # with CARGO_TARGET_DIR=target
+cargo build --locked --manifest-path crates/tree-check/Cargo.toml
+node scripts/oracle-replay.mjs --tree-check target/debug/tree-check   # with CARGO_TARGET_DIR=target
 ```
 
 The replay sends `--quoted-identifier on|off` to `tree-check` for the session recorded in each verdict. Existing ON cases keep their IDs; OFF cases use `<id>@qi-off` in `expected.json` and `rejected-clean.json`. Missing session metadata means the historical ON default. ON and OFF acceptance are never merged. Every case set must have engine verdicts under both settings; missing ON or OFF coverage fails the replay. Edit histories compare the shared, session-independent grammar tree once.
@@ -64,9 +64,9 @@ The replay judges every case with `tree-check` (through the tree-sitter API) and
 ## Producing verdicts
 
 ```sh
-(cd oracle/runner/ParseOnly && dotnet restore --locked-mode && dotnet build -c Release --no-restore)
-dotnet oracle/runner/ParseOnly/bin/Release/net10.0/ParseOnly.dll --self-test
-dotnet oracle/runner/ParseOnly/bin/Release/net10.0/ParseOnly.dll --cases oracle/kit/cases.jsonl --out oracle/verdicts/<engine>.json
+(cd oracle/runners/ParseOnly && dotnet restore --locked-mode && dotnet build -c Release --no-restore)
+dotnet oracle/runners/ParseOnly/bin/Release/net10.0/ParseOnly.dll --self-test
+dotnet oracle/runners/ParseOnly/bin/Release/net10.0/ParseOnly.dll --cases oracle/data/kit/cases.jsonl --out oracle/data/verdicts/<engine>.json
 ```
 
 Without `--server` the runner uses SQL Server LocalDB with Windows authentication. With `--server HOST,PORT` it uses SQL authentication: the user comes from `MSSQL_USER` (default `sa`) and the password from `MSSQL_PASSWORD`. `--levels` restricts the compatibility levels. `--quoted-identifier on|off` selects the initial session setting (default `on`); the runner sets it in its own control batch before `SET PARSEONLY ON` and before sending the case text unchanged. `meta.session_set.quoted_identifier` records the verified numeric `SESSIONPROPERTY` value (`1` for ON, `0` for OFF).
@@ -99,7 +99,7 @@ The `Oracle engine` workflow runs the self-test and every case on real engines i
 | SQL Server 2022 CU28 | 100–160 |
 | SQL Server 2025 CU11 | 100–170 |
 
-It runs on pull requests that touch the oracle, and weekly. It compares each engine's verdicts with the committed LocalDB verdicts (`tools/verdict-diff.mjs`) and uploads them. Differences between engines are observations to classify; they do not fail the job. SQL Server 2008 to 2016 run only on Windows and are not verified.
+It runs on pull requests that touch the oracle, and weekly. It compares each engine's verdicts with the committed LocalDB verdicts (`scripts/verdict-diff.mjs`) and uploads them. Differences between engines are observations to classify; they do not fail the job. SQL Server 2008 to 2016 run only on Windows and are not verified.
 
 
 ## QUOTED_IDENTIFIER sessions
@@ -114,7 +114,7 @@ legacy files without a session suffix retain their recorded ON setting. The new 
 uses explicit suffixes for both sessions; other sets retain their legacy ON filename. For example:
 
 ```sh
-dotnet oracle/runner/ParseOnly/bin/Release/net10.0/ParseOnly.dll --cases oracle/probes/quoted-identifier.jsonl --out oracle/verdicts/localdb-17.0.1000.7.quoted-identifier.qi-off.json --quoted-identifier off
+dotnet oracle/runners/ParseOnly/bin/Release/net10.0/ParseOnly.dll --cases oracle/data/probes/quoted-identifier.jsonl --out oracle/data/verdicts/localdb-17.0.1000.7.quoted-identifier.qi-off.json --quoted-identifier off
 ```
 
 The engine workflow measures every set under both settings and compares each with the matching

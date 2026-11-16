@@ -30,15 +30,31 @@ Tree-sitter query files for editors: `highlights.scm`, `indents.scm`, `injection
 
 ### [test/](test)
 
-`corpus/` holds per-construct expected trees, `fixtures/` holds larger T-SQL files that must parse without errors, and `highlight/` holds highlight-query tests. `node-kinds.txt` is the generated list of node kinds that serves as the public API surface, and `check-registries.mjs` and `generate-node-kinds.mjs` maintain and check it.
+`corpus/` holds per-construct expected trees, `fixtures/` holds larger T-SQL files that must parse without errors, and `highlight/` holds highlight-query tests. `queries/` holds recorded query captures, and `node-kinds.txt` is the generated list of node kinds that serves as the public API surface (maintained by `scripts/generate-node-kinds.mjs` and `scripts/check-registries.mjs`). `parser-cost.json` and `runtime-cost.json` are the cost baselines.
 
-### [tools/](tools)
+### [scripts/](scripts)
 
-Verification tools: `tree-check` (a Rust tool) judges parse trees through the tree-sitter API, and is the fixture gate and the basis of the SQL Server oracle checks; `release-policy.mjs versions` checks that `Cargo.toml`, `package.json`, and `tree-sitter.json` carry the same version (the generated parser embeds it), and `package-check.mjs` verifies that the crate and npm package file lists are complete and tracked, so a consumer vendoring the sources gets every file.
+Node scripts that check and maintain the repository, each with a `*.test.mjs` next to it: the oracle replay and its
+session handling (`oracle-replay.mjs`, `verdict-diff.mjs`, `scriptdom-compare.mjs`), the metamorphic gate
+(`comment-mutate.mjs`), cost gates (`parser-cost.mjs`, `runtime-cost.mjs`), query and identifier checks, the wasm
+build and parity gate, and release checks (`release-policy.mjs versions`, `package-check.mjs`).
+
+### [crates/tree-check/](crates/tree-check)
+
+The constraint layer (ADR-0003): a Rust library and CLI that parses T-SQL with this grammar and reports parse problems
+and constraint violations, also built as a WebAssembly reactor for CGO-free hosts
+([docs/constraint-wasm.md](docs/constraint-wasm.md)). It is the fixture gate and the checker the oracle replay runs.
+
+### [oracle/](oracle)
+
+The SQL Server oracle (ADR-0002, [oracle/README.md](oracle/README.md)). `data/` holds what is recorded: case sets
+(`kit/`, `probes/`), engine verdicts (`verdicts/`), ScriptDOM verdicts (`scriptdom-verdicts/`), the grammar
+baseline (`expected.json`) and the classified rejected-but-clean cases (`rejected-clean.json`). `runners/` holds
+the two .NET programs that produce verdicts: `ParseOnly` (SQL Server, `SET PARSEONLY ON`) and `ScriptDomCheck`.
 
 ### [fuzz/](fuzz)
 
-A `cargo-fuzz` target that parses arbitrary bytes through the grammar. It is run locally, not in CI; see [docs/development.md](docs/development.md).
+A `cargo-fuzz` target that parses arbitrary bytes through the grammar. CI fuzzes the parser with libFuzzer on grammar changes and weekly (`.github/workflows/fuzz.yml`); see [docs/development.md](docs/development.md).
 
 ### [docs/](docs)
 
@@ -57,6 +73,8 @@ Nothing is published to a registry. Consumers pin a commit of this repository an
 ## Build and test
 
 - **Pull requests and pushes to `main`** run `Verify` (`.github/workflows/verify.yml`): PR-title validation, secret scanning, regeneration of the parser with a drift check, the node-kind and registry checks, lint and format checks, corpus, highlight, and fixture tests, `cargo fmt`, `clippy`, and `cargo test`, the Node binding build and tests, and workflow linting.
+- **Oracle changes and weekly**, `Oracle engine` judges every case set on SQL Server 2017, 2019, 2022 and 2025 under both QUOTED_IDENTIFIER settings and compares with the committed verdicts.
+- **Grammar changes and weekly**, `Fuzz` runs libFuzzer on the parser.
 - **On a schedule**, `Cleanup stale caches` runs daily.
 - Nothing is deployed or published: consumers pin commits.
 
@@ -68,9 +86,11 @@ Nothing is published to a registry. Consumers pin a commit of this repository an
 | `src/` | Generated parser and hand-written scanner |
 | `queries/` | Tree-sitter query files |
 | `bindings/rust`, `bindings/node` | Rust crate and Node.js addon |
-| `test/` | Corpus, fixtures, highlight tests, node-kind snapshot |
-| `tools/` | Version-check and package-check scripts |
-| `oracle/` | SQL Server oracle: cases, engine verdicts, the verdict runner, and the grammar baseline (see `oracle/README.md`) |
+| `test/` | Corpus, fixtures, highlight and query tests, node-kind snapshot, cost baselines |
+| `scripts/` | Node check and maintenance scripts with their tests |
+| `crates/tree-check/` | Constraint layer: Rust library, CLI and wasm reactor |
+| `oracle/data/` | Oracle cases, engine and ScriptDOM verdicts, grammar baseline, classified exceptions |
+| `oracle/runners/` | .NET verdict runners (SQL Server ParseOnly, ScriptDOM) |
 | `fuzz/` | Fuzz target |
 | `docs/` | Project documentation |
 | `.github/workflows/` | CI and scheduled cache-cleanup workflows |

@@ -1,10 +1,10 @@
 // Second opinion (ADR-0004 release criterion): compare the engine verdicts, Microsoft's ScriptDOM parser
-// (oracle/scriptdom/verdicts, made by oracle/scriptdom/ScriptDomCheck) and the grammar's result per case
-// (oracle/expected.json). Cases where the engine and ScriptDOM both reject but the tree is clean are the ones to read:
-// both parsers call them invalid, so each must have a class in oracle/rejected-clean.json that explains why the
+// (oracle/data/scriptdom-verdicts, made by oracle/runners/ScriptDomCheck) and the grammar's result per case
+// (oracle/data/expected.json). Cases where the engine and ScriptDOM both reject but the tree is clean are the ones to read:
+// both parsers call them invalid, so each must have a class in oracle/data/rejected-clean.json that explains why the
 // grammar may accept them (for example Azure Synapse syntax this grammar models).
 //
-// Usage: node tools/scriptdom-compare.mjs
+// Usage: node scripts/scriptdom-compare.mjs
 import { readdirSync, readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { quotedIdentifier, sessionId } from './oracle-replay.mjs';
@@ -41,18 +41,18 @@ export function observations(files, scriptdom = false) {
 function main() {
   const json = (f) => JSON.parse(readFileSync(f, 'utf8'));
   const engine = observations(
-    readdirSync('oracle/verdicts')
+    readdirSync('oracle/data/verdicts')
       .filter((f) => f.endsWith('.json'))
-      .map((f) => json(`oracle/verdicts/${f}`)),
+      .map((f) => json(`oracle/data/verdicts/${f}`)),
   );
   const scriptdom = observations(
-    readdirSync('oracle/scriptdom/verdicts')
+    readdirSync('oracle/data/scriptdom-verdicts')
       .filter((f) => f.endsWith('.json'))
-      .map((f) => json(`oracle/scriptdom/verdicts/${f}`)),
+      .map((f) => json(`oracle/data/scriptdom-verdicts/${f}`)),
     true,
   );
-  const classes = json('oracle/rejected-clean.json').cases;
-  const tree = json('oracle/expected.json').cases;
+  const classes = json('oracle/data/rejected-clean.json').cases;
+  const tree = json('oracle/data/expected.json').cases;
   let unclassified = false;
   for (const session of ['on', 'off']) {
     const sessionTree = Object.fromEntries(

@@ -3,7 +3,7 @@
 - Status: accepted
 - Date: 2026-11-16
 - Evidence: LocalDB 17.0.1000.7, compatibility levels 100–170,
-  `oracle/probes/quoted-identifier.jsonl` and its `.qi-on.json` / `.qi-off.json` verdicts
+  `oracle/data/probes/quoted-identifier.jsonl` and its `.qi-on.json` / `.qi-off.json` verdicts
 
 ## Context
 

@@ -65,7 +65,7 @@ export default {
     ),
 
   // Duplicates and CREATE's required settings are not enforced here: the constraint layer in
-  // tools/tree-check (constraints.rs, ADR-0003) rejects them.
+  // crates/tree-check (constraints.rs, ADR-0003) rejects them.
   _queue_activation_option: ($) =>
     choice(
       alias($._queue_status_option, $.option),

@@ -6,7 +6,7 @@
 // are compared, so the runner's speed does not matter. A ratio above the milestone's max_ratio fails:
 // growing past it needs a recorded decision and a new milestone in test/runtime-cost.json.
 //
-// Usage: node tools/runtime-cost.mjs --tree-sitter <cli> [--runs N]
+// Usage: node scripts/runtime-cost.mjs --tree-sitter <cli> [--runs N]
 import { execFileSync, spawnSync } from 'node:child_process';
 import {
   appendFileSync,
@@ -83,8 +83,8 @@ function inputs(dir) {
     .filter((f) => f.endsWith('.sql'))
     .map((f) => join('test/fixtures', f));
   const sets = [
-    'oracle/kit/cases.jsonl',
-    ...readdirSync('oracle/probes').map((f) => join('oracle/probes', f)),
+    'oracle/data/kit/cases.jsonl',
+    ...readdirSync('oracle/data/probes').map((f) => join('oracle/data/probes', f)),
   ];
   let n = 0;
   for (const set of sets) {

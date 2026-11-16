@@ -1,7 +1,7 @@
 # ScriptDOM second opinion
 
 [ScriptDOM](https://github.com/microsoft/SqlScriptDOM) is Microsoft's T-SQL parser library (MIT), the one SSMS and
-DacFx use. It is not the engine. SQL Server's `SET PARSEONLY ON` verdicts in `oracle/verdicts` stay the truth
+DacFx use. It is not the engine. SQL Server's `SET PARSEONLY ON` verdicts in `oracle/data/verdicts` stay the truth
 (ADR-0002). ScriptDOM is a second opinion used to read the cases where the two disagree with the grammar.
 
 - `ScriptDomCheck/` is a .NET 10 tool, pinned by `packages.lock.json` (Microsoft.SqlServer.TransactSql.ScriptDom
@@ -11,17 +11,17 @@ DacFx use. It is not the engine. SQL Server's `SET PARSEONLY ON` verdicts in `or
 - `verdicts/<set>.json` retain the historical ON observations. The new quoted-identifier set uses
   `verdicts/quoted-identifier.qi-on.json`; `verdicts/<set>.qi-off.json` hold OFF observations for every set.
   `--quoted-identifier on|off` selects the session (default ON); metadata records numeric `quoted_identifier`.
-- `node tools/scriptdom-compare.mjs` counts each engine/ScriptDOM/tree cell. It lists the cases where both parsers
-  reject but the tree is clean, and fails if one of them has no class in `oracle/rejected-clean.json`.
+- `node scripts/scriptdom-compare.mjs` counts each engine/ScriptDOM/tree cell. It lists the cases where both parsers
+  reject but the tree is clean, and fails if one of them has no class in `oracle/data/rejected-clean.json`.
   It keeps ON and OFF acceptance separate and prints a table per session, using the replay's `@qi-off` IDs.
 
 To refresh after the case sets change:
 
 ```sh
-dotnet restore --locked-mode oracle/scriptdom/ScriptDomCheck
-dotnet build -c Release --no-restore oracle/scriptdom/ScriptDomCheck
-dotnet oracle/scriptdom/ScriptDomCheck/bin/Release/net10.0/ScriptDomCheck.dll --cases oracle/kit/cases.jsonl --out oracle/scriptdom/verdicts/kit.json
-# and once per oracle/probes/<set>.jsonl -> oracle/scriptdom/verdicts/<set>.json
+dotnet restore --locked-mode oracle/runners/ScriptDomCheck
+dotnet build -c Release --no-restore oracle/runners/ScriptDomCheck
+dotnet oracle/runners/ScriptDomCheck/bin/Release/net10.0/ScriptDomCheck.dll --cases oracle/data/kit/cases.jsonl --out oracle/data/scriptdom-verdicts/kit.json
+# and once per oracle/data/probes/<set>.jsonl -> oracle/data/scriptdom-verdicts/<set>.json
 ```
 
 Result at its introduction (10,300 cases, with the Linux engine verdicts of #46):

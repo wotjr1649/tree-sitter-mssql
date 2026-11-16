@@ -2,7 +2,7 @@
 
 SQL Server's documentation says that a regular identifier starts with "a letter as defined by the Unicode Standard 3.2", and that the exact set is not spelled out. This directory replaces that wording with a measurement. Every Basic Multilingual Plane code point was put through the engine's own parser.
 
-- `probes.mjs` writes 126,912 probes: `s-XXXX` (`SELECT 1 AS <c>;`, start position) and `c-XXXX` (`SELECT 1 AS a<c>b;`, continuation) for every code point from U+0020 to U+FFFF except surrogates. Run as `node oracle/unicode/probes.mjs probes.jsonl`. The output's sha256 is recorded in `identifier-chars.json`.
+- `probes.mjs` writes 126,912 probes: `s-XXXX` (`SELECT 1 AS <c>;`, start position) and `c-XXXX` (`SELECT 1 AS a<c>b;`, continuation) for every code point from U+0020 to U+FFFF except surrogates. Run as `node oracle/data/unicode/probes.mjs probes.jsonl`. The output's sha256 is recorded in `identifier-chars.json`.
 - `identifier-chars.json` holds the accepted code points as ranges for each position, and `meta` with:
   - engine, levels, runner hash and probe hash;
   - the code points excluded because the probes accepted them for structural reasons.
@@ -23,4 +23,4 @@ SQL Server's documentation says that a regular identifier starts with "a letter 
   - `#` at the start: names that start with `#` are temporary objects, which the grammar models separately.
   - `,` in the continuation: `SELECT 1 AS a,b` is a select list, not one name.
 
-`grammar/helpers.js` holds `IDENTIFIER_START` and `IDENTIFIER_CONTINUE` generated from this file (`node tools/identifier-charclass.mjs --print`). `Verify` runs `--check` so the two cannot drift apart. With these classes, tree-check's verdict agrees with the engine on 126,911 of the 126,912 probes. The exception is `SELECT 1 AS #;` (a bare `#` name), which belongs to the separate sigil-name defect.
+`grammar/helpers.js` holds `IDENTIFIER_START` and `IDENTIFIER_CONTINUE` generated from this file (`node scripts/identifier-charclass.mjs --print`). `Verify` runs `--check` so the two cannot drift apart. With these classes, tree-check's verdict agrees with the engine on 126,911 of the 126,912 probes. The exception is `SELECT 1 AS #;` (a bare `#` name), which belongs to the separate sigil-name defect.

@@ -8,7 +8,7 @@ per-construct corpus tests: a construct that first appears in a fixture also get
 Run the check with:
 
 ```bash
-cargo run --manifest-path tools/tree-check/Cargo.toml -- test/fixtures/*.sql
+cargo run --manifest-path crates/tree-check/Cargo.toml -- test/fixtures/*.sql
 ```
 
 Files are named for the T-SQL construct(s) they exercise, not for where the SQL came from. The

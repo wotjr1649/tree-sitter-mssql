@@ -28,7 +28,7 @@ A context-free grammar can express "each of n options at most once, in any order
    - required;
    - mutually exclusive.
 
-   It lives in `tools/tree-check` as small per-node rules over the parse tree, each citing its engine evidence.
+   It lives in `crates/tree-check` as small per-node rules over the parse tree, each citing its engine evidence.
    - `tree-check` reports a constraint violation like a tree problem.
    - The SQL Server oracle (ADR-0002) judges the grammar plus the constraint layer.
    - "Zero defects" includes the layer.
@@ -44,7 +44,7 @@ A context-free grammar can express "each of n options at most once, in any order
 | `queue-activation-required`: CREATE needs PROCEDURE_NAME, MAX_QUEUE_READERS and EXECUTE AS | `CREATE QUEUE` | Msg 102: `queue-missing-48/49/50`, `queue-29`, 13 probes; accepted: `queue-missing-51` |
 
 | `cte-terminator`: a statement that starts with a CTE must not directly follow another statement or block without `;` (it may come first in a batch, block or module body, or after `;`, a label, IF, ELSE or WHILE) | any statement list | Msg 319 for the `semicolon/*-no-terminator` probes (after SELECT, END, IF, IF ... ELSE, WHILE, inside a procedure body); every terminated, leading, label and control-body form accepted |
-| `exec-output-requires-at`: a value marked OUTPUT/OUT in `EXEC ( ... )` needs `AT linked_server` | `EXEC ( string, ... )` | accepted with AT (OUTPUT, OUT, several); Msg 102 without AT (`oracle/probes/exec-output.jsonl`) |
+| `exec-output-requires-at`: a value marked OUTPUT/OUT in `EXEC ( ... )` needs `AT linked_server` | `EXEC ( string, ... )` | accepted with AT (OUTPUT, OUT, several); Msg 102 without AT (`oracle/data/probes/exec-output.jsonl`) |
 | `exec-output-variable`: OUTPUT/OUT marks only a local variable (`@v`, not `@@v`) | procedure-call arguments, `EXEC ( ... ) AT` | Msg 179 for constants, strings, DEFAULT, NULL, system variables and bare or bracketed names (kit `issue151-*`, 12 probes); Msg 102 for an expression |
 | `column-permission`: a column list allows only SELECT, UPDATE, REFERENCES, UNMASK, ALL [PRIVILEGES] | `GRANT`, `DENY`, `REVOKE` | Msg 1020 for 10 other permissions, per permission or for the object (`context/perm-*`, kit `permission-*`); allowed ones accepted |
 | `trigger-scope`: a DATABASE/ALL SERVER trigger has no schema in its name, no DML event and no EXECUTE AS OWNER; ON DATABASE takes no server-only event; a DML trigger takes only INSERT/UPDATE/DELETE | `CREATE`/`ALTER`/`CREATE OR ALTER TRIGGER` | Msg 1094, 1098, 1083, 1082 (`context/trig-*`: all 312 event types of `sys.trigger_event_types` on both scopes; kit `trigger-*`) |
@@ -97,7 +97,7 @@ BACKUP and RESTORE evidence is the backup-restore probe set on LocalDB 17.0.1000
 
 ## Database DDL evidence (R11)
 
-`oracle/probes/ddl-database.jsonl` and its LocalDB 17.0.1000.7 verdicts at levels 100–170
+`oracle/data/probes/ddl-database.jsonl` and its LocalDB 17.0.1000.7 verdicts at levels 100–170
 add small per-node checks rather than enumerating permutations in the grammar:
 
 | Check | Evidence (ddl-database/) |
@@ -137,7 +137,7 @@ The closing-* neighbours cover XE scalar source parentheses versus whole-compari
 
 ## Final query-form evidence (R18)
 
-Evidence: `oracle/probes/last-forms.jsonl`, LocalDB 17.0.1000.7, levels 100-170.
+Evidence: `oracle/data/probes/last-forms.jsonl`, LocalDB 17.0.1000.7, levels 100-170.
 
 | Rule | Tree-decidable restriction | Rejected neighbours |
 | --- | --- | --- |
@@ -153,7 +153,7 @@ restriction. Boolean/scalar operands and existing reserved-word gaps stay docume
 
 ## Rejected-but-clean boundaries (R20)
 
-Evidence: `oracle/probes/gap-forms.jsonl` and the committed LocalDB 17.0.1000.7 verdicts,
+Evidence: `oracle/data/probes/gap-forms.jsonl` and the committed LocalDB 17.0.1000.7 verdicts,
 compatibility levels 100-170. The gap-forms unit test compares every probe to those verdicts,
 with explicit declaration, preview, connector and Azure-only exceptions.
 

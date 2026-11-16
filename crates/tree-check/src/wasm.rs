@@ -112,11 +112,11 @@ pub extern "C" fn tc_identity() -> u32 {
     let (grammar, rules) = (
         env!(
             "TREE_CHECK_GRAMMAR_COMMIT",
-            "build with tools/tree-check-wasm-build.mjs"
+            "build with crates/tree-check-wasm-build.mjs"
         ),
         env!(
             "TREE_CHECK_RULES_SHA256",
-            "build with tools/tree-check-wasm-build.mjs"
+            "build with crates/tree-check-wasm-build.mjs"
         ),
     );
     #[cfg(not(target_arch = "wasm32"))]

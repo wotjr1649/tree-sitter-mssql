@@ -4,7 +4,7 @@
     "limitations": [
       "Several node kinds are shared by more than one construct with different minimum versions (e.g. 'trim' covers both the plain SQL Server 2017 TRIM(string) form and the SQL Server 2022 TRIM(chars FROM string) form; 'returning_clause' covers both JSON_OBJECT/JSON_ARRAY's 2022 RETURNING and JSON_VALUE/JSON_QUERY's 2025 RETURNING/WITH ARRAY WRAPPER). Where this happens, minVersion is the earliest attested use and a note names the later-only forms.",
       "Not every version-specific or deprecated construct has its own node kind (e.g. the VECTOR data type and numbered-procedure ';N' suffix are fields/tokens on an existing rule, not distinct kinds), so this file cannot represent them at node-kind granularity yet.",
-      "test/check-registries.mjs checks that every node kind named here exists in test/node-kinds.txt and that every corpusCase names a test/corpus file and a case title that exist. It does not check that every version-specific kind is classified here, so a kind missing from this file is not a claim that it has been reviewed."
+      "scripts/check-registries.mjs checks that every node kind named here exists in test/node-kinds.txt and that every corpusCase names a test/corpus file and a case title that exist. It does not check that every version-specific kind is classified here, so a kind missing from this file is not a claim that it has been reviewed."
     ]
   },
   "nodeKinds": {

@@ -161,8 +161,8 @@ jobs:
         run: |
           set -euo pipefail
           archive="$RUNNER_TEMP/wasi-sdk.tar.gz"
-          url=$(node -p "JSON.parse(require('fs').readFileSync('tools/tree-check/wasm-pins.json')).wasiSDKArchives['linux-x64'].url")
-          sha=$(node -p "JSON.parse(require('fs').readFileSync('tools/tree-check/wasm-pins.json')).wasiSDKArchives['linux-x64'].sha256")
+          url=$(node -p "JSON.parse(require('fs').readFileSync('crates/tree-check/wasm-pins.json')).wasiSDKArchives['linux-x64'].url")
+          sha=$(node -p "JSON.parse(require('fs').readFileSync('crates/tree-check/wasm-pins.json')).wasiSDKArchives['linux-x64'].sha256")
           curl -sSfL --retry 3 -o "$archive" "$url"
           printf '%s  %s\n' "$sha" "$archive" | sha256sum --check -
           tar -xzf "$archive" -C "$RUNNER_TEMP"
@@ -177,14 +177,14 @@ jobs:
       - name: Fail if the node-kind snapshot is out of date
         run: |
           git ls-files --error-unmatch test/node-kinds.txt
-          node test/generate-node-kinds.mjs
+          node scripts/generate-node-kinds.mjs
           git diff --exit-code -- test/node-kinds.txt
 
       - name: Fail if the identifier character classes drift from the engine-measured sets
-        run: node tools/identifier-charclass.mjs --check
+        run: node scripts/identifier-charclass.mjs --check
 
       - name: Fail if a create/alter/drop rule is unregistered or versions.json cites a missing kind or case
-        run: node test/check-registries.mjs
+        run: node scripts/check-registries.mjs
 
       - name: Install lint/format devDependencies
         # A bare `npm install` here would also run this package's own
@@ -204,52 +204,52 @@ jobs:
         run: npm run format:check
 
       - name: Test the tools scripts
-        run: node --test tools/*.test.mjs
+        run: node --test scripts/*.test.mjs
 
       - name: Check Cargo.toml, package.json, and tree-sitter.json agree
         # The generated parser embeds tree-sitter.json's version, so the three
         # files must agree; failing here catches drift on the pull request.
-        run: node tools/release-policy.mjs versions
+        run: node scripts/release-policy.mjs versions
 
       - name: Verify package contents
         # This repository publishes no packages; the check keeps the crate and
         # npm package lists (and so the vendored sources) complete and tracked.
-        run: node tools/package-check.mjs
+        run: node scripts/package-check.mjs
 
       - name: Run corpus and highlight tests
         run: npx --yes --package=tree-sitter-cli@${{ env.TREE_SITTER_CLI_VERSION }} -- tree-sitter test
 
       - name: Parse every fixture and fail on any tree problem
-        # tools/tree-check judges each tree through the tree-sitter API (root has_error,
+        # crates/tree-check judges each tree through the tree-sitter API (root has_error,
         # ERROR, MISSING, zero-width nodes, root range); the CLI summary can miss these.
         # The shared target directory keeps its build in the Rust cache.
         env:
           CARGO_TARGET_DIR: target
-        run: cargo run --quiet --locked --manifest-path tools/tree-check/Cargo.toml -- test/fixtures/*.sql
+        run: cargo run --quiet --locked --manifest-path crates/tree-check/Cargo.toml -- test/fixtures/*.sql
 
       - name: Replay the SQL Server oracle against the committed baseline
-        # Judges oracle/kit cases with tree-check, compares incremental and fresh parses over the
-        # edit histories, and fails on any change from oracle/expected.json (see oracle/README.md).
+        # Judges oracle/data/kit cases with tree-check, compares incremental and fresh parses over the
+        # edit histories, and fails on any change from oracle/data/expected.json (see oracle/README.md).
         env:
           CARGO_TARGET_DIR: target
-        run: node tools/oracle-replay.mjs --tree-check target/debug/tree-check
+        run: node scripts/oracle-replay.mjs --tree-check target/debug/tree-check
 
       - name: Comments, keyword case and whitespace must preserve every oracle and fixture verdict
         run: |
-          node tools/comment-mutate.mjs --tree-check target/debug/tree-check --axes comment,case,whitespace --quoted-identifier on
-          node tools/comment-mutate.mjs --tree-check target/debug/tree-check --axes comment,case,whitespace --quoted-identifier off
+          node scripts/comment-mutate.mjs --tree-check target/debug/tree-check --axes comment,case,whitespace --quoted-identifier on
+          node scripts/comment-mutate.mjs --tree-check target/debug/tree-check --axes comment,case,whitespace --quoted-identifier off
 
       - name: Build the pinned WASM reactor and check all oracle/fixture verdicts
         env:
           CARGO_TARGET_DIR: target
           WASI_SDK_PATH: ${{ runner.temp }}/wasi-sdk-34.0-x86_64-linux
         run: |
-          node tools/tree-check-wasm-build.mjs
-          node tools/tree-check-wasm-parity.mjs --wasm target/wasm32-wasip1/release/tree_check.reactor.wasm --tree-check target/debug/tree-check
+          node crates/tree-check-wasm-build.mjs
+          node crates/tree-check-wasm-parity.mjs --wasm target/wasm32-wasip1/release/tree_check.reactor.wasm --tree-check target/debug/tree-check
 
       - name: Check the generated parser cost against test/parser-cost.json
         # Fails on any change from the baseline; growth above 10 % needs an approved budget (ADR-0002).
-        run: node tools/parser-cost.mjs
+        run: node scripts/parser-cost.mjs
 
       - name: Report fixture parse performance
         run: |
@@ -264,12 +264,12 @@ jobs:
 
       - name: Check the imported grammar-kit queries against their recorded captures
         # ADR-0004: grammar-kit's T-SQL queries, run on oracle sources (test/queries/kit/README.md).
-        run: node tools/query-check.mjs --tree-sitter node_modules/tree-sitter-cli/tree-sitter
+        run: node scripts/query-check.mjs --tree-sitter node_modules/tree-sitter-cli/tree-sitter
 
       - name: Check the parser runtime cost against the milestone
         # Compiles the milestone's and the current parser with the same compiler and compares library size,
         # parse time and peak memory over every fixture and oracle case (ADR-0002 §6).
-        run: node tools/runtime-cost.mjs --tree-sitter node_modules/tree-sitter-cli/tree-sitter
+        run: node scripts/runtime-cost.mjs --tree-sitter node_modules/tree-sitter-cli/tree-sitter
 
       - name: Format check
         run: cargo fmt --check
@@ -284,9 +284,9 @@ jobs:
         env:
           CARGO_TARGET_DIR: target
         run: |
-          cargo fmt --check --manifest-path tools/tree-check/Cargo.toml
-          cargo clippy --locked --all-targets --manifest-path tools/tree-check/Cargo.toml -- -D warnings
-          cargo test --locked --manifest-path tools/tree-check/Cargo.toml
+          cargo fmt --check --manifest-path crates/tree-check/Cargo.toml
+          cargo clippy --locked --all-targets --manifest-path crates/tree-check/Cargo.toml -- -D warnings
+          cargo test --locked --manifest-path crates/tree-check/Cargo.toml
 
   node-binding:
     name: Node binding build/test

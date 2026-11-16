@@ -46,7 +46,7 @@ T-SQL is the owner's main SQL dialect, and no well-maintained tree-sitter gramma
   conflict there.
 - Context-dependent errors stay outside the grammar and are tracked as `contextual` issues.
 - One maintainer still owns the grammar; the dependency moves from upstream's maintainer to this repository's owner.
-- Upstream's release automation is gone; `tools/release-policy.mjs versions` keeps only the check that the three
+- Upstream's release automation is gone; `scripts/release-policy.mjs versions` keeps only the check that the three
   manifests agree, and `CHANGELOG.md` keeps upstream's history.
 
 ## Open points

@@ -6,7 +6,7 @@
 #  Triggers            pull_request touching the oracle runner, cases or verdicts
 #                      schedule (weekly)
 #                      workflow_dispatch
-#  Purpose             Runs the PARSEONLY runner (oracle/runner/ParseOnly) against
+#  Purpose             Runs the PARSEONLY runner (oracle/runners/ParseOnly) against
 #                      real SQL Server engines in Linux containers, pinned by
 #                      digest: its self-test first, then every oracle case at
 #                      every compatibility level the engine supports. The new
@@ -21,11 +21,11 @@ name: Oracle engine
 on:
   pull_request:
     paths:
-      - 'oracle/runner/**'
-      - 'oracle/kit/**'
-      - 'oracle/probes/**'
-      - 'oracle/verdicts/**'
-      - 'tools/verdict-diff.mjs'
+      - 'oracle/runners/**'
+      - 'oracle/data/kit/**'
+      - 'oracle/data/probes/**'
+      - 'oracle/data/verdicts/**'
+      - 'scripts/verdict-diff.mjs'
       - '.github/workflows/oracle-engine.yml'
   schedule:
     - cron: '30 7 * * 1'
@@ -89,7 +89,7 @@ jobs:
             -p 1433:1433 "${IMAGE}"
 
       - name: Build the runner
-        working-directory: oracle/runner/ParseOnly
+        working-directory: oracle/runners/ParseOnly
         run: |
           dotnet restore --locked-mode
           dotnet build -c Release --no-restore
@@ -99,7 +99,7 @@ jobs:
         run: |
           set -u
           for _ in $(seq 1 60); do
-            dotnet oracle/runner/ParseOnly/bin/Release/net10.0/ParseOnly.dll --self-test --server localhost,1433 && exit 0
+            dotnet oracle/runners/ParseOnly/bin/Release/net10.0/ParseOnly.dll --self-test --server localhost,1433 && exit 0
             status=$?
             if [ "$status" -ne 2 ]; then exit "$status"; fi
             sleep 5
@@ -109,7 +109,7 @@ jobs:
           exit 1
 
       - name: Check the OFF session contract
-        run: dotnet oracle/runner/ParseOnly/bin/Release/net10.0/ParseOnly.dll --self-test --server localhost,1433 --quoted-identifier off
+        run: dotnet oracle/runners/ParseOnly/bin/Release/net10.0/ParseOnly.dll --self-test --server localhost,1433 --quoted-identifier off
 
       - name: Judge every oracle case set
         # grammar-kit's cases and every probe set; one verdict file per set and session.
@@ -118,18 +118,18 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p verdicts
-          dotnet oracle/runner/ParseOnly/bin/Release/net10.0/ParseOnly.dll \
+          dotnet oracle/runners/ParseOnly/bin/Release/net10.0/ParseOnly.dll \
             --server localhost,1433 --levels "$LEVELS" \
-            --cases oracle/kit/cases.jsonl --out verdicts/kit.json
-          dotnet oracle/runner/ParseOnly/bin/Release/net10.0/ParseOnly.dll \
+            --cases oracle/data/kit/cases.jsonl --out verdicts/kit.json
+          dotnet oracle/runners/ParseOnly/bin/Release/net10.0/ParseOnly.dll \
             --server localhost,1433 --levels "$LEVELS" --quoted-identifier off \
-            --cases oracle/kit/cases.jsonl --out verdicts/kit.qi-off.json
-          for set in oracle/probes/*.jsonl; do
+            --cases oracle/data/kit/cases.jsonl --out verdicts/kit.qi-off.json
+          for set in oracle/data/probes/*.jsonl; do
             name="$(basename "$set" .jsonl)"
             for mode in on off; do
               suffix=""
               if [ "$name" = quoted-identifier ] || [ "$mode" = off ]; then suffix=".qi-${mode}"; fi
-              dotnet oracle/runner/ParseOnly/bin/Release/net10.0/ParseOnly.dll \
+              dotnet oracle/runners/ParseOnly/bin/Release/net10.0/ParseOnly.dll \
                 --server localhost,1433 --levels "$LEVELS" --quoted-identifier "$mode" \
                 --cases "$set" --out "verdicts/${name}${suffix}.json"
             done
@@ -138,14 +138,14 @@ jobs:
       - name: Compare with the committed LocalDB verdicts
         run: |
           set -euo pipefail
-          node tools/verdict-diff.mjs oracle/verdicts/localdb-17.0.1000.7.json verdicts/kit.json
-          node tools/verdict-diff.mjs oracle/verdicts/localdb-17.0.1000.7.qi-off.json verdicts/kit.qi-off.json
-          for set in oracle/probes/*.jsonl; do
+          node scripts/verdict-diff.mjs oracle/data/verdicts/localdb-17.0.1000.7.json verdicts/kit.json
+          node scripts/verdict-diff.mjs oracle/data/verdicts/localdb-17.0.1000.7.qi-off.json verdicts/kit.qi-off.json
+          for set in oracle/data/probes/*.jsonl; do
             name="$(basename "$set" .jsonl)"
             for mode in on off; do
               suffix=""
               if [ "$name" = quoted-identifier ] || [ "$mode" = off ]; then suffix=".qi-${mode}"; fi
-              node tools/verdict-diff.mjs "oracle/verdicts/localdb-17.0.1000.7.${name}${suffix}.json" "verdicts/${name}${suffix}.json"
+              node scripts/verdict-diff.mjs "oracle/data/verdicts/localdb-17.0.1000.7.${name}${suffix}.json" "verdicts/${name}${suffix}.json"
             done
           done
 
