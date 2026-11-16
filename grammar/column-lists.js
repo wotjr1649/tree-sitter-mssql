@@ -138,22 +138,27 @@ export default {
     prec.right(
       seq(
         optional(seq($.keyword_constraint, field('name', $.identifier))),
-        choice(
-          seq($._primary_key, ...index_spec($, { columns: true, optionalColumns: true })),
-          seq($.keyword_unique, ...index_spec($, { columns: true, optionalColumns: true })),
-          seq(
-            optional(seq($.keyword_foreign, $.keyword_key)),
-            $.keyword_references,
-            $.object_reference,
-            optional(paren_list($.identifier, true)),
-            repeat($.referential_action),
-            optional($._not_for_replication),
-          ),
-          seq(
-            $.keyword_check,
-            optional($._not_for_replication),
-            wrapped_in_parenthesis($._expression),
-          ),
+        $._column_key_constraint_body,
+      ),
+    ),
+
+  _column_key_constraint_body: ($) =>
+    prec.right(
+      choice(
+        seq($._primary_key, ...index_spec($, { columns: true, optionalColumns: true })),
+        seq($.keyword_unique, ...index_spec($, { columns: true, optionalColumns: true })),
+        seq(
+          optional(seq($.keyword_foreign, $.keyword_key)),
+          $.keyword_references,
+          $.object_reference,
+          optional(paren_list($.identifier, true)),
+          repeat($.referential_action),
+          optional($._not_for_replication),
+        ),
+        seq(
+          $.keyword_check,
+          optional($._not_for_replication),
+          wrapped_in_parenthesis($._expression),
         ),
       ),
     ),
@@ -187,65 +192,67 @@ export default {
   // Table-level constraint, also the shape ALTER TABLE ... ADD accepts.
   constraint: ($) =>
     prec.right(
-      seq(
-        optional(seq($.keyword_constraint, field('name', $.identifier))),
-        choice(
-          seq($._primary_key, ...index_spec($, { columns: true })),
-          seq($.keyword_unique, ...index_spec($, { columns: true })),
-          seq(
-            $.keyword_foreign,
-            $.keyword_key,
-            paren_list($.identifier, true),
-            $.keyword_references,
-            $.object_reference,
-            optional(paren_list($.identifier, true)),
-            repeat($.referential_action),
-            optional($._not_for_replication),
-          ),
-          seq(
-            $.keyword_check,
-            optional($._not_for_replication),
-            wrapped_in_parenthesis($._expression),
-          ),
-          seq(
-            $.keyword_connection,
-            paren_list(seq($.object_reference, $.keyword_to, $.object_reference), true),
-            optional(
-              seq(
-                $.keyword_on,
-                $.keyword_delete,
-                choice($.keyword_cascade, seq($.keyword_no, $.keyword_action)),
-              ),
+      seq(optional(seq($.keyword_constraint, field('name', $.identifier))), $._constraint_body),
+    ),
+
+  _constraint_body: ($) =>
+    prec.right(
+      choice(
+        seq($._primary_key, ...index_spec($, { columns: true })),
+        seq($.keyword_unique, ...index_spec($, { columns: true })),
+        seq(
+          $.keyword_foreign,
+          $.keyword_key,
+          paren_list($.identifier, true),
+          $.keyword_references,
+          $.object_reference,
+          optional(paren_list($.identifier, true)),
+          repeat($.referential_action),
+          optional($._not_for_replication),
+        ),
+        seq(
+          $.keyword_check,
+          optional($._not_for_replication),
+          wrapped_in_parenthesis($._expression),
+        ),
+        seq(
+          $.keyword_connection,
+          paren_list(seq($.object_reference, $.keyword_to, $.object_reference), true),
+          optional(
+            seq(
+              $.keyword_on,
+              $.keyword_delete,
+              choice($.keyword_cascade, seq($.keyword_no, $.keyword_action)),
             ),
           ),
-          // ALTER TABLE t ADD [CONSTRAINT name] DEFAULT expression FOR column
-          seq(
-            $.keyword_default,
-            $._expression,
-            $.keyword_for,
-            field('column', $.identifier),
-            optional(seq($.keyword_with, $.keyword_values)),
-          ),
-          // Inline rowstore, hash and columnstore indexes share placement/options.
-          seq(
-            $.keyword_index,
-            field('name', $.identifier),
-            optional($.keyword_unique),
-            choice(
-              seq(
-                $.keyword_clustered,
-                $.keyword_columnstore,
-                optional(seq($.keyword_order, paren_list($.identifier, true))),
-              ),
-              seq($.keyword_nonclustered, $.keyword_columnstore, $.ordered_columns),
-              seq(optional($._constraint_index_kind), $.ordered_columns),
+        ),
+        // ALTER TABLE t ADD [CONSTRAINT name] DEFAULT expression FOR column
+        seq(
+          $.keyword_default,
+          $._expression,
+          $.keyword_for,
+          field('column', $.identifier),
+          optional(seq($.keyword_with, $.keyword_values)),
+        ),
+        // Inline rowstore, hash and columnstore indexes share placement/options.
+        seq(
+          $.keyword_index,
+          field('name', $.identifier),
+          optional($.keyword_unique),
+          choice(
+            seq(
+              $.keyword_clustered,
+              $.keyword_columnstore,
+              optional(seq($.keyword_order, paren_list($.identifier, true))),
             ),
-            optional($.covering_columns),
-            optional($.where),
-            optional($.with_options),
-            optional($.on_filegroup),
-            optional($._index_filestream),
+            seq($.keyword_nonclustered, $.keyword_columnstore, $.ordered_columns),
+            seq(optional($._constraint_index_kind), $.ordered_columns),
           ),
+          optional($.covering_columns),
+          optional($.where),
+          optional($.with_options),
+          optional($.on_filegroup),
+          optional($._index_filestream),
         ),
       ),
     ),
