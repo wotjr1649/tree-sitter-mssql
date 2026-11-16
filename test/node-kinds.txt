@@ -419,6 +419,7 @@ keyword_encryption
 keyword_end
 keyword_endpoint
 keyword_error
+keyword_escape
 keyword_event
 keyword_except
 keyword_exec

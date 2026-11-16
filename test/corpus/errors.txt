@@ -788,7 +788,7 @@ SELECT * FROM (WITH c AS (SELECT 1 AS a) SELECT a FROM c) d;
 (program (batch (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (subquery (ERROR (relation (object_reference (identifier)) (identifier) (ERROR) (list (column (identifier)) (ERROR (keyword_as))))) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier)))))) (identifier)))))))
 
 ================================================================================
-SELECT INTO is not legal on a later set-operation branch
+SELECT INTO is legal on a later set-operation branch (LocalDB 17.0.1000.7 levels 100-170)
 ================================================================================
 
 SELECT a FROM t UNION SELECT b INTO #y FROM u;
@@ -818,10 +818,15 @@ SELECT a FROM t UNION SELECT b INTO #y FROM u;
             (select_expression
               (term
                 value: (field
-                  name: (identifier))
-                alias: (identifier)))))))
-    (ERROR
-      (identifier))))
+                  name: (identifier)))))
+          (keyword_into)
+          (object_reference
+            name: (identifier))
+          (from
+            (keyword_from)
+            (relation
+              (object_reference
+                name: (identifier)))))))))
 
 ================================================================================
 An unterminated block comment is an error to end of input

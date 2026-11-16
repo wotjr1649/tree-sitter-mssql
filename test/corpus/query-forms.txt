@@ -140,7 +140,27 @@ SELECT 1 UNION SELECT 2 INTO dbo.t;
 
 ---
 
-(program (batch (statement (set_operation (query_specification (select (keyword_select) (select_expression (term (literal))))) (keyword_union) (query_specification (select (keyword_select) (select_expression (term (literal) (identifier))))))) (ERROR (identifier) (identifier))))
+(program
+  (batch
+    (statement
+      (set_operation
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal)))))
+        operation: (keyword_union)
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))
+          (keyword_into)
+          (object_reference
+            schema: (identifier)
+            name: (identifier)))))))
 
 ==================
 query-forms/parse-using - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
@@ -1197,7 +1217,24 @@ SELECT 1 WHERE N'a_b' LIKE N'a!_b' ESCAPE N'!';
 
 ---
 
-(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (literal)))) (where (keyword_where) (binary_expression (literal) (keyword_like) (literal))))) (ERROR (identifier))))
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (literal)
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (literal)))))))
 
 ==================
 query-forms/open-static - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
@@ -1217,7 +1254,39 @@ SELECT JSON_ARRAYAGG(a ORDER BY b NULL ON NULL RETURNING json) FROM dbo.t;
 
 ---
 
-(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (invocation (object_reference (identifier)) (ERROR (term (field (identifier)) (identifier)) (term (literal (keyword_null)) (identifier))) (term (literal (keyword_null))) (returning_clause (keyword_returning) (keyword_json)))))) (from (keyword_from) (relation (object_reference (identifier) (identifier))))))))
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (order_by
+                  (keyword_order)
+                  (keyword_by)
+                  (order_target
+                    (field
+                      name: (identifier))))
+                (json_null_clause
+                  (keyword_null)
+                  (keyword_on)
+                  (keyword_null))
+                (returning_clause
+                  (keyword_returning)
+                  (keyword_json))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))))
 
 ==================
 query-forms/open-json-objectagg - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
@@ -1227,7 +1296,32 @@ SELECT JSON_OBJECTAGG(a:b ABSENT ON NULL) FROM dbo.t;
 
 ---
 
-(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (invocation (object_reference (identifier)) (ERROR (term (field (identifier)) (ERROR) (identifier)) (term (field (identifier)) (identifier))) (term (literal (keyword_null))))))) (from (keyword_from) (relation (object_reference (identifier) (identifier))))))))
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (json_key_value
+                  key: (field
+                    name: (identifier))
+                  value: (field
+                    name: (identifier)))
+                (json_null_clause
+                  (keyword_absent)
+                  (keyword_on)
+                  (keyword_null))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))))
 
 ==================
 query-forms/open-nested-set - LocalDB 17.0.1000.7 levels 100-170 - engine accepts

@@ -58,6 +58,7 @@ A context-free grammar can express "each of n options at most once, in any order
 | `external-option-*`, `external-platform`, `external-affinity` | EXTERNAL data sources, models, languages, libraries and resource pools: option names, assignment, uniqueness, required CREATE file options, platform and affinity shapes | `ddl-external/external-*`, LocalDB 17.0.1000.7 levels 100–170, 102/1039/39123/319; ALTER file specs may omit CONTENT |
 | `fulltext-option-duplicate`, `fulltext-change-tracking`, `fulltext-no-population` | CREATE FULLTEXT CATALOG/INDEX: unique options, tracking mode, NO POPULATION with tracking OFF | `ddl-external/fulltext-*`, 102/7663 |
 | `endpoint-*` | CREATE/ALTER ENDPOINT: option sets, uniqueness, CREATE port/mirroring role requirements, protocols/algorithms/roles, forwarding, IPv4 octets, CREATE STATE restriction | `ddl-external/endpoint-*`, 7816/7801/102/156/7810/7871; 7609/7878 environment errors remain contextual |
+| `scalar-predicate`: a WHERE, JOIN/MERGE ON, WHEN ... AND, IF/WHILE condition, searched CASE WHEN, HAVING or IIF first argument holds a condition, not a scalar | search conditions (not Extended Events predicates) | Msg 4145 (kit `if-bit`, `if-not-scalar`, `iif-scalar`, `merge-*`, `mut-0028x`, `regex-*`); every engine-accepted oracle case passes |
 All following evidence is query-forms on LocalDB 17.0.1000.7, levels 100–170.
 
 | Rule | Scope | Check | Evidence |
@@ -129,3 +130,44 @@ The ddl-rest probes use LocalDB 17.0.1000.7 PARSEONLY at levels 100–170. New c
 Keep the positive oddities in accepted-gaps.md: engine acceptance takes precedence over assumed numeric ranges or option requirements. Windows double-quoted provider FILE strings follow the existing QUOTED_IDENTIFIER state check. New field and node types only extend the public contract.
 
 The closing-* neighbours cover XE scalar source parentheses versus whole-comparison groups; DROP SEQUENCE qualification; measured CONNECT ON AVAILABILITY GROUP rejections; and quoted multiword securable classes. The engine accepts ALTER/CONTROL with the same availability-group class and preserves ordinary SELECT parentheses. These checks close every newly clean syntax-negative committed case; undeclared variables remain contextual.
+
+
+## Final query-form evidence (R18)
+
+Evidence: `oracle/probes/last-forms.jsonl`, LocalDB 17.0.1000.7, levels 100-170.
+
+| Rule | Tree-decidable restriction | Rejected neighbours |
+| --- | --- | --- |
+| expression-like-escape | ESCAPE directly follows an unparenthesized LIKE/NOT LIKE predicate | escape-relation/arithmetic/twice/parenthesized-predicate; 156 |
+| expression-json-aggregate | One value or key:value; aggregate-specific ORDER BY, NULL handling, RETURNING json and window combinations; new JSON argument forms are not ordinary function arguments | json_arrayagg/json_objectagg-*, json-ordinary_*, json-quoted/schema; 102/156/174/10759 |
+| query-select-into-scope | INTO is allowed in every set branch, outside subqueries, CTEs, INSERT sources and view bodies | into-subquery/cte/insert/view/derived-first/scalar/exists; 156 |
+
+`last_forms_match_engine_evidence` checks every probe with explicit contextual/existing-gap
+exceptions. Several INTO branches, long/empty/non-string ESCAPE expressions and bare
+JSON_ARRAYAGG DISTINCT or WITHIN GROUP follow the measured PARSEONLY acceptance, not a guessed
+restriction. Boolean/scalar operands and existing reserved-word gaps stay documented in accepted-gaps.md.
+
+
+## Rejected-but-clean boundaries (R20)
+
+Evidence: `oracle/probes/gap-forms.jsonl` and the committed LocalDB 17.0.1000.7 verdicts,
+compatibility levels 100-170. The gap-forms unit test compares every probe to those verdicts,
+with explicit declaration, preview, connector and Azure-only exceptions.
+
+| Rule | Tree-local boundary |
+| --- | --- |
+| `gap-call-shape`, `gap-fulltext-string` | Write-target arguments are constants/local variables; OPENQUERY server/arity, PREDICT schema, COALESCE arity, delimited built-in names, and QUOTED_IDENTIFIER-sensitive fulltext strings |
+| `gap-scalar-shape`, `expression-like-escape` | Comparison operands, SELECT values and ESCAPE characters are scalar; SELECT aliases/variable assignments stay accepted; EXEC has no unary plus |
+| `gap-name-parts`, `gap-xml-drop`, `gap-reserved-name` | XML collection/HISTORY_TABLE/XE name components, XML DROP without IF EXISTS, and measured reserved identifiers (quoted spellings and SET OFFSETS are preserved) |
+| `gap-option-shape`, `gap-json-index` | Bare target/INDEX hints, MERGE source hints, MAXDOP decimal range, history names, compression placement, row/columnstore key options, SYSTEM_VERSIONING repetition, JSON ONLINE, security policy and external options |
+| `gap-statement-shape` | Nonempty BEGIN/TRY (not CATCH), ENABLE/DISABLE separation, unbounded-following short frames, XE bodies, route required/duplicate options, binary cache handles, measured configuration/audit/permission names and fixed trigger events |
+
+The first compression option with ON PARTITIONS needs REBUILD PARTITION=ALL; putting MAXDOP,
+FILLFACTOR or PAD_INDEX before it is accepted by this engine, while putting them after it still
+fails. The partition probes pin these order-sensitive engine results rather than imposing a
+uniform restriction. JSON WITH options such as FILLFACTOR remain accepted; ONLINE is rejected.
+
+The trigger event/group list comes from the existing `context/trig-*` engine enumeration.
+ALTER_SERVER_CONFIGURATION retains its existing trigger-scope rejection. No catalog lookup,
+name resolution, preview setting or edition inference is added. In particular COMMIT with a
+transaction variable and VECTOR_SEARCH remain clean: see the two R20 residuals in accepted-gaps.md.

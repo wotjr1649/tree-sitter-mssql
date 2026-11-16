@@ -1,0 +1,4153 @@
+==================
+last-forms/escape-literal - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE '!';
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (varchar
+            (keyword_varchar)
+            size: (literal)))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (literal)))))))
+
+==================
+last-forms/escape-variable - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE @e;
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (varchar
+            (keyword_varchar)
+            size: (literal)))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (field
+              name: (identifier))))))))
+
+==================
+last-forms/escape-field - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE e;
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (varchar
+            (keyword_varchar)
+            size: (literal)))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (field
+              name: (identifier))))))))
+
+==================
+last-forms/escape-call - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE CHAR(33);
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (varchar
+            (keyword_varchar)
+            size: (literal)))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (invocation
+              (object_reference
+                name: (identifier))
+              parameter: (term
+                value: (literal)))))))))
+
+==================
+last-forms/escape-concat - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE '!' + '';
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (varchar
+            (keyword_varchar)
+            size: (literal)))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (binary_expression
+              left: (literal)
+              right: (literal))))))))
+
+==================
+last-forms/escape-collate - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE '!' COLLATE Latin1_General_CI_AS;
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (varchar
+            (keyword_varchar)
+            size: (literal)))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (binary_expression
+              left: (literal)
+              operator: (keyword_collate)
+              right: (field
+                name: (identifier)))))))))
+
+==================
+last-forms/escape-parenthesized - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE ('!');
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (varchar
+            (keyword_varchar)
+            size: (literal)))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (parenthesized_expression
+              (literal))))))))
+
+==================
+last-forms/escape-integer - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE 1;
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (varchar
+            (keyword_varchar)
+            size: (literal)))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (literal)))))))
+
+==================
+last-forms/escape-null - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE NULL;
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (varchar
+            (keyword_varchar)
+            size: (literal)))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (literal
+              (keyword_null))))))))
+
+==================
+last-forms/escape-subquery - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE (SELECT '!');
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (varchar
+            (keyword_varchar)
+            size: (literal)))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (subquery
+              (query_specification
+                (select
+                  (keyword_select)
+                  (select_expression
+                    (term
+                      value: (literal))))))))))))
+
+==================
+last-forms/escape-negative - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE -1;
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (varchar
+            (keyword_varchar)
+            size: (literal)))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (unary_expression
+              operand: (literal))))))))
+
+==================
+last-forms/escape-empty - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE '';
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (varchar
+            (keyword_varchar)
+            size: (literal)))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (literal)))))))
+
+==================
+last-forms/escape-long - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE 'xx';
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (varchar
+            (keyword_varchar)
+            size: (literal)))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (literal)))))))
+
+==================
+last-forms/escape-binary - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE 0x21;
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (varchar
+            (keyword_varchar)
+            size: (literal)))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (literal)))))))
+
+==================
+last-forms/escape-not - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 WHERE x NOT LIKE 'a' ESCAPE '!';
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (not_like
+                (keyword_not)
+                (keyword_like))
+              right: (literal))
+            operator: (keyword_escape)
+            right: (literal)))))))
+
+==================
+last-forms/escape-and - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 WHERE x LIKE 'a' ESCAPE '!' AND y=1;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (binary_expression
+                left: (field
+                  name: (identifier))
+                operator: (keyword_like)
+                right: (literal))
+              operator: (keyword_escape)
+              right: (literal))
+            operator: (keyword_and)
+            right: (binary_expression
+              left: (field
+                name: (identifier))
+              right: (literal))))))))
+
+==================
+last-forms/escape-or - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 WHERE x LIKE 'a' ESCAPE '!' OR y LIKE 'b' ESCAPE '#';
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (binary_expression
+                left: (field
+                  name: (identifier))
+                operator: (keyword_like)
+                right: (literal))
+              operator: (keyword_escape)
+              right: (literal))
+            operator: (keyword_or)
+            right: (binary_expression
+              left: (binary_expression
+                left: (field
+                  name: (identifier))
+                operator: (keyword_like)
+                right: (literal))
+              operator: (keyword_escape)
+              right: (literal))))))))
+
+==================
+last-forms/escape-nested - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 WHERE NOT (x LIKE 'a' ESCAPE '!');
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (unary_expression
+            operator: (keyword_not)
+            operand: (parenthesized_expression
+              (binary_expression
+                left: (binary_expression
+                  left: (field
+                    name: (identifier))
+                  operator: (keyword_like)
+                  right: (literal))
+                operator: (keyword_escape)
+                right: (literal)))))))))
+
+==================
+last-forms/escape-case - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 WHERE CASE WHEN x LIKE 'a' ESCAPE '!' THEN 1 ELSE 0 END = 1;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (case
+              (keyword_case)
+              (when_clause
+                (keyword_when)
+                condition: (binary_expression
+                  left: (binary_expression
+                    left: (field
+                      name: (identifier))
+                    operator: (keyword_like)
+                    right: (literal))
+                  operator: (keyword_escape)
+                  right: (literal))
+                (keyword_then)
+                result: (literal))
+              (keyword_else)
+              else: (literal)
+              (keyword_end))
+            right: (literal)))))))
+
+==================
+last-forms/escape-comment - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 WHERE x LIKE 'a' /* 경계 C:\tmp */ ESCAPE /* 주석 */ '!';
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            (marginalia)
+            operator: (keyword_escape)
+            (marginalia)
+            right: (literal)))))))
+
+==================
+last-forms/escape-relation - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT 1 WHERE x = 'a' ESCAPE '!';
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              right: (literal))
+            operator: (keyword_escape)
+            right: (literal)))))))
+
+==================
+last-forms/escape-arithmetic - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT 1 WHERE x + 'a' ESCAPE '!';
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              right: (literal))
+            operator: (keyword_escape)
+            right: (literal)))))))
+
+==================
+last-forms/escape-twice - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT 1 WHERE x LIKE 'a' ESCAPE '!' ESCAPE '#';
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (binary_expression
+                left: (field
+                  name: (identifier))
+                operator: (keyword_like)
+                right: (literal))
+              operator: (keyword_escape)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (literal)))))))
+
+==================
+last-forms/escape-boolean - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT 1 WHERE x LIKE 'a' ESCAPE '!' = '!';
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (binary_expression
+              left: (literal)
+              right: (literal))))))))
+
+==================
+last-forms/escape-and_operand - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT 1 WHERE x LIKE 'a' ESCAPE (y=1);
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (parenthesized_expression
+              (binary_expression
+                left: (field
+                  name: (identifier))
+                right: (literal)))))))))
+
+==================
+last-forms/json_arrayagg-plain - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_ARRAYAGG(x) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_arrayagg-order - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_ARRAYAGG(x ORDER BY y DESC) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (order_by
+                  (keyword_order)
+                  (keyword_by)
+                  (order_target
+                    (field
+                      name: (identifier))
+                    (direction
+                      (keyword_desc))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_arrayagg-null - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_ARRAYAGG(x NULL ON NULL) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (json_null_clause
+                  (keyword_null)
+                  (keyword_on)
+                  (keyword_null))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_arrayagg-absent - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_ARRAYAGG(x ABSENT ON NULL) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (json_null_clause
+                  (keyword_absent)
+                  (keyword_on)
+                  (keyword_null))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_arrayagg-returning - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_ARRAYAGG(x RETURNING json) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (returning_clause
+                  (keyword_returning)
+                  (keyword_json))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_arrayagg-all - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_ARRAYAGG(x ORDER BY y NULL ON NULL RETURNING json) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (order_by
+                  (keyword_order)
+                  (keyword_by)
+                  (order_target
+                    (field
+                      name: (identifier))))
+                (json_null_clause
+                  (keyword_null)
+                  (keyword_on)
+                  (keyword_null))
+                (returning_clause
+                  (keyword_returning)
+                  (keyword_json))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_arrayagg-empty - LocalDB 17.0.1000.7 levels 100-170: rejects 174
+==================
+
+SELECT JSON_ARRAYAGG() FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_arrayagg-many - LocalDB 17.0.1000.7 levels 100-170: rejects 174
+==================
+
+SELECT JSON_ARRAYAGG(x, x) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_arrayagg-distinct - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_ARRAYAGG(DISTINCT x) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                (keyword_distinct)
+                parameter: (term
+                  value: (field
+                    name: (identifier)))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_arrayagg-star - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT JSON_ARRAYAGG(*) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (all_fields))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_arrayagg-no_key - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT JSON_ARRAYAGG('k':x) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (json_key_value
+                  key: (literal)
+                  value: (field
+                    name: (identifier)))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_arrayagg-wrong_return - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT JSON_ARRAYAGG(x RETURNING int) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (returning_clause
+                  (keyword_returning)
+                  (keyword_int))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_arrayagg-wrapped - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT JSON_ARRAYAGG(x WITH ARRAY WRAPPER) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (json_wrapper_clause
+                  (keyword_with)
+                  (keyword_array)
+                  (keyword_wrapper))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_objectagg-plain - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_OBJECTAGG('k':x) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (json_key_value
+                  key: (literal)
+                  value: (field
+                    name: (identifier)))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_objectagg-order - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT JSON_OBJECTAGG('k':x ORDER BY y DESC) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (json_key_value
+                  key: (literal)
+                  value: (field
+                    name: (identifier)))
+                (order_by
+                  (keyword_order)
+                  (keyword_by)
+                  (order_target
+                    (field
+                      name: (identifier))
+                    (direction
+                      (keyword_desc))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_objectagg-null - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_OBJECTAGG('k':x NULL ON NULL) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (json_key_value
+                  key: (literal)
+                  value: (field
+                    name: (identifier)))
+                (json_null_clause
+                  (keyword_null)
+                  (keyword_on)
+                  (keyword_null))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_objectagg-absent - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_OBJECTAGG('k':x ABSENT ON NULL) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (json_key_value
+                  key: (literal)
+                  value: (field
+                    name: (identifier)))
+                (json_null_clause
+                  (keyword_absent)
+                  (keyword_on)
+                  (keyword_null))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_objectagg-returning - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_OBJECTAGG('k':x RETURNING json) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (json_key_value
+                  key: (literal)
+                  value: (field
+                    name: (identifier)))
+                (returning_clause
+                  (keyword_returning)
+                  (keyword_json))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_objectagg-all - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT JSON_OBJECTAGG('k':x ORDER BY y NULL ON NULL RETURNING json) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (json_key_value
+                  key: (literal)
+                  value: (field
+                    name: (identifier)))
+                (order_by
+                  (keyword_order)
+                  (keyword_by)
+                  (order_target
+                    (field
+                      name: (identifier))))
+                (json_null_clause
+                  (keyword_null)
+                  (keyword_on)
+                  (keyword_null))
+                (returning_clause
+                  (keyword_returning)
+                  (keyword_json))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_objectagg-empty - LocalDB 17.0.1000.7 levels 100-170: rejects 174
+==================
+
+SELECT JSON_OBJECTAGG() FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_objectagg-many - LocalDB 17.0.1000.7 levels 100-170: rejects 174
+==================
+
+SELECT JSON_OBJECTAGG('k':x, 'k':x) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (json_key_value
+                  key: (literal)
+                  value: (field
+                    name: (identifier)))
+                parameter: (json_key_value
+                  key: (literal)
+                  value: (field
+                    name: (identifier)))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_objectagg-distinct - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT JSON_OBJECTAGG(DISTINCT 'k':x) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                (keyword_distinct)
+                parameter: (json_key_value
+                  key: (literal)
+                  value: (field
+                    name: (identifier)))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_objectagg-star - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT JSON_OBJECTAGG(*) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (all_fields))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_objectagg-no_key - LocalDB 17.0.1000.7 levels 100-170: rejects 174
+==================
+
+SELECT JSON_OBJECTAGG(x) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_objectagg-wrong_return - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT JSON_OBJECTAGG('k':x RETURNING int) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (json_key_value
+                  key: (literal)
+                  value: (field
+                    name: (identifier)))
+                (returning_clause
+                  (keyword_returning)
+                  (keyword_int))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json_objectagg-wrapped - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT JSON_OBJECTAGG('k':x WITH ARRAY WRAPPER) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (json_key_value
+                  key: (literal)
+                  value: (field
+                    name: (identifier)))
+                (json_wrapper_clause
+                  (keyword_with)
+                  (keyword_array)
+                  (keyword_wrapper))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/into-last - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 UNION SELECT 2 INTO #t;
+
+---
+
+(program
+  (batch
+    (statement
+      (set_operation
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal)))))
+        operation: (keyword_union)
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))
+          (keyword_into)
+          (object_reference
+            name: (identifier)))))))
+
+==================
+last-forms/into-first - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 INTO #t UNION SELECT 2;
+
+---
+
+(program
+  (batch
+    (statement
+      (set_operation
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))
+          (keyword_into)
+          (object_reference
+            name: (identifier)))
+        operation: (keyword_union)
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal)))))))))
+
+==================
+last-forms/into-both - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 INTO #t UNION SELECT 2 INTO #u;
+
+---
+
+(program
+  (batch
+    (statement
+      (set_operation
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))
+          (keyword_into)
+          (object_reference
+            name: (identifier)))
+        operation: (keyword_union)
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))
+          (keyword_into)
+          (object_reference
+            name: (identifier)))))))
+
+==================
+last-forms/into-middle - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 UNION SELECT 2 INTO #t UNION SELECT 3;
+
+---
+
+(program
+  (batch
+    (statement
+      (set_operation
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal)))))
+        operation: (keyword_union)
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))
+          (keyword_into)
+          (object_reference
+            name: (identifier)))
+        operation: (keyword_union)
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal)))))))))
+
+==================
+last-forms/into-except - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 EXCEPT SELECT 2 INTO #t;
+
+---
+
+(program
+  (batch
+    (statement
+      (set_operation
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal)))))
+        operation: (keyword_except)
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))
+          (keyword_into)
+          (object_reference
+            name: (identifier)))))))
+
+==================
+last-forms/into-intersect - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 INTERSECT SELECT 2 INTO #t;
+
+---
+
+(program
+  (batch
+    (statement
+      (set_operation
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal)))))
+        operation: (keyword_intersect)
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))
+          (keyword_into)
+          (object_reference
+            name: (identifier)))))))
+
+==================
+last-forms/into-paren - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 UNION (SELECT 2 INTO #t);
+
+---
+
+(program
+  (batch
+    (statement
+      (set_operation
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal)))))
+        operation: (keyword_union)
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))
+          (keyword_into)
+          (object_reference
+            name: (identifier)))))))
+
+==================
+last-forms/into-nested - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 UNION (SELECT 2 UNION SELECT 3 INTO #t);
+
+---
+
+(program
+  (batch
+    (statement
+      (set_operation
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal)))))
+        operation: (keyword_union)
+        (query_specification
+          (set_operation
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    value: (literal)))))
+            operation: (keyword_union)
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    value: (literal))))
+              (keyword_into)
+              (object_reference
+                name: (identifier)))))))))
+
+==================
+last-forms/into-subquery - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT * FROM (SELECT 1 UNION SELECT 2 INTO #t) d;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (subquery
+              (set_operation
+                (query_specification
+                  (select
+                    (keyword_select)
+                    (select_expression
+                      (term
+                        value: (literal)))))
+                operation: (keyword_union)
+                (query_specification
+                  (select
+                    (keyword_select)
+                    (select_expression
+                      (term
+                        value: (literal))))
+                  (keyword_into)
+                  (object_reference
+                    name: (identifier)))))
+            alias: (identifier)))))))
+
+==================
+last-forms/into-cte - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+WITH c AS (SELECT 1 UNION SELECT 2 INTO #t) SELECT * FROM c;
+
+---
+
+(program
+  (batch
+    (statement
+      (keyword_with)
+      (cte
+        name: (identifier)
+        (keyword_as)
+        (statement
+          (set_operation
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    value: (literal)))))
+            operation: (keyword_union)
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    value: (literal))))
+              (keyword_into)
+              (object_reference
+                name: (identifier))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/into-order - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 UNION SELECT 2 INTO #t ORDER BY 1;
+
+---
+
+(program
+  (batch
+    (statement
+      (set_operation
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal)))))
+        operation: (keyword_union)
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))
+          (keyword_into)
+          (object_reference
+            name: (identifier)))
+        (order_by
+          (keyword_order)
+          (keyword_by)
+          (order_target
+            (literal)))))))
+
+==================
+last-forms/into-on - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 UNION SELECT 2 INTO t ON [PRIMARY];
+
+---
+
+(program
+  (batch
+    (statement
+      (set_operation
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal)))))
+        operation: (keyword_union)
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))
+          (keyword_into)
+          (object_reference
+            name: (identifier))
+          (on_filegroup
+            (keyword_on)
+            (identifier)))))))
+
+==================
+last-forms/into-multi_nested - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+(SELECT 1 INTO #t UNION SELECT 2) UNION (SELECT 3 INTO #u UNION SELECT 4);
+
+---
+
+(program
+  (batch
+    (statement
+      (set_operation
+        (query_specification
+          (set_operation
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    value: (literal))))
+              (keyword_into)
+              (object_reference
+                name: (identifier)))
+            operation: (keyword_union)
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    value: (literal)))))))
+        operation: (keyword_union)
+        (query_specification
+          (set_operation
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    value: (literal))))
+              (keyword_into)
+              (object_reference
+                name: (identifier)))
+            operation: (keyword_union)
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    value: (literal)))))))))))
+
+==================
+last-forms/into-separate - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 INTO #t; SELECT 2 INTO #u;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (keyword_into)
+        (object_reference
+          name: (identifier))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (keyword_into)
+        (object_reference
+          name: (identifier))))))
+
+==================
+last-forms/json-ordinary_null - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT foo(x NULL ON NULL) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (json_null_clause
+                  (keyword_null)
+                  (keyword_on)
+                  (keyword_null))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-ordinary_order - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT foo(x ORDER BY y) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (order_by
+                  (keyword_order)
+                  (keyword_by)
+                  (order_target
+                    (field
+                      name: (identifier))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-ordinary_pair - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT foo('k':x) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (json_key_value
+                  key: (literal)
+                  value: (field
+                    name: (identifier)))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-array_pair - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT JSON_ARRAYAGG('k':x) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (json_key_value
+                  key: (literal)
+                  value: (field
+                    name: (identifier)))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-object_order - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT JSON_OBJECTAGG('k':x ORDER BY y) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (json_key_value
+                  key: (literal)
+                  value: (field
+                    name: (identifier)))
+                (order_by
+                  (keyword_order)
+                  (keyword_by)
+                  (order_target
+                    (field
+                      name: (identifier))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-quoted - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT [JSON_ARRAYAGG](x NULL ON NULL) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (json_null_clause
+                  (keyword_null)
+                  (keyword_on)
+                  (keyword_null))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-schema - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT dbo.JSON_ARRAYAGG(x NULL ON NULL) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  schema: (identifier)
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (json_null_clause
+                  (keyword_null)
+                  (keyword_on)
+                  (keyword_null))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-array_over - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_ARRAYAGG(x) OVER () FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (window_function
+                (invocation
+                  (object_reference
+                    name: (identifier))
+                  parameter: (term
+                    value: (field
+                      name: (identifier))))
+                (keyword_over)
+                (window_specification)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-object_over - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_OBJECTAGG('k':x) OVER () FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (window_function
+                (invocation
+                  (object_reference
+                    name: (identifier))
+                  parameter: (json_key_value
+                    key: (literal)
+                    value: (field
+                      name: (identifier))))
+                (keyword_over)
+                (window_specification)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/escape-parenthesized-predicate - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT 1 WHERE (x LIKE 'a') ESCAPE '!';
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (parenthesized_expression
+              (binary_expression
+                left: (field
+                  name: (identifier))
+                operator: (keyword_like)
+                right: (literal)))
+            operator: (keyword_escape)
+            right: (literal)))))))
+
+==================
+last-forms/escape-is-null - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT 1 WHERE x LIKE 'a' ESCAPE '!' IS NULL;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (binary_expression
+              left: (literal)
+              operator: (keyword_is)
+              right: (literal
+                (keyword_null)))))))))
+
+==================
+last-forms/escape-in - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT 1 WHERE x LIKE 'a' ESCAPE e IN ('!');
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_in)
+              right: (list
+                (literal)))))))))
+
+==================
+last-forms/escape-pattern-arithmetic - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 WHERE x LIKE '%' + e ESCAPE '!' + '';
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (binary_expression
+                left: (literal)
+                right: (field
+                  name: (identifier))))
+            operator: (keyword_escape)
+            right: (binary_expression
+              left: (literal)
+              right: (literal))))))))
+
+==================
+last-forms/escape-unicode - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 WHERE x NOT LIKE N'%한글!_%' ESCAPE N'!';
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (not_like
+                (keyword_not)
+                (keyword_like))
+              right: (literal))
+            operator: (keyword_escape)
+            right: (literal)))))))
+
+==================
+last-forms/escape-check - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TABLE t(x varchar(20) CHECK(x LIKE 'a' ESCAPE '!'));
+
+---
+
+(program
+  (batch
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        name: (object_reference
+          name: (identifier))
+        (column_definitions
+          (column_definition
+            name: (identifier)
+            type: (varchar
+              (keyword_varchar)
+              size: (literal))
+            (keyword_check)
+            (binary_expression
+              left: (binary_expression
+                left: (field
+                  name: (identifier))
+                operator: (keyword_like)
+                right: (literal))
+              operator: (keyword_escape)
+              right: (literal))))))))
+
+==================
+last-forms/escape-parenthesized-scalar - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 WHERE x LIKE 'a' ESCAPE (e + '');
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (parenthesized_expression
+              (binary_expression
+                left: (field
+                  name: (identifier))
+                right: (literal)))))))))
+
+==================
+last-forms/escape-alias - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT x AS escape FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (field
+                name: (identifier))
+              (keyword_as)
+              alias: (identifier))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-array-alias - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT JSON_ARRAYAGG(x alias) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier))
+                  alias: (identifier))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-array-distinct-order - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT JSON_ARRAYAGG(DISTINCT x ORDER BY y ABSENT ON NULL RETURNING json) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                (keyword_distinct)
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (order_by
+                  (keyword_order)
+                  (keyword_by)
+                  (order_target
+                    (field
+                      name: (identifier))))
+                (json_null_clause
+                  (keyword_absent)
+                  (keyword_on)
+                  (keyword_null))
+                (returning_clause
+                  (keyword_returning)
+                  (keyword_json))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-array-return-bracket - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_ARRAYAGG(x RETURNING [json]) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (returning_clause
+                  (keyword_returning)
+                  (custom_type
+                    (object_reference
+                      name: (identifier))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-array-null-over - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT JSON_ARRAYAGG(x ORDER BY y NULL ON NULL RETURNING json) OVER (PARTITION BY z) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (window_function
+                (invocation
+                  (object_reference
+                    name: (identifier))
+                  parameter: (term
+                    value: (field
+                      name: (identifier)))
+                  (order_by
+                    (keyword_order)
+                    (keyword_by)
+                    (order_target
+                      (field
+                        name: (identifier))))
+                  (json_null_clause
+                    (keyword_null)
+                    (keyword_on)
+                    (keyword_null))
+                  (returning_clause
+                    (keyword_returning)
+                    (keyword_json)))
+                (keyword_over)
+                (window_specification
+                  (partition_by
+                    (keyword_partition)
+                    (keyword_by)
+                    (field
+                      name: (identifier))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-object-null-over - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_OBJECTAGG('k':x ABSENT ON NULL RETURNING json) OVER () FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (window_function
+                (invocation
+                  (object_reference
+                    name: (identifier))
+                  parameter: (json_key_value
+                    key: (literal)
+                    value: (field
+                      name: (identifier)))
+                  (json_null_clause
+                    (keyword_absent)
+                    (keyword_on)
+                    (keyword_null))
+                  (returning_clause
+                    (keyword_returning)
+                    (keyword_json)))
+                (keyword_over)
+                (window_specification)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-object-subquery-key - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_OBJECTAGG((SELECT 'k'):COALESCE(x,0)) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (json_key_value
+                  key: (subquery
+                    (query_specification
+                      (select
+                        (keyword_select)
+                        (select_expression
+                          (term
+                            value: (literal))))))
+                  value: (invocation
+                    (object_reference
+                      name: (identifier))
+                    parameter: (term
+                      value: (field
+                        name: (identifier)))
+                    parameter: (term
+                      value: (literal))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-nested - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_OBJECTAGG('k':JSON_ARRAYAGG(x ORDER BY y NULL ON NULL)) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (json_key_value
+                  key: (literal)
+                  value: (invocation
+                    (object_reference
+                      name: (identifier))
+                    parameter: (term
+                      value: (field
+                        name: (identifier)))
+                    (order_by
+                      (keyword_order)
+                      (keyword_by)
+                      (order_target
+                        (field
+                          name: (identifier))))
+                    (json_null_clause
+                      (keyword_null)
+                      (keyword_on)
+                      (keyword_null))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-constructor-neighbour - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_OBJECT('k':JSON_ARRAY(x ABSENT ON NULL) NULL ON NULL RETURNING json);
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (json_object
+                (keyword_json_object)
+                (json_key_value
+                  key: (literal)
+                  value: (json_array
+                    (keyword_json_array)
+                    (field
+                      name: (identifier))
+                    (json_null_clause
+                      (keyword_absent)
+                      (keyword_on)
+                      (keyword_null))))
+                (json_null_clause
+                  (keyword_null)
+                  (keyword_on)
+                  (keyword_null))
+                (returning_clause
+                  (keyword_returning)
+                  (keyword_json))))))))))
+
+==================
+last-forms/json-scalar-null - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT JSON_VALUE(x,'$.a' NULL ON NULL) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                parameter: (term
+                  value: (literal))
+                (json_null_clause
+                  (keyword_null)
+                  (keyword_on)
+                  (keyword_null))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/into-insert - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+INSERT t SELECT 1 UNION SELECT 2 INTO #x;
+
+---
+
+(program
+  (batch
+    (statement
+      (insert
+        (keyword_insert)
+        (object_reference
+          name: (identifier))
+        (set_operation
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  value: (literal)))))
+          operation: (keyword_union)
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  value: (literal))))
+            (keyword_into)
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/into-view - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+CREATE VIEW v AS SELECT 1 UNION SELECT 2 INTO t;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_view
+        (keyword_create)
+        (keyword_view)
+        name: (object_reference
+          name: (identifier))
+        (keyword_as)
+        (set_operation
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  value: (literal)))))
+          operation: (keyword_union)
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  value: (literal))))
+            (keyword_into)
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/into-derived-first - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT * FROM (SELECT 1 INTO #t UNION SELECT 2) d;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (subquery
+              (set_operation
+                (query_specification
+                  (select
+                    (keyword_select)
+                    (select_expression
+                      (term
+                        value: (literal))))
+                  (keyword_into)
+                  (object_reference
+                    name: (identifier)))
+                operation: (keyword_union)
+                (query_specification
+                  (select
+                    (keyword_select)
+                    (select_expression
+                      (term
+                        value: (literal)))))))
+            alias: (identifier)))))))
+
+==================
+last-forms/into-cte-first - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+WITH c AS (SELECT 1 INTO #t UNION SELECT 2) SELECT * FROM c;
+
+---
+
+(program
+  (batch
+    (statement
+      (keyword_with)
+      (cte
+        name: (identifier)
+        (keyword_as)
+        (statement
+          (set_operation
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    value: (literal))))
+              (keyword_into)
+              (object_reference
+                name: (identifier)))
+            operation: (keyword_union)
+            (query_specification
+              (select
+                (keyword_select)
+                (select_expression
+                  (term
+                    value: (literal))))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/into-scalar - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT (SELECT 1 UNION SELECT 2 INTO #t);
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (subquery
+                (set_operation
+                  (query_specification
+                    (select
+                      (keyword_select)
+                      (select_expression
+                        (term
+                          value: (literal)))))
+                  operation: (keyword_union)
+                  (query_specification
+                    (select
+                      (keyword_select)
+                      (select_expression
+                        (term
+                          value: (literal))))
+                    (keyword_into)
+                    (object_reference
+                      name: (identifier))))))))))))
+
+==================
+last-forms/into-exists - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT 1 WHERE EXISTS(SELECT 1 UNION SELECT 2 INTO #t);
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (exists
+            (keyword_exists)
+            (subquery
+              (set_operation
+                (query_specification
+                  (select
+                    (keyword_select)
+                    (select_expression
+                      (term
+                        value: (literal)))))
+                operation: (keyword_union)
+                (query_specification
+                  (select
+                    (keyword_select)
+                    (select_expression
+                      (term
+                        value: (literal))))
+                  (keyword_into)
+                  (object_reference
+                    name: (identifier)))))))))))
+
+==================
+last-forms/json-array-distinct-same-order - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT JSON_ARRAYAGG(DISTINCT x ORDER BY x) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                (keyword_distinct)
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (order_by
+                  (keyword_order)
+                  (keyword_by)
+                  (order_target
+                    (field
+                      name: (identifier))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-array-distinct-null - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT JSON_ARRAYAGG(DISTINCT x NULL ON NULL) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                (keyword_distinct)
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (json_null_clause
+                  (keyword_null)
+                  (keyword_on)
+                  (keyword_null))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-array-distinct-return - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT JSON_ARRAYAGG(DISTINCT x RETURNING json) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                (keyword_distinct)
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (returning_clause
+                  (keyword_returning)
+                  (keyword_json))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-array-order-over - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT JSON_ARRAYAGG(x ORDER BY y) OVER () FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (window_function
+                (invocation
+                  (object_reference
+                    name: (identifier))
+                  parameter: (term
+                    value: (field
+                      name: (identifier)))
+                  (order_by
+                    (keyword_order)
+                    (keyword_by)
+                    (order_target
+                      (field
+                        name: (identifier)))))
+                (keyword_over)
+                (window_specification)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-array-null-over-simple - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_ARRAYAGG(x NULL ON NULL) OVER () FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (window_function
+                (invocation
+                  (object_reference
+                    name: (identifier))
+                  parameter: (term
+                    value: (field
+                      name: (identifier)))
+                  (json_null_clause
+                    (keyword_null)
+                    (keyword_on)
+                    (keyword_null)))
+                (keyword_over)
+                (window_specification)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-array-return-over - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_ARRAYAGG(x RETURNING json) OVER () FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (window_function
+                (invocation
+                  (object_reference
+                    name: (identifier))
+                  parameter: (term
+                    value: (field
+                      name: (identifier)))
+                  (returning_clause
+                    (keyword_returning)
+                    (keyword_json)))
+                (keyword_over)
+                (window_specification)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-array-distinct-over - LocalDB 17.0.1000.7 levels 100-170: rejects 10759
+==================
+
+SELECT JSON_ARRAYAGG(DISTINCT x) OVER () FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (window_function
+                (invocation
+                  (object_reference
+                    name: (identifier))
+                  (keyword_distinct)
+                  parameter: (term
+                    value: (field
+                      name: (identifier))))
+                (keyword_over)
+                (window_specification)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-array-within - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_ARRAYAGG(x) WITHIN GROUP(ORDER BY y) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (keyword_within)
+                (keyword_group)
+                (order_by
+                  (keyword_order)
+                  (keyword_by)
+                  (order_target
+                    (field
+                      name: (identifier))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-object-within - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT JSON_OBJECTAGG('k':x) WITHIN GROUP(ORDER BY y) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (json_key_value
+                  key: (literal)
+                  value: (field
+                    name: (identifier)))
+                (keyword_within)
+                (keyword_group)
+                (order_by
+                  (keyword_order)
+                  (keyword_by)
+                  (order_target
+                    (field
+                      name: (identifier))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/escape-operand-comparison-group - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT 1 WHERE x LIKE 'a' ESCAPE (e = '!');
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (binary_expression
+              left: (field
+                name: (identifier))
+              operator: (keyword_like)
+              right: (literal))
+            operator: (keyword_escape)
+            right: (parenthesized_expression
+              (binary_expression
+                left: (field
+                  name: (identifier))
+                right: (literal)))))))))
+
+==================
+last-forms/escape-unparenthesized-not - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 WHERE NOT x LIKE 'a' ESCAPE '!';
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (unary_expression
+            operator: (keyword_not)
+            operand: (binary_expression
+              left: (binary_expression
+                left: (field
+                  name: (identifier))
+                operator: (keyword_like)
+                right: (literal))
+              operator: (keyword_escape)
+              right: (literal))))))))
+
+==================
+last-forms/escape-keyword-column - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT escape FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (field
+                name: (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/escape-keyword-quoted-alias - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT x AS [escape] FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (field
+                name: (identifier))
+              (keyword_as)
+              alias: (identifier))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-array-within-order - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT JSON_ARRAYAGG(x ORDER BY y) WITHIN GROUP(ORDER BY y) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (order_by
+                  (keyword_order)
+                  (keyword_by)
+                  (order_target
+                    (field
+                      name: (identifier))))
+                (keyword_within)
+                (keyword_group)
+                (order_by
+                  (keyword_order)
+                  (keyword_by)
+                  (order_target
+                    (field
+                      name: (identifier))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-array-within-null - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT JSON_ARRAYAGG(x NULL ON NULL) WITHIN GROUP(ORDER BY y) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (json_null_clause
+                  (keyword_null)
+                  (keyword_on)
+                  (keyword_null))
+                (keyword_within)
+                (keyword_group)
+                (order_by
+                  (keyword_order)
+                  (keyword_by)
+                  (order_target
+                    (field
+                      name: (identifier))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-array-within-return - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT JSON_ARRAYAGG(x RETURNING json) WITHIN GROUP(ORDER BY y) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (returning_clause
+                  (keyword_returning)
+                  (keyword_json))
+                (keyword_within)
+                (keyword_group)
+                (order_by
+                  (keyword_order)
+                  (keyword_by)
+                  (order_target
+                    (field
+                      name: (identifier))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-array-within-distinct - LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SELECT JSON_ARRAYAGG(DISTINCT x) WITHIN GROUP(ORDER BY y) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                (keyword_distinct)
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (keyword_within)
+                (keyword_group)
+                (order_by
+                  (keyword_order)
+                  (keyword_by)
+                  (order_target
+                    (field
+                      name: (identifier))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-array-within-over - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_ARRAYAGG(x) WITHIN GROUP(ORDER BY y) OVER() FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (window_function
+                (invocation
+                  (object_reference
+                    name: (identifier))
+                  parameter: (term
+                    value: (field
+                      name: (identifier)))
+                  (keyword_within)
+                  (keyword_group)
+                  (order_by
+                    (keyword_order)
+                    (keyword_by)
+                    (order_target
+                      (field
+                        name: (identifier)))))
+                (keyword_over)
+                (window_specification)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-array-return-quoted - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_ARRAYAGG(x RETURNING "json") FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (returning_clause
+                  (keyword_returning)
+                  (custom_type
+                    (object_reference
+                      name: (identifier))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-array-return-comment - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_ARRAYAGG(x RETURNING /* 형식 */ json) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (returning_clause
+                  (keyword_returning)
+                  (marginalia)
+                  (keyword_json))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-object-return-quoted - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_OBJECTAGG('k':x RETURNING [json]) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (json_key_value
+                  key: (literal)
+                  value: (field
+                    name: (identifier)))
+                (returning_clause
+                  (keyword_returning)
+                  (custom_type
+                    (object_reference
+                      name: (identifier))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-sibling-string-agg - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT STRING_AGG(x, ',') WITHIN GROUP(ORDER BY y) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                parameter: (term
+                  value: (literal))
+                (keyword_within)
+                (keyword_group)
+                (order_by
+                  (keyword_order)
+                  (keyword_by)
+                  (order_target
+                    (field
+                      name: (identifier))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-sibling-percentile - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT APPROX_PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY x) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (literal))
+                (keyword_within)
+                (keyword_group)
+                (order_by
+                  (keyword_order)
+                  (keyword_by)
+                  (order_target
+                    (field
+                      name: (identifier))))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))
+
+==================
+last-forms/json-sibling-provider-null - LocalDB 17.0.1000.7 levels 100-170: rejects 156
+==================
+
+SELECT * FROM OPENROWSET('p', 's'; NULL; NULL, 'q');
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (invocation
+              (object_reference
+                name: (identifier))
+              parameter: (term
+                value: (literal))
+              parameter: (term
+                value: (literal)
+                (literal
+                  (keyword_null))
+                (literal
+                  (keyword_null)))
+              parameter: (term
+                value: (literal)))))))))
+
+==================
+last-forms/json-array-order-comma - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT JSON_ARRAYAGG(x ORDER BY y DESC, z ASC ABSENT ON NULL) FROM t;
+
+---
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (invocation
+                (object_reference
+                  name: (identifier))
+                parameter: (term
+                  value: (field
+                    name: (identifier)))
+                (order_by
+                  (keyword_order)
+                  (keyword_by)
+                  (order_target
+                    (field
+                      name: (identifier))
+                    (direction
+                      (keyword_desc)))
+                  (order_target
+                    (field
+                      name: (identifier))
+                    (direction
+                      (keyword_asc))))
+                (json_null_clause
+                  (keyword_absent)
+                  (keyword_on)
+                  (keyword_null))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              name: (identifier))))))))

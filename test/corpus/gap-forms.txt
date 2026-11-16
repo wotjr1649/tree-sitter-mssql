@@ -1,0 +1,595 @@
+==================
+gap-forms/rowset/table-hint - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT * FROM dbo.t WITH (ROWLOCK);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (object_reference (identifier) (identifier))) (table_hint (keyword_with) (table_hint_item (identifier))))))))
+
+==================
+gap-forms/original/hint-schema-on-table - LocalDB 17.0.1000.7 levels 100-170: rejects 321; checked by constraints
+==================
+
+SELECT * FROM dbo.t WITH (a int);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (object_reference (identifier) (identifier))) (openjson_schema (keyword_with) (openjson_column (identifier) (keyword_int))))))))
+
+==================
+gap-forms/rowset/xml-schema - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @h int; SELECT * FROM OPENXML(@h,'/r',2) WITH (id int '@id') AS x;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (invocation (object_reference (identifier)) (term (field (identifier))) (term (literal)) (term (literal)))) (openjson_schema (keyword_with) (openjson_column (identifier) (keyword_int) (literal))) (keyword_as) (identifier))))))
+
+==================
+gap-forms/rowset/xml-null - LocalDB 17.0.1000.7 levels 100-170: rejects 156; checked by constraints
+==================
+
+DECLARE @h int; SELECT * FROM OPENXML(@h,'/r',2) WITH (id int NULL) AS x;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (invocation (object_reference (identifier)) (term (field (identifier))) (term (literal)) (term (literal)))) (openjson_schema (keyword_with) (openjson_column (identifier) (keyword_int) (literal (keyword_null)))) (keyword_as) (identifier))))))
+
+==================
+gap-forms/rowset/predict-schema - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @m varbinary(max); SELECT * FROM PREDICT(MODEL=@m, DATA=dbo.t AS d) WITH (id int) AS r;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (varbinary (keyword_varbinary) (keyword_max))))) (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (invocation (object_reference (identifier)) (term (binary_expression (field (identifier)) (field (identifier)))) (term (binary_expression (field (identifier)) (field (object_reference (identifier)) (identifier))) (keyword_as) (identifier)))) (openjson_schema (keyword_with) (openjson_column (identifier) (keyword_int))) (keyword_as) (identifier))))))
+
+==================
+gap-forms/rowset/predict-no-schema - LocalDB 17.0.1000.7 levels 100-170: rejects 102; checked by constraints
+==================
+
+DECLARE @m varbinary(max); SELECT * FROM PREDICT(MODEL=@m, DATA=dbo.t AS d) AS r;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (varbinary (keyword_varbinary) (keyword_max))))) (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (invocation (object_reference (identifier)) (term (binary_expression (field (identifier)) (field (identifier)))) (term (binary_expression (field (identifier)) (field (object_reference (identifier)) (identifier))) (keyword_as) (identifier))) (keyword_as) (identifier)))))))
+
+==================
+gap-forms/dml/269 - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @a int; DELETE FROM dbo.f(@a);
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (delete (keyword_delete) (keyword_from) (invocation (object_reference (identifier) (identifier)) (term (field (identifier))))))))
+
+==================
+gap-forms/dml/272 - LocalDB 17.0.1000.7 levels 100-170: rejects 102; checked by constraints
+==================
+
+DECLARE @a int; DELETE FROM dbo.f(+1);
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (delete (keyword_delete) (keyword_from) (invocation (object_reference (identifier) (identifier)) (term (unary_expression (literal))))))))
+
+==================
+gap-forms/exec/-1 - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @a int; EXEC dbo.p -1;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (execute_statement (keyword_exec) (object_reference (identifier) (identifier)) (exec_argument (unary_expression (literal)))))))
+
+==================
+gap-forms/exec/+1 - LocalDB 17.0.1000.7 levels 100-170: rejects 102; checked by constraints
+==================
+
+DECLARE @a int; EXEC dbo.p +1;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (execute_statement (keyword_exec) (object_reference (identifier) (identifier)) (exec_argument (unary_expression (literal)))))))
+
+==================
+gap-forms/table/reserved-quoted - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT [TABLE], [escape], [FROM] FROM dbo.[TABLE];
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (field (identifier))) (term (field (identifier))) (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier))))))))
+
+==================
+gap-forms/original/issue150-column-bare - LocalDB 17.0.1000.7 levels 100-170: rejects 156; checked by constraints
+==================
+
+SELECT TABLE FROM dbo.t;
+
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier))))))))
+
+==================
+gap-forms/xml/create-two - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE XML SCHEMA COLLECTION dbo.x AS N'<x/>';
+
+---
+
+(program (batch (statement (create_xml_schema_collection (keyword_create) (keyword_xml) (keyword_schema) (keyword_collection) (object_reference (identifier) (identifier)) (keyword_as) (literal)))))
+
+==================
+gap-forms/xml/create-empty - LocalDB 17.0.1000.7 levels 100-170: rejects 117; checked by constraints
+==================
+
+CREATE XML SCHEMA COLLECTION dbo..x AS N'<x/>';
+
+---
+
+(program (batch (statement (create_xml_schema_collection (keyword_create) (keyword_xml) (keyword_schema) (keyword_collection) (object_reference (identifier) (identifier)) (keyword_as) (literal)))))
+
+==================
+gap-forms/trigger/DATABASE-CREATE_TABLE - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE TRIGGER tr ON DATABASE FOR CREATE_TABLE AS RETURN;
+
+---
+
+(program (batch (statement (create_trigger (keyword_create) (keyword_trigger) (object_reference (identifier)) (keyword_on) (keyword_database) (keyword_for) (trigger_event (identifier)) (procedure_body (keyword_as) (statement (return_statement (keyword_return))))))))
+
+==================
+gap-forms/trigger/DATABASE-NOT_AN_EVENT - LocalDB 17.0.1000.7 levels 100-170: rejects 1084; checked by constraints
+==================
+
+CREATE TRIGGER tr ON DATABASE FOR NOT_AN_EVENT AS RETURN;
+
+---
+
+(program (batch (statement (create_trigger (keyword_create) (keyword_trigger) (object_reference (identifier)) (keyword_on) (keyword_database) (keyword_for) (trigger_event (identifier)) (procedure_body (keyword_as) (statement (return_statement (keyword_return))))))))
+
+==================
+gap-forms/permission/CREATE TABLE - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+GRANT CREATE TABLE TO u;
+
+---
+
+(program (batch (statement (grant_statement (keyword_grant) (permission (keyword_create) (keyword_table)) (keyword_to) (identifier)))))
+
+==================
+gap-forms/permission/CREATE APPLICATION ROLE - LocalDB 17.0.1000.7 levels 100-170: rejects 102; checked by constraints
+==================
+
+GRANT CREATE APPLICATION ROLE TO u;
+
+---
+
+(program (batch (statement (grant_statement (keyword_grant) (permission (keyword_create) (identifier) (keyword_role)) (keyword_to) (identifier)))))
+
+==================
+gap-forms/xe/create-event - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE EVENT SESSION s ON SERVER ADD EVENT sqlserver.lock_deadlock;
+
+---
+
+(program (batch (statement (create_event_session (keyword_create) (keyword_event) (keyword_session) (identifier) (keyword_on) (keyword_server) (keyword_add) (keyword_event) (event_session_event (object_reference (identifier) (identifier)))))))
+
+==================
+gap-forms/original/event-17 - LocalDB 17.0.1000.7 levels 100-170: rejects 102; checked by constraints
+==================
+
+CREATE EVENT SESSION s ON SERVER ADD EVENT sqlserver..lock_deadlock;
+
+
+---
+
+(program (batch (statement (create_event_session (keyword_create) (keyword_event) (keyword_session) (identifier) (keyword_on) (keyword_server) (keyword_add) (keyword_event) (event_session_event (object_reference (identifier) (identifier)))))))
+
+==================
+gap-forms/xe/alter-option - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER EVENT SESSION s ON SERVER WITH (MAX_MEMORY=4096 KB);
+
+---
+
+(program (batch (statement (alter_event_session (keyword_alter) (keyword_event) (keyword_session) (identifier) (keyword_on) (keyword_server) (with_options (keyword_with) (option (identifier) (literal) (identifier)))))))
+
+==================
+gap-forms/original/event-alter-empty - LocalDB 17.0.1000.7 levels 100-170: rejects 102; checked by constraints
+==================
+
+ALTER EVENT SESSION s ON SERVER;
+
+
+---
+
+(program (batch (statement (alter_event_session (keyword_alter) (keyword_event) (keyword_session) (identifier) (keyword_on) (keyword_server)))))
+
+==================
+gap-forms/route/create-address - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE ROUTE r WITH ADDRESS='LOCAL';
+
+---
+
+(program (batch (statement (create_route (keyword_create) (keyword_route) (identifier) (with_clause (keyword_with) (option (identifier) (literal)))))))
+
+==================
+gap-forms/original/route-38 - LocalDB 17.0.1000.7 levels 100-170: rejects 102; checked by constraints
+==================
+
+CREATE ROUTE r WITH LIFETIME = 60;
+
+
+---
+
+(program (batch (statement (create_route (keyword_create) (keyword_route) (identifier) (with_clause (keyword_with) (option (identifier) (literal)))))))
+
+==================
+gap-forms/cache/binary - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE 0x1234;
+
+---
+
+(program (batch (statement (alter_database (keyword_alter) (keyword_database) (keyword_scoped) (keyword_configuration) (keyword_clear) (keyword_procedure_cache) (literal)))))
+
+==================
+gap-forms/cache/var - LocalDB 17.0.1000.7 levels 100-170: rejects 102; checked by constraints
+==================
+
+DECLARE @h varbinary(64); ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE @h;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (varbinary (keyword_varbinary) (literal))))) (statement (alter_database (keyword_alter) (keyword_database) (keyword_scoped) (keyword_configuration) (keyword_clear) (keyword_procedure_cache) (identifier)))))
+
+==================
+gap-forms/window/current - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT MAX(a) OVER (ORDER BY id RANGE CURRENT ROW) FROM t;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (window_function (invocation (object_reference (identifier)) (term (field (identifier)))) (keyword_over) (window_specification (order_by (keyword_order) (keyword_by) (order_target (field (identifier)))) (window_frame (keyword_range) (frame_definition (keyword_current) (keyword_row)))))))) (from (keyword_from) (relation (object_reference (identifier))))))))
+
+==================
+gap-forms/original/window-range-follow-short - LocalDB 17.0.1000.7 levels 100-170: rejects 102; checked by constraints
+==================
+
+SELECT MAX(a) OVER (ORDER BY id RANGE UNBOUNDED FOLLOWING) FROM dbo.t;
+
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (window_function (invocation (object_reference (identifier)) (term (field (identifier)))) (keyword_over) (window_specification (order_by (keyword_order) (keyword_by) (order_target (field (identifier)))) (window_frame (keyword_range) (frame_definition (keyword_unbounded) (keyword_following)))))))) (from (keyword_from) (relation (object_reference (identifier) (identifier))))))))
+
+==================
+gap-forms/index/rebuild-all - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER INDEX ix ON dbo.t REBUILD PARTITION=ALL WITH (DATA_COMPRESSION=PAGE ON PARTITIONS(1 TO 3));
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) (identifier) (keyword_on) (object_reference (identifier) (identifier)) (keyword_rebuild) (keyword_partition) (keyword_all) (with_options (keyword_with) (option (identifier) (identifier) (keyword_on) (keyword_partitions) (truncate_partition_range (literal) (keyword_to) (literal))))))))
+
+==================
+gap-forms/original/ddl-table/index-partition-range - LocalDB 17.0.1000.7 levels 100-170: rejects 10737; checked by constraints
+==================
+
+ALTER INDEX ix ON dbo.t REBUILD WITH (DATA_COMPRESSION = PAGE ON PARTITIONS (1 TO 3, 5));
+
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) (identifier) (keyword_on) (object_reference (identifier) (identifier)) (keyword_rebuild) (with_options (keyword_with) (option (identifier) (identifier) (keyword_on) (keyword_partitions) (truncate_partition_range (literal) (keyword_to) (literal)) (truncate_partition_range (literal))))))))
+
+==================
+gap-forms/partition/maxdop - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER INDEX ix ON dbo.t REBUILD WITH(MAXDOP=2,DATA_COMPRESSION=PAGE ON PARTITIONS(1,3 TO 5));
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) (identifier) (keyword_on) (object_reference (identifier) (identifier)) (keyword_rebuild) (with_options (keyword_with) (option (identifier) (literal)) (option (identifier) (identifier) (keyword_on) (keyword_partitions) (truncate_partition_range (literal)) (truncate_partition_range (literal) (keyword_to) (literal))))))))
+
+==================
+gap-forms/partition/data - LocalDB 17.0.1000.7 levels 100-170: rejects 10737; checked by constraints
+==================
+
+ALTER INDEX ix ON dbo.t REBUILD WITH(DATA_COMPRESSION=PAGE ON PARTITIONS(1,3 TO 5));
+
+---
+
+(program (batch (statement (alter_index (keyword_alter) (keyword_index) (identifier) (keyword_on) (object_reference (identifier) (identifier)) (keyword_rebuild) (with_options (keyword_with) (option (identifier) (identifier) (keyword_on) (keyword_partitions) (truncate_partition_range (literal)) (truncate_partition_range (literal) (keyword_to) (literal))))))))
+
+==================
+gap-forms/maxdop/32767 - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT * FROM t OPTION(MAXDOP 32767);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (object_reference (identifier))))) (option_clause (keyword_option) (query_hint (identifier) (literal))))))
+
+==================
+gap-forms/maxdop/32768 - LocalDB 17.0.1000.7 levels 100-170: rejects 304; checked by constraints
+==================
+
+SELECT * FROM t OPTION(MAXDOP 32768);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (object_reference (identifier))))) (option_clause (keyword_option) (query_hint (identifier) (literal))))))
+
+==================
+gap-forms/blocks/nonempty - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+BEGIN; SELECT 1; END;
+
+---
+
+(program (batch (block (keyword_begin) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end))))
+
+==================
+gap-forms/blocks/empty - LocalDB 17.0.1000.7 levels 100-170: rejects 102; checked by constraints
+==================
+
+BEGIN /* 한글 */ ;; END;
+
+---
+
+(program (batch (block (keyword_begin) (marginalia) (keyword_end))))
+
+==================
+gap-forms/blocks/try-catch - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+BEGIN TRY SELECT 1; END TRY BEGIN CATCH END CATCH;
+
+---
+
+(program (batch (statement (try_catch_statement (try_block (keyword_begin) (keyword_try) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end) (keyword_try)) (catch_block (keyword_begin) (keyword_catch) (keyword_end) (keyword_catch))))))
+
+==================
+gap-forms/blocks/empty-try - LocalDB 17.0.1000.7 levels 100-170: rejects 102; checked by constraints
+==================
+
+BEGIN TRY END TRY BEGIN CATCH SELECT 1; END CATCH;
+
+---
+
+(program (batch (statement (try_catch_statement (try_block (keyword_begin) (keyword_try) (keyword_end) (keyword_try)) (catch_block (keyword_begin) (keyword_catch) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end) (keyword_catch))))))
+
+==================
+gap-forms/comparison/231 - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 WHERE 1 < = 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (literal)))) (where (keyword_where) (binary_expression (literal) (literal)))))))
+
+==================
+gap-forms/comparison/233 - LocalDB 17.0.1000.7 levels 100-170: rejects 102; checked by constraints
+==================
+
+SELECT 1 WHERE 1 <x= 2;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (literal)))) (where (keyword_where) (binary_expression (binary_expression (literal) (field (identifier))) (literal)))))))
+
+==================
+gap-forms/escape/scalar - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT 1 WHERE x LIKE 'a' ESCAPE '!';
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (literal)))) (where (keyword_where) (binary_expression (binary_expression (field (identifier)) (keyword_like) (literal)) (keyword_escape) (literal)))))))
+
+==================
+gap-forms/escape/comparison - LocalDB 17.0.1000.7 levels 100-170: rejects 102; checked by constraints
+==================
+
+SELECT 1 WHERE x LIKE 'a' ESCAPE e = '!';
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (literal)))) (where (keyword_where) (binary_expression (binary_expression (field (identifier)) (keyword_like) (literal)) (keyword_escape) (binary_expression (field (identifier)) (literal))))))))
+
+==================
+gap-forms/arity/COALESCE-3 - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT COALESCE(a,b) FROM dbo.t;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (invocation (object_reference (identifier)) (term (field (identifier))) (term (field (identifier))))))) (from (keyword_from) (relation (object_reference (identifier) (identifier))))))))
+
+==================
+gap-forms/arity/COALESCE-1 - LocalDB 17.0.1000.7 levels 100-170: rejects 102; checked by constraints
+==================
+
+SELECT COALESCE(a) FROM dbo.t;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (invocation (object_reference (identifier)) (term (field (identifier))))))) (from (keyword_from) (relation (object_reference (identifier) (identifier))))))))
+
+==================
+gap-forms/external/format-parquet - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE EXTERNAL FILE FORMAT f WITH (FORMAT_TYPE=PARQUET);
+
+---
+
+(program (batch (statement (create_external_file_format (keyword_create) (keyword_external) (keyword_file) (keyword_format) (identifier) (with_options (keyword_with) (option (identifier) (identifier)))))))
+
+==================
+gap-forms/external/format-json - LocalDB 17.0.1000.7 levels 100-170: rejects 102; checked by constraints
+==================
+
+CREATE EXTERNAL FILE FORMAT f WITH (FORMAT_TYPE=JSON);
+
+---
+
+(program (batch (statement (create_external_file_format (keyword_create) (keyword_external) (keyword_file) (keyword_format) (identifier) (with_options (keyword_with) (option (identifier) (identifier)))))))
+
+==================
+gap-forms/json/fillfactor - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE JSON INDEX ix ON dbo.t(j) WITH(FILLFACTOR=80);
+
+---
+
+(program (batch (statement (create_index (keyword_create) (identifier) (keyword_index) (identifier) (keyword_on) (object_reference (identifier) (identifier)) (ordered_columns (column (identifier))) (with_options (keyword_with) (option (identifier) (literal)))))))
+
+==================
+gap-forms/json/online - LocalDB 17.0.1000.7 levels 100-170: rejects 1712/153; checked by constraints
+==================
+
+CREATE JSON INDEX ix ON dbo.t(j) WITH(ONLINE=ON);
+
+---
+
+(program (batch (statement (create_index (keyword_create) (identifier) (keyword_index) (identifier) (keyword_on) (object_reference (identifier) (identifier)) (ordered_columns (column (identifier))) (with_options (keyword_with) (option (identifier) (keyword_on)))))))
+
+==================
+gap-forms/table/history-two - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER TABLE dbo.t SET (SYSTEM_VERSIONING=ON(HISTORY_TABLE=dbo.hist));
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference (identifier) (identifier)) (keyword_set) (option (identifier) (keyword_on) (option (identifier) (object_reference (identifier) (identifier))))))))
+
+==================
+gap-forms/table/history-one - LocalDB 17.0.1000.7 levels 100-170: rejects 13539; checked by constraints
+==================
+
+ALTER TABLE dbo.t SET (SYSTEM_VERSIONING=ON(HISTORY_TABLE=hist));
+
+---
+
+(program (batch (statement (alter_table (keyword_alter) (keyword_table) (object_reference (identifier) (identifier)) (keyword_set) (option (identifier) (keyword_on) (option (identifier) (identifier)))))))
+
+==================
+gap-forms/index/tablevar-row - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @t TABLE (a int, INDEX ix NONCLUSTERED(a));
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (table_var_declaration (identifier) (keyword_table) (column_definitions (column_definition (identifier) (keyword_int)) (constraint (keyword_index) (identifier) (keyword_nonclustered) (ordered_columns (column (identifier))))))))))
+
+==================
+gap-forms/index/tablevar-columnstore - LocalDB 17.0.1000.7 levels 100-170: rejects 35310; checked by constraints
+==================
+
+DECLARE @t TABLE (a int, INDEX ix CLUSTERED COLUMNSTORE);
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (table_var_declaration (identifier) (keyword_table) (column_definitions (column_definition (identifier) (keyword_int)) (constraint (keyword_index) (identifier) (keyword_clustered) (keyword_columnstore))))))))
+
+==================
+gap-forms/index/column-row - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @t TABLE (a int PRIMARY KEY WITH (DATA_COMPRESSION=ROW));
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (table_var_declaration (identifier) (keyword_table) (column_definitions (column_definition (identifier) (keyword_int) (keyword_primary) (keyword_key) (with_options (keyword_with) (option (identifier) (identifier))))))))))
+
+==================
+gap-forms/index/column-columnstore - LocalDB 17.0.1000.7 levels 100-170: rejects 10798; checked by constraints
+==================
+
+DECLARE @t TABLE (a int PRIMARY KEY WITH (DATA_COMPRESSION=COLUMNSTORE));
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (table_var_declaration (identifier) (keyword_table) (column_definitions (column_definition (identifier) (keyword_int) (keyword_primary) (keyword_key) (with_options (keyword_with) (option (identifier) (identifier))))))))))
+
+==================
+gap-forms/index/column-delay - LocalDB 17.0.1000.7 levels 100-170: rejects 122; checked by constraints
+==================
+
+DECLARE @t TABLE (a int PRIMARY KEY WITH (COMPRESSION_DELAY=0));
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (table_var_declaration (identifier) (keyword_table) (column_definitions (column_definition (identifier) (keyword_int) (keyword_primary) (keyword_key) (with_options (keyword_with) (option (identifier) (literal))))))))))
+
+==================
+gap-forms/select/variable - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @a int; SELECT @a=1;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (query_specification (select (keyword_select) (select_expression (term (binary_expression (field (identifier)) (literal)))))))))
+
+==================
+gap-forms/select/alias - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SELECT total = t.c3*2 FROM dbo.t AS t;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (binary_expression (field (identifier)) (binary_expression (field (object_reference (identifier)) (identifier)) (literal)))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)) (keyword_as) (identifier)))))))
+
+==================
+gap-forms/select/boolean - LocalDB 17.0.1000.7 levels 100-170: rejects 102; checked by constraints
+==================
+
+SELECT 1=1;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (binary_expression (literal) (literal)))))))))
+
+==================
+gap-forms/commit/declared-off - LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @t varchar(32); COMMIT TRANSACTION @t WITH(DELAYED_DURABILITY=OFF);
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (varchar (keyword_varchar) (literal))))) (statement (commit_statement (keyword_commit) (keyword_transaction) (identifier) (with_options (keyword_with) (option (identifier) (keyword_off)))))))

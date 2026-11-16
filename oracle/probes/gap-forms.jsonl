@@ -1,0 +1,349 @@
+{"id":"gap-forms/original/hint-schema-on-table","sha256":"d845dd45cb2f32bf4c65cf3e8bfd560cea1d581d9fa3acb524c1db056090ac77","source":"SELECT * FROM dbo.t WITH (a int);"}
+{"id":"gap-forms/original/hint-schema-on-udf","sha256":"ac557e0072649d3dbf1133b9d42d5b0a03b783d451fdba5928d1ccd263c22387","source":"SELECT * FROM dbo.f() WITH (a int);"}
+{"id":"gap-forms/original/apply-schema-on-udf","sha256":"389a8310b9536c26b0bdedf3180de14c2d52a53bf4c6f6c9033f6ed72d5314d7","source":"SELECT * FROM dbo.t CROSS APPLY dbo.f() WITH (a int) AS f;"}
+{"id":"gap-forms/original/qi-on-contains-search","sha256":"43f836269ad32501eb1ad08b5041dfa69fa58ce0fb66c3947036f17432aa8be8","source":"SET QUOTED_IDENTIFIER ON; SELECT 1 WHERE CONTAINS(a, \"apple\");\n"}
+{"id":"gap-forms/original/qi-on-freetext-search","sha256":"20bde4bbf2a4fb0a793f7eb48f665390e8d6da74283df5a90f952103f06fb719","source":"SET QUOTED_IDENTIFIER ON; SELECT 1 WHERE FREETEXT(a, \"apple\");\n"}
+{"id":"gap-forms/original/qi-on-property","sha256":"034f45c9661917a71656b0343237ef478efbbf6ed0b27d461efc2c8d76e4ff03","source":"SET QUOTED_IDENTIFIER ON; SELECT 1 WHERE CONTAINS(PROPERTY(a, \"title\"), 'apple');\n"}
+{"id":"gap-forms/original/security-12","sha256":"80d993dff1a4ae2868f7a9eb2d51d6f9cd183574cba0558fafb1fbe40ae92e4b","source":"ALTER SECURITY POLICY dbo.p WITH (SCHEMABINDING = OFF);\n"}
+{"id":"gap-forms/original/security-13","sha256":"522f3c16b39c40d5016e73245d81eb85bddf4b74a8989dd1d90105033c38fb21","source":"ALTER SECURITY POLICY dbo.p WITH (STATE = OFF, SCHEMABINDING = OFF);\n"}
+{"id":"gap-forms/original/event-17","sha256":"03149739eda3d6b823ede96b10b42963eebeb21818639095dbc10c6fce692241","source":"CREATE EVENT SESSION s ON SERVER ADD EVENT sqlserver..lock_deadlock;\n"}
+{"id":"gap-forms/original/event-19","sha256":"d942bb286e9eb088302a737a8c756d29b16c2c7313297d855709950192bf9d06","source":"CREATE EVENT SESSION s ON SERVER ADD EVENT server.db.sqlserver.lock_deadlock;\n"}
+{"id":"gap-forms/original/target-20","sha256":"c0e5e6d462d274d442337c53a4183a840d63a48484f982d7e736dcff5e39e5f6","source":"CREATE EVENT SESSION s ON SERVER ADD TARGET package0.ring_buffer;\n"}
+{"id":"gap-forms/original/target-21","sha256":"feb2defa81b1039a7afcb1cb4ab3af20c5302d189aaeb4f52b39e5ce33e84014","source":"CREATE EVENT SESSION s ON SERVER ADD TARGET ring_buffer;\n"}
+{"id":"gap-forms/original/target-22","sha256":"9ed39c99d25ac53f677eef9c57f1f0e4a14a077212f34164c935435e82067b86","source":"CREATE EVENT SESSION s ON SERVER ADD TARGET package0..ring_buffer;\n"}
+{"id":"gap-forms/original/action-25","sha256":"fefc13d5041f9807cff572c5531a64a775a1c4031f711a17a49c2e9d3a24cada","source":"CREATE EVENT SESSION s ON SERVER ADD EVENT sqlserver.lock_deadlock(ACTION(sqlserver..sql_text));\n"}
+{"id":"gap-forms/original/route-38","sha256":"7f78dd40116983828eb80cae9907e8cf85d2e368c68bc2957303030da78d3ed0","source":"CREATE ROUTE r WITH LIFETIME = 60;\n"}
+{"id":"gap-forms/original/route-43","sha256":"ee186f0b2c785c2223e0a0e6a22ebe8e84f05ba15e8de9d902670351f3892cff","source":"CREATE ROUTE r WITH ADDRESS = 'LOCAL', ADDRESS = 'LOCAL';\n"}
+{"id":"gap-forms/original/route-49","sha256":"799823f2a47a68b6718d8a5ed276000ddc3dc3800007166e0449c4432b531735","source":"ALTER ROUTE r WITH ADDRESS = 'LOCAL', ADDRESS = 'LOCAL';\n"}
+{"id":"gap-forms/original/rowset-70","sha256":"668dd3fa41805f21f7ee69b4ad8abc206c7299a244b65f70ac8a73acfbb98cd9","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM PREDICT(MODEL = @model, DATA = dbo.t AS d)  AS x;\n"}
+{"id":"gap-forms/original/event-alter-empty","sha256":"58e823a508a8a8b9711e495933deb7ea76d31233f7ecf67ef1ecc1df8c883933","source":"ALTER EVENT SESSION s ON SERVER;\n"}
+{"id":"gap-forms/original/event-create-target-only","sha256":"c0e5e6d462d274d442337c53a4183a840d63a48484f982d7e736dcff5e39e5f6","source":"CREATE EVENT SESSION s ON SERVER ADD TARGET package0.ring_buffer;\n"}
+{"id":"gap-forms/original/event-create-with-only","sha256":"420660c29580a5c85ddbfbdc2ae66e3697cfe7ebc68a6982b97b9aed42da9c08","source":"CREATE EVENT SESSION s ON SERVER WITH (MAX_MEMORY = 4096 KB);\n"}
+{"id":"gap-forms/original/provider-column-OPENXML-1","sha256":"18f2c30fdeb4586269326c3958232784b6d592e62beb9a6f7debb97405bc5645","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENXML(@idoc, '/r', 2) WITH (id int AS JSON) AS r;\n"}
+{"id":"gap-forms/original/provider-column-OPENXML-2","sha256":"3776b1c4f19bf049da7ee04099e13c0a14a53e15048eab7f8ad65c79804f5f34","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM OPENXML(@idoc, '/r', 2) WITH (id int NULL) AS r;\n"}
+{"id":"gap-forms/original/provider-column-PREDICT-0","sha256":"c4d108edea5af4210f2ef5df61e6f0c0484dffe2e01fb26ab0315b15a1f59067","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM PREDICT(MODEL=@model, DATA=dbo.t AS d) WITH (id int '$.id') AS r;\n"}
+{"id":"gap-forms/original/provider-column-PREDICT-1","sha256":"d0efcc1dddcc70a87e5f6f2b6d0cdddc606622e8da2bb584abc81c031aee09a0","source":"DECLARE @idoc int, @model varbinary(max); SELECT * FROM PREDICT(MODEL=@model, DATA=dbo.t AS d) WITH (id int AS JSON) AS r;\n"}
+{"id":"gap-forms/original/delete-bare-tablock","sha256":"caec5e825b58b28fe9ed83ae09275c2ec9926a7884acf087c33757c00864d6b7","source":"DELETE FROM dbo.t (TABLOCK);\n"}
+{"id":"gap-forms/original/update-bare","sha256":"d47fc4019ef365de6e4bdb82f5dd56c84775def16da1db04cd44878c26b45ce1","source":"UPDATE dbo.t (TABLOCK) SET a=1;\n"}
+{"id":"gap-forms/original/cache-int","sha256":"0362df9d528c5b356a39b810b26b5a215d74ca9a1b3d0a729958a43c1cb1ecd2","source":"DECLARE @h varbinary(64); ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE 1;\n"}
+{"id":"gap-forms/original/cache-string","sha256":"607ebd2f88ec73c03242083e8a79063fee1121f857900a173aad6637097b6d12","source":"DECLARE @h varbinary(64); ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE '0x1234';\n"}
+{"id":"gap-forms/original/cache-variable","sha256":"a24118408cf2de09c02e21cb16090292cc48d2f9aeb07386e4f48fea8e8ff229","source":"DECLARE @h varbinary(64); ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE @h;\n"}
+{"id":"gap-forms/original/cache-null","sha256":"691c91902a6e7fe3a47253b855b4461826bfd2e196d2508698c11b0d0e591e89","source":"DECLARE @h varbinary(64); ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE NULL;\n"}
+{"id":"gap-forms/original/window-range-follow-short","sha256":"c70f75abd481a490dccda9ae6e1ecad6bec3c7eec267862693308dcecfb6fc38","source":"SELECT MAX(a) OVER (ORDER BY id RANGE UNBOUNDED FOLLOWING) FROM dbo.t;\n"}
+{"id":"gap-forms/original/merge-bare","sha256":"6ba53d9734f30b91b483624e1f209b7c2db826801715bbbdcf9c84105f8cb8c8","source":"MERGE dbo.t (TABLOCK) t USING dbo.s s ON t.id=s.id WHEN MATCHED THEN UPDATE SET a=1;\n"}
+{"id":"gap-forms/original/delete-openquery-string","sha256":"e3d503cd6c2485dbed668d97bc0c76e158d49a72c77532ec24728e43b283ab52","source":"DELETE FROM OPENQUERY('TSGK_149_UNDEFINED_LINK', 'SELECT a FROM t');\n"}
+{"id":"gap-forms/original/delete-openquery-variable","sha256":"52bb8584f0f2b5341183a842f8232f35030170eb9eab760e4a139666acf069fa","source":"DELETE FROM OPENQUERY(@link, 'SELECT a FROM t');\n"}
+{"id":"gap-forms/original/delete-openquery-extra","sha256":"11a929de346ecc0aeafeff5ab84c72810363969c80f4ee3a2808d5a6f1f952a5","source":"DELETE FROM OPENQUERY([TSGK_149_UNDEFINED_LINK], 'SELECT a FROM t', 1);\n"}
+{"id":"gap-forms/original/delete-openrowset-bulk","sha256":"b0e92975293b164eb694e653bfe8300b608aa95950954e9b2e9fb1333b9927c0","source":"DELETE FROM OPENROWSET(BULK 'TSGK_149_UNUSED', SINGLE_BLOB);\n"}
+{"id":"gap-forms/original/delete-target-arg-2","sha256":"11d205659d4ad9fc39b1049e72ed2493c6c8a5176435d2b20684cb1bd7f8fca1","source":"DECLARE @a int=1; DELETE FROM dbo.f(a);\n"}
+{"id":"gap-forms/original/delete-target-arg-4","sha256":"0815e1affc0bbacaadd3e7465d19a58ff47bb70353d8b7f0c6ef49bd014650a8","source":"DECLARE @a int=1; DELETE FROM dbo.f(TABLOCK);\n"}
+{"id":"gap-forms/original/delete-target-arg-5","sha256":"2a07eb930b0eac54cf1f4dfe48a5e7120dc147fdc915de53e55b1280d565fb1a","source":"DECLARE @a int=1; DELETE FROM dbo.f(1+2);\n"}
+{"id":"gap-forms/original/delete-target-arg-6","sha256":"6f67434fd520e8bb1bb454d623f4690f6eeb8efdd35f8f042b4afb4a1af44afc","source":"DECLARE @a int=1; DELETE FROM dbo.f((1));\n"}
+{"id":"gap-forms/original/update-target-arg-9","sha256":"f1445f399b6ce066465743bf65eedc7feb1b83dbaf2c7e3169c3e66408ab4e9b","source":"DECLARE @a int=1; UPDATE dbo.f(a) SET a=1;\n"}
+{"id":"gap-forms/original/update-target-arg-11","sha256":"ef1eadc91b5f40cf7f30209285b02bf05095731dcb39c9da6057e835a2e0fca5","source":"DECLARE @a int=1; UPDATE dbo.f(TABLOCK) SET a=1;\n"}
+{"id":"gap-forms/original/update-target-arg-12","sha256":"1cd344d2de01888a7b585ec2a3aac79da51c574ee805a0db23990f53aab35e00","source":"DECLARE @a int=1; UPDATE dbo.f(1+2) SET a=1;\n"}
+{"id":"gap-forms/original/update-target-arg-13","sha256":"773ba466e871018efb08c4167046799c024ef37f3a45e3dd38901318dd32372a","source":"DECLARE @a int=1; UPDATE dbo.f((1)) SET a=1;\n"}
+{"id":"gap-forms/original/delete-g-target-arg-5","sha256":"42554bbf8bb34bbb7c1893a92585a855ccc53404d019963fe1468ba6b1b58003","source":"DECLARE @a int=1; DELETE FROM dbo.g(@@SPID);\n"}
+{"id":"gap-forms/original/delete-g-target-arg-6","sha256":"ca14e70db88ef85c522d65701c1a6926da4ef289d92f7f6eb9ea13cbb7127428","source":"DECLARE @a int=1; DELETE FROM dbo.g(CURRENT_TIMESTAMP);\n"}
+{"id":"gap-forms/original/delete-g-target-arg-7","sha256":"14fb4f4db55e0db84e54662d07a23327a4124c184ac394382fbf793d38d0da5f","source":"DECLARE @a int=1; DELETE FROM dbo.g(GETDATE());\n"}
+{"id":"gap-forms/original/delete-g-target-arg-8","sha256":"0b3e28b18b4969cbdde2952c6e54cc8b1c28c56fd08dea3c957d93272378e17f","source":"DECLARE @a int=1; DELETE FROM dbo.g(CAST(1 AS int));\n"}
+{"id":"gap-forms/original/update-g-target-arg-14","sha256":"ef70df2219da2a04edfb88a1e867aeaa7bf8a744f21b514dda1f213195b681b7","source":"DECLARE @a int=1; UPDATE dbo.g(@@SPID) SET a=1;\n"}
+{"id":"gap-forms/original/update-g-target-arg-15","sha256":"862fa84fcd05a3e2d6cf5f0578c85b0e5bb81e2e79b28f86f7fba41d5e070ba0","source":"DECLARE @a int=1; UPDATE dbo.g(CURRENT_TIMESTAMP) SET a=1;\n"}
+{"id":"gap-forms/original/update-g-target-arg-16","sha256":"2e870cc19bf17a5ad81134f0c9b4c1e11fdb9aaf004f7c1bb6eafeb3ce86b254","source":"DECLARE @a int=1; UPDATE dbo.g(GETDATE()) SET a=1;\n"}
+{"id":"gap-forms/original/update-g-target-arg-17","sha256":"22ceccfd0aa0a70d2b85dc93061e65cd69455a89842f317411462e6802dcfb5d","source":"DECLARE @a int=1; UPDATE dbo.g(CAST(1 AS int)) SET a=1;\n"}
+{"id":"gap-forms/original/delete-g-plus","sha256":"8a3150c69ae8b7b7965b6e228f96340e5ce2edfdc56a0bfbba4f7897d2a0e4e3","source":"DELETE FROM dbo.g(+1);\n"}
+{"id":"gap-forms/original/update-g-plus","sha256":"80b9b1e4ed38dc45bba568d3e8ec0033c5e60b58179430fdf999f546ad2f07b7","source":"UPDATE dbo.g(+1) SET a=1;\n"}
+{"id":"gap-forms/original/exec-plus","sha256":"c9e2001844ecf0ac3486090faeaef6979d72300c8b8e79927f5f5a7b54d90e90","source":"EXEC dbo.p +1;\n"}
+{"id":"gap-forms/original/issue150-column-bare","sha256":"ca75da2ee25922335392c04dcd85bb8c0a7bbb34a30ab28c4b350c2af40e49d8","source":"SELECT TABLE FROM dbo.t;\n"}
+{"id":"gap-forms/original/issue150-table-bare","sha256":"834736f11135b43d9e763270f6bb80b10ffacedb360b6791befc910de2a31125","source":"SELECT * FROM TABLE;\n"}
+{"id":"gap-forms/original/issue150-table-function","sha256":"8875b16f3b8765f3afea171c051b2dd650c3e96ddcd21e310c008fa330c55468","source":"SELECT TABLE(1);\n"}
+{"id":"gap-forms/original/issue150-table-qualified-bare","sha256":"1bf7726fca4a4a998a0a8495dbcdd1168729b39c9ef1c8f8ded2e4f2910b8f10","source":"SELECT * FROM dbo.TABLE;\n"}
+{"id":"gap-forms/original/issue150-table-qualified-function","sha256":"2e5725b435dcbe0c1f3b07903b6cf4a22d3de8368fbbfb36a7fc8aeb1ce06963","source":"SELECT dbo.TABLE(1);\n"}
+{"id":"gap-forms/original/issue150-xml-alter-2","sha256":"c0ff97678ccdabc9ecb6555fe4adfba9fb595d3698c332362a32c816fdda800f","source":"ALTER XML SCHEMA COLLECTION db1.dbo.x ADD N'<x/>';\n"}
+{"id":"gap-forms/original/issue150-xml-alter-4","sha256":"e58fbdd01b3c86ab795702e0b934dc52978941af7bc4ec363cbc419b5109187c","source":"ALTER XML SCHEMA COLLECTION dbo..x ADD N'<x/>';\n"}
+{"id":"gap-forms/original/issue150-xml-create-2","sha256":"fad38daf60c531b3d8653537238c0cf59eb4a04a5f5239bbf4facfb31e590867","source":"CREATE XML SCHEMA COLLECTION db1.dbo.x AS N'<x/>';\n"}
+{"id":"gap-forms/original/issue150-xml-create-4","sha256":"18416f75b7d3db1a2051d81fdf054db8a34d9000d0ed7f666c4d249e1f3c881a","source":"CREATE XML SCHEMA COLLECTION dbo..x AS N'<x/>';\n"}
+{"id":"gap-forms/original/issue150-xml-drop-2","sha256":"0b4d417b0a2d9818eb368d86a0ed140b3571f9f1840d1d4bd2ce8a04f38db7d6","source":"DROP XML SCHEMA COLLECTION db1.dbo.x;\n"}
+{"id":"gap-forms/original/issue150-xml-drop-4","sha256":"f363682bcb0c53a5c684f91d0deb80b388795fa43931d6b670d83e427b077a08","source":"DROP XML SCHEMA COLLECTION dbo..x;\n"}
+{"id":"gap-forms/original/issue150-xml-drop-if","sha256":"824c801a701fbd4e949432aa59456a8b076a5f425f6e9044ef730f215604f153","source":"DROP XML SCHEMA COLLECTION IF EXISTS dbo.x;\n"}
+{"id":"gap-forms/original/issue150-xml-drop-three-part","sha256":"0b4d417b0a2d9818eb368d86a0ed140b3571f9f1840d1d4bd2ce8a04f38db7d6","source":"DROP XML SCHEMA COLLECTION db1.dbo.x;\n"}
+{"id":"gap-forms/original/issue150-lock-escalation-bracket","sha256":"e62242ddbbd1b7481cd460456d769f4e8cd0b9209112be5f0cda93a9910c4865","source":"ALTER TABLE dbo.t SET ([LOCK_ESCALATION] = TABLE);\n"}
+{"id":"gap-forms/original/issue150-lock-escalation-other","sha256":"c842280c7f4d6f1824dc033118a122127cd43365f55cdd7d61d864699956eb10","source":"ALTER TABLE dbo.t SET (OTHER_OPTION = TABLE);\n"}
+{"id":"gap-forms/original/issue150-lock-escalation-select","sha256":"09a1b93bd67d075a674e1e80bbc21792f976e8b9f13de464c89e2f095ccd4c0f","source":"SELECT LOCK_ESCALATION = TABLE FROM dbo.t;\n"}
+{"id":"gap-forms/original/context/trig-db-not_an_event","sha256":"bfdc395acf4d83c4022c52691892666b6e0844b4b340247ddb21b9cda169a5e6","source":"CREATE TRIGGER tr ON DATABASE FOR NOT_AN_EVENT AS RETURN;"}
+{"id":"gap-forms/original/context/trig-srv-not_an_event","sha256":"78607c56c0c72751f6221f9f01d448fcba8e8b6a7b6a56fe325d9c8b88794296","source":"CREATE TRIGGER tr ON ALL SERVER FOR NOT_AN_EVENT AS RETURN;"}
+{"id":"gap-forms/original/context/count-bracket-two","sha256":"d7fab5a40429e548fef5d00ab24b57aafa9ec00c84ea18f1dcf2df8ab1936d62","source":"SELECT [COUNT](a, b) FROM dbo.t;"}
+{"id":"gap-forms/original/context/arity-coalesce-0","sha256":"8094d8893a5fe9d939e502f600cee41f36e0823bf6da5fd5cb1f0f6912af8533","source":"SELECT COALESCE() FROM dbo.t;"}
+{"id":"gap-forms/original/context/arity-coalesce-1","sha256":"e357f11deb83c8e9eced311ce3f698654cd77b24e76c73a7a9ee6542b749bd36","source":"SELECT COALESCE(a) FROM dbo.t;"}
+{"id":"gap-forms/original/ddl-rest/permission-new-permission-words","sha256":"bd75735f06519cc64ac8a65ee02034d7eea16e87822f745361240e02b6a8f6d9","source":"GRANT CREATE APPLICATION ROLE, ALTER ANY DATABASE SCOPED CREDENTIAL, ALTER ANY REMOTE SERVICE BINDING TO u;\n"}
+{"id":"gap-forms/original/ddl-rest/permission-unknown-permission","sha256":"dbafc1d7ad6f006feb5a450fb4369868eb9538e06e74a51d714725c6b03faa4d","source":"GRANT NONEXISTENT PERMISSION TO u;\n"}
+{"id":"gap-forms/original/ddl-rest/commit-off","sha256":"a304898c7cb79d573a4cb011fe05651380a0784086228c510a375bcbf4254c13","source":"COMMIT TRANSACTION @t WITH (DELAYED_DURABILITY = OFF);\n"}
+{"id":"gap-forms/original/ddl-table/system-versioning-year","sha256":"62bfc2e7428104b2cc9867be68568842004002e56bd23c7ead6e70716caad64e","source":"ALTER TABLE dbo.t SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = db.dbo.hist, HISTORY_RETENTION_PERIOD = 1 YEAR));\n"}
+{"id":"gap-forms/original/ddl-table/index-partition-range","sha256":"e4128adcf4c61a25fe7dacb6d080642007a8a987c6e7e9d44f798e74c86183e9","source":"ALTER INDEX ix ON dbo.t REBUILD WITH (DATA_COMPRESSION = PAGE ON PARTITIONS (1 TO 3, 5));\n"}
+{"id":"gap-forms/original/ddl-table/index-partition-reverse","sha256":"6c64706581fae20088533dfa633035920a35029d935d292151204be9358e4e34","source":"ALTER INDEX ix ON dbo.t REBUILD WITH (DATA_COMPRESSION = PAGE ON PARTITIONS (3 TO 1));\n"}
+{"id":"gap-forms/original/ddl-table/index-wrong-partition-option","sha256":"716085721a9e2da7471fac9dc17e25a2ae328719420ad1c49ef01552948693d6","source":"ALTER INDEX ix ON dbo.t REBUILD WITH (MAXDOP = 2 ON PARTITIONS (1));\n"}
+{"id":"gap-forms/original/ddl-table/plain-keyword-names","sha256":"bed92a3e61fa1979c0a0361ed318fa4de8b5eaeca3fed8fdb02769a20298b508","source":"CREATE TABLE dbo.t (generated int,hidden int,period int,content int,document int,fillfactor int);\n"}
+{"id":"gap-forms/original/ddl-table/create-duplicate-online","sha256":"0a05cd905253c96fe629be0987eeb0b19f062ae3428a31530c59641cede93e47","source":"CREATE TABLE dbo.t (id int) WITH (SYSTEM_VERSIONING = OFF, SYSTEM_VERSIONING = OFF);\n"}
+{"id":"gap-forms/original/ddl-table/xml-null-schema","sha256":"2fb4dfc127fb9eb49a93839fc45bb038759445160493deb26139166011d1b7a4","source":"ALTER TABLE dbo.t ALTER COLUMN c xml(NULL);\n"}
+{"id":"gap-forms/original/expr-forms/comparison/lteq-word","sha256":"42bb3f74da982e0820b0216f1e0c6a2001ef7d3b5f45387b0a5804f801e03542","source":"SELECT 1 WHERE 1 <x= 2;\n"}
+{"id":"gap-forms/original/expr-forms/comparison/gteq-word","sha256":"7058a81b0de9b5e2469339c556b58183f8178731b6b5fbeddf5d5d10c6f17dc0","source":"SELECT 1 WHERE 1 >x= 2;\n"}
+{"id":"gap-forms/original/expr-forms/comparison/ltgt-word","sha256":"62b8da37920de02b9eba3737114f0fe97535409255f5c9a8e83aed37f4cf36ef","source":"SELECT 1 WHERE 1 <x> 2;\n"}
+{"id":"gap-forms/original/expr-forms/static/comparison","sha256":"376e0292733e315aadad91cc1cf7ff7394b8e2f8bdbc7c5c1754968efbd6570a","source":"SELECT dbo.t::f(1) = 1;\n"}
+{"id":"gap-forms/original/hint-rules/merge-source-nolock","sha256":"39925c38670b0c07e38cf51706e2478275ed6bf9797d3ad82e108030e4f28fd5","source":"MERGE dbo.t AS t USING dbo.s WITH (NOLOCK) AS s ON 1 = 1 WHEN MATCHED THEN DELETE;"}
+{"id":"gap-forms/original/hint-rules/merge-source-index","sha256":"c10e34b7c745074a8ff70a943342b29dc8de599bb9f5935488c1ec7b4c0747f9","source":"MERGE dbo.t AS t USING dbo.s WITH (INDEX(ix)) AS s ON 1 = 1 WHEN MATCHED THEN DELETE;"}
+{"id":"gap-forms/original/kit-routes/tsql-r6-begin-empty-r1","sha256":"af376cc98e2a2dbc228a2c7cfaf593fea3b4c8b0135ca4a11089b7b912591f09","source":"SELECT 1 AS x;\nGO\nBEGIN; END\nGO\n"}
+{"id":"gap-forms/original/kit-routes/alt-tsql-V22-r008","sha256":"d5d86391d158879b27b99cac336c74f5c81b24bd29c1a957ab28c164316a97fe","source":"CREATE JSON INDEX jx4 ON dbo.t1 (j1) ON fg1;\nCREATE JSON INDEX jx5 ON dbo.t1 (j1) ON \"default\";\nCREATE JSON INDEX jx6 ON dbo.t1 (j1) WITH (ONLINE = OFF);\n"}
+{"id":"gap-forms/original/kit-routes/alt-tsql-V22-r018","sha256":"a786e2653a2f1b3e69297a5ca4275229a8b7c455496c89720d445b9de2745c30","source":"DECLARE @q VECTOR(3) = '[1, 2, 3]';\nSELECT r.distance FROM VECTOR_SEARCH(TABLE = dbo.docs AS t, COLUMN = v1, SIMILAR_TO = @q, METRIC = 'dot', TOP_N = 10) AS r;\nSELECT r.distance FROM VECTOR_SEARCH(TABLE = dbo.docs, COLUMN = v1, SIMILAR_TO = @q, METRIC = 'euclidean', TOP_N = 5) AS r;\n"}
+{"id":"gap-forms/original/kit-routes/alt-tsql-V16-r007","sha256":"729bd3be12e9d97f26403c2d3545d5fe5d15452b3a20ac3f8bebf39ffb85cf60","source":"CREATE EXTERNAL FILE FORMAT ff_json WITH (FORMAT_TYPE = JSON, DATA_COMPRESSION = 'org.apache.hadoop.io.compress.GzipCodec');\n"}
+{"id":"gap-forms/original/kit-routes/alt-tsql-B03-r075","sha256":"391abefbe517f033dcd1a5e43ffe0fdcbef9f70faee31f000320d8be503fbe03","source":"ALTER DATABASE SCOPED CONFIGURATION SET ALLOW_BUILTIN_TVF_IN_ALL_COMPAT_LEVELS = ON;\nALTER DATABASE SCOPED CONFIGURATION SET ALLOW_STALE_VECTOR_INDEX = ON;\n"}
+{"id":"gap-forms/original/kit-routes/alt-tsql-B03-r095","sha256":"dc3bc996cc5ab9dee4e1cd669c5049badd559f294bdf0ff68d40770bf592dbdf","source":"ALTER EXTERNAL DATA SOURCE ds5 SET LOCATION = 'hdfs://10.0.0.5:8020', RESOURCE_MANAGER_LOCATION = '10.0.0.5:8032';\n"}
+{"id":"gap-forms/original/kit-routes/alt-tsql-B03-r150","sha256":"b09812bd4d745f930646cd35c8a5a8d4ffb054eb979a54dd2c1b475ea6ccc001","source":"ALTER SERVER AUDIT au_main TO URL;\n"}
+{"id":"gap-forms/original/kit-routes/alt-tsql-B03-r167","sha256":"6ae02013b5ef0b5829b7a7f7912e332cb561e605ed4023d6f4c2a04c33d8c663","source":"ALTER TABLE dbo.Orders REBUILD WITH (OPTIMIZE_FOR_SEQUENTIAL_KEY = ON);\nALTER TABLE dbo.Orders REBUILD WITH (RESUMABLE = ON);\n"}
+{"id":"gap-forms/original/kit-routes/alt-tsql-B03-r233","sha256":"ceffc0b662404fedfca6984eb73032511b415128426e2e8590c661ce21ef91bf","source":"CREATE EXTERNAL FILE FORMAT ff7 WITH (FORMAT_TYPE = DELIMITEDTEXT, FORMAT_OPTIONS (FIELD_TERMINATOR = ',', PARSER_VERSION = '2.0'));\nCREATE EXTERNAL FILE FORMAT ff8 WITH (FORMAT_TYPE = RCFILE, SERDE_METHOD = 'org.apache.hadoop.hive.serde2.columnar.LazyBinaryColumnarSerDe');\nCREATE EXTERNAL FILE FORMAT ff9 WITH (FORMAT_TYPE = RCFILE, SERDE_METHOD = 'org.apache.hadoop.hive.serde2.columnar.ColumnarSerDe', DATA_COMPRESSION = 'org.apache.hadoop.io.compress.DefaultCodec');\n"}
+{"id":"gap-forms/original/kit-routes/alt-tsql-B03-r234","sha256":"b5ccfc4f03a4d63329a9c5612086ac196ce8911843c53397d36bdee4ca9a94bb","source":"CREATE EXTERNAL FILE FORMAT ff10 WITH (FORMAT_TYPE = JSON, DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec');\nCREATE EXTERNAL FILE FORMAT ff11 WITH (FORMAT_TYPE = JSON, DATA_COMPRESSION = 'org.apache.hadoop.io.compress.GzipCodec');\nCREATE EXTERNAL FILE FORMAT ff12 WITH (FORMAT_TYPE = JSON, DATA_COMPRESSION = 'org.apache.hadoop.io.compress.DefaultCodec');\n"}
+{"id":"gap-forms/original/kit-routes/alt-tsql-B03-r261","sha256":"621f9309d84fdacbc773a6ed3c22cbf2daa82bbff62a929fbc9ff3d12f801729","source":"CREATE SERVER AUDIT au7 TO URL WITH (RETENTION_DAYS = 10);\nCREATE SERVER AUDIT au8 TO EXTERNAL_MONITOR;\nCREATE SERVER AUDIT au9 TO APPLICATION_LOG WITH (OPERATOR_AUDIT = ON);\n"}
+{"id":"gap-forms/original/kit-routes/alt-tsql-B04-r040","sha256":"67464be148906da86b41b905ac5744f28a121f354967bd486f61ca3c41942ca1","source":"DECLARE @cs1 TABLE (a int, INDEX cci CLUSTERED COLUMNSTORE);\nDECLARE @cs2 TABLE (a int, b int, INDEX ncci NONCLUSTERED COLUMNSTORE (a, b));\n"}
+{"id":"gap-forms/original/kit-routes/alt-tsql-B04-r041","sha256":"06bdce2cb537154122276fddfa32362157e1a05cff5aaa069fec16fbfa1d2fc1","source":"DECLARE @co TABLE (\n  a int PRIMARY KEY WITH (COMPRESSION_DELAY = 0),\n  b int UNIQUE WITH (COMPRESSION_DELAY = 10 MINUTES),\n  c int UNIQUE WITH (DATA_COMPRESSION = COLUMNSTORE),\n  d int UNIQUE WITH (DATA_COMPRESSION = COLUMNSTORE_ARCHIVE)\n);\n"}
+{"id":"gap-forms/original/last-forms/escape-boolean","sha256":"f7df8340c736a16a608cb0386ba86f3d9ce262919b40f36c70239f6bc7196142","source":"SELECT 1 WHERE x LIKE 'a' ESCAPE '!' = '!';"}
+{"id":"gap-forms/original/last-forms/escape-and_operand","sha256":"11cd7d3dfa9badd1da7ee06dbbf0f59ce69bd7021ab6da8750eff6701c26087b","source":"SELECT 1 WHERE x LIKE 'a' ESCAPE (y=1);"}
+{"id":"gap-forms/original/last-forms/escape-is-null","sha256":"a286ae35d800b9f27b93091e782d4bbf876834bf3d47d6d1d77a14e2c1dfc0a1","source":"SELECT 1 WHERE x LIKE 'a' ESCAPE '!' IS NULL;"}
+{"id":"gap-forms/original/last-forms/escape-in","sha256":"a63b6da7458511adbeaeb9b08e561aa535f9b94e4abd77177106171becfe11ea","source":"SELECT 1 WHERE x LIKE 'a' ESCAPE e IN ('!');"}
+{"id":"gap-forms/original/last-forms/escape-alias","sha256":"101bb6eb1cc43c3f69828005c277cbbf6d3449099048a11420a8393c11d5cfb5","source":"SELECT x AS escape FROM t;"}
+{"id":"gap-forms/original/last-forms/escape-operand-comparison-group","sha256":"692c6e3db418686af768fa19467aacd48c3d8c748fe0cdd5023bb502a2fc7eae","source":"SELECT 1 WHERE x LIKE 'a' ESCAPE (e = '!');"}
+{"id":"gap-forms/original/last-forms/escape-keyword-column","sha256":"c08d33d6872595099fa92dc023d73a71ea54f4a2bac669313c49f972e8895f2e","source":"SELECT escape FROM t;"}
+{"id":"gap-forms/original/semicolon/block-empty","sha256":"7d157bfc697d8ce0ab8c213636fc9d84aea3d6acd399c96818546d2a39ab1eb7","source":"BEGIN; END;"}
+{"id":"gap-forms/original/semicolon/try-empty","sha256":"1faf25e7bc96e832bf75ae5eef78e951ec7a8fc53af228b5c1c743b551501258","source":"BEGIN TRY;; END TRY BEGIN CATCH;; END CATCH;"}
+{"id":"gap-forms/original/semicolon/trigger-chain","sha256":"bd699cd521b484f026a2a8063177474ef764dc83be448d46b75c866fd21d4018","source":"ENABLE TRIGGER tr ON dbo.t DISABLE TRIGGER tr ON dbo.t;"}
+{"id":"gap-forms/original/semicolon/invalid-leading-select","sha256":"5b309b318d825b670c78538cdf43973b7e3878da847d48c95a755a00138da53f","source":";SELECT FROM;"}
+{"id":"gap-forms/original/semicolon/control-select-from","sha256":"0ca426b35801f7720ee33d9e916ce69f210aadcfa8cf94f84a971fcb153ab9ed","source":"SELECT FROM;"}
+{"id":"gap-forms/original/semicolon/control-empty-block","sha256":"4ba1f30a5bacdd00d413d2042f58c09fe4b22218eefa76a1d89d43543f3bcf62","source":"BEGIN END;"}
+{"id":"gap-forms/original/semicolon/control-empty-try","sha256":"d286f387ad1dcd0f4dbc2607f932e916ec3af2cb29ab1a334af070b325695448","source":"BEGIN TRY END TRY BEGIN CATCH END CATCH;"}
+{"id":"gap-forms/original/table-hints/bare-index","sha256":"55a40790ab3cf8ce6765f1b6206f7aa1229ac4eb80c3989417559b1cb51e3bc7","source":"SELECT * FROM dbo.t AS a (INDEX(0,ix));"}
+{"id":"gap-forms/original/table-hints/maxdop-32768","sha256":"1844c2f08e4cf83b581af31f43cc9a37dbe2be716189cd16abfa500c8b8557ad","source":"SELECT * FROM dbo.t OPTION (MAXDOP 32768);"}
+{"id":"gap-forms/original/table-hints/maxdop-2147483647","sha256":"081b9600ceb50787ff5282452ee4934698207b1f19d5c8c72d5e6ae8c6a6e209","source":"SELECT * FROM dbo.t OPTION (MAXDOP 2147483647);"}
+{"id":"gap-forms/original/table-hints/maxdop-2147483648","sha256":"9eedcc587001230cd90a90d9e2af00abc3f6ce468743589486145abdee6b9bbe","source":"SELECT * FROM dbo.t OPTION (MAXDOP 2147483648);"}
+{"id":"gap-forms/original/table-hints/maxdop-1e0","sha256":"12efa83a9d882792a4fae2223c782355cff199b31280e4bbf397d7b7e71d5034","source":"SELECT * FROM dbo.t OPTION (MAXDOP 1e0);"}
+{"id":"gap-forms/original/table-hints/maxdop-0x1","sha256":"5dbecbf54f59bb7b25a608c80b563ef64b34d813ba54142604ac547d50e44f87","source":"SELECT * FROM dbo.t OPTION (MAXDOP 0x1);"}
+{"id":"gap-forms/original/table-hints/bare-index-alone","sha256":"1393e117b23e7b5728783d2a1d7855b36453266f2ae42dac6a748a917096d692","source":"SELECT * FROM dbo.t AS a (INDEX(ix));"}
+{"id":"gap-forms/rowset/table-hint","sha256":"dfc455a03671a5418e829089a28ea20b2a3b4a4f01a6c2a6048e2b00fbb7542f","source":"SELECT * FROM dbo.t WITH (ROWLOCK);"}
+{"id":"gap-forms/rowset/udf","sha256":"a446ad3cdc386cca2c818c9c23926308ba2f682d4d21d20fa7626a8bae901385","source":"SELECT * FROM dbo.f() AS f;"}
+{"id":"gap-forms/rowset/apply-udf","sha256":"c6b30506a3e3c98330e15123404b118e19fd8d909853f2969af8351ec638b31e","source":"SELECT * FROM dbo.t CROSS APPLY dbo.f() AS f;"}
+{"id":"gap-forms/rowset/json-schema","sha256":"10c99c49fdb178c15f8ff0441a5a66df2454cc16476d13c2fde99e27f39823e3","source":"DECLARE @j nvarchar(max); SELECT * FROM OPENJSON(@j) WITH (id int '$.id' AS JSON) AS j;"}
+{"id":"gap-forms/rowset/xml-schema","sha256":"f1cd2c4ca2634c021ad42078bd93e9965e7adc8c0819f108ae063011b365c791","source":"DECLARE @h int; SELECT * FROM OPENXML(@h,'/r',2) WITH (id int '@id') AS x;"}
+{"id":"gap-forms/rowset/xml-null","sha256":"9677fc0808faf655e2c1755488b3c546ff8472c0ac542c0ae87b723080d9f78d","source":"DECLARE @h int; SELECT * FROM OPENXML(@h,'/r',2) WITH (id int NULL) AS x;"}
+{"id":"gap-forms/rowset/predict-schema","sha256":"22bf0035a1d938514ef2889a1d20572e009d64fd8aefde954a644f27001e561b","source":"DECLARE @m varbinary(max); SELECT * FROM PREDICT(MODEL=@m, DATA=dbo.t AS d) WITH (id int) AS r;"}
+{"id":"gap-forms/rowset/predict-no-schema","sha256":"4ccacf6b110423c2d534518fcf9a576d60ffad1c0159f2ce23a6b6f3548bd11b","source":"DECLARE @m varbinary(max); SELECT * FROM PREDICT(MODEL=@m, DATA=dbo.t AS d) AS r;"}
+{"id":"gap-forms/policy/state","sha256":"227ecb9ac93c8cb69eb4b3c3c723ad632dc14a104b439aeda5bff7bd4223a73b","source":"ALTER SECURITY POLICY dbo.p WITH (STATE=OFF);"}
+{"id":"gap-forms/policy/create-schema","sha256":"22bb72734899024701e1d0735204b9f695660c1cb90b30fb8a24e02321ec320d","source":"CREATE SECURITY POLICY dbo.p ADD FILTER PREDICATE dbo.f(a) ON dbo.t WITH (SCHEMABINDING=OFF);"}
+{"id":"gap-forms/policy/alter-schema","sha256":"6aa682bf37c90ae82b328d6666aebd5facad59c4600ce6cbe14699cdf0eec77d","source":"ALTER SECURITY POLICY dbo.p ADD FILTER PREDICATE dbo.f(a) ON dbo.t WITH (SCHEMABINDING=OFF);"}
+{"id":"gap-forms/xe/create-event","sha256":"d89696c8428d1f4f7f9192118bf99e87857ba85f3ae9c780f143270b7c43f02c","source":"CREATE EVENT SESSION s ON SERVER ADD EVENT sqlserver.lock_deadlock;"}
+{"id":"gap-forms/xe/create-target","sha256":"b331fcdacb9e06f38b463631375a0d222f87a798d6759b388f3ae47e22880138","source":"CREATE EVENT SESSION s ON SERVER ADD EVENT sqlserver.lock_deadlock ADD TARGET package0.ring_buffer;"}
+{"id":"gap-forms/xe/alter-target","sha256":"f6e98af7e23e6af1612f9ac33316e6bdbb90a2368b4c8669bbc1b009559eb620","source":"ALTER EVENT SESSION s ON SERVER ADD TARGET package0.ring_buffer;"}
+{"id":"gap-forms/xe/alter-option","sha256":"01e66407d2c46a8305501018f447a9939a30a167bb3e6950daff6daaf5ba28d7","source":"ALTER EVENT SESSION s ON SERVER WITH (MAX_MEMORY=4096 KB);"}
+{"id":"gap-forms/xe/alter-state","sha256":"509535231aef1848d80caf63cced67368cc2918431b02b74a84c651467bbfa57","source":"ALTER EVENT SESSION s ON SERVER STATE=START;"}
+{"id":"gap-forms/xe/one-event","sha256":"8d22e8ec2e8fe1230b637d3133ff44cc26692c65249a3a135a745a02df199935","source":"CREATE EVENT SESSION s ON SERVER ADD EVENT lock_deadlock;"}
+{"id":"gap-forms/xe/three-target","sha256":"db17d715abf867d0288bf7ee6a8724307e80b8b62c5b9437919587de4f52b1a5","source":"CREATE EVENT SESSION s ON SERVER ADD EVENT sqlserver.lock_deadlock ADD TARGET db.package0.ring_buffer;"}
+{"id":"gap-forms/xe/action","sha256":"81bddd71082be38e58275a0cebd96e651d8843003f1f3a72211951003f55a44c","source":"CREATE EVENT SESSION s ON SERVER ADD EVENT sqlserver.lock_deadlock(ACTION(sqlserver.sql_text));"}
+{"id":"gap-forms/route/create-address","sha256":"7cf07edee4d1bc4d3a22f34b66217387b3acf7cfacd3414005f4588f4b77f952","source":"CREATE ROUTE r WITH ADDRESS='LOCAL';"}
+{"id":"gap-forms/route/alter-lifetime","sha256":"45fb4a13c762eeb38efabde8f59a85304b21a6dc9d4c0b30560354061dbf1c35","source":"ALTER ROUTE r WITH LIFETIME=60;"}
+{"id":"gap-forms/route/create-repeat","sha256":"7e04f5cdf66fc99cc5dec507d14265dc54a7f7268c6f99c421fb3e1925892345","source":"CREATE ROUTE r WITH ADDRESS='LOCAL',LIFETIME=1,LIFETIME=2;"}
+{"id":"gap-forms/route/alter-repeat","sha256":"d63f27c181fdcca41f6fcc191459a8dd0a12557a9501ebc7f0695d0da03c6efc","source":"ALTER ROUTE r WITH ADDRESS='LOCAL',BROKER_INSTANCE='a',BROKER_INSTANCE='b';"}
+{"id":"gap-forms/cache/none","sha256":"ff157b529cfcc0beca8872467744c5194603c71b9e745c8d934f811c2145ef60","source":"ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE;"}
+{"id":"gap-forms/cache/binary","sha256":"f4980da6bb0538873a1fa06ce0540985ef40e4210c1e45c411edb466411e6c42","source":"ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE 0x1234;"}
+{"id":"gap-forms/cache/var","sha256":"36a741a8bd18321471d04f83fd0ee917655a4160364391b954e02ad063a16434","source":"DECLARE @h varbinary(64); ALTER DATABASE SCOPED CONFIGURATION CLEAR PROCEDURE_CACHE @h;"}
+{"id":"gap-forms/window/current","sha256":"df54888097777cb0abb037eee0cc3bbcf344cafa7502bc9cf82044a182b894e2","source":"SELECT MAX(a) OVER (ORDER BY id RANGE CURRENT ROW) FROM t;"}
+{"id":"gap-forms/window/preceding","sha256":"23b300ae1acfc3d5b16e29bc7159a71c624f2d39e5460635266a63614deb0210","source":"SELECT MAX(a) OVER (ORDER BY id ROWS UNBOUNDED PRECEDING) FROM t;"}
+{"id":"gap-forms/window/following","sha256":"e521d68d97006825f9525bc0c1b3d6b5a54917d308e654670bf08d607eb5c7d9","source":"SELECT MAX(a) OVER (ORDER BY id ROWS 1 FOLLOWING) FROM t;"}
+{"id":"gap-forms/window/between-following","sha256":"921b9b7f188f1374628a32a8521e812e84bb21e562fb4e9cff00cb2123abea18","source":"SELECT MAX(a) OVER (ORDER BY id RANGE BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) FROM t;"}
+{"id":"gap-forms/xml/create-one","sha256":"d63ae021191a09112517698000be2937ce987612686a3724cdf8abe7321af375","source":"CREATE XML SCHEMA COLLECTION x AS N'<x/>';"}
+{"id":"gap-forms/xml/create-two","sha256":"6abdd543966b6d894a6fd4a891e106f7d4f48648a5e4e47df96bcb76f9d35ab3","source":"CREATE XML SCHEMA COLLECTION dbo.x AS N'<x/>';"}
+{"id":"gap-forms/xml/create-empty","sha256":"3b94eba07266982db7f97b1f6b60314fc895a90362823ad298d64925e1f7262e","source":"CREATE XML SCHEMA COLLECTION dbo..x AS N'<x/>';"}
+{"id":"gap-forms/xml/drop-two","sha256":"ba0b41c12ff13457691d671763945eae1ee70c865574a165fba9da9b54b6899c","source":"DROP XML SCHEMA COLLECTION dbo.x;"}
+{"id":"gap-forms/table/reserved-quoted","sha256":"3aba4d6dcb852b6a242ba1e60820d9e22748f0b974dc03c4accdfdc233931400","source":"SELECT [TABLE], [escape], [FROM] FROM dbo.[TABLE];"}
+{"id":"gap-forms/table/contextual-names","sha256":"49da2d14e0bfe63251af963efca641f2ff754fe2bff29d70a40da60e7627e6f2","source":"CREATE TABLE dbo.t (generated int, hidden int, period int, content int, document int, [fillfactor] int);"}
+{"id":"gap-forms/table/lock-escalation","sha256":"754257ce6a4aa3bb55cda8423a92b50be151bdf7aa90bb992bbef2388bad3263","source":"ALTER TABLE dbo.t SET (LOCK_ESCALATION=TABLE);"}
+{"id":"gap-forms/table/lock-bracket","sha256":"b852ae06582e059bfb425360a1850c4403dcb5b378db4ab235e34f480e0ee111","source":"ALTER TABLE dbo.t SET ([LOCK_ESCALATION]=TABLE);"}
+{"id":"gap-forms/table/system-repeat","sha256":"3ba80a1c3bdf193a2e29ab68edb2ddedf474677ff8741e28a49e055f752c28a2","source":"CREATE TABLE dbo.t(id int) WITH (SYSTEM_VERSIONING=OFF,SYSTEM_VERSIONING=OFF);"}
+{"id":"gap-forms/table/history-two","sha256":"89ea799e8fed1ab87de1518eaea94bbf4d9b752693daa4ee4a2716db1fd36a02","source":"ALTER TABLE dbo.t SET (SYSTEM_VERSIONING=ON(HISTORY_TABLE=dbo.hist));"}
+{"id":"gap-forms/table/history-one","sha256":"e4f9954b7f82fed386fa095cd45ce10a056a71526b35789dee699fc1ab7144cb","source":"ALTER TABLE dbo.t SET (SYSTEM_VERSIONING=ON(HISTORY_TABLE=hist));"}
+{"id":"gap-forms/table/history-quoted","sha256":"5e16a225f9ca1fb82b22c8133c0dab617fcbaf1d959b8d3d70f53d675eb05596","source":"ALTER TABLE dbo.t SET (SYSTEM_VERSIONING=ON(HISTORY_TABLE=[dbo].[hist]));"}
+{"id":"gap-forms/table/xml-content","sha256":"4974b5b9f3752d21161d8f7d3977435b86f945011338a716c9e4ada6345544af","source":"ALTER TABLE dbo.t ALTER COLUMN c xml(CONTENT dbo.x);"}
+{"id":"gap-forms/table/xml-null","sha256":"43f94f2008f8f715bd238eeb9edd4ab0626beb1ef389cdc9d28dd89b370c7195","source":"ALTER TABLE dbo.t ALTER COLUMN c xml(NULL);"}
+{"id":"gap-forms/index/rebuild-all","sha256":"847568d6e12a959321c61930fddabe4ae75b52db0557040cd6c33bc7557a2d1a","source":"ALTER INDEX ix ON dbo.t REBUILD PARTITION=ALL WITH (DATA_COMPRESSION=PAGE ON PARTITIONS(1 TO 3));"}
+{"id":"gap-forms/index/rebuild-one","sha256":"55d14d632848412a0fbc41f568355799b9727a0ff137c3caee9090afba9357bc","source":"ALTER INDEX ix ON dbo.t REBUILD PARTITION=1 WITH (DATA_COMPRESSION=PAGE);"}
+{"id":"gap-forms/index/rebuild-all-maxdop","sha256":"cf49d988b6f321e3eddb95bb58706f68f6fa66c88c3cff78639c4e6c336ea554","source":"ALTER INDEX ix ON dbo.t REBUILD PARTITION=ALL WITH (MAXDOP=2);"}
+{"id":"gap-forms/index/table-rebuild","sha256":"10c2f83997e23798144332d75595fcfa737d8b0b2aa0e71ec49d63214436ae6e","source":"ALTER TABLE dbo.t REBUILD WITH (DATA_COMPRESSION=PAGE);"}
+{"id":"gap-forms/index/table-resumable","sha256":"6b8b1a2a4179b62307c87b39cff8377bd7a926f65e1e7a9bc42ee611efd37c5f","source":"ALTER TABLE dbo.t REBUILD WITH (RESUMABLE=ON);"}
+{"id":"gap-forms/index/json","sha256":"94b1a785d98ee964310fe190167ad083a943fb98f0f6ae7fec4704d7808ee52a","source":"CREATE JSON INDEX ix ON dbo.t(j);"}
+{"id":"gap-forms/index/json-options","sha256":"987265e82016b20c3b36105b9fcbd9cabe8e3d72b5762e83f0333220349c3533","source":"CREATE JSON INDEX ix ON dbo.t(j) WITH (ONLINE=OFF);"}
+{"id":"gap-forms/index/json-filegroup","sha256":"4f16855dad3b41bad349d2936a2099a3b16489598b084f9a30ff910ae5ed4c6b","source":"CREATE JSON INDEX ix ON dbo.t(j) ON fg;"}
+{"id":"gap-forms/index/tablevar-row","sha256":"78fba807bfe77ef7416f37a9bb570b0c8e45a803c77b694e4f5a1e8b9b80b71e","source":"DECLARE @t TABLE (a int, INDEX ix NONCLUSTERED(a));"}
+{"id":"gap-forms/index/tablevar-columnstore","sha256":"88e58b8517855ad7626db1c11950689a53545e5b2e32a885a67a50e7c975562f","source":"DECLARE @t TABLE (a int, INDEX ix CLUSTERED COLUMNSTORE);"}
+{"id":"gap-forms/index/column-row","sha256":"83536c08490d0b6d067f17e205f96ea17200a60926e3cf143c61e9db93da7104","source":"DECLARE @t TABLE (a int PRIMARY KEY WITH (DATA_COMPRESSION=ROW));"}
+{"id":"gap-forms/index/column-columnstore","sha256":"2b6ebff2ed973bc54c9be618005d6e87c336666900828794e7a50342967b703c","source":"DECLARE @t TABLE (a int PRIMARY KEY WITH (DATA_COMPRESSION=COLUMNSTORE));"}
+{"id":"gap-forms/index/column-delay","sha256":"cbd97be866e71f0603e35b441c90de95d6be8eeb88a3cbff50ccb175606a0fc5","source":"DECLARE @t TABLE (a int PRIMARY KEY WITH (COMPRESSION_DELAY=0));"}
+{"id":"gap-forms/external/format-parquet","sha256":"24bbbaaeee1cda2a36e4296506d862b5e1082f64016e22f814e83869338dfec3","source":"CREATE EXTERNAL FILE FORMAT f WITH (FORMAT_TYPE=PARQUET);"}
+{"id":"gap-forms/external/format-json","sha256":"93b129dd772f896bfeec0422c6c68492a22f4ed57f8e517f0b999ad58ce97f2b","source":"CREATE EXTERNAL FILE FORMAT f WITH (FORMAT_TYPE=JSON);"}
+{"id":"gap-forms/external/format-delimited","sha256":"a66cdd2a3d2e9e974f594314b16ae18c14773cef4709167d5c38b33e42327128","source":"CREATE EXTERNAL FILE FORMAT f WITH (FORMAT_TYPE=DELIMITEDTEXT,FORMAT_OPTIONS(FIELD_TERMINATOR=','));"}
+{"id":"gap-forms/external/format-rcfile","sha256":"7072f0049477b7ce7d0620aaa67435e8385d68828e748abc20b4bd4a34bbe07a","source":"CREATE EXTERNAL FILE FORMAT f WITH (FORMAT_TYPE=RCFILE,SERDE_METHOD='org.apache.hadoop.hive.serde2.columnar.LazyBinaryColumnarSerDe');"}
+{"id":"gap-forms/external/format-parser-version","sha256":"756004544c0b50c68399a1c33e7ab7455245d7fd239d1a0cf4c60246d972972c","source":"CREATE EXTERNAL FILE FORMAT f WITH (FORMAT_TYPE=DELIMITEDTEXT,FORMAT_OPTIONS(PARSER_VERSION='2.0'));"}
+{"id":"gap-forms/external/alter-location","sha256":"eab748c6226c61447bce4ac96a8a24917499612fc9330ba16a01301f8f20cf86","source":"ALTER EXTERNAL DATA SOURCE ds SET LOCATION='hdfs://host:8020';"}
+{"id":"gap-forms/external/alter-resource-manager","sha256":"bce677df2861acf741b95bd01ce76522834d58e7e5c7b66adf923c81aab3a58f","source":"ALTER EXTERNAL DATA SOURCE ds SET RESOURCE_MANAGER_LOCATION='host:8032';"}
+{"id":"gap-forms/external/alter-audit-url","sha256":"2105f4044fab7ae11756a9cf15d64075b8c41a9dbda87888b17c0e996fb381da","source":"ALTER SERVER AUDIT a TO URL;"}
+{"id":"gap-forms/external/create-audit-log","sha256":"a4bc3309417d03d5ad0a3f0f30d8e66d2f9836774a1c788d52f2c50b02431e81","source":"CREATE SERVER AUDIT a TO APPLICATION_LOG;"}
+{"id":"gap-forms/external/audit-operator","sha256":"30e86453c67ab308be244290eb2a4a5d7c92feed8eb68961d3c64b68657c3105","source":"CREATE SERVER AUDIT a TO APPLICATION_LOG WITH (OPERATOR_AUDIT=ON);"}
+{"id":"gap-forms/external/config-allow-stale","sha256":"3e3ee9ce64b53201d5ccbcd1a652b4ecc2db7635eada4d746bb7b554f816feaa","source":"ALTER DATABASE SCOPED CONFIGURATION SET ALLOW_STALE_VECTOR_INDEX=ON;"}
+{"id":"gap-forms/external/config-tvf","sha256":"65a47a4af7d1270e304c2eafc841f4a40f8c5868052c1dc5873a0abf02c8581f","source":"ALTER DATABASE SCOPED CONFIGURATION SET ALLOW_BUILTIN_TVF_IN_ALL_COMPAT_LEVELS=ON;"}
+{"id":"gap-forms/vector/aliased","sha256":"4d10a6572bd0761b96faac118c4b2494ef3d8fb4d96bcc937ceffea0a0ee7384","source":"DECLARE @q VECTOR(3)='[1,2,3]'; SELECT * FROM VECTOR_SEARCH(TABLE=dbo.t AS t,COLUMN=v,SIMILAR_TO=@q,METRIC='cosine',TOP_N=5) AS r;"}
+{"id":"gap-forms/vector/no-alias","sha256":"e3a0bf363aaeb95d26916cd176db292692944ab3c1cd50d1bb31070227ecc756","source":"DECLARE @q VECTOR(3)='[1,2,3]'; SELECT * FROM VECTOR_SEARCH(TABLE=dbo.t,COLUMN=v,SIMILAR_TO=@q,METRIC='cosine',TOP_N=5) AS r;"}
+{"id":"gap-forms/blocks/nonempty","sha256":"f5830ec97c441fe1defcb3a2f0a71da2cad7e87eff1d48d870dd59974c720152","source":"BEGIN; SELECT 1; END;"}
+{"id":"gap-forms/blocks/empty","sha256":"02457571ea1e6efdb0a332915b52092fbd3115c5d30cdee45650ed8b6ff12b8b","source":"BEGIN /* 한글 */ ;; END;"}
+{"id":"gap-forms/blocks/try-catch","sha256":"b0a7c65106cf5fef8210766b68816db7ef4d9146f63ab69ce9477c9d4dacb2d3","source":"BEGIN TRY SELECT 1; END TRY BEGIN CATCH END CATCH;"}
+{"id":"gap-forms/blocks/empty-try","sha256":"1002606ae52974ad8c1128219cfc0704b417b4d53df94e76790bc61b88d3df06","source":"BEGIN TRY END TRY BEGIN CATCH SELECT 1; END CATCH;"}
+{"id":"gap-forms/blocks/trigger-separated","sha256":"ca2b8e140edf98fbd719eb600db2ef778c7d358e797148370ad9742fee1f75dd","source":"ENABLE TRIGGER tr ON dbo.t; DISABLE TRIGGER tr ON dbo.t;"}
+{"id":"gap-forms/blocks/trigger-last","sha256":"47fea7e033abede9237d15fcbcb392f691a13bdfa063600b8441d91486e6419c","source":"ENABLE TRIGGER tr ON dbo.t"}
+{"id":"gap-forms/select/no-list","sha256":"3d63369458cc5f15f07d79ab3dc0583a4b516fc82ef03e92c55f1e2bc5bcf2cd","source":"SELECT FROM dbo.t;"}
+{"id":"gap-forms/select/quoted-from","sha256":"2bf53087ae088bb683a5fd8355fcc90bd54c8004440ab26173271ddbc3bff437","source":"SELECT [FROM] FROM dbo.t;"}
+{"id":"gap-forms/escape/scalar","sha256":"e5f05cad8623fb777fb001373be0c4e3ab619d9f0bb5f5150487b07fcd1d0bac","source":"SELECT 1 WHERE x LIKE 'a' ESCAPE '!';"}
+{"id":"gap-forms/escape/arithmetic","sha256":"25f5ac669ac1d7a9bbc0a6be0eb7ecd33d7f9df9d379ecb36a6f5fa40cddf37b","source":"SELECT 1 WHERE x LIKE 'a' ESCAPE (e+'!');"}
+{"id":"gap-forms/escape/comparison","sha256":"b60871bf8afd4e482cd6f5bab4f9e7b5e119f941b994d90af7c9a09959a4b817","source":"SELECT 1 WHERE x LIKE 'a' ESCAPE e = '!';"}
+{"id":"gap-forms/escape/and","sha256":"b53585392ed7be06574f15f91f9b8a9c255e3b4881639d5443fed4f7ad1711a0","source":"SELECT 1 WHERE x LIKE 'a' ESCAPE '!' AND y=1;"}
+{"id":"gap-forms/static/ordinary-comparison","sha256":"a59347aaf34d5cb3c5b390db8e050e24279ab78b15a6a7e75ea1c707d5cba355","source":"SELECT dbo.f(1)=1;"}
+{"id":"gap-forms/static/static-comparison","sha256":"38593cbf826d5f7dbc60cfe7f49fc0f77da5a7a3248ef15bc5ff206ffe0b1c60","source":"SELECT dbo.t::f(1)=1;"}
+{"id":"gap-forms/arity/COUNT-0","sha256":"43eb0de7166ec1bfd79c5971893348381bb387f6bfb1a0f10ca6c7f25d72b19d","source":"SELECT COUNT() FROM dbo.t;"}
+{"id":"gap-forms/arity/COUNT-1","sha256":"e8657407a3788577f968159ec8668c1da7b4112721751d977fabb17c4796eb27","source":"SELECT COUNT(a) FROM dbo.t;"}
+{"id":"gap-forms/arity/COUNT-3","sha256":"5ca6d6947ed039a273d2e622aff9cadb46ac22ba89e2a07600a35d5dbf5c0a36","source":"SELECT COUNT(a,b) FROM dbo.t;"}
+{"id":"gap-forms/arity/[COUNT]-0","sha256":"686cbd8c0d9f414a9ec540169dbb2c0e7e14a8f5dba49e834fa1a612c311692d","source":"SELECT [COUNT]() FROM dbo.t;"}
+{"id":"gap-forms/arity/[COUNT]-1","sha256":"38f4e2cd8176788d17d10ca98e2a97bc390a4b8d994e43e5dcf22c2111cdceb8","source":"SELECT [COUNT](a) FROM dbo.t;"}
+{"id":"gap-forms/arity/[COUNT]-3","sha256":"24f31115398e455a58aa93e397997ced5223f18b18b4df5016a29f6cbbbafae0","source":"SELECT [COUNT](a,b) FROM dbo.t;"}
+{"id":"gap-forms/arity/COALESCE-0","sha256":"8094d8893a5fe9d939e502f600cee41f36e0823bf6da5fd5cb1f0f6912af8533","source":"SELECT COALESCE() FROM dbo.t;"}
+{"id":"gap-forms/arity/COALESCE-1","sha256":"e357f11deb83c8e9eced311ce3f698654cd77b24e76c73a7a9ee6542b749bd36","source":"SELECT COALESCE(a) FROM dbo.t;"}
+{"id":"gap-forms/arity/COALESCE-3","sha256":"9a763cb4c147e031eddc635cfd1f5005a5d8192903e5ba7adabf39ff49181064","source":"SELECT COALESCE(a,b) FROM dbo.t;"}
+{"id":"gap-forms/arity/[COALESCE]-0","sha256":"68f78334447dd3bd71bbbb21e650011498876059c00532d5166e80b31732d2ff","source":"SELECT [COALESCE]() FROM dbo.t;"}
+{"id":"gap-forms/arity/[COALESCE]-1","sha256":"efcf5c509b99b5682a967e59cc015a78dae5fa0b0127dd8e57ad036e503fc94b","source":"SELECT [COALESCE](a) FROM dbo.t;"}
+{"id":"gap-forms/arity/[COALESCE]-3","sha256":"9905b3b40421ff5a76ce29eb476a32c80c6ab253c4b7a72f032a06e3282be60d","source":"SELECT [COALESCE](a,b) FROM dbo.t;"}
+{"id":"gap-forms/arity/dbo.COUNT-0","sha256":"64948734cf07a96db7fbf8decabbbc8b7d5049fada5af8772ff34c3afefe0079","source":"SELECT dbo.COUNT() FROM dbo.t;"}
+{"id":"gap-forms/arity/dbo.COUNT-1","sha256":"3dd5a8f532f0b243e1c72c5fd467a4d82f236d8de2560e267847a274c888ff9c","source":"SELECT dbo.COUNT(a) FROM dbo.t;"}
+{"id":"gap-forms/arity/dbo.COUNT-3","sha256":"1c5dddf48c43e0c075848cf9142dd05605856d54490b94f5b4cf85bea8c0ae6a","source":"SELECT dbo.COUNT(a,b) FROM dbo.t;"}
+{"id":"gap-forms/arity/dbo.COALESCE-0","sha256":"5010cf7612b9ad0354716e574ca822ec9afafc72af358f6eb96c4050effe2e30","source":"SELECT dbo.COALESCE() FROM dbo.t;"}
+{"id":"gap-forms/arity/dbo.COALESCE-1","sha256":"13370d6fe9e3a53679f8b97f9a28c5c5d014131c8d2424efd45ee5fc32983494","source":"SELECT dbo.COALESCE(a) FROM dbo.t;"}
+{"id":"gap-forms/arity/dbo.COALESCE-3","sha256":"bcdfce5f9d5772cb4533bbfa78813046afbfd4a7f920070f44cc230fc57b222d","source":"SELECT dbo.COALESCE(a,b) FROM dbo.t;"}
+{"id":"gap-forms/comparison/230","sha256":"4200095ec7a23aa34cd23e20556750ab76809da32bf4f893c0527c3f71a3491e","source":"SELECT 1 WHERE 1 <= 2;"}
+{"id":"gap-forms/comparison/231","sha256":"6c316b679653f73198be16dff670fc992011045474e41a9085b42beca1e8054a","source":"SELECT 1 WHERE 1 < = 2;"}
+{"id":"gap-forms/comparison/232","sha256":"2b33d8c1793b6a97cb6619f650289d9b4e7069b0161a3065cb2a5da742eebff3","source":"SELECT 1 WHERE 1 <\n= 2;"}
+{"id":"gap-forms/comparison/233","sha256":"dea1407c7bb8705c807e3e975350627f391e0b217e53d78c22fa91627b507aea","source":"SELECT 1 WHERE 1 <x= 2;"}
+{"id":"gap-forms/comparison/234","sha256":"c661fd6599e0023d1b924cde17cc1ccaa076cc4e82c4d93c1dfea3b198624150","source":"SELECT 1 WHERE 1 >= 2;"}
+{"id":"gap-forms/comparison/235","sha256":"34652a1fc8999cba2502a552e2227ee390090837799e238ff5c8204d8955201d","source":"SELECT 1 WHERE 1 > = 2;"}
+{"id":"gap-forms/comparison/236","sha256":"c28d7cef2c6035b7c21982abc14168bfcb16fe60bc474978f6301eef6ea1445a","source":"SELECT 1 WHERE 1 >x= 2;"}
+{"id":"gap-forms/comparison/237","sha256":"aec22328e742da2429ca091c40501cf318da3607f6006554ea19507f7694063d","source":"SELECT 1 WHERE 1 <> 2;"}
+{"id":"gap-forms/comparison/238","sha256":"cb74afc46ff24669a5471a7121b4b2c4d7ceb0b90128f955ddef831df28665cb","source":"SELECT 1 WHERE 1 < > 2;"}
+{"id":"gap-forms/comparison/239","sha256":"005f31fe3e014756a4ff0e92c39aecdef456dafcd04786e4aec9e284ba7fa6cf","source":"SELECT 1 WHERE 1 <x> 2;"}
+{"id":"gap-forms/comparison/240","sha256":"bae22bd30749c5e949ffaa08e498a4255a8a05de3c023a64098c6b03fa0c3ee9","source":"SELECT 1 WHERE 1 ! = 2;"}
+{"id":"gap-forms/comparison/241","sha256":"4e299b9493a944155763e8aecfab2ce5ffcefb3988a82537f0ec276e565072d7","source":"SELECT 1 WHERE 1 !x= 2;"}
+{"id":"gap-forms/maxdop/0","sha256":"c02f138573829ecc345f361e8a3e44fb6bafdb7983ceba76b6b5e2cc474972fd","source":"SELECT * FROM t OPTION(MAXDOP 0);"}
+{"id":"gap-forms/maxdop/1","sha256":"f3e02523b29e4b1e1704a7fb6a84bcea44531e859dc7cee2752d29637f6ec83b","source":"SELECT * FROM t OPTION(MAXDOP 1);"}
+{"id":"gap-forms/maxdop/32767","sha256":"a00fce8bf5629b19dbe7d01e00647d85875a8a71eee5e1bcb0afb0b2741a452a","source":"SELECT * FROM t OPTION(MAXDOP 32767);"}
+{"id":"gap-forms/maxdop/32768","sha256":"78bf9a0e38f6593f34a0df8d96e960299e086cbad4789371d7cb1020b793973e","source":"SELECT * FROM t OPTION(MAXDOP 32768);"}
+{"id":"gap-forms/maxdop/2147483647","sha256":"2bb24e4b390718db0d50dae5005c580ca70bfcdbcbf87dd410d15d8dc31b5ee5","source":"SELECT * FROM t OPTION(MAXDOP 2147483647);"}
+{"id":"gap-forms/maxdop/2147483648","sha256":"fe419bdd9715491864310c768cc3e36d4c7d5954675bf7fb3a9273e2c5bff5e9","source":"SELECT * FROM t OPTION(MAXDOP 2147483648);"}
+{"id":"gap-forms/maxdop/1e0","sha256":"61aba2881d42516f6baadc35f388429748753ef2fefa837f9fb818b77e3e2297","source":"SELECT * FROM t OPTION(MAXDOP 1e0);"}
+{"id":"gap-forms/maxdop/0x1","sha256":"af33be42852b224a2095051db591a61346400f201c7413587ede2c4d726b4ea0","source":"SELECT * FROM t OPTION(MAXDOP 0x1);"}
+{"id":"gap-forms/maxdop/-1","sha256":"5968bc1bfc5d2f7081bc5746743aec1bd0e2745373bc695410d453d5fabcf726","source":"SELECT * FROM t OPTION(MAXDOP -1);"}
+{"id":"gap-forms/trigger/DATABASE-CREATE_TABLE","sha256":"47298aace7e41af094a125a92fe7a401f942087d136cd68833abb942ad0c5ef3","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_TABLE AS RETURN;"}
+{"id":"gap-forms/trigger/ALL SERVER-CREATE_TABLE","sha256":"41b739c750ef17f30a6b7be5f3d14eb4375f5ac7730598329c05f09848e2889a","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_TABLE AS RETURN;"}
+{"id":"gap-forms/trigger/DATABASE-DDL_TABLE_EVENTS","sha256":"775e91ad4b084886480b790d8c5489327e6c007006b2c8aa273ef2e4c51292e2","source":"CREATE TRIGGER tr ON DATABASE FOR DDL_TABLE_EVENTS AS RETURN;"}
+{"id":"gap-forms/trigger/ALL SERVER-DDL_TABLE_EVENTS","sha256":"1bf86226c28199e1248fbfef97fa4916a78fea1b4afce37756dc60a03b85c7c1","source":"CREATE TRIGGER tr ON ALL SERVER FOR DDL_TABLE_EVENTS AS RETURN;"}
+{"id":"gap-forms/trigger/DATABASE-LOGON","sha256":"23600bac24ee07989478423bea1f4f75db696854585c1527d8747dee89745e36","source":"CREATE TRIGGER tr ON DATABASE FOR LOGON AS RETURN;"}
+{"id":"gap-forms/trigger/ALL SERVER-LOGON","sha256":"83c0381766028544388eb5c0cbff99bba5a104644dd4e1cfeba0ee880125f96f","source":"CREATE TRIGGER tr ON ALL SERVER FOR LOGON AS RETURN;"}
+{"id":"gap-forms/trigger/DATABASE-NOT_AN_EVENT","sha256":"bfdc395acf4d83c4022c52691892666b6e0844b4b340247ddb21b9cda169a5e6","source":"CREATE TRIGGER tr ON DATABASE FOR NOT_AN_EVENT AS RETURN;"}
+{"id":"gap-forms/trigger/ALL SERVER-NOT_AN_EVENT","sha256":"78607c56c0c72751f6221f9f01d448fcba8e8b6a7b6a56fe325d9c8b88794296","source":"CREATE TRIGGER tr ON ALL SERVER FOR NOT_AN_EVENT AS RETURN;"}
+{"id":"gap-forms/trigger/DATABASE-CREATE_BOGUS","sha256":"cb8fb28ebd0d77eeb67664394f6e8a2eee8a108372128f0eea81333a209eb1e0","source":"CREATE TRIGGER tr ON DATABASE FOR CREATE_BOGUS AS RETURN;"}
+{"id":"gap-forms/trigger/ALL SERVER-CREATE_BOGUS","sha256":"b273502062c7faa2c03603ec329c971eff75a5c4c23fb442a40ed882e4150781","source":"CREATE TRIGGER tr ON ALL SERVER FOR CREATE_BOGUS AS RETURN;"}
+{"id":"gap-forms/permission/CREATE TABLE","sha256":"f96eb519467685208dc0066da8940357cb60f596f5c9c525605f671a4c382ffd","source":"GRANT CREATE TABLE TO u;"}
+{"id":"gap-forms/permission/CREATE APPLICATION ROLE","sha256":"c16383165945de41cf7eafa841b5c228ac53a9ecf46de0da7dd4001cdc996046","source":"GRANT CREATE APPLICATION ROLE TO u;"}
+{"id":"gap-forms/permission/ALTER ANY APPLICATION ROLE","sha256":"0d4ad923a85ec2507638c141e469aee1bd7110ddb316582e33cea7d47bba0e2b","source":"GRANT ALTER ANY APPLICATION ROLE TO u;"}
+{"id":"gap-forms/permission/ALTER ANY DATABASE SCOPED CREDENTIAL","sha256":"31bec0f65decafe4a683714d9751bc179e2e617935051d88d32f99a5bd43b88d","source":"GRANT ALTER ANY DATABASE SCOPED CREDENTIAL TO u;"}
+{"id":"gap-forms/permission/ALTER ANY REMOTE SERVICE BINDING","sha256":"f82bd78ca539be7ff20e893c554a929811a2d1438a418f0316193809ce48d65a","source":"GRANT ALTER ANY REMOTE SERVICE BINDING TO u;"}
+{"id":"gap-forms/permission/NONEXISTENT PERMISSION","sha256":"2268f4c49addeafdf064262a9433ab7e170325b80b5b4cf41664fa75439fb486","source":"GRANT NONEXISTENT PERMISSION TO u;"}
+{"id":"gap-forms/permission/BOGUS","sha256":"646ef36b23ab0c7b2219974be713710ad182500cc550c5077fa54464522befa1","source":"GRANT BOGUS TO u;"}
+{"id":"gap-forms/permission/SELECT","sha256":"a36f56961fdafcf745442347099a24f6e48c379d349ecac9190463f3dedbe4ae","source":"GRANT SELECT TO u;"}
+{"id":"gap-forms/dml/269","sha256":"8da097e3cae8753ae26d23457e6f9ca2340ae2ea7d82c0d4a7b6dbad8f1600e0","source":"DECLARE @a int; DELETE FROM dbo.f(@a);"}
+{"id":"gap-forms/dml/270","sha256":"8c4447feeb3cef9c09251377897d9a503b6e6a818621d0a2c419c2a4c51e3462","source":"DECLARE @a int; DELETE FROM dbo.f(1);"}
+{"id":"gap-forms/dml/271","sha256":"590431f7d55c1c5c2774b4d73bf86c83ae39704d1e2cc3e2353ec173aa7e44f0","source":"DECLARE @a int; DELETE FROM dbo.f(-1);"}
+{"id":"gap-forms/dml/272","sha256":"3d496b0713dcc40fcb6e8da4fba669e3a87413eedb75ef5c4c1ce51b3459ad23","source":"DECLARE @a int; DELETE FROM dbo.f(+1);"}
+{"id":"gap-forms/dml/273","sha256":"1f050c33c47f08e67402a47db7b311944c7fb002537e302663d2821250902d03","source":"DECLARE @a int; DELETE FROM dbo.f(NULL);"}
+{"id":"gap-forms/dml/274","sha256":"6bc4e9f41f164a1ff266df7da15391405e802f9874f011b16c5874b297f987b2","source":"DECLARE @a int; DELETE FROM dbo.f('x');"}
+{"id":"gap-forms/dml/275","sha256":"4a75ce2f15f333a131ca679aa0cc5cca976c111db8a831c93713b866c9e8e81e","source":"DECLARE @a int; DELETE FROM dbo.f(DEFAULT);"}
+{"id":"gap-forms/dml/276","sha256":"2adf24a6fa2f785c8dfc71a83b65b71265b219ec15a255cc94f6c5e45845eab0","source":"DECLARE @a int; DELETE FROM dbo.f(a);"}
+{"id":"gap-forms/dml/277","sha256":"a1525d137734c1aac7ffa248c0a8b3120a5c19eab75f1ef95f52dbc1a32bbe7d","source":"DECLARE @a int; DELETE FROM dbo.f(1+2);"}
+{"id":"gap-forms/dml/278","sha256":"419aaa0526191874ccb6cd0b1678fcf7045114d2a2a2977f69dc45c207c78cb8","source":"DECLARE @a int; DELETE FROM dbo.f((@a));"}
+{"id":"gap-forms/dml/279","sha256":"7a790dc52ada24ac23cd439539f8c11314d48135bc1cef9ff4c99ebbcc45b71a","source":"DECLARE @a int; DELETE FROM dbo.f(@@SPID);"}
+{"id":"gap-forms/dml/280","sha256":"3e52a1dde6c6457150e393ae42245e49ec6f61307101a97782495f391e8e9709","source":"DECLARE @a int; DELETE FROM dbo.f(GETDATE());"}
+{"id":"gap-forms/dml/281","sha256":"21bfb7d5f47681399609d5aa6fffbd1df313003412b70dc020654a42855a47c6","source":"DECLARE @a int; UPDATE dbo.f(@a) SET a=1;"}
+{"id":"gap-forms/dml/282","sha256":"196f3f3de275e7e7741bdc1dfae718869235c00ad79b4bdf4582d78e6196dff1","source":"DECLARE @a int; UPDATE dbo.f(1) SET a=1;"}
+{"id":"gap-forms/dml/283","sha256":"e0537ccd23ef40d2a90e29210b6a992bff30b4724bfbd7505062c2d5501ee0c7","source":"DECLARE @a int; UPDATE dbo.f(-1) SET a=1;"}
+{"id":"gap-forms/dml/284","sha256":"b8316c8d877244f22f343cc2ab52d8f99d3de781a0067728caafbce568ec2d4f","source":"DECLARE @a int; UPDATE dbo.f(+1) SET a=1;"}
+{"id":"gap-forms/dml/285","sha256":"39c1bb136ff48743bd47e2c78cde7198f3bcba434376ca310b8d6d3d93c8f472","source":"DECLARE @a int; UPDATE dbo.f(NULL) SET a=1;"}
+{"id":"gap-forms/dml/286","sha256":"806c0763cbb7935cac9179bd67a9011931a8ae5409e4f6257eaa54825b61787f","source":"DECLARE @a int; UPDATE dbo.f('x') SET a=1;"}
+{"id":"gap-forms/dml/287","sha256":"b369f56f1209b1ae5d1ee23dfee2d9f28f0a5679b408c6835dfa0a73a87b9e0e","source":"DECLARE @a int; UPDATE dbo.f(DEFAULT) SET a=1;"}
+{"id":"gap-forms/dml/288","sha256":"d6d2846228fbcb0854ed86557655a8e6d5b8edb4f28ee8144f1835bc85eb44d7","source":"DECLARE @a int; UPDATE dbo.f(a) SET a=1;"}
+{"id":"gap-forms/dml/289","sha256":"21c12e7645fe734adddc93bcca51725e518bafaba46edc5f710a4ec7d6138f2f","source":"DECLARE @a int; UPDATE dbo.f(1+2) SET a=1;"}
+{"id":"gap-forms/dml/290","sha256":"a23a4ab733f2743d767d75762b68310514a38351900108345de427e2c230179b","source":"DECLARE @a int; UPDATE dbo.f((@a)) SET a=1;"}
+{"id":"gap-forms/dml/291","sha256":"47aaca1d59bbb4a33841dd5a6f3669314b1078ca1f4ebd2741e029fc4b903c7a","source":"DECLARE @a int; UPDATE dbo.f(@@SPID) SET a=1;"}
+{"id":"gap-forms/dml/292","sha256":"4ef0f209163512a9c4d3d71178ccd77ebf68862b7506b38708528e7aa570c5a8","source":"DECLARE @a int; UPDATE dbo.f(GETDATE()) SET a=1;"}
+{"id":"gap-forms/hints/293","sha256":"adf2a850d6ae69b7e2cadb73d81bded746f276ddfd58c93ea38425f09729b3f8","source":"DELETE FROM dbo.t WITH(TABLOCK);"}
+{"id":"gap-forms/hints/294","sha256":"307082e114542ab219e2cf951b9247f54525e28cc6fc6637f5fd231ff785c41e","source":"DELETE FROM dbo.t(TABLOCK);"}
+{"id":"gap-forms/hints/295","sha256":"5fb6133977cc0d67b0f9d2cfef42016f8564904972d56e83643ab1bc2bfc788b","source":"UPDATE dbo.t WITH(TABLOCK) SET a=1;"}
+{"id":"gap-forms/hints/296","sha256":"e5fe863754f87826f2be53ed8fd37e8cfea66c8e9b680bb9ab853fa0e99230b9","source":"MERGE dbo.t WITH(TABLOCK) AS t USING dbo.s AS s ON t.id=s.id WHEN MATCHED THEN DELETE;"}
+{"id":"gap-forms/hints/297","sha256":"2d71110e292fa815fa96036a1cc3b0651fe7d467f78873b56b1c68db2832bef3","source":"SELECT * FROM dbo.t AS a (NOLOCK);"}
+{"id":"gap-forms/hints/298","sha256":"1393e117b23e7b5728783d2a1d7855b36453266f2ae42dac6a748a917096d692","source":"SELECT * FROM dbo.t AS a (INDEX(ix));"}
+{"id":"gap-forms/exec/1","sha256":"30a01080c257dad6f3eaba8b49a39d284529792856a4595c5a2f1ca4651fd2f2","source":"DECLARE @a int; EXEC dbo.p 1;"}
+{"id":"gap-forms/exec/-1","sha256":"1ee0f06997a3aaebefbf8bbba1514973a2f260cc752968cc61c777e060f717d8","source":"DECLARE @a int; EXEC dbo.p -1;"}
+{"id":"gap-forms/exec/+1","sha256":"27aea8bc8d5b3cf2299f93339b6e4f10a64414ed54dfe7810cc5d9a70f83cd6b","source":"DECLARE @a int; EXEC dbo.p +1;"}
+{"id":"gap-forms/exec/@a","sha256":"35809807282492a6186fc2100532cd01928efc786fa42af0bdaf25f211abe0ef","source":"DECLARE @a int; EXEC dbo.p @a;"}
+{"id":"gap-forms/exec/a","sha256":"8ce4ea8a5b3013ebd1bbf39a5393560d6b64f93311c6de1fc289ced62671a33a","source":"DECLARE @a int; EXEC dbo.p a;"}
+{"id":"gap-forms/exec/DEFAULT","sha256":"b302fbdbe8ea1a8706471466ff034c857cbd66d5f61c1649fbcc61e2161c1dfb","source":"DECLARE @a int; EXEC dbo.p DEFAULT;"}
+{"id":"gap-forms/openquery/305","sha256":"9beed3d60f357372f4a8d396770044cc2e32e23c0511956c9b4036d175da1248","source":"DECLARE @link sysname; DELETE FROM OPENQUERY(link, 'select 1');"}
+{"id":"gap-forms/openquery/306","sha256":"d3f931e073de0431fbcf3baa926695a25432ebc59792191560a9ef406d7c0167","source":"DECLARE @link sysname; DELETE FROM OPENQUERY([link], 'select 1');"}
+{"id":"gap-forms/openquery/307","sha256":"c24ad110fefe2594c2c2cab18086c93d10ebae38ed4b3cb7ca0854981ce7b6e8","source":"DECLARE @link sysname; DELETE FROM OPENQUERY('link', 'select 1');"}
+{"id":"gap-forms/openquery/308","sha256":"707313016461e383cb0ddf3ca7fd4168a0310e1ff9d5c6ac7234a35a11992ef8","source":"DECLARE @link sysname; DELETE FROM OPENQUERY(@link, 'select 1');"}
+{"id":"gap-forms/openquery/309","sha256":"5c00906e114a41575b40d3ba38fa2a9569778e5c4c91121c085cebd12880aa74","source":"DECLARE @link sysname; DELETE FROM OPENQUERY(link, 'select 1', 1);"}
+{"id":"gap-forms/partition/data","source":"ALTER INDEX ix ON dbo.t REBUILD WITH(DATA_COMPRESSION=PAGE ON PARTITIONS(1,3 TO 5));","sha256":"1fca2fda3c61b6f84ff7eecfb4ce2e9b54463168e65df0c8970aacb1b9a6de42"}
+{"id":"gap-forms/partition/xml","source":"ALTER INDEX ix ON dbo.t REBUILD WITH(XML_COMPRESSION=ON ON PARTITIONS(2));","sha256":"b4157ece08c3ae8a6190d6c9da9a352c0146b79975debd366c0128be339ab267"}
+{"id":"gap-forms/partition/both","source":"ALTER INDEX ix ON dbo.t REBUILD WITH(DATA_COMPRESSION=PAGE ON PARTITIONS(1,3 TO 5),XML_COMPRESSION=ON ON PARTITIONS(2));","sha256":"0e8c39fa5da7ade75f93b43bce069bdf9e653c33670f05db64f4db9fa5316d72"}
+{"id":"gap-forms/partition/maxdop","source":"ALTER INDEX ix ON dbo.t REBUILD WITH(MAXDOP=2,DATA_COMPRESSION=PAGE ON PARTITIONS(1,3 TO 5));","sha256":"a8a8b51deee1935ffc6f9e31038554dfb289f57dfeac2f3fdaa96479704c7928"}
+{"id":"gap-forms/partition/two-statements","source":"ALTER INDEX ix ON dbo.t REBUILD WITH(DATA_COMPRESSION=PAGE ON PARTITIONS(1)); ALTER INDEX ALL ON dbo.t REBUILD PARTITION=ALL WITH(DATA_COMPRESSION=ROW);","sha256":"1c6bb777c6f400fb8a97b8329022828ff566f5a694b35c0d1416272e3ba922dd"}
+{"id":"gap-forms/partition/two-reversed","source":"ALTER INDEX ALL ON dbo.t REBUILD PARTITION=ALL WITH(DATA_COMPRESSION=ROW); ALTER INDEX ix ON dbo.t REBUILD WITH(DATA_COMPRESSION=PAGE ON PARTITIONS(1));","sha256":"9e5fe14c09b196efd580e87d7bae43971bd86707b7e8bd294fe9b1dc10c8753f"}
+{"id":"gap-forms/commit/declared-off","source":"DECLARE @t varchar(32); COMMIT TRANSACTION @t WITH(DELAYED_DURABILITY=OFF);","sha256":"679b917f84410c3ff5eb634330979fcf28795d4bf3a66e0382159f61524a0588"}
+{"id":"gap-forms/commit/declared-on","source":"DECLARE @t varchar(32); COMMIT TRANSACTION @t WITH(DELAYED_DURABILITY=ON);","sha256":"464fae0bd53c13bd517062f4e1b05d3278889ed559d3ea90ef8f726d16df6633"}
+{"id":"gap-forms/commit/named-off","source":"COMMIT TRANSACTION t WITH(DELAYED_DURABILITY=OFF);","sha256":"840251039783fc9ef7df1b98385069318c5b7052658be71e190e70ccce26e5e7"}
+{"id":"gap-forms/commit/unnamed-off","source":"COMMIT TRANSACTION WITH(DELAYED_DURABILITY=OFF);","sha256":"11e68b8ae0f06626b69a2b7d5aec7f57c488afd61d638bd3c2a442cba8aeaa13"}
+{"id":"gap-forms/commit/named-on","source":"COMMIT TRANSACTION t WITH(DELAYED_DURABILITY=ON);","sha256":"02625b9ea4e329686d862b8c056957161a5a30c75e3cad119d4a302c15aba52d"}
+{"id":"gap-forms/select/alias","source":"SELECT total = t.c3*2 FROM dbo.t AS t;","sha256":"0d4dc16f2c63cb20eb868f5fbccfd002e1a3c3838700123022727414cc8764ea"}
+{"id":"gap-forms/select/variable","source":"DECLARE @a int; SELECT @a=1;","sha256":"05a92905211198c87b6c88208e21d10152296003463f60b6929f7c66440548ff"}
+{"id":"gap-forms/select/boolean","source":"SELECT 1=1;","sha256":"6558890eb7709098508ef69a28a1f2b8fd485cac274605a94d55a9636234b310"}
+{"id":"gap-forms/rowset/bulk-ordinal","source":"SELECT * FROM OPENROWSET(BULK 'a.csv',FORMAT='CSV') WITH (a int 2) AS r;","sha256":"f11ce1c50f882dc8df35b3f9c3bde88294b28e542422dc68039ab359056ef7a0"}
+{"id":"gap-forms/json/online","source":"CREATE JSON INDEX ix ON dbo.t(j) WITH(ONLINE=ON);","sha256":"cc3e441dcb963d05fdf165ac9c166bbdeed5b54bf4321cf06cf0a0bff2501368"}
+{"id":"gap-forms/json/fillfactor","source":"CREATE JSON INDEX ix ON dbo.t(j) WITH(FILLFACTOR=80);","sha256":"3811eaa69051ddd52ec35da6367d664650d0e874f8008c2db53d73db5fbc395f"}
+{"id":"gap-forms/xe/four-target","source":"ALTER EVENT SESSION s ON SERVER ADD TARGET a.b.c.d;","sha256":"9dc742bfe7ee01bf938f254255aa3c71e47394c06790086ce54cfc8d3436d798"}
+{"id":"gap-forms/xe/three-event","source":"CREATE EVENT SESSION s ON SERVER ADD EVENT a.b.c;","sha256":"79af534ceabc120224b4b453807ece6d2ac555860b9cd95f43e620cda3ba7cf2"}
+{"id":"gap-forms/xe/empty-action","source":"CREATE EVENT SESSION s ON SERVER ADD EVENT sqlserver.lock_deadlock(ACTION(sqlserver..sql_text));","sha256":"5bdf320b4f9ddcb16b2bb19e8bab9f0b427486511313c9b0c4e8aa5743c61b13"}
+{"id":"gap-forms/partition/kit-r111","source":"ALTER INDEX IX_Orders_Date ON Sales.dbo.Orders REBUILD WITH (PAD_INDEX = ON, FILLFACTOR = 80, SORT_IN_TEMPDB = ON, IGNORE_DUP_KEY = OFF, STATISTICS_NORECOMPUTE = ON, STATISTICS_INCREMENTAL = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = OFF, MAXDOP = 4, DATA_COMPRESSION = PAGE ON PARTITIONS (1, 3 TO 5), XML_COMPRESSION = ON ON PARTITIONS (2));\nALTER INDEX ALL ON dbo.Orders REBUILD PARTITION = ALL WITH (PAD_INDEX = OFF, DATA_COMPRESSION = ROW);\n","sha256":"23ae42311b75fe956e8725495b4c4536cde02536684424e498759389697c0a1f"}
+{"id":"gap-forms/partition/option-331","source":"ALTER INDEX ix ON dbo.t REBUILD WITH(MAXDOP=1,DATA_COMPRESSION=PAGE ON PARTITIONS(1,3 TO 5));","sha256":"8e11abb696ebda36a924e3999bf0d25dc4b06eeb9a0666ada2fa0d99b3633089"}
+{"id":"gap-forms/partition/option-332","source":"ALTER INDEX ix ON dbo.t REBUILD WITH(DATA_COMPRESSION=PAGE ON PARTITIONS(1,3 TO 5),MAXDOP=1);","sha256":"2f250e06019090b4eab20ebf19f6e7e3e0315a754d1e166e9955bee9f130c981"}
+{"id":"gap-forms/partition/option-333","source":"ALTER INDEX ix ON dbo.t REBUILD WITH(FILLFACTOR=80,DATA_COMPRESSION=PAGE ON PARTITIONS(1,3 TO 5));","sha256":"25cdcd570cc5f13d3f896f85b4bcf82fe50d9b88095c2eedec0510239dd2a65c"}
+{"id":"gap-forms/partition/option-334","source":"ALTER INDEX ix ON dbo.t REBUILD WITH(DATA_COMPRESSION=PAGE ON PARTITIONS(1,3 TO 5),FILLFACTOR=80);","sha256":"1b18d55185cefc45219dd4ae13ace2b6e115e957a3ddfffc720033f1c6af5c53"}
+{"id":"gap-forms/partition/option-335","source":"ALTER INDEX ix ON dbo.t REBUILD WITH(PAD_INDEX=ON,DATA_COMPRESSION=PAGE ON PARTITIONS(1,3 TO 5));","sha256":"01ece47d78103efa608d1d6e89fcd8c2842fbbd17d3a9a67cde1399c09300270"}
+{"id":"gap-forms/partition/option-336","source":"ALTER INDEX ix ON dbo.t REBUILD WITH(DATA_COMPRESSION=PAGE ON PARTITIONS(1,3 TO 5),PAD_INDEX=ON);","sha256":"87c1ed6014a566eef7faa307c100169c629ed31caba8e4e9d385c098355e51ae"}
+{"id":"gap-forms/partition/option-337","source":"ALTER INDEX ix ON dbo.t REBUILD WITH(DATA_COMPRESSION=PAGE ON PARTITIONS(1,3 TO 5),XML_COMPRESSION=ON ON PARTITIONS(2),MAXDOP=2);","sha256":"cbc9228480cae91daf8880dcd2603e83b31ae0cc6d34151bd4814b7dd9ee71fa"}
+{"id":"gap-forms/partition/option-338","source":"ALTER INDEX ix ON dbo.t REBUILD WITH(MAXDOP=2,XML_COMPRESSION=ON ON PARTITIONS(2));","sha256":"05cee34711a3649a7fb3e51665d00c0af712a380c77b5376781d8df926c1f866"}
+{"id":"gap-forms/partition/option-339","source":"ALTER INDEX ix ON dbo.t REBUILD WITH(XML_COMPRESSION=ON ON PARTITIONS(2),MAXDOP=2);","sha256":"75f7b79c0c7c97bcddfcf1d8004f29bdf5929e77b05b7880c993aec7b653bc81"}
+{"id":"gap-forms/partition/option-340","source":"ALTER INDEX ix ON dbo.t REBUILD WITH(XML_COMPRESSION=ON ON PARTITIONS(2),DATA_COMPRESSION=PAGE ON PARTITIONS(1,3 TO 5));","sha256":"52d91be3f9af489fa1b08d8b4043b3a80c6a7cb58781e21f8b763dd767629de2"}
+{"id":"gap-forms/commit/variant-341","source":"COMMIT TRANSACTION @t WITH(DELAYED_DURABILITY=ON);","sha256":"6966150645e07ae451ab13b44c839b92a4d45fcdbbb7f7b267ef4f48e98398ae"}
+{"id":"gap-forms/commit/variant-342","source":"DECLARE @t varchar(32); COMMIT TRANSACTION @t WITH(DELAYED_DURABILITY=OFF);","sha256":"679b917f84410c3ff5eb634330979fcf28795d4bf3a66e0382159f61524a0588"}
+{"id":"gap-forms/commit/variant-343","source":"DECLARE @u varchar(32); COMMIT TRANSACTION @t WITH(DELAYED_DURABILITY=OFF);","sha256":"58fb729002b7e583da97cef33667a1c35b9ab03da600795eafe8c6a490d813e8"}
+{"id":"gap-forms/permission/exec-short","source":"GRANT EXEC TO u;","sha256":"009ade6601668032ccb7dd2a99b79921ecf2388af19f357ae579af4a9449dbd3"}
+{"id":"gap-forms/property/scalar","source":"SELECT PROPERTY(a,\"title\") FROM t;","sha256":"6d5db2c879b7aa6f428e8e3590107a09c8d31a4cbcc744ac156eaeac417f58fb"}
+{"id":"gap-forms/openquery/multipart","source":"DELETE FROM OPENQUERY(dbo.link,'SELECT a FROM t');","sha256":"a063b3b58a73225126f0b8d33c7df73deffd3b556a20bbb6bb3262ef513b3b7f"}
+{"id":"gap-forms/openquery/quoted-dot","source":"DELETE FROM OPENQUERY([link.part],'SELECT a FROM t');","sha256":"0fff4e8678a52862e1fa7536c5cf050218903450d646ff82fa857d251487b363"}
+{"id":"gap-forms/openquery/unicode","source":"DELETE FROM OPENQUERY([한글서버],'SELECT a FROM t');","sha256":"d773aa612d05fa04324f175b41ed567d6b78e4370cbc8f8bb6cbf6ffd3a00307"}

@@ -66,6 +66,19 @@ function runTreeCheck(exe, args) {
   }
 }
 
+// The classes a rejected-but-clean case may have (oracle/rejected-clean.json, ADR-0004): every one of
+// these cases is either a recorded gap or a rejection the parse tree cannot decide.
+export const CLASSES = ['gap', 'context', 'version', 'environment', 'runner'];
+
+// Rejected-but-clean cases without a valid class, and classified cases that are no longer rejected-but-clean.
+export function classify(rejectedClean, classification) {
+  const ids = new Set(rejectedClean);
+  return {
+    unclassified: rejectedClean.filter((id) => !CLASSES.includes(classification[id]?.class)),
+    stale: Object.keys(classification).filter((id) => !ids.has(id)),
+  };
+}
+
 function matrix(cases, verdicts, current, level) {
   const m = { acceptedClean: 0, acceptedError: 0, rejectedError: 0, rejectedClean: 0 };
   // A per-level table counts only the cases that engine and level judged.
@@ -182,6 +195,13 @@ function main(argv) {
 
   const levels = [...new Set(Object.values(verdicts).flatMap((v) => Object.keys(v)))].sort();
   const union = matrix(cases, verdicts, current);
+  const classification = JSON.parse(readFileSync('oracle/rejected-clean.json', 'utf8')).cases;
+  const rejectedClean = cases
+    .map((c) => c.id)
+    .filter((id) => !positive[id] && current[id] === 'clean');
+  const { unclassified, stale } = classify(rejectedClean, classification);
+  const byClass = Object.fromEntries(CLASSES.map((k) => [k, 0]));
+  for (const id of rejectedClean) if (classification[id]) byClass[classification[id].class]++;
   const summary = [
     '### SQL Server oracle replay',
     `- Cases: ${cases.length}; engine-accepted at some level: ${Object.values(positive).filter(Boolean).length}`,
@@ -190,6 +210,15 @@ function main(argv) {
       const m = matrix(cases, verdicts, current, l);
       return `- ${l}: ${m.agree}/${m.total} (${m.percent} %), accepted&error ${m.acceptedError}`;
     }),
+    `- Rejected but clean by class (oracle/rejected-clean.json): ${CLASSES.map((k) => `${k} ${byClass[k]}`).join(', ')}`,
+    ...unclassified.map(
+      (id) =>
+        `  - UNCLASSIFIED ${id}: rejected by every engine but clean; classify it in oracle/rejected-clean.json`,
+    ),
+    ...stale.map(
+      (id) =>
+        `  - STALE ${id}: classified but no longer rejected-and-clean; remove it from oracle/rejected-clean.json`,
+    ),
     `- Edit histories with incremental differences: ${Object.keys(incremental).length}`,
     `- Changes against oracle/expected.json: ${changes.length}${incrementalChanged ? ' (+ incremental differences changed)' : ''}`,
     ...changes.map((c) => `  - ${c.regression ? 'REGRESSION ' : ''}${c.id}: ${c.from} -> ${c.to}`),
@@ -198,6 +227,12 @@ function main(argv) {
   if (process.env.GITHUB_STEP_SUMMARY)
     appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary + '\n');
 
+  if (unclassified.length || stale.length) {
+    console.error(
+      'oracle/rejected-clean.json does not match the rejected-but-clean cases (see UNCLASSIFIED/STALE above).',
+    );
+    return 1;
+  }
   if (update) {
     if (regressions.length) {
       console.error(

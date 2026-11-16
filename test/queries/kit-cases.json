@@ -1,0 +1,295 @@
+[
+  {
+    "id": "tsql-query-r1",
+    "query": "q.structure",
+    "source_case": "kit-routes/tsql-feature-r1",
+    "step": 0,
+    "captures": [
+      {
+        "name": "table",
+        "text": "Items"
+      },
+      {
+        "name": "column",
+        "text": "Id"
+      },
+      {
+        "name": "column",
+        "text": "Name"
+      },
+      {
+        "name": "column",
+        "text": "Quantity"
+      },
+      {
+        "name": "column",
+        "text": "Price"
+      },
+      {
+        "name": "procedure",
+        "text": "AddItem"
+      },
+      {
+        "name": "exec",
+        "text": "AddItem"
+      }
+    ]
+  },
+  {
+    "id": "tsql-r6-query-r1",
+    "query": "q.r6-structure",
+    "source_case": "kit-routes/tsql-r6-feature-r1",
+    "step": 0,
+    "note": "The source is rejected by every engine (Msg 137, 319, 10741) and parses with errors here; grammar-kit accepted it. These captures pin the error tree only.",
+    "captures": [
+      {
+        "name": "table",
+        "text": "상품"
+      },
+      {
+        "name": "exec",
+        "text": "sp_who"
+      },
+      {
+        "name": "table",
+        "text": "t"
+      },
+      {
+        "name": "table",
+        "text": "c"
+      },
+      {
+        "name": "column",
+        "text": "Id"
+      },
+      {
+        "name": "column",
+        "text": "Flag"
+      },
+      {
+        "name": "restore",
+        "text": "@db"
+      },
+      {
+        "name": "move_from",
+        "text": "'Sample_dat'"
+      },
+      {
+        "name": "move_to",
+        "text": "'new.mdf'"
+      },
+      {
+        "name": "move_from_name",
+        "text": "Sample_log"
+      },
+      {
+        "name": "assigned",
+        "text": "@s"
+      },
+      {
+        "name": "table",
+        "text": "Memo"
+      },
+      {
+        "name": "table",
+        "text": "Memo"
+      },
+      {
+        "name": "table",
+        "text": "Memo"
+      },
+      {
+        "name": "branch_order",
+        "text": "Id"
+      },
+      {
+        "name": "table",
+        "text": "Memo"
+      },
+      {
+        "name": "branch_order",
+        "text": "Kind"
+      },
+      {
+        "name": "table",
+        "text": "Memo"
+      },
+      {
+        "name": "table",
+        "text": "Memo"
+      },
+      {
+        "name": "branch_order",
+        "text": "a"
+      },
+      {
+        "name": "union_offset",
+        "text": "OFFSET 0 ROWS"
+      }
+    ]
+  },
+  {
+    "id": "tsql-r6-begin-query-r1",
+    "query": "q.r6-begin",
+    "source_case": "kit-routes/tsql-r6-begin-semicolon-r1",
+    "step": 0,
+    "captures": [
+      {
+        "name": "block_cte",
+        "text": "s"
+      },
+      {
+        "name": "block_cte",
+        "text": "t"
+      },
+      {
+        "name": "nested_alias",
+        "text": "c"
+      }
+    ]
+  },
+  {
+    "id": "probe-tsql-V16-Q-1",
+    "query": "q.probe-v16",
+    "source_case": "kit-routes/probe-tsql-V16-NRQ-1",
+    "step": 0,
+    "captures": [
+      {
+        "name": "period_column",
+        "text": "ValidFrom"
+      },
+      {
+        "name": "period_column",
+        "text": "ValidTo"
+      },
+      {
+        "name": "graph_match",
+        "text": "MATCH(p1-(l)->p2)"
+      }
+    ]
+  },
+  {
+    "id": "probe-tsql-V22-Q-1",
+    "query": "q.probe-v22",
+    "source_case": "kit-routes/probe-tsql-V22-PNREQ-1",
+    "step": 0,
+    "captures": [
+      {
+        "name": "window_name",
+        "text": "w"
+      },
+      {
+        "name": "window_name",
+        "text": "w2"
+      }
+    ]
+  },
+  {
+    "id": "tsql-issue128-ownership-query-r1",
+    "query": "q.issue128-ownership",
+    "source_case": "kit-routes/tsql-issue128-procedure-owner-r1",
+    "step": 0,
+    "captures": [
+      {
+        "name": "module.semi",
+        "text": ";"
+      },
+      {
+        "name": "module.value",
+        "text": "1"
+      },
+      {
+        "name": "module.semi",
+        "text": ";"
+      },
+      {
+        "name": "module.semi",
+        "text": ";"
+      },
+      {
+        "name": "module.value",
+        "text": "2"
+      },
+      {
+        "name": "module.semi",
+        "text": ";"
+      },
+      {
+        "name": "batch.value",
+        "text": "3"
+      }
+    ]
+  },
+  {
+    "id": "tsql-issue128-ownership-query-r1",
+    "query": "q.issue128-ownership",
+    "source_case": "kit-routes/tsql-issue128-procedure-owner-r1",
+    "step": 1,
+    "captures": [
+      {
+        "name": "module.semi",
+        "text": ";"
+      },
+      {
+        "name": "module.value",
+        "text": "1"
+      },
+      {
+        "name": "module.semi",
+        "text": ";"
+      },
+      {
+        "name": "module.semi",
+        "text": ";"
+      },
+      {
+        "name": "module.value",
+        "text": "22"
+      },
+      {
+        "name": "module.semi",
+        "text": ";"
+      },
+      {
+        "name": "batch.value",
+        "text": "3"
+      }
+    ]
+  },
+  {
+    "id": "tsql-issue128-ownership-query-r1",
+    "query": "q.issue128-ownership",
+    "source_case": "kit-routes/tsql-issue128-procedure-owner-r1",
+    "step": 2,
+    "captures": [
+      {
+        "name": "module.semi",
+        "text": ";"
+      },
+      {
+        "name": "module.value",
+        "text": "1"
+      },
+      {
+        "name": "module.semi",
+        "text": ";"
+      },
+      {
+        "name": "module.semi",
+        "text": ";"
+      },
+      {
+        "name": "module.value",
+        "text": "2"
+      },
+      {
+        "name": "module.semi",
+        "text": ";"
+      },
+      {
+        "name": "batch.value",
+        "text": "3"
+      }
+    ]
+  }
+]

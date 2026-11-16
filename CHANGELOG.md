@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Parse LIKE ESCAPE, JSON_ARRAYAGG/JSON_OBJECTAGG arguments and INTO on every set branch; preserve existing clean trees and enforce engine-verified syntax boundaries in tree-check.
 - Correct the graph fixture to grouped SHORTEST_PATH and complete MATCH predicates; reject engine-verified XE predicate-source, DROP SEQUENCE qualification and permission-class boundaries in tree-check.
 - Parse the remaining engine-accepted kit routes: permission classes, principal/cryptographic/CLR/Broker/resource/event/index DDL, sensitivity and signature statements, graph paths, NULLS modifiers, implicit batch-first EXEC, COMMIT durability and statistics options. Preserve existing clean trees and add engine-backed syntax constraints.
 - Parse OPENROWSET provider credentials, including omitted user/password, with engine-backed argument constraints.
