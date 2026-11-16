@@ -1,0 +1,55 @@
+# =============================================================================
+#  tree-sitter-mssql · GitHub Actions
+# -----------------------------------------------------------------------------
+#  File                fuzz.yml
+#  Workflow name       Fuzz parser
+#  Triggers            pull_request touching the grammar, scanner or parser
+#                      schedule (weekly)
+#                      workflow_dispatch
+#  Purpose             Runs tree-sitter's libFuzzer harness (tree-sitter/fuzz-action)
+#                      over the generated parser and the external scanner, seeded
+#                      with the fixtures: a crash, hang or sanitizer report fails
+#                      the job and uploads the reproducer. Short on pull requests,
+#                      longer on the weekly run.
+# =============================================================================
+
+name: Fuzz parser
+
+on:
+  pull_request:
+    paths:
+      - 'grammar.js'
+      - 'grammar/**'
+      - 'src/scanner.c'
+      - 'src/parser.c'
+      - '.github/workflows/fuzz.yml'
+  schedule:
+    - cron: '30 8 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fuzz-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fuzz:
+    name: Parser fuzzing
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Fuzz the parser and scanner
+        uses: tree-sitter/fuzz-action@6a1dcff00aefd038ba418bd63732a9add4901266 # v4
+        with:
+          directory: .
+          corpus: test/fixtures
+          tree-sitter-version: v0.27.2
+          # Seconds: five minutes on a pull request, thirty on the weekly run.
+          max-time: ${{ github.event_name == 'schedule' && '1800' || '300' }}
+          timeout: '10'
+          max-length: '4096'

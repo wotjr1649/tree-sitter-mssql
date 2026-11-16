@@ -1,0 +1,29 @@
+{
+"meta": {"mode":"PARSEONLY","engine":{"product_version":"17.0.5065.9","product_level":"RTM","edition":"Enterprise Developer Edition (64-bit)","platform":"Linux","collation":"SQL_Latin1_General_CP1_CI_AS"},"session_set":{"quoted_identifier":1,"ansi_nulls":1,"ansi_padding":1,"ansi_warnings":1,"arithabort":0,"concat_null_yields_null":1},"levels":[100,110,120,130,140,150,160,170],"cases_sha256":"325aa10e286bbde244f83f4ce520cd0ae650e314746638f825c09c57b31e9865","runner":"oracle/runner/ParseOnly (C#, Microsoft.Data.SqlClient)","runner_sha256":"a2995ba64f6c912af4e935db9d2897e758a7a889f4bc1d7a14b9e67ec051132c","observed_utc":"2026-11-16"},
+"verdicts": {
+  "surface-fix-expressions/money/negative": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/money/positive": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/money/commas": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/money/action": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/hex/lf": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/hex/crlf": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/hex/plain": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/whitespace/en-space": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/whitespace/bracket-name": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/nulls/ignore": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/nulls/respect": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/nulls/first": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/odbc/guid": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/odbc/lower-guid": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/odbc/date": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/method/cast": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/method/try-cast": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/method/chain": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/subquery/if": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/subquery/while": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/subquery/nested": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/subquery/select": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/graph/last-start": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "surface-fix-expressions/graph/last-end": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]}
+}
+}
