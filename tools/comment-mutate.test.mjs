@@ -37,6 +37,64 @@ test('line mutation only uses existing newline gaps and handles CRLF', () => {
   assert.deepEqual(gaps(' \tSELECT 1;\n'), [8]);
 });
 
+test('CR-only client lines and line-comment boundaries stay separate', () => {
+  const sql = 'SELECT 1; -- tail\r SELECT 2;\r GO 2\r:r file.sql\rSELECT 3;';
+  const all = variants(sql);
+  for (const value of Object.values(all)) assert(value.includes('\r GO 2\r:r file.sql\r'));
+  assert(all.space.includes('-- tail\r SELECT 2;'));
+  assert(all.newline.includes('-- tail\r\nSELECT\n2;'));
+});
+
+test('case axes change only tree keyword byte ranges, preserving Unicode and protected text', () => {
+  const sql = `select 한글, [SELECT], "FROM", 'WHERE' from MixedName; -- SELECT`;
+  const from = Buffer.byteLength(sql.slice(0, sql.indexOf('from MixedName')));
+  const all = variants(sql, [
+    [0, 6],
+    [from, from + 4],
+  ]);
+  assert.equal(
+    all.upper,
+    sql.replace('select', 'SELECT').replace('from MixedName', 'FROM MixedName'),
+  );
+  assert.equal(all.lower, sql);
+  assert.equal(
+    all.mixed,
+    sql.replace('select', 'SeLeCt').replace('from MixedName', 'FrOm MixedName'),
+  );
+});
+
+test('JavaScript Unicode whitespace is not assumed to be SQL token-gap whitespace', () => {
+  for (const separator of ['\ufeff', '\u180e']) {
+    for (const source of Object.values(variants(`SELECT 1 WHERE 1 !${separator}= 2;`)))
+      assert(source.includes(`!${separator}=`));
+  }
+});
+
+test('whitespace axes replace whole runs but preserve tokens, client lines and line-comment terminators', () => {
+  for (const newline of ['\n', '\r\n']) {
+    const sql = `SELECT\t 1, 'a  b', [a  b], 0x12\\${newline}34; -- tail${newline}  SELECT 2;${newline} GO 2${newline}:r a file.sql${newline}SELECT 3;`;
+    const all = variants(sql);
+    for (const [kind, gap] of [
+      ['space', ' '],
+      ['newline', '\n'],
+      ['tab-crlf', '\t\r\n'],
+    ]) {
+      assert(
+        all[kind].startsWith(
+          `SELECT${gap}1,${gap}'a  b',${gap}[a  b],${gap}0x12\\${newline}34;${gap}-- tail${newline}${gap}SELECT${gap}2;`,
+        ),
+        kind,
+      );
+      assert(all[kind].includes(`${newline} GO 2${newline}:r a file.sql${newline}`), kind);
+    }
+  }
+  assert.equal(
+    variants('SELECT 1 FOR  SYSTEM_TIME AS OF 1;', [[9, 25]]).space,
+    'SELECT 1 FOR  SYSTEM_TIME AS OF 1;',
+  );
+  assert.equal(variants('SELECT 1 !\t = 2;', [], [[9, 13]]).space, 'SELECT 1 !\t = 2;');
+});
+
 const report = (path = 'a.sql') => ({
   path,
   root_has_error: false,
@@ -89,4 +147,10 @@ test('parse failures and unique sorted constraint rules are compared independent
   assert.equal(result.parseChanges, 1);
   assert.deepEqual(result.rules, { old: { added: 0, removed: 1 }, new: { added: 1, removed: 0 } });
   assert.equal(compare([{ id: 'case' }], [from, from, from]).changes.length, 0);
+});
+
+test('engine-measured Unicode and control separators are normalized outside tokens', () => {
+  for (const separator of ['\u0000', '\u001f', '\u0085', '\u00a0', '\u2002', '\u200b', '\u2028']) {
+    assert.equal(variants(`SELECT${separator}1;`).space, 'SELECT 1;');
+  }
 });

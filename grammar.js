@@ -9,7 +9,13 @@ import { sqlcmd_command } from './grammar/helpers.js';
 export default grammar({
   name: 'mssql',
 
-  extras: ($) => [/[\s\u2002]/, $.comment, $.marginalia],
+  // Engine-measured token separators: oracle/probes/metamorphic-whitespace.jsonl, levels 100-170.
+  extras: ($) => [
+    // oxlint-disable-next-line no-control-regex -- SQL Server accepts these controls as token separators.
+    /[\u0000-\u0020\u0085\u00a0\u1680\u2000-\u200b\u2028\u2029\u202f\u205f\u3000]/,
+    $.comment,
+    $.marginalia,
+  ],
 
   // The block comment is lexed by src/scanner.c rather than a regex because
   // T-SQL block comments nest, and a regex cannot match balanced nesting.

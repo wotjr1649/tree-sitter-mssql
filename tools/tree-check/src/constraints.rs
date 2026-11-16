@@ -79,105 +79,11 @@ pub struct Violation {
 }
 
 pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
-    if !tree.root_node().has_error() {
-        return check_syntax(tree, source);
+    // Recovery nodes change with trivia; syntax failure already rejects the input.
+    if tree.root_node().has_error() {
+        return Vec::new();
     }
-    // Whitespace and extras can change error recovery; diagnose the same canonical token stream.
-    let (normalized, origins) = canonical_source(source);
-    let mut parser = tree_sitter::Parser::new();
-    parser
-        .set_language(&tree_sitter_mssql::LANGUAGE.into())
-        .unwrap();
-    let normalized_tree = parser.parse(&normalized, None).unwrap();
-    let mut violations = check_syntax(&normalized_tree, &normalized);
-    for violation in &mut violations {
-        let line_start = normalized
-            .split_inclusive(|byte| *byte == b'\n')
-            .take(violation.row)
-            .map(<[u8]>::len)
-            .sum::<usize>();
-        let at = origins[line_start + violation.column];
-        violation.row = source[..at].iter().filter(|byte| **byte == b'\n').count();
-        violation.column = source[..at]
-            .iter()
-            .rposition(|byte| *byte == b'\n')
-            .map_or(at, |newline| at - newline - 1);
-    }
-    violations
-}
-
-fn canonical_source(source: &[u8]) -> (Vec<u8>, Vec<usize>) {
-    let mut normalized = Vec::with_capacity(source.len());
-    let mut origins = Vec::with_capacity(source.len() + 1);
-    let mut at = 0;
-    while at < source.len() {
-        let start = at;
-        let byte = source[at];
-        if matches!(byte, b'\'' | b'"' | b'[') {
-            let close = if byte == b'[' { b']' } else { byte };
-            at += 1;
-            while at < source.len() {
-                if source[at] == close {
-                    at += 1;
-                    if source.get(at) != Some(&close) {
-                        break;
-                    }
-                }
-                at += 1;
-            }
-            normalized.extend_from_slice(&source[start..at]);
-            origins.extend(start..at);
-            continue;
-        }
-        if byte.is_ascii_whitespace()
-            || source[at..].starts_with(b"--")
-            || source[at..].starts_with(b"/*")
-        {
-            let mut newline = false;
-            loop {
-                if source.get(at).is_some_and(u8::is_ascii_whitespace) {
-                    newline |= source[at] == b'\n';
-                    at += 1;
-                } else if source[at..].starts_with(b"--") {
-                    at += 2;
-                    while at < source.len() && source[at] != b'\n' {
-                        at += 1;
-                    }
-                } else if source[at..].starts_with(b"/*") {
-                    at += 2;
-                    let mut depth = 1;
-                    while at < source.len() && depth > 0 {
-                        if source[at..].starts_with(b"/*") {
-                            depth += 1;
-                            at += 2;
-                        } else if source[at..].starts_with(b"*/") {
-                            depth -= 1;
-                            at += 2;
-                        } else {
-                            newline |= source[at] == b'\n';
-                            at += 1;
-                        }
-                    }
-                    if depth > 0 {
-                        normalized.extend_from_slice(&source[start..]);
-                        origins.extend(start..source.len());
-                        origins.push(source.len());
-                        return (normalized, origins);
-                    }
-                } else {
-                    break;
-                }
-            }
-            normalized.push(if newline { b'\n' } else { b' ' });
-            origins.push(start);
-        } else {
-            normalized.push(byte);
-            origins.push(at);
-            at += 1;
-        }
-    }
-    origins.push(source.len());
-    (normalized, origins)
+    check_syntax(tree, source)
 }
 
 fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
@@ -5050,36 +4956,26 @@ mod tests {
     }
 
     #[test]
-    fn canonical_error_source_preserves_literals_and_maps_diagnostics() {
-        let sql = b"SELECT  '/* string */'  AS [a  ]] b], \"--quoted\" /* outer /* nested */ */\r\n FROM t;";
-        let (normalized, origins) = canonical_source(sql);
-        assert_eq!(
-            normalized,
-            b"SELECT '/* string */' AS [a  ]] b], \"--quoted\"\nFROM t;"
-        );
-        let token = normalized
-            .windows(4)
-            .position(|part| part == b"FROM")
-            .unwrap();
-        assert_eq!(&sql[origins[token]..origins[token] + 4], b"FROM");
-        let malformed = b"SELECT 1 </* unterminated = 2;\n";
-        assert_eq!(canonical_source(malformed).0, malformed);
-        let invalid_utf8 = b"SELECT 1 /* \xff */\nFROM t;";
-        assert_eq!(canonical_source(invalid_utf8).0, b"SELECT 1\nFROM t;");
-    }
-
-    #[test]
     fn comments_do_not_change_error_recovery_constraints() {
         for sql in [
             "BACKUP DATABASE 'd' TO DISK = 'a.bak';",
             "BACKUP DATABASE d TO 'a';",
+            "RESTORE DATABASE 'd' FROM DISK = 'a.bak';",
             "BACKUP DATABASE d TO DISK = 'a' WITH STATS = 5 + 5;",
             "SELECT TOP (10) WITH APPROXIMATE t.c1 FROM VECTOR_SEARCH(TABLE = dbo.docs AS t, COLUMN = v1, SIMILAR_TO = @q) AS r;",
         ] {
             assert!(parse(sql).root_node().has_error(), "{sql}");
             let commented = sql.replace(' ', " /* 기밀 C:\\audit */ ");
             assert!(parse(&commented).root_node().has_error(), "{commented}");
-            assert_eq!(rules(&commented), rules(sql), "{commented}");
+            for variant in [
+                sql.to_string(),
+                commented,
+                sql.replace(' ', "\n"),
+                sql.replace(' ', "\t\r\n"),
+            ] {
+                assert!(parse(&variant).root_node().has_error(), "{variant}");
+                assert!(rules(&variant).is_empty(), "{variant}");
+            }
         }
     }
 

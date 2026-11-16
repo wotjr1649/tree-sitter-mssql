@@ -1,5 +1,5 @@
-// Comments at token gaps must preserve parse state and constraint-rule sets, including invalid inputs.
-// Usage: node tools/comment-mutate.mjs --tree-check <exe> [inputs.jsonl | sql-directory ...]
+// Equivalent comments, keyword case and token-gap whitespace must preserve every verdict, even for invalid input.
+// Usage: node tools/comment-mutate.mjs --tree-check <exe> [--axes comment,case,whitespace] [inputs.jsonl | sql-directory ...]
 // Defaults: every oracle case and SQL fixture. GO/sqlcmd lines are client directives, not token gaps.
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
@@ -18,11 +18,24 @@ import { performance } from 'node:perf_hooks';
 import { pathToFileURL } from 'node:url';
 import { readCases } from './oracle-replay.mjs';
 
-export function gaps(sql) {
+// LocalDB 17.0.1000.7, levels 100-170: oracle/probes/metamorphic-whitespace.jsonl.
+const SQL_WHITESPACE =
+  /[\u0000-\u0020\u0085\u00a0\u1680\u2000-\u200b\u2028\u2029\u202f\u205f\u3000]/;
+
+export const AXES = {
+  comment: ['block', 'line'],
+  case: ['upper', 'lower', 'mixed'],
+  whitespace: ['space', 'newline', 'tab-crlf'],
+};
+
+function whitespaceRuns(sql) {
   const at = [];
   let i = 0;
+  let lineCommentEnd = -1;
   const directive = (p) =>
-    /^(?:[^\S\r\n])*(?:GO\b|:)/i.test(sql.slice(sql.lastIndexOf('\n', p - 1) + 1));
+    /^(?:[^\S\r\n])*(?:GO\b|:)/i.test(
+      sql.slice(Math.max(sql.lastIndexOf('\n', p - 1), sql.lastIndexOf('\r', p - 1)) + 1),
+    );
   while (i < sql.length) {
     const c = sql[i];
     if (/^0[xX]/.test(sql.slice(i)) && (i === 0 || !/[\p{ID_Continue}@$#]/u.test(sql[i - 1]))) {
@@ -38,8 +51,10 @@ export function gaps(sql) {
         }
       }
     } else if (sql.startsWith('--', i)) {
-      i = sql.indexOf('\n', i);
-      if (i < 0) break;
+      const end = /[\r\n]/.exec(sql.slice(i));
+      if (!end) break;
+      i += end.index;
+      lineCommentEnd = i;
     } else if (sql.startsWith('/*', i)) {
       let depth = 0;
       while (i < sql.length) {
@@ -51,17 +66,23 @@ export function gaps(sql) {
           if (!--depth) break;
         } else i++;
       }
-    } else if (/\s/.test(c)) {
+    } else if (SQL_WHITESPACE.test(c)) {
       const start = i;
-      while (i < sql.length && /\s/.test(sql[i])) i++;
-      if (start > 0 && i < sql.length && !directive(start) && !directive(i)) at.push(start);
+      while (i < sql.length && SQL_WHITESPACE.test(sql[i])) i++;
+      if (start > 0 && i < sql.length && !directive(start) && !directive(i))
+        at.push([start, i, start === lineCommentEnd]);
     } else i++;
   }
   return at;
 }
 
-export function variants(sql) {
-  const positions = gaps(sql);
+export function gaps(sql) {
+  return whitespaceRuns(sql).map(([start]) => start);
+}
+
+export function variants(sql, keywordRanges = [], tokenRanges = keywordRanges) {
+  const runs = whitespaceRuns(sql);
+  const positions = runs.map(([start]) => start);
   const insert = (at, text) => {
     let last = 0;
     let result = '';
@@ -71,14 +92,48 @@ export function variants(sql) {
     }
     return result + sql.slice(last);
   };
-  return {
+  const result = {
     orig: sql,
     block: insert(positions, ' /*c*/'),
     line: insert(
-      positions.filter((p) => /^[ \t]*\r?\n/.test(sql.slice(p))),
+      positions.filter((p) => /^[ \t]*(?:\r\n?|\n)/.test(sql.slice(p))),
       ' --c\n',
     ),
   };
+  // tree-check reports byte ranges; Buffer also keeps non-ASCII identifiers unchanged.
+  const bytes = Buffer.from(sql);
+  for (const kind of AXES.case) {
+    const mutated = Buffer.from(bytes);
+    for (const [start, end] of keywordRanges) {
+      for (let i = start; i < end; i++) {
+        const c = bytes[i];
+        if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122)) {
+          mutated[i] =
+            kind === 'upper' || (kind === 'mixed' && (i - start) % 2 === 0) ? c & ~32 : c | 32;
+        }
+      }
+    }
+    result[kind] = mutated.toString();
+  }
+  for (const [kind, text] of [
+    ['space', ' '],
+    ['newline', '\n'],
+    ['tab-crlf', '\t\r\n'],
+  ]) {
+    let last = 0;
+    let mutated = '';
+    for (const [start, end, afterLineComment] of runs) {
+      const byte = Buffer.byteLength(sql.slice(0, start));
+      // Atomic multi-word keywords and scanner operators can contain whitespace.
+      if (tokenRanges.some(([a, b]) => a < byte && byte < b)) continue;
+      // The newline ending -- is part of the client's lexical boundary.
+      const newline = afterLineComment ? /^(?:\r\n?|\n)/.exec(sql.slice(start))[0] : '';
+      mutated += sql.slice(last, start) + newline + text;
+      last = end;
+    }
+    result[kind] = mutated + sql.slice(last);
+  }
+  return result;
 }
 
 export function readVerdicts(result, paths) {
@@ -119,18 +174,16 @@ export function readVerdicts(result, paths) {
   });
 }
 
-export function compare(inputs, verdicts) {
-  assert.equal(verdicts.length, inputs.length * 3, 'missing mutation verdicts');
+export function compare(inputs, verdicts, kinds = AXES.comment) {
+  const width = kinds.length + 1;
+  assert.equal(verdicts.length, inputs.length * width, 'missing mutation verdicts');
   const changes = [];
   const rules = {};
   let parseChanges = 0;
   inputs.forEach((input, i) => {
-    const from = verdicts[i * 3];
-    for (const [offset, variant] of [
-      [1, 'block'],
-      [2, 'line'],
-    ]) {
-      const to = verdicts[i * 3 + offset];
+    const from = verdicts[i * width];
+    for (const [index, variant] of kinds.entries()) {
+      const to = verdicts[i * width + index + 1];
       if (JSON.stringify(from) === JSON.stringify(to)) continue;
       changes.push({ id: input.id, variant, from, to });
       if (from.parse !== to.parse) parseChanges++;
@@ -144,7 +197,7 @@ export function compare(inputs, verdicts) {
   return { changes, rules, parseChanges };
 }
 
-export function checkCases(checker, inputs) {
+export function checkCases(checker, inputs, axes = Object.keys(AXES)) {
   assert(inputs.length > 0, 'no mutation inputs');
   assert.equal(
     new Set(inputs.map((c) => c.id)).size,
@@ -153,26 +206,58 @@ export function checkCases(checker, inputs) {
   );
   const dir = mkdtempSync(join(tmpdir(), 'comment-mutate-'));
   try {
-    const paths = inputs.flatMap((c, i) =>
-      Object.entries(variants(c.source)).map(([kind, source]) => {
+    const list = join(dir, 'paths.txt');
+    const originalPaths = inputs.map((c, i) => {
+      const path = join(dir, `${i}.orig.sql`);
+      writeFileSync(path, c.source);
+      return path;
+    });
+    const run = (paths, args = []) => {
+      writeFileSync(list, paths.join('\n'));
+      return spawnSync(checker, [...args, '--paths', list], {
+        encoding: 'utf8',
+        maxBuffer: 1 << 28,
+        timeout: 180000,
+      });
+    };
+    const originals = run(originalPaths, ['--keyword-ranges']);
+    readVerdicts(originals, originalPaths);
+    const ranges = originals.stdout
+      .trim()
+      .split('\n')
+      .map((line) => {
+        const row = JSON.parse(line);
+        assert(
+          Array.isArray(row.keyword_ranges) && Array.isArray(row.token_ranges),
+          'tree-check must support --keyword-ranges',
+        );
+        return row;
+      });
+    const kinds = axes.flatMap((axis) => {
+      assert(AXES[axis], `unknown mutation axis: ${axis}`);
+      return AXES[axis];
+    });
+    const paths = inputs.flatMap((c, i) => {
+      const all = variants(c.source, ranges[i].keyword_ranges, ranges[i].token_ranges);
+      return ['orig', ...kinds].map((kind) => {
+        const source = all[kind];
         const path = join(dir, `${i}.${kind}.sql`);
         writeFileSync(path, source);
         return path;
-      }),
+      });
+    });
+    const verdicts = readVerdicts(run(paths), paths);
+    const result = compare(inputs, verdicts, kinds);
+    result.axes = Object.fromEntries(
+      axes.map((axis) => [
+        axis,
+        {
+          variants: inputs.length * AXES[axis].length,
+          changes: result.changes.filter((c) => AXES[axis].includes(c.variant)).length,
+        },
+      ]),
     );
-    const list = join(dir, 'paths.txt');
-    writeFileSync(list, paths.join('\n'));
-    return compare(
-      inputs,
-      readVerdicts(
-        spawnSync(checker, ['--paths', list], {
-          encoding: 'utf8',
-          maxBuffer: 1 << 28,
-          timeout: 180000,
-        }),
-        paths,
-      ),
-    );
+    return result;
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -185,17 +270,24 @@ function main(argv) {
     'usage: comment-mutate.mjs --tree-check <exe> [inputs.jsonl | sql-directory ...]',
   );
   assert(argv[1], '--tree-check needs an executable');
-  const sources =
-    argv.length > 2
-      ? argv.slice(2)
-      : [
-          'oracle/kit/cases.jsonl',
-          ...readdirSync('oracle/probes')
-            .filter((f) => f.endsWith('.jsonl'))
-            .sort()
-            .map((f) => join('oracle/probes', f)),
-          'test/fixtures',
-        ];
+  let axes = Object.keys(AXES);
+  let sources = argv.slice(2);
+  if (sources[0] === '--axes') {
+    assert(sources[1], '--axes needs comma-separated axis names');
+    axes = sources[1].split(',');
+    assert.equal(new Set(axes).size, axes.length, 'duplicate mutation axes');
+    sources = sources.slice(2);
+  }
+  sources = sources.length
+    ? sources
+    : [
+        'oracle/kit/cases.jsonl',
+        ...readdirSync('oracle/probes')
+          .filter((f) => f.endsWith('.jsonl'))
+          .sort()
+          .map((f) => join('oracle/probes', f)),
+        'test/fixtures',
+      ];
   const inputs = sources.flatMap((source) =>
     statSync(source).isDirectory()
       ? readdirSync(source)
@@ -205,9 +297,11 @@ function main(argv) {
       : readCases(readFileSync(source, 'utf8')),
   );
   const started = performance.now();
-  const result = checkCases(resolve(argv[1]), inputs);
-  const summary = `Comment mutation: ${inputs.length} inputs, ${inputs.length * 2} variants, ${result.changes.length} changed verdicts, ${result.parseChanges} parse changes (${((performance.now() - started) / 1000).toFixed(2)} s)`;
+  const result = checkCases(resolve(argv[1]), inputs, axes);
+  const summary = `Mutation: ${inputs.length} inputs, ${result.changes.length} changed verdicts, ${result.parseChanges} parse changes (${((performance.now() - started) / 1000).toFixed(2)} s)`;
   console.log(summary);
+  for (const [axis, counts] of Object.entries(result.axes))
+    console.log(`${axis}: ${counts.variants} variants, ${counts.changes} changed verdicts`);
   for (const [rule, counts] of Object.entries(result.rules).sort(([a], [b]) => a.localeCompare(b)))
     console.log(`${rule}: +${counts.added} -${counts.removed}`);
   for (const change of result.changes) console.log(JSON.stringify(change));
