@@ -198,3 +198,13 @@ Nested set operands recover on both sides; operand-local trailing clauses are co
 
 Undeclared variables (Msg 137) in the probes remain contextual; syntax is accepted.
 LIKE ESCAPE and JSON aggregates remain outside this change.
+
+## Remaining routes (R17)
+
+R17 recovers all 119 remaining engine-accepted kit routes in scope, including the six R13 open query forms listed above. Positivity merges every committed engine and compatibility level. The excluded first errors remain LIKE ESCAPE (B01-r006) and JSON aggregates (V22-r014). Evidence: oracle/probes/ddl-rest.jsonl and LocalDB 17.0.1000.7 levels 100–170; the committed Linux verdicts identify edition-limited positive routes.
+
+The 533 neighbours include 328 engine positives, all clean. Four engine-negative probes remain clean: two pre-existing permission-name gaps (permission-new-permission-words, permission-unknown-permission) and two undeclared-variable cases newly supported syntactically (routes-implicit-exec-args, commit-off). The existing committed issue151-implicit-local case also remains a contextual error-to-clean transition. Do not infer catalog, type, permission or variable resolution from syntax trees.
+
+Closing probes reject scalar XE source parentheses, database/server-qualified DROP SEQUENCE names, measured CONNECT ON AVAILABILITY GROUP combinations, and quoted multiword class qualifiers. The graph_match.sql fixture is corrected to grouped SHORTEST_PATH and OR of complete MATCH predicates: the original and shortest-path-only correction are engine 102, the final fixture is accepted at every level. Original fixture bytes remain in the tree-preservation snapshot inputs.
+
+PARSEONLY accepts PRIORITY_LEVEL = 11, several spatial grid/bounding-box forms, and an application role without PASSWORD; no guessed restrictions are added. Event-session clause reordering beyond the fixed ADD/DROP sequence remains a pre-existing gap. Later set-operation INTO also remains outside this work.

@@ -166,7 +166,19 @@ DROP EXTERNAL TABLE dbo.ext, dbo.ext2;
 
 --------------------------------------------------------------------------------
 
-(program (batch (statement (drop_external_table (keyword_drop) (keyword_external) (keyword_table) name: (object_reference schema: (identifier) name: (identifier))))) (ERROR (identifier) (identifier)))
+(program
+  (batch
+    (statement
+      (drop_external_table
+        (keyword_drop)
+        (keyword_external)
+        (keyword_table)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))))
+    (ERROR
+      (identifier)
+      (identifier))))
 
 ================================================================================
 ddl-external/external-table-drop-if-exists (engine 156; LocalDB 17.0.1000.7 levels 100-170)
@@ -572,7 +584,18 @@ DROP EXTERNAL STREAM s;
 
 --------------------------------------------------------------------------------
 
-(program (ERROR (keyword_drop) (keyword_external)) (batch))
+(program
+  (ERROR
+    (keyword_drop)
+    (keyword_external))
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          name: (identifier))
+        (exec_argument
+          value: (field
+            name: (identifier)))))))
 
 ================================================================================
 ddl-external/external-new-words-identifiers (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
@@ -1102,7 +1125,17 @@ DROP FULLTEXT INDEX dbo.docs;
 
 --------------------------------------------------------------------------------
 
-(program (ERROR (keyword_drop) (keyword_fulltext) (keyword_index)) (batch))
+(program
+  (ERROR
+    (keyword_drop)
+    (keyword_fulltext)
+    (keyword_index))
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          schema: (identifier)
+          name: (identifier))))))
 
 ================================================================================
 ddl-external/fulltext-identifier-positions (engine accepts; LocalDB 17.0.1000.7 levels 100-170)
@@ -1652,25 +1685,7 @@ CREATE ENDPOINT ep AS TCP (LISTENER_PORT = 1434, LISTENER_IP = (::1)) FOR TSQL (
 
 --------------------------------------------------------------------------------
 
-(program
-  (batch
-    (statement
-      (create_endpoint
-        (keyword_create)
-        (keyword_endpoint)
-        name: (identifier)
-        (endpoint_transport
-          (keyword_as)
-          (identifier)
-          (option
-            name: (identifier)
-            value: (literal))
-          (ERROR
-            (identifier)
-            (literal)))
-        (endpoint_payload
-          (keyword_for)
-          type: (identifier))))))
+(program (batch (statement (create_endpoint (keyword_create) (keyword_endpoint) name: (identifier) (endpoint_transport (keyword_as) (identifier) (option name: (identifier) value: (literal)) (ERROR (identifier) (literal))) (endpoint_payload (keyword_for) type: (identifier))))))
 
 ================================================================================
 ddl-external/endpoint-invalid-alter-authorization (engine 156; LocalDB 17.0.1000.7 levels 100-170)

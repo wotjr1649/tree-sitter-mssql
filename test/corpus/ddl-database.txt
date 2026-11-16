@@ -296,7 +296,19 @@ ALTER DATABASE ProbeStore MODIFY FILEGROUP probe_fg DEFAULT READ_ONLY;
 
 ---
 
-(program (batch (statement (alter_database (keyword_alter) (keyword_database) name: (identifier) (keyword_modify) (keyword_filegroup) (identifier) (keyword_default))) (statement (label_statement (identifier) (MISSING ":")))))
+(program
+  (batch
+    (statement
+      (alter_database
+        (keyword_alter)
+        (keyword_database)
+        name: (identifier)
+        (keyword_modify)
+        (keyword_filegroup)
+        (identifier)
+        (keyword_default)))
+    (ERROR
+      (identifier))))
 
 ================================================================================
 ddl-database/database-set/positive-001 — LocalDB 17.0.1000.7 levels 100-170: accepted
@@ -910,7 +922,24 @@ ALTER DATABASE ENCRYPTION KEY REGENERATE WITH ALGORITHM = AES_128 ENCRYPTION BY 
 
 ---
 
-(program (batch (statement (alter_database_encryption_key (keyword_alter) (keyword_database) (keyword_encryption) (keyword_key) (keyword_regenerate) (with_clause (keyword_with) (option name: (identifier) value: (identifier))))) (ERROR (identifier) (keyword_by) (keyword_server) (keyword_certificate))))
+(program
+  (batch
+    (statement
+      (alter_database_encryption_key
+        (keyword_alter)
+        (keyword_database)
+        (keyword_encryption)
+        (keyword_key)
+        (keyword_regenerate)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier)))))
+    (ERROR
+      (identifier)
+      (keyword_server)
+      (keyword_certificate))))
 
 ================================================================================
 ddl-database/security-ddl/positive-009 — LocalDB 17.0.1000.7 levels 100-170: rejected 15151
@@ -1370,7 +1399,17 @@ ALTER AVAILABILITY GROUP probe_ag FAILOVER OFFLINE;
 
 ---
 
-(program (batch (statement (alter_availability_group (keyword_alter) (keyword_availability) (keyword_group) name: (identifier) (keyword_failover))) (statement (label_statement (identifier) (MISSING ":")))))
+(program
+  (batch
+    (statement
+      (alter_availability_group
+        (keyword_alter)
+        (keyword_availability)
+        (keyword_group)
+        name: (identifier)
+        (keyword_failover)))
+    (ERROR
+      (identifier))))
 
 ================================================================================
 ddl-database/server/positive-001 — LocalDB 17.0.1000.7 levels 100-170: accepted
@@ -1540,7 +1579,20 @@ ALTER SERVER CONFIGURATION SET HARDWARE_OFFLOAD OFF;
 
 ---
 
-(program (ERROR (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_off)) (batch))
+(program
+  (ERROR
+    (keyword_alter)
+    (keyword_server)
+    (keyword_configuration)
+    (keyword_set))
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          name: (identifier))
+        (exec_argument
+          value: (field
+            name: (identifier)))))))
 
 ================================================================================
 ddl-database/server/positive-018 — LocalDB 17.0.1000.7 levels 100-170: accepted
@@ -1640,7 +1692,19 @@ ALTER SERVER CONFIGURATION SET DIAGNOSTICS LOG ON OFF;
 
 ---
 
-(program (batch (statement (alter_server_configuration (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_diagnostics) (keyword_log) (keyword_on))) (statement (label_statement (identifier) (MISSING ":")))))
+(program
+  (batch
+    (statement
+      (alter_server_configuration
+        (keyword_alter)
+        (keyword_server)
+        (keyword_configuration)
+        (keyword_set)
+        (keyword_diagnostics)
+        (keyword_log)
+        (keyword_on)))
+    (ERROR
+      (identifier))))
 
 ================================================================================
 ddl-database/server/negative-suspected-006 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
@@ -1650,7 +1714,20 @@ ALTER SERVER CONFIGURATION SET MYSTERY ON;
 
 ---
 
-(program (ERROR (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_on)) (batch))
+(program
+  (ERROR
+    (keyword_alter)
+    (keyword_server)
+    (keyword_configuration)
+    (keyword_set))
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          name: (identifier))
+        (exec_argument
+          value: (field
+            name: (identifier)))))))
 
 ================================================================================
 ddl-database/server/negative-suspected-007 — LocalDB 17.0.1000.7 levels 100-170: rejected 102
@@ -2336,7 +2413,25 @@ ALTER DATABASE ENCRYPTION KEY REGENERATE WITH ALGORITHM = AES_192 ENCRYPTION BY 
 
 ---
 
-(program (batch (statement (alter_database_encryption_key (keyword_alter) (keyword_database) (keyword_encryption) (keyword_key) (keyword_regenerate) (with_clause (keyword_with) (option name: (identifier) value: (identifier))))) (ERROR (identifier) (keyword_by) (keyword_server) (keyword_asymmetric) (keyword_key))))
+(program
+  (batch
+    (statement
+      (alter_database_encryption_key
+        (keyword_alter)
+        (keyword_database)
+        (keyword_encryption)
+        (keyword_key)
+        (keyword_regenerate)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier)))))
+    (ERROR
+      (identifier)
+      (keyword_server)
+      (keyword_asymmetric)
+      (keyword_key))))
 
 ================================================================================
 ddl-database/extra-hardware-offload/case-001 — LocalDB 17.0.1000.7 levels 100-170: rejected 156
@@ -2346,7 +2441,20 @@ ALTER SERVER CONFIGURATION SET HARDWARE_OFFLOAD ON;
 
 ---
 
-(program (ERROR (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_on)) (batch))
+(program
+  (ERROR
+    (keyword_alter)
+    (keyword_server)
+    (keyword_configuration)
+    (keyword_set))
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          name: (identifier))
+        (exec_argument
+          value: (field
+            name: (identifier)))))))
 
 ================================================================================
 ddl-database/extra-hardware-offload/case-002 — LocalDB 17.0.1000.7 levels 100-170: rejected 156
@@ -2356,7 +2464,20 @@ ALTER SERVER CONFIGURATION SET HARDWARE_OFFLOAD OFF;
 
 ---
 
-(program (ERROR (keyword_alter) (keyword_server) (keyword_configuration) (keyword_set) (keyword_off)) (batch))
+(program
+  (ERROR
+    (keyword_alter)
+    (keyword_server)
+    (keyword_configuration)
+    (keyword_set))
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          name: (identifier))
+        (exec_argument
+          value: (field
+            name: (identifier)))))))
 
 ================================================================================
 ddl-database/extra-hardware-offload/case-003 — LocalDB 17.0.1000.7 levels 100-170: rejected 102

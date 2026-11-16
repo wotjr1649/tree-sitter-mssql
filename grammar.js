@@ -77,6 +77,8 @@ export default grammar({
     [$.output_clause],
     // `FROM t WITH` — a table hint or the next statement's CTE.
     [$._relation_with_hint],
+    // FOR may begin a graph path modifier or the query's trailing FOR clause.
+    [$.relation],
     // `SELECT a b` — `b` may be an alias or continue the expression.
     [$.term],
     // A cursor variable starts with a parameter token, like table variables and named cursors.
@@ -134,29 +136,46 @@ export default grammar({
       choice(
         prec.right(
           seq(
-            repeat1(
-              choice(
-                seq(choice($.statement, $.block), optional(';')),
-                ';',
-                $.sqlcmd_setvar,
-                $.sqlcmd_include,
-                $.sqlcmd_on_error,
-                $.sqlcmd_reset,
-                $.sqlcmd_output,
-                $.sqlcmd_connect,
-                $.sqlcmd_xml,
-                $.sqlcmd_exit,
-                $.sqlcmd_quit,
-                $.sqlcmd_list,
-                $.sqlcmd_listvar,
-                $.sqlcmd_ed,
-                $.sqlcmd_shell,
-              ),
+            choice(
+              repeat1($._batch_item),
+              seq(alias($._implicit_execute_statement, $.statement), repeat($._batch_item)),
             ),
             optional($.go_statement),
           ),
         ),
         $.go_statement,
+      ),
+
+    _batch_item: ($) =>
+      choice(
+        prec.right(seq(choice($.statement, $.block), optional(';'))),
+        ';',
+        $.sqlcmd_setvar,
+        $.sqlcmd_include,
+        $.sqlcmd_on_error,
+        $.sqlcmd_reset,
+        $.sqlcmd_output,
+        $.sqlcmd_connect,
+        $.sqlcmd_xml,
+        $.sqlcmd_exit,
+        $.sqlcmd_quit,
+        $.sqlcmd_list,
+        $.sqlcmd_listvar,
+        $.sqlcmd_ed,
+        $.sqlcmd_shell,
+      ),
+
+    _implicit_execute_statement: ($) => alias($._implicit_execute_body, $.execute_statement),
+
+    // SQL Server permits omission of EXEC only for the first statement in a batch.
+    _implicit_execute_body: ($) =>
+      prec.right(
+        seq(
+          field('procedure', $.object_reference),
+          optional(alias($._exec_procedure_number, $.literal)),
+          optional($._exec_arguments),
+          optional(seq($.keyword_with, $.keyword_recompile)),
+        ),
       ),
 
     // T-SQL batch separator. Not a T-SQL keyword at all — it's a command

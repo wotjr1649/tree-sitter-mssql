@@ -7,8 +7,11 @@ selections
 ---
 
 (program
-  (ERROR
-    (identifier)))
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          name: (identifier))))))
 
 ==================
 ^selections for your perusal
@@ -19,9 +22,16 @@ selections for your perusal
 ---
 
 (program
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          name: (identifier))
+        (exec_argument
+          value: (field
+            name: (identifier))))))
   (ERROR
-    (identifier)
-    (keyword_for)))
+    (identifier)))
 
 ==================
 ^inserted_at
@@ -34,9 +44,9 @@ inserted_at
 (program
   (batch
     (statement
-      (label_statement
-        (identifier)
-        (MISSING ":")))))
+      (execute_statement
+        procedure: (object_reference
+          name: (identifier))))))
 
 ==================
 ^updated_at
@@ -47,8 +57,11 @@ updated_at
 ---
 
 (program
-  (ERROR
-    (identifier)))
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          name: (identifier))))))
 
 ==================
 ^deleted_at
@@ -59,8 +72,11 @@ deleted_at
 ---
 
 (program
-  (ERROR
-    (identifier)))
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          name: (identifier))))))
 
 ==================
 ^created_at
@@ -71,8 +87,11 @@ created_at
 ---
 
 (program
-  (ERROR
-    (identifier)))
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          name: (identifier))))))
 
 ================================================================================
 A positional argument after a named one is an error, as SQL Server's Msg 119 says
@@ -294,7 +313,24 @@ UPDATE t TABLESAMPLE (10 PERCENT) SET a = 1;
 
 ---
 
-(program (batch (statement (update (keyword_update) (invocation (object_reference name: (identifier)) (ERROR (keyword_tablesample)) parameter: (term value: (literal) alias: (identifier))) (keyword_set) (assignment left: (field name: (identifier)) (assignment_operator) right: (literal))))))
+(program
+  (batch
+    (statement
+      (update
+        (keyword_update)
+        (invocation
+          (object_reference
+            name: (identifier))
+          (ERROR)
+          parameter: (term
+            value: (literal)
+            alias: (identifier)))
+        (keyword_set)
+        (assignment
+          left: (field
+            name: (identifier))
+          (assignment_operator)
+          right: (literal))))))
 
 ==================
 CREATE TABLE's trailing clauses stop after two TEXTIMAGE_ON/FILESTREAM_ON pairs (ARCH-7)
@@ -768,25 +804,24 @@ SELECT a FROM t UNION SELECT b INTO #y FROM u;
             (keyword_select)
             (select_expression
               (term
-                (field
-                  (identifier)))))
+                value: (field
+                  name: (identifier)))))
           (from
             (keyword_from)
             (relation
               (object_reference
-                (identifier)))))
-        (keyword_union)
+                name: (identifier)))))
+        operation: (keyword_union)
         (query_specification
           (select
             (keyword_select)
             (select_expression
               (term
-                (field
-                  (identifier))
-                (identifier)))))))
+                value: (field
+                  name: (identifier))
+                alias: (identifier)))))))
     (ERROR
-      (identifier)
-      (keyword_from))))
+      (identifier))))
 
 ================================================================================
 An unterminated block comment is an error to end of input
@@ -819,9 +854,13 @@ SELECT 1;
 ---
 
 (program
-  (ERROR
-    (keyword_sql))
+  (ERROR)
   (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          schema: (identifier)
+          name: (identifier))))
     (statement
       (query_specification
         (select
@@ -840,9 +879,14 @@ SELECT 1;
 ---
 
 (program
-  (ERROR
-    (literal))
+  (ERROR)
   (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          name: (identifier))
+        (exec_argument
+          value: (literal))))
     (statement
       (query_specification
         (select
@@ -861,9 +905,15 @@ SELECT 1;
 ---
 
 (program
-  (ERROR
-    (keyword_exit))
+  (ERROR)
   (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          name: (identifier))
+        (exec_argument
+          value: (field
+            name: (identifier)))))
     (statement
       (query_specification
         (select

@@ -66,7 +66,41 @@ SELECT ALL TOP (2) WITH TIES c INTO dbo.t2 ON [PRIMARY] FROM dbo.t ORDER BY c;
 
 ---
 
-(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (unary_expression (keyword_all) (invocation (object_reference (identifier)) (term (literal))))))))) (ERROR (keyword_with) (identifier) (keyword_into) (keyword_on) (keyword_from) (identifier) (keyword_order) (keyword_by))))
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (keyword_all)
+          (top_clause
+            (keyword_top)
+            (literal)
+            (keyword_with)
+            (keyword_ties))
+          (select_expression
+            (term
+              value: (field
+                name: (identifier)))))
+        (keyword_into)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (on_filegroup
+          (keyword_on)
+          (identifier))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier)))))
+      (order_by
+        (keyword_order)
+        (keyword_by)
+        (order_target
+          (field
+            name: (identifier)))))))
 
 ==================
 query-forms/select-all - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
@@ -1000,7 +1034,20 @@ DECLARE @n int=10; CHECKPOINT @n;
 
 ---
 
-(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int) (literal)))) (statement (checkpoint_statement (keyword_checkpoint))) (statement (label_statement (identifier) (MISSING ":")))))
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (keyword_int)
+          (literal))))
+    (statement
+      (checkpoint_statement
+        (keyword_checkpoint)))
+    (ERROR
+      (identifier))))
 
 ==================
 query-forms/shutdown - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
@@ -1240,7 +1287,31 @@ SELECT $node_id,$edge_id,$from_id,$to_id FROM dbo.t;
 
 ---
 
-(program (batch (statement (query_specification (select (keyword_select) (ERROR (UNEXPECTED 'n')) (select_expression (term (field (identifier))) (ERROR (UNEXPECTED 'e')) (term (field (identifier))) (ERROR (UNEXPECTED 'f')) (term (field (identifier))) (ERROR (UNEXPECTED 't')) (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier))))))))
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (field
+                name: (identifier)))
+            (term
+              value: (field
+                name: (identifier)))
+            (term
+              value: (field
+                name: (identifier)))
+            (term
+              value: (field
+                name: (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))))))))
 
 ==================
 query-forms/open-graph-path - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
@@ -1250,7 +1321,50 @@ SELECT * FROM dbo.a AS a, dbo.e FOR PATH AS e, dbo.b FOR PATH AS b WHERE MATCH(S
 
 ---
 
-(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (object_reference (identifier) (identifier)) (keyword_as) (identifier)) (relation (object_reference (identifier) (identifier)))))) (ERROR (keyword_for) (keyword_as) (keyword_for) (keyword_as) (keyword_where) (keyword_match) (keyword_shortest_path))))
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (all_fields))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_as)
+            alias: (identifier))
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_for)
+            (keyword_path)
+            (keyword_as)
+            alias: (identifier))
+          (relation
+            (object_reference
+              schema: (identifier)
+              name: (identifier))
+            (keyword_for)
+            (keyword_path)
+            (keyword_as)
+            alias: (identifier)))
+        (where
+          (keyword_where)
+          predicate: (graph_match_predicate
+            (keyword_match)
+            (graph_match_expr
+              (graph_shortest_path
+                (keyword_shortest_path)
+                node: (identifier)
+                (graph_hop
+                  edge: (identifier)
+                  node: (identifier))))))))))
 
 ==================
 query-forms/open-kill-query - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
@@ -1321,7 +1435,15 @@ GO
 
 ---
 
-(program (ERROR (identifier)) (batch (go_statement (keyword_go))))
+(program
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          schema: (identifier)
+          name: (identifier))))
+    (go_statement
+      (keyword_go))))
 
 ==================
 query-forms/open-signature - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
@@ -1435,7 +1557,48 @@ CREATE PROC dbo.p WITH NATIVE_COMPILATION, SCHEMABINDING AS BEGIN ATOMIC WITH (T
 
 ---
 
-(program (batch (statement (create_procedure (keyword_create) (keyword_proc) (object_reference (identifier) (identifier)) (procedure_options (keyword_with) (procedure_option (keyword_native_compilation)) (procedure_option (keyword_schemabinding))) (procedure_body (keyword_as) (block (keyword_begin) (atomic_clause (keyword_atomic) (keyword_with) (ERROR (keyword_transaction) (keyword_isolation) (keyword_level)) (atomic_option (option (identifier) (identifier))) (atomic_option (option (identifier) (literal)))) (statement (query_specification (select (keyword_select) (select_expression (term (literal)))))) (keyword_end)))))))
+(program
+  (batch
+    (statement
+      (create_procedure
+        (keyword_create)
+        (keyword_proc)
+        name: (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (procedure_options
+          (keyword_with)
+          (procedure_option
+            (keyword_native_compilation))
+          (procedure_option
+            (keyword_schemabinding)))
+        body: (procedure_body
+          (keyword_as))))
+    (block
+      (keyword_begin)
+      (atomic_clause
+        (keyword_atomic)
+        (keyword_with)
+        (ERROR
+          (keyword_transaction)
+          (keyword_isolation)
+          (keyword_level))
+        (atomic_option
+          (option
+            name: (identifier)
+            value: (identifier)))
+        (atomic_option
+          (option
+            name: (identifier)
+            value: (literal))))
+      (statement
+        (query_specification
+          (select
+            (keyword_select)
+            (select_expression
+              (term
+                value: (literal))))))
+      (keyword_end))))
 
 ==================
 query-forms/atomic-unknown - LocalDB 17.0.1000.7 levels 100-170 - engine rejects 102,195,10783

@@ -1004,7 +1004,6 @@ SELECT 1 HAVING 1=1 GROUP BY 1;
             right: (literal)))))
     (ERROR
       (identifier)
-      (keyword_by)
       (literal))))
 
 ================================================================================
@@ -1015,7 +1014,27 @@ SELECT 1 WHERE 1=1 FROM dbo.t;
 
 --------------------------------------------------------------------------------
 
-(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (literal)))) (where (keyword_where) (binary_expression (literal) (literal))))) (ERROR (identifier) (identifier))))
+(program
+  (ERROR
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              value: (literal))))
+        (where
+          (keyword_where)
+          predicate: (binary_expression
+            left: (literal)
+            right: (literal)))))
+    (identifier))
+  (batch
+    (statement
+      (execute_statement
+        procedure: (object_reference
+          schema: (identifier)
+          name: (identifier))))))
 
 ================================================================================
 SQL Server 2025 LocalDB 17.0.1000.7 levels 100-170 Msg 156: wrong-order-where
