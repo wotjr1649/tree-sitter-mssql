@@ -131,12 +131,10 @@ static class Program
         @"^[ \t]*GO[ \t]*(?:\d+)?[ \t]*(?:--[^\r\n]*)?\r?$",
         System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Multiline);
 
-    /// <summary>The batches of a script: the text between GO lines, skipping whitespace-only ones.</summary>
-    static IEnumerable<string> Batches(string source)
-    {
-        if (!GoLine.IsMatch(source)) return [source];
-        return GoLine.Split(source).Where(part => !string.IsNullOrWhiteSpace(part));
-    }
+    /// <summary>The batches of a script: the text between GO lines, skipping whitespace-only ones. An empty
+    /// script has none (SqlClient refuses an empty command; the engine accepts an empty batch).</summary>
+    static IEnumerable<string> Batches(string source) =>
+        (GoLine.IsMatch(source) ? GoLine.Split(source) : [source]).Where(part => !string.IsNullOrWhiteSpace(part));
 
     static string RunnerSha256()
     {
@@ -271,6 +269,8 @@ static class Program
             Expect("splits a script at GO lines like a client", "SELECT 1\nGO\nCREATE PROCEDURE dbo.oracle_go AS SELECT 1;", Accepted);
             Expect("keeps a GO-less script as one batch", "SELECT 1\nCREATE PROCEDURE dbo.oracle_go AS SELECT 1;", Rejected);
             Expect("accepts Unicode text", "SELECT N'한글' AS [열];", Accepted);
+            Expect("accepts an empty script", "", Accepted);
+            Expect("accepts a script of only GO lines", "GO\nGO\n", Accepted);
             Expect("parses without executing", "CREATE TABLE dbo.oracle_probe (a int);", Accepted);
             if (ObjectId("dbo.oracle_probe") is not null) { Console.WriteLine("FAIL a parsed CREATE TABLE was executed"); failures.Add("no execution"); }
             Expect("never sends text that mentions PARSEONLY", "SET PARSEONLY OFF;\nCREATE TABLE dbo.oracle_guard (a int);",

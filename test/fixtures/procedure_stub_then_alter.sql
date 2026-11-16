@@ -2,6 +2,7 @@ IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ex
 BEGIN
 EXEC dbo.sp_executesql @statement = N'CREATE PROCEDURE [dbo].[example_proc] AS'
 END
+GO
 ALTER PROCEDURE [dbo].[example_proc] (
   @input_value  INT
 , @output_value INT OUTPUT

@@ -14,6 +14,7 @@ SELECT *
 FROM dbo.vectors;
 DECLARE @v AS VECTOR(3) = '[0.1, 2, 30]';
 SELECT @v;
+GO
 CREATE PROCEDURE dbo.SampleStoredProcedure
 @V VECTOR(3),
 @V2 VECTOR(3) OUTPUT

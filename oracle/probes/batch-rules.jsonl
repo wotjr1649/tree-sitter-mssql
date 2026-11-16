@@ -1,0 +1,50 @@
+{"id":"batch-rules/proc-first","sha256":"deaafa6f43d3e8f26d0426f1526ea5855bbf4faf38bd80af686f903b6fb1a754","source":"CREATE PROCEDURE p AS SELECT 1;"}
+{"id":"batch-rules/proc-after-select","sha256":"0a86ca35c91ea6f189c6c10971b6ba7195097975e8c16934acf81bafa731415f","source":"SELECT 1;\nCREATE PROCEDURE p AS SELECT 1;"}
+{"id":"batch-rules/proc-after-set","sha256":"b2c15d599e35b0f1a49cb3a3b41cae49950f568ec95df12b0cfb8407d7ab8c56","source":"SET NOCOUNT ON\nCREATE PROCEDURE p AS SELECT 1;"}
+{"id":"batch-rules/proc-after-comment","sha256":"748b843ec8cf2a246b0159d499ff5be7d93271739d1eea8de3c2f3515643ac76","source":"-- header\n/* block */\nCREATE PROCEDURE p AS SELECT 1;"}
+{"id":"batch-rules/proc-after-semicolon","sha256":"0059f0d2d90350b9a252a600f68576ff5391af9f0cb1bae2bf6e2708e0b26f84","source":";CREATE PROCEDURE p AS SELECT 1;"}
+{"id":"batch-rules/proc-after-go","sha256":"f989db7c95566b5cb5c11499097b2db6beaf513d5d516dd2ea508701dd0b2ba0","source":"SELECT 1\nGO\nCREATE PROCEDURE p AS SELECT 1;"}
+{"id":"batch-rules/proc-then-select","sha256":"02ef8c3b8d9fde1ed416ab351a06e09e0e7e3f571ac595014c2c3e95104331a1","source":"CREATE PROCEDURE p AS SELECT 1;\nSELECT 2;"}
+{"id":"batch-rules/alter-proc-after-select","sha256":"3737ffe4ad105e45f559189458582083c7ff9b7ff148234a71020d07acc68eb1","source":"SELECT 1;\nALTER PROCEDURE p AS SELECT 1;"}
+{"id":"batch-rules/create-or-alter-proc-after","sha256":"930b5a5e1cb98adc159c8615b0c5f8d0f26ad284f90a0ede979d00fa6cf819a4","source":"SELECT 1;\nCREATE OR ALTER PROCEDURE p AS SELECT 1;"}
+{"id":"batch-rules/view-after-select","sha256":"f2a00ed9000740190ba50d134756d66bec4fc87bb77f2a0a5f534e5ad2b8f972","source":"SELECT 1;\nCREATE VIEW v AS SELECT 1 AS a;"}
+{"id":"batch-rules/view-then-select","sha256":"429a2f19be19018a37d98e0b60909c8c8eb59609de3e56609047219cc4e8a78d","source":"CREATE VIEW v AS SELECT 1 AS a;\nSELECT 2;"}
+{"id":"batch-rules/alter-view-after-declare","sha256":"f7a6f8824b5c216d8bf0cc4341f04a1cf69e65a3e84232cf3d9e865cd0d0ff75","source":"DECLARE @a int;\nALTER VIEW v AS SELECT 1 AS a;"}
+{"id":"batch-rules/function-after-select","sha256":"ee5ead2bc47fe3a81928bc6f6be1175fab1d103c4eb6ba4fa6c05f9a542e9939","source":"SELECT 1;\nCREATE FUNCTION f() RETURNS int AS BEGIN RETURN 1 END;"}
+{"id":"batch-rules/function-then-select","sha256":"84fa3b6e3b9e5f6739fa724cd380fa3c5cace68a5ecc647a2b677c357a31955a","source":"CREATE FUNCTION f() RETURNS int AS BEGIN RETURN 1 END;\nSELECT 2;"}
+{"id":"batch-rules/trigger-after-select","sha256":"fe2cdbb5fc1fec58d7d7861cfbda413a8827b48ab5cdbfcd009145537d65a7bd","source":"SELECT 1;\nCREATE TRIGGER tr ON t AFTER INSERT AS SELECT 1;"}
+{"id":"batch-rules/schema-after-select","sha256":"1a192856168aab356b33e6b9242fb45908202718d67e412b58a6f5254ad528ff","source":"SELECT 1;\nCREATE SCHEMA s;"}
+{"id":"batch-rules/schema-then-select","sha256":"40c3795091364988ab8dbcb111fa4470be9b7bb16e30296dda8256d69dfad7cf","source":"CREATE SCHEMA s;\nSELECT 2;"}
+{"id":"batch-rules/schema-then-table","sha256":"e95c41b05b1da8e6899f1c1709bef708e312a1dfd3ee2e888adcfd2254b2d9fd","source":"CREATE SCHEMA s CREATE TABLE t (a int);"}
+{"id":"batch-rules/rule-after-select","sha256":"cda82468ac6cee7f0301709cf4f154d654adcf35ea20925c7e622b9e7a4e7b86","source":"SELECT 1;\nCREATE RULE r AS @x > 0;"}
+{"id":"batch-rules/default-after-select","sha256":"525038f90cd3b81f81f6403d7ed9c0b23c4c167ee7061a659991a6d8e42d07e4","source":"SELECT 1;\nCREATE DEFAULT d AS 0;"}
+{"id":"batch-rules/proc-in-if","sha256":"2e645324d2e9b98bc19726098799a3735201c86a858dcbe270b395c6afabfed7","source":"IF 1 = 1 CREATE PROCEDURE p AS SELECT 1;"}
+{"id":"batch-rules/proc-in-block","sha256":"d39a2531fa70338c87ea6aa273ee34eb45539a8044fce19e807ab2e69ca51f34","source":"BEGIN CREATE PROCEDURE p AS SELECT 1; END"}
+{"id":"batch-rules/view-in-proc","sha256":"37ca13cef0f128e4c059805a3f3e8cbb653f7e18711976f6e291fcad4e6e5d1d","source":"CREATE PROCEDURE p AS CREATE VIEW v AS SELECT 1 AS a;"}
+{"id":"batch-rules/proc-in-proc","sha256":"33b7aeba58b09e9dc231a10d09944863a45f2c4ba6048e4df68249f3039f1279","source":"CREATE PROCEDURE p AS CREATE PROCEDURE q AS SELECT 1;"}
+{"id":"batch-rules/table-after-select","sha256":"6622dec8f3b8c8e540a879f064a917cad1e3e550bd5604827213232686436a9e","source":"SELECT 1;\nCREATE TABLE t (a int);"}
+{"id":"batch-rules/index-after-select","sha256":"8c42b0ea79d0c272234865289b23c21fff2b52b93140ffbe6339d76fc332b05f","source":"SELECT 1;\nCREATE INDEX ix ON t (a);"}
+{"id":"batch-rules/type-after-select","sha256":"4a4b5ed4f94f715fee7e1c996e4503ebdc9391dc683a581137bee3514f4833be","source":"SELECT 1;\nCREATE TYPE tt FROM int;"}
+{"id":"batch-rules/exec-string-proc","sha256":"1eeaa9e4d79d8578a84b58aec717688e31d707b9a4bc8725776150099684364a","source":"SELECT 1;\nEXEC ('CREATE PROCEDURE p AS SELECT 1');"}
+{"id":"batch-rules/two-procs-go","sha256":"4260d35cb0a2a2055865af1698d1b33f48b50462f93fdce98cc2bb13dd611056","source":"CREATE PROCEDURE p AS SELECT 1;\nGO\nCREATE PROCEDURE q AS SELECT 1;"}
+{"id":"batch-rules/rule-then-select","sha256":"9a7ca32ae61fc52723a56baf4bb04c6de6d9a03620ced78ff5be9be5e48827c2","source":"CREATE RULE r AS @x > 0;\nSELECT 2;"}
+{"id":"batch-rules/default-then-select","sha256":"1e887aeea37dee3521d984925098dbd2ceb519ce0066a5c2cededf1d1003e5ca","source":"CREATE DEFAULT d AS 0;\nSELECT 2;"}
+{"id":"batch-rules/itvf-then-select","sha256":"0555e0a220d566861f1cb3678aea58848f006c4e27c5f0cbf30e24f89c9b9bfe","source":"CREATE FUNCTION f() RETURNS TABLE AS RETURN SELECT 1 AS a;\nSELECT 2;"}
+{"id":"batch-rules/alter-function-then-select","sha256":"76f6a183f63b06476d115b9ae9b2f8d19359f4d24a0a5c101fee990b42159aa6","source":"ALTER FUNCTION f() RETURNS int AS BEGIN RETURN 1 END;\nSELECT 2;"}
+{"id":"batch-rules/alter-view-then-select","sha256":"75bc085e3c4c76895e5322c1e6c5435ed7ba3b457b0fa25b9a11f5c60294d9b3","source":"ALTER VIEW v AS SELECT 1 AS a;\nSELECT 2;"}
+{"id":"batch-rules/trigger-then-select","sha256":"b7833a95ca91366852b6b2b78ea5c66c4788bb6092fa146e340c78f8fa60354a","source":"CREATE TRIGGER tr ON t AFTER INSERT AS SELECT 1;\nSELECT 2;"}
+{"id":"batch-rules/view-then-semicolon","sha256":"e998f1528f85bb513c3f2793fb246075f304e4c51664cf6f08759956262fe440","source":"CREATE VIEW v AS SELECT 1 AS a;;"}
+{"id":"batch-rules/view-then-comment","sha256":"80824ff65e7f3aff1b56553915b626fd0f06e1e50ac0d0fdc5972af84d9655bd","source":"CREATE VIEW v AS SELECT 1 AS a;\n-- end\n/* end */"}
+{"id":"batch-rules/function-then-function","sha256":"edbbd2a4889ded43bd87827d2637960d58dc81d534dd29a3ca6494c2215f2c58","source":"CREATE FUNCTION f() RETURNS int AS BEGIN RETURN 1 END;\nCREATE FUNCTION g() RETURNS int AS BEGIN RETURN 1 END;"}
+{"id":"batch-rules/proc-then-view","sha256":"9068db61bd110d0815cb2503fdb7421ac4b60c42859ccbbf879262bd7fbc2487","source":"CREATE PROCEDURE p AS SELECT 1;\nCREATE VIEW v AS SELECT 1 AS a;"}
+{"id":"batch-rules/label-then-proc","sha256":"8ee2904bdf7996edb8e0bb433c8b884d1c6ae619c77ea439fa738f72c89c2693","source":"l:\nCREATE PROCEDURE p AS SELECT 1;"}
+{"id":"batch-rules/proc-after-empty-block","sha256":"46e50e318f5d900d57ee0e28b5df60c4c3145432c306b5095725b38452208084","source":"BEGIN END\nCREATE PROCEDURE p AS SELECT 1;"}
+{"id":"batch-rules/clr-proc-after-select","sha256":"affb01ee5502930525e7fa035f0f950a77e237cce692bf3f180ad49023060d87","source":"SELECT 1;\nCREATE PROCEDURE p AS EXTERNAL NAME a.b.c;"}
+{"id":"batch-rules/synonym-after-select","sha256":"246cc354209aa54463e45379b8909d58928402c07a767892c3c6af109567078e","source":"SELECT 1;\nCREATE SYNONYM s FOR t;"}
+{"id":"batch-rules/go-in-block-comment","sha256":"7a31e6dc6bf98180ee3755b5bdd273ad9fd7cf03e5d0e4919b5f6ab6f5db284a","source":"/*\nGO\n*/\nSELECT 1;"}
+{"id":"batch-rules/go-in-block-comment-mid","sha256":"47b40ce7afcd280e610c923ed1221d6205886f653f740735d55ce1c3b99cf5de","source":"SELECT 1;\n/* note\n  go\n*/\nSELECT 2;"}
+{"id":"batch-rules/go-in-line-comment","sha256":"d17b4627437d48b3e5f7df5c33ecd00d49a29788a095ec146b90e99319504102","source":"-- GO\nSELECT 1;"}
+{"id":"batch-rules/go-text-in-block-comment","sha256":"bfd05c9d7034d8827abf3d97bea3bfe5fe8de243dd0eee9104b22fd35e95bb3d","source":"/* GO is a client command */\nSELECT 1;"}
+{"id":"batch-rules/go-in-nested-comment","sha256":"62a820cd3a774e83c840223e7e92af27a0b3d077f3ae8ee64d51ece9bee72937","source":"/* a /* b\nGO\n*/ */\nSELECT 1;"}
+{"id":"batch-rules/go-count-in-block-comment","sha256":"85f8eff6766b84fe0e96f962f029db6b841644c4553a59a8bd39132b87605a8b","source":"/*\nGO 2\n*/\nSELECT 1;"}
+{"id":"batch-rules/go-in-string","sha256":"4bdb8a65d841a3c4f427e0c7acea903ad9cda16e40de8fd1de91721dc895d116","source":"SELECT '\nGO\n';"}
