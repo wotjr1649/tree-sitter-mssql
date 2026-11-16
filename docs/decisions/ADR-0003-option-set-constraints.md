@@ -58,6 +58,7 @@ A context-free grammar can express "each of n options at most once, in any order
 | `external-option-*`, `external-platform`, `external-affinity` | EXTERNAL data sources, models, languages, libraries and resource pools: option names, assignment, uniqueness, required CREATE file options, platform and affinity shapes | `ddl-external/external-*`, LocalDB 17.0.1000.7 levels 100–170, 102/1039/39123/319; ALTER file specs may omit CONTENT |
 | `fulltext-option-duplicate`, `fulltext-change-tracking`, `fulltext-no-population` | CREATE FULLTEXT CATALOG/INDEX: unique options, tracking mode, NO POPULATION with tracking OFF | `ddl-external/fulltext-*`, 102/7663 |
 | `endpoint-*` | CREATE/ALTER ENDPOINT: option sets, uniqueness, CREATE port/mirroring role requirements, protocols/algorithms/roles, forwarding, IPv4 octets, CREATE STATE restriction | `ddl-external/endpoint-*`, 7816/7801/102/156/7810/7871; 7609/7878 environment errors remain contextual |
+| `scalar-predicate`: a WHERE, JOIN/MERGE ON, WHEN ... AND, IF/WHILE condition, searched CASE WHEN, HAVING or IIF first argument holds a condition, not a scalar | search conditions (not Extended Events predicates) | Msg 4145 (kit `if-bit`, `if-not-scalar`, `iif-scalar`, `merge-*`, `mut-0028x`, `regex-*`); every engine-accepted oracle case passes |
 All following evidence is query-forms on LocalDB 17.0.1000.7, levels 100–170.
 
 | Rule | Scope | Check | Evidence |

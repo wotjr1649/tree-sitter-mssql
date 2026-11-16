@@ -18,6 +18,7 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
     let mut cursor = tree.walk();
     loop {
         let node = cursor.node();
+        scalar_predicate(node, source, &mut out);
         if matches!(
             node.kind(),
             "parenthesized_expression" | "drop_sequence" | "grant_statement"
@@ -2010,6 +2011,125 @@ fn query_assignment(node: Node, source: &[u8], out: &mut Vec<Violation>) {
             "only a variable can capture a column assignment".into(),
             node,
         ));
+    }
+}
+
+/// A position that needs a search condition holds a scalar expression (Msg 4145, "An expression of
+/// non-boolean type specified in a context where a condition is expected"). The positions are every
+/// `predicate` field (WHERE, JOIN ... ON, MERGE ... ON, WHEN [NOT] MATCHED ... AND), the condition of IF
+/// and WHILE, the WHEN of a searched CASE (not a simple CASE, which has an `input`), the HAVING
+/// expression and the first argument of IIF. Ported from grammar-kit's CheckTSQLContext (ADR-0004).
+/// Evidence: SQL Server 2025 LocalDB 17.0.1000.7, levels 100-170: Msg 4145 for kit if-bit,
+/// if-not-scalar, iif-scalar, merge-arith, merge-paren-scalar, merge-scalar and mut-0028x; every
+/// engine-accepted oracle case passes.
+fn scalar_predicate(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let mut cursor = node.walk();
+    // An Extended Events WHERE shares the rule but takes event predicates, not search conditions.
+    let in_event_session = || {
+        let mut p = node.parent();
+        while let Some(a) = p {
+            if a.kind().ends_with("event_session") {
+                return true;
+            }
+            p = a.parent();
+        }
+        false
+    };
+    let mut checked: Vec<Node> = if node.kind() == "where" && in_event_session() {
+        Vec::new()
+    } else {
+        node.children_by_field_name("predicate", &mut cursor)
+            .collect()
+    };
+    match node.kind() {
+        "if_statement" | "while_statement" => checked.extend(node.child_by_field_name("condition")),
+        "when_clause" => {
+            let searched = node
+                .parent()
+                .is_some_and(|case| case.child_by_field_name("input").is_none());
+            if searched {
+                checked.extend(node.child_by_field_name("condition"));
+            }
+        }
+        "having" => checked.extend(
+            node.named_children(&mut cursor)
+                .find(|n| n.kind() != "keyword_having"),
+        ),
+        "invocation" if invocation_name(node, source).as_deref() == Some("IIF") => {
+            checked.extend(node.child_by_field_name("parameter"));
+        }
+        _ => {}
+    }
+    for n in checked {
+        if !is_condition(n, source) {
+            out.push(violation(
+                "scalar-predicate",
+                "a condition is expected here, not a scalar expression".into(),
+                n,
+            ));
+        }
+    }
+}
+
+/// The unqualified, upper-cased name of a function call, if it has one.
+fn invocation_name(invocation: Node, source: &[u8]) -> Option<String> {
+    invocation
+        .named_child(0)
+        .filter(|n| n.kind() == "object_reference" && n.named_child_count() == 1)
+        .map(|n| upper_text(n, source))
+}
+
+/// Whether an expression is a search condition (true/false/unknown) rather than a scalar value.
+fn is_condition(n: Node, source: &[u8]) -> bool {
+    match n.kind() {
+        "exists" | "graph_match_predicate" | "between_expression" => true,
+        "invocation" => matches!(
+            invocation_name(n, source).as_deref(),
+            Some("UPDATE" | "CONTAINS" | "FREETEXT" | "REGEXP_LIKE")
+        ),
+        "term" | "parenthesized_expression" => n
+            .child_by_field_name("value")
+            .or_else(|| n.named_child(0))
+            .is_some_and(|c| is_condition(c, source)),
+        "binary_expression" => {
+            let operator = n.child_by_field_name("operator").map(|o| o.kind());
+            match operator {
+                Some("keyword_and" | "keyword_or") => {
+                    n.child_by_field_name("left")
+                        .is_some_and(|c| is_condition(c, source))
+                        && n.child_by_field_name("right")
+                            .is_some_and(|c| is_condition(c, source))
+                }
+                Some(op) => matches!(
+                    op,
+                    "=" | "<"
+                        | "<="
+                        | ">"
+                        | ">="
+                        | "<>"
+                        | "!="
+                        | "!<"
+                        | "!>"
+                        | "keyword_is"
+                        | "is_not"
+                        | "keyword_like"
+                        | "not_like"
+                        | "keyword_in"
+                        | "not_in"
+                        | "distinct_from"
+                        | "not_distinct_from"
+                        | "keyword_between"
+                        | "keyword_escape"
+                ),
+                None => false,
+            }
+        }
+        "unary_expression" => {
+            n.child_by_field_name("operator").map(|o| o.kind()) == Some("keyword_not")
+                && n.child_by_field_name("operand")
+                    .is_some_and(|c| is_condition(c, source))
+        }
+        _ => false,
     }
 }
 
@@ -4483,6 +4603,35 @@ mod tests {
             "MERGE dbo.t WITH (READUNCOMMITTED) AS t USING dbo.s AS s ON 1 = 1 WHEN MATCHED THEN DELETE;",
         ] {
             assert_eq!(rules(bad), ["table-hint"], "{bad}");
+        }
+    }
+
+    #[test]
+    fn conditions_are_not_scalars() {
+        for ok in [
+            "SELECT a FROM t JOIN u ON t.a = u.a WHERE a IS NOT NULL AND b NOT LIKE 'x' OR NOT (c IN (1));",
+            "SELECT a FROM t GROUP BY a HAVING COUNT(*) > 1;",
+            "SELECT CASE WHEN a = 1 THEN 1 END, CASE a WHEN 1 THEN 2 END, IIF(a > 1, 1, 0) FROM t;",
+            "SELECT 1 WHERE EXISTS (SELECT 1) AND 1 BETWEEN 0 AND 2 AND a IS DISTINCT FROM b;",
+            "IF (@x = 1) PRINT 1;",
+            "WHILE NOT (1 = 0) BREAK;",
+            "MERGE dbo.t USING dbo.s ON (t.id = s.id) WHEN MATCHED AND s.a > 0 THEN DELETE;",
+        ] {
+            assert!(rules(ok).is_empty(), "{ok}");
+        }
+        for bad in [
+            "IF 1 PRINT 1;",
+            "IF NOT 1 PRINT 1;",
+            "WHILE @x BREAK;",
+            "SELECT a FROM t WHERE a;",
+            "SELECT a FROM t WHERE a = 1 AND b;",
+            "SELECT a FROM t GROUP BY a HAVING COUNT(*);",
+            "SELECT CASE WHEN a THEN 1 END FROM t;",
+            "SELECT IIF(a, 1, 0) FROM t;",
+            "MERGE dbo.t USING dbo.s ON t.id + 1 WHEN MATCHED THEN DELETE;",
+            "MERGE dbo.t USING dbo.s ON (t.id) WHEN MATCHED THEN DELETE;",
+        ] {
+            assert_eq!(rules(bad), ["scalar-predicate"], "{bad}");
         }
     }
 

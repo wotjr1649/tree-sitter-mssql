@@ -52,8 +52,8 @@ not a claim of zero defects, and these are not option-set constraints covered by
 | Cases | SQL Server verdict | Classification and disposition |
 | --- | --- | --- |
 | `count-empty`, `mut-02235`, `mut-02255` | Msg 174 on every committed engine/level | Rejected by the `builtin-arity` constraint (ADR-0003, ADR-0004) |
-| `regex-79` | Msg 4145 on SQL Server 2017–2022 and 2025 levels 100–160; Msg 156 on both 2025 engines at level 170 | Mixed: contextual scalar predicate at lower levels, unresolved qualified REGEXP_LIKE syntax at 170. The syntax rejection is not covered by ADR-0002 context or ADR-0003 option-set rules |
-| `regex-80` | Msg 4145 on 2025; 195 on older engines | Contextual scalar REGEXP_COUNT used as a predicate; older engines lack the function |
+| `regex-79` | Msg 4145 on SQL Server 2017–2022 and 2025 levels 100–160; Msg 156 on both 2025 engines at level 170 | Rejected by the `scalar-predicate` constraint (a scalar function call as the WHERE condition) |
+| `regex-80` | Msg 4145 on 2025; 195 on older engines | Rejected by the `scalar-predicate` constraint |
 | `qi-on-contains-search`, `qi-on-freetext-search`, `qi-on-property`, `qi-on-language` | Msg 102 on every committed engine/level | Unresolved syntax over-acceptance: with QUOTED_IDENTIFIER ON, these full-text arguments require strings rather than double-quoted identifiers. Requires session-aware lexical/argument rules, not an option-set constraint. Matching `qi-off-*` cases are accepted |
 | `SELECT NOT 1 WHERE 1=1;` | LocalDB Msg 156 at levels 100–170 | Unresolved SELECT expression over-acceptance. The corresponding FROM-bearing control is already clean in main; no corpus case pins this gap |
 | `SELECT 1 WHERE CURRENT OF c;` | LocalDB Msg 102 at levels 100–170 | Unresolved statement restriction: CURRENT OF belongs to positioned UPDATE/DELETE. The corresponding FROM-bearing SELECT is already clean in main; no corpus case pins this gap |
