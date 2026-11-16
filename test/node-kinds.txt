@@ -350,6 +350,7 @@ keyword_changetable
 keyword_char
 keyword_check
 keyword_checkpoint
+keyword_classification
 keyword_clear
 keyword_close
 keyword_cluster
@@ -372,6 +373,7 @@ keyword_context
 keyword_continue
 keyword_contract
 keyword_conversation
+keyword_counter
 keyword_cpu
 keyword_create
 keyword_credential
@@ -487,6 +489,7 @@ keyword_into
 keyword_ip
 keyword_is
 keyword_isolation
+keyword_job
 keyword_join
 keyword_json
 keyword_json_array
@@ -593,6 +596,7 @@ keyword_procedure_cache
 keyword_process
 keyword_property
 keyword_provider
+keyword_query
 keyword_queue
 keyword_raiserror
 keyword_range
@@ -651,6 +655,7 @@ keyword_security
 keyword_select
 keyword_self
 keyword_send
+keyword_sensitivity
 keyword_sent
 keyword_sequence
 keyword_sequence_number
@@ -663,6 +668,7 @@ keyword_sets
 keyword_setuser
 keyword_shortest_path
 keyword_shutdown
+keyword_signature
 keyword_singleton
 keyword_smalldatetime
 keyword_smallint
@@ -678,8 +684,10 @@ keyword_sql_variant
 keyword_start
 keyword_statistical_semantics
 keyword_statistics
+keyword_stats
 keyword_stop
 keyword_stoplist
+keyword_subscription
 keyword_suspend_for_snapshot_backup
 keyword_switch
 keyword_symmetric
@@ -819,6 +827,7 @@ select
 select_expression
 selective_xml_path{name}
 send_statement{body,handle,message_type}
+sensitivity_classification_statement
 sequence_option
 server_buffer_pool_options
 server_cpu_range
@@ -826,6 +835,8 @@ set_operation{operation}
 set_statement
 setuser_statement
 shutdown_statement
+signature_signer
+signature_statement
 sqlcmd_connect{arguments}
 sqlcmd_ed
 sqlcmd_exit{query}

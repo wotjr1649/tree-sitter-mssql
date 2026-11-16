@@ -7213,6 +7213,168 @@ COMMIT TRAN t;
         name: (identifier)))))
 
 ==================
+ddl-rest/commit-delay — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+COMMIT TRAN t WITH (DELAYED_DURABILITY = ON);
+
+---
+
+(program
+  (batch
+    (statement
+      (commit_statement
+        (keyword_commit)
+        (keyword_tran)
+        name: (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_on)))))))
+
+==================
+ddl-rest/commit-off — LocalDB 17.0.1000.7 levels 100-170: rejects 137,319
+==================
+
+COMMIT TRANSACTION @t WITH (DELAYED_DURABILITY = OFF);
+
+---
+
+(program
+  (batch
+    (statement
+      (commit_statement
+        (keyword_commit)
+        (keyword_transaction)
+        name: (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_off)))))))
+
+==================
+ddl-rest/commit-work — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+COMMIT WORK WITH (DELAYED_DURABILITY = ON);
+
+---
+
+(program
+  (batch
+    (statement
+      (commit_statement
+        (keyword_commit)
+        (keyword_work)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_on)))))))
+
+==================
+ddl-rest/commit-bad — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+COMMIT WITH (WHATEVER = ON);
+
+---
+
+(program
+  (batch
+    (statement
+      (commit_statement
+        (keyword_commit)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_on)))))))
+
+==================
+ddl-rest/commit-duplicate — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+COMMIT WITH (DELAYED_DURABILITY = ON, DELAYED_DURABILITY = OFF);
+
+---
+
+(program
+  (batch
+    (statement
+      (commit_statement
+        (keyword_commit)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (keyword_off)))))))
+
+==================
+ddl-rest/commit-invalid — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+COMMIT WITH (DELAYED_DURABILITY = 1);
+
+---
+
+(program
+  (batch
+    (statement
+      (commit_statement
+        (keyword_commit)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
+ddl-rest/commit-multi — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+COMMIT WITH (DELAYED_DURABILITY = ON, X = OFF);
+
+---
+
+(program
+  (batch
+    (statement
+      (commit_statement
+        (keyword_commit)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_on))
+          (option
+            name: (identifier)
+            value: (keyword_off)))))))
+
+==================
+ddl-rest/commit-missing — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+COMMIT WITH (DELAYED_DURABILITY);
+
+---
+
+(program
+  (batch
+    (statement
+      (commit_statement
+        (keyword_commit)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)))))))
+
+==================
 ddl-rest/kill-plain — LocalDB 17.0.1000.7 levels 100-170: accepts
 ==================
 
@@ -7240,10 +7402,79 @@ KILL 'D5499C66-E398-45CA-BF7E-DC9C194B48CF' ROLLBACK;
     (statement
       (kill_statement
         (keyword_kill)
-        (literal)))
-    (statement
-      (rollback_statement
+        (literal)
         (keyword_rollback)))))
+
+==================
+ddl-rest/kill-query — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+KILL QUERY NOTIFICATION SUBSCRIPTION ALL;
+
+---
+
+(program
+  (batch
+    (statement
+      (kill_statement
+        (keyword_kill)
+        (keyword_query)
+        (keyword_notification)
+        (keyword_subscription)
+        (keyword_all)))))
+
+==================
+ddl-rest/kill-queryId — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+KILL QUERY NOTIFICATION SUBSCRIPTION 73;
+
+---
+
+(program
+  (batch
+    (statement
+      (kill_statement
+        (keyword_kill)
+        (keyword_query)
+        (keyword_notification)
+        (keyword_subscription)
+        (literal)))))
+
+==================
+ddl-rest/kill-stats — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+KILL STATS JOB 12;
+
+---
+
+(program
+  (batch
+    (statement
+      (kill_statement
+        (keyword_kill)
+        (keyword_stats)
+        (keyword_job)
+        (literal)))))
+
+==================
+ddl-rest/kill-queryString — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+KILL QUERY NOTIFICATION SUBSCRIPTION 'x';
+
+---
+
+(program
+  (batch
+    (statement
+      (kill_statement
+        (keyword_kill)
+        (keyword_query)
+        (keyword_notification)
+        (keyword_subscription)
+        (literal)))))
 
 ==================
 ddl-rest/kill-bad — LocalDB 17.0.1000.7 levels 100-170: accepts
@@ -7258,10 +7489,58 @@ KILL 12 ROLLBACK;
     (statement
       (kill_statement
         (keyword_kill)
-        (literal)))
-    (statement
-      (rollback_statement
+        (literal)
         (keyword_rollback)))))
+
+==================
+ddl-rest/kill-negative — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+KILL STATS JOB -1;
+
+---
+
+(program
+  (batch
+    (statement
+      (kill_statement
+        (keyword_kill)
+        (keyword_stats)
+        (keyword_job)
+        (unary_expression
+          operand: (literal))))))
+
+==================
+ddl-rest/stats-resample — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+UPDATE STATISTICS dbo.t WITH RESAMPLE ON PARTITIONS (1, 3 TO 5), COLUMNS;
+
+---
+
+(program
+  (batch
+    (statement
+      (update_statistics_statement
+        (keyword_update)
+        (keyword_statistics)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (keyword_on)
+            (keyword_partitions)
+            (truncate_partition_range
+              low: (literal))
+            (truncate_partition_range
+              low: (literal)
+              (keyword_to)
+              high: (literal)))
+          (option
+            name: (identifier)))))))
 
 ==================
 ddl-rest/stats-index — LocalDB 17.0.1000.7 levels 100-170: accepts
@@ -7318,6 +7597,32 @@ UPDATE STATISTICS dbo.t st WITH STATS_STREAM = 0x0100, ROWCOUNT = 1000, PAGECOUN
             value: (literal)))))))
 
 ==================
+ddl-rest/stats-wrong — LocalDB 17.0.1000.7 levels 100-170: rejects 155
+==================
+
+UPDATE STATISTICS dbo.t WITH FULLSCAN ON PARTITIONS (1);
+
+---
+
+(program
+  (batch
+    (statement
+      (update_statistics_statement
+        (keyword_update)
+        (keyword_statistics)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            (keyword_on)
+            (keyword_partitions)
+            (truncate_partition_range
+              low: (literal))))))))
+
+==================
 ddl-rest/stats-both — LocalDB 17.0.1000.7 levels 100-170: rejects 1052
 ==================
 
@@ -7365,6 +7670,482 @@ UPDATE STATISTICS dbo.t WITH WHATEVER = 1;
           (option
             name: (identifier)
             value: (literal)))))))
+
+==================
+ddl-rest/sensitivity-add — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ADD SENSITIVITY CLASSIFICATION TO dbo.t.c WITH (LABEL = 'Secret', RANK = HIGH);
+
+---
+
+(program
+  (batch
+    (statement
+      (sensitivity_classification_statement
+        (keyword_add)
+        (keyword_sensitivity)
+        (keyword_classification)
+        (keyword_to)
+        (object_reference
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (identifier)))))))
+
+==================
+ddl-rest/sensitivity-multiple — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ADD SENSITIVITY CLASSIFICATION TO dbo.t.c, t.d WITH (INFORMATION_TYPE = 'Contact', RANK = NONE);
+
+---
+
+(program
+  (batch
+    (statement
+      (sensitivity_classification_statement
+        (keyword_add)
+        (keyword_sensitivity)
+        (keyword_classification)
+        (keyword_to)
+        (object_reference
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (identifier)))))))
+
+==================
+ddl-rest/sensitivity-drop — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP SENSITIVITY CLASSIFICATION FROM dbo.t.c, t.d;
+
+---
+
+(program
+  (batch
+    (statement
+      (sensitivity_classification_statement
+        (keyword_drop)
+        (keyword_sensitivity)
+        (keyword_classification)
+        (keyword_from)
+        (object_reference
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))
+        (object_reference
+          schema: (identifier)
+          name: (identifier))))))
+
+==================
+ddl-rest/sensitivity-badRank — LocalDB 17.0.1000.7 levels 100-170: rejects 16114
+==================
+
+ADD SENSITIVITY CLASSIFICATION TO dbo.t.c WITH (RANK = WRONG);
+
+---
+
+(program
+  (batch
+    (statement
+      (sensitivity_classification_statement
+        (keyword_add)
+        (keyword_sensitivity)
+        (keyword_classification)
+        (keyword_to)
+        (object_reference
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier)))))))
+
+==================
+ddl-rest/sensitivity-badLabel — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+ADD SENSITIVITY CLASSIFICATION TO dbo.t.c WITH (LABEL = 1);
+
+---
+
+(program
+  (batch
+    (statement
+      (sensitivity_classification_statement
+        (keyword_add)
+        (keyword_sensitivity)
+        (keyword_classification)
+        (keyword_to)
+        (object_reference
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
+ddl-rest/sensitivity-duplicate — LocalDB 17.0.1000.7 levels 100-170: rejects 16104
+==================
+
+ADD SENSITIVITY CLASSIFICATION TO dbo.t.c WITH (LABEL = 'a', LABEL = 'b');
+
+---
+
+(program
+  (batch
+    (statement
+      (sensitivity_classification_statement
+        (keyword_add)
+        (keyword_sensitivity)
+        (keyword_classification)
+        (keyword_to)
+        (object_reference
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
+ddl-rest/sensitivity-unknown — LocalDB 17.0.1000.7 levels 100-170: rejects 16101
+==================
+
+ADD SENSITIVITY CLASSIFICATION TO dbo.t.c WITH (WHATEVER = 'a');
+
+---
+
+(program
+  (batch
+    (statement
+      (sensitivity_classification_statement
+        (keyword_add)
+        (keyword_sensitivity)
+        (keyword_classification)
+        (keyword_to)
+        (object_reference
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
+ddl-rest/sensitivity-name — LocalDB 17.0.1000.7 levels 100-170: rejects 16103
+==================
+
+DROP SENSITIVITY CLASSIFICATION FROM c;
+
+---
+
+(program
+  (batch
+    (statement
+      (sensitivity_classification_statement
+        (keyword_drop)
+        (keyword_sensitivity)
+        (keyword_classification)
+        (keyword_from)
+        (object_reference
+          name: (identifier))))))
+
+==================
+ddl-rest/signature-add — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ADD SIGNATURE TO OBJECT::dbo.p BY CERTIFICATE c;
+
+---
+
+(program
+  (batch
+    (statement
+      (signature_statement
+        (keyword_add)
+        (keyword_signature)
+        (keyword_to)
+        (keyword_object)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_by)
+        (signature_signer
+          (keyword_certificate)
+          (identifier))))))
+
+==================
+ddl-rest/signature-counter — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ADD COUNTER SIGNATURE TO dbo.p BY ASYMMETRIC KEY k WITH PASSWORD = 'x';
+
+---
+
+(program
+  (batch
+    (statement
+      (signature_statement
+        (keyword_add)
+        (keyword_counter)
+        (keyword_signature)
+        (keyword_to)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_by)
+        (signature_signer
+          (keyword_asymmetric)
+          (keyword_key)
+          (identifier)
+          (with_clause
+            (keyword_with)
+            (option
+              name: (identifier)
+              value: (literal))))))))
+
+==================
+ddl-rest/signature-binary — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ADD SIGNATURE TO dbo.p BY CERTIFICATE c WITH SIGNATURE = 0x0102;
+
+---
+
+(program
+  (batch
+    (statement
+      (signature_statement
+        (keyword_add)
+        (keyword_signature)
+        (keyword_to)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_by)
+        (signature_signer
+          (keyword_certificate)
+          (identifier)
+          (with_clause
+            (keyword_with)
+            (option
+              name: (identifier)
+              value: (literal))))))))
+
+==================
+ddl-rest/signature-drop — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP SIGNATURE FROM dbo.p BY CERTIFICATE c, ASYMMETRIC KEY k;
+
+---
+
+(program
+  (batch
+    (statement
+      (signature_statement
+        (keyword_drop)
+        (keyword_signature)
+        (keyword_from)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_by)
+        (signature_signer
+          (keyword_certificate)
+          (identifier))
+        (signature_signer
+          (keyword_asymmetric)
+          (keyword_key)
+          (identifier))))))
+
+==================
+ddl-rest/signature-dropCounter — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP COUNTER SIGNATURE FROM dbo.p BY CERTIFICATE c;
+
+---
+
+(program
+  (batch
+    (statement
+      (signature_statement
+        (keyword_drop)
+        (keyword_counter)
+        (keyword_signature)
+        (keyword_from)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_by)
+        (signature_signer
+          (keyword_certificate)
+          (identifier))))))
+
+==================
+ddl-rest/signature-dropPassword — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DROP SIGNATURE FROM dbo.p BY CERTIFICATE c WITH PASSWORD = 'x';
+
+---
+
+(program
+  (batch
+    (statement
+      (signature_statement
+        (keyword_drop)
+        (keyword_signature)
+        (keyword_from)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_by)
+        (signature_signer
+          (keyword_certificate)
+          (identifier)
+          (with_clause
+            (keyword_with)
+            (option
+              name: (identifier)
+              value: (literal))))))))
+
+==================
+ddl-rest/signature-unknown — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+ADD SIGNATURE TO dbo.p BY CERTIFICATE c WITH WHATEVER = 1;
+
+---
+
+(program
+  (batch
+    (statement
+      (signature_statement
+        (keyword_add)
+        (keyword_signature)
+        (keyword_to)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_by)
+        (signature_signer
+          (keyword_certificate)
+          (identifier)
+          (with_clause
+            (keyword_with)
+            (option
+              name: (identifier)
+              value: (literal))))))))
+
+==================
+ddl-rest/signature-badCert — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ADD SIGNATURE TO dbo.p BY SYMMETRIC KEY k;
+
+---
+
+(program
+  (batch
+    (statement
+      (signature_statement
+        (keyword_add)
+        (keyword_signature)
+        (keyword_to)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_by)
+        (signature_signer
+          (keyword_symmetric)
+          (keyword_key)
+          (identifier))))))
+
+==================
+ddl-rest/signature-parts — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ADD SIGNATURE TO db.dbo.p BY CERTIFICATE c;
+
+---
+
+(program
+  (batch
+    (statement
+      (signature_statement
+        (keyword_add)
+        (keyword_signature)
+        (keyword_to)
+        (object_reference
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))
+        (keyword_by)
+        (signature_signer
+          (keyword_certificate)
+          (identifier))))))
+
+==================
+ddl-rest/signature-quoted — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ADD SIGNATURE TO dbo.p BY CERTIFICATE c WITH PASSWORD = N'비밀\dummy';
+
+---
+
+(program
+  (batch
+    (statement
+      (signature_statement
+        (keyword_add)
+        (keyword_signature)
+        (keyword_to)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_by)
+        (signature_signer
+          (keyword_certificate)
+          (identifier)
+          (with_clause
+            (keyword_with)
+            (option
+              name: (identifier)
+              value: (literal))))))))
 
 ==================
 ddl-rest/extra-credential-alter-secret — LocalDB 17.0.1000.7 levels 100-170: rejects 102
@@ -7458,6 +8239,115 @@ SET QUOTED_IDENTIFIER OFF; CREATE CRYPTOGRAPHIC PROVIDER p FROM FILE = "provider
         (keyword_from)
         (keyword_file)
         (literal)))))
+
+==================
+ddl-rest/extra-commit-declared-off — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+DECLARE @t nvarchar(30) = N't'; COMMIT TRANSACTION @t WITH (DELAYED_DURABILITY = OFF);
+
+---
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (nvarchar
+            (keyword_nvarchar)
+            size: (literal))
+          (literal))))
+    (statement
+      (commit_statement
+        (keyword_commit)
+        (keyword_transaction)
+        name: (identifier)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (keyword_off)))))))
+
+==================
+ddl-rest/extra-signature-symmetric-password — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+ADD SIGNATURE TO dbo.p BY SYMMETRIC KEY k WITH PASSWORD = 'x';
+
+---
+
+(program
+  (batch
+    (statement
+      (signature_statement
+        (keyword_add)
+        (keyword_signature)
+        (keyword_to)
+        (object_reference
+          schema: (identifier)
+          name: (identifier))
+        (keyword_by)
+        (signature_signer
+          (keyword_symmetric)
+          (keyword_key)
+          (identifier)
+          (with_clause
+            (keyword_with)
+            (option
+              name: (identifier)
+              value: (literal))))))))
+
+==================
+ddl-rest/extra-commit-comment — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+COMMIT WITH (DELAYED_DURABILITY /* 한글 C:\검증 */ = OFF);
+
+---
+
+(program
+  (batch
+    (statement
+      (commit_statement
+        (keyword_commit)
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            (marginalia)
+            value: (keyword_off)))))))
+
+==================
+ddl-rest/extra-sensitivity-comment — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ADD SENSITIVITY CLASSIFICATION TO dbo.t.c WITH (LABEL = N'기밀', RANK /* 등급 */ = HIGH);
+
+---
+
+(program
+  (batch
+    (statement
+      (sensitivity_classification_statement
+        (keyword_add)
+        (keyword_sensitivity)
+        (keyword_classification)
+        (keyword_to)
+        (object_reference
+          database: (identifier)
+          schema: (identifier)
+          name: (identifier))
+        (with_options
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            (marginalia)
+            value: (identifier)))))))
 
 ==================
 ddl-rest/extra-provider-qi-on — LocalDB 17.0.1000.7 levels 100-170: rejects 102

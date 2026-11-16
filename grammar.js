@@ -68,6 +68,7 @@ export default grammar({
     [$.alter_queue],
     [$.alter_service],
     [$.alter_message_type],
+    [$.signature_signer],
     [$.alter_assembly],
     [$.alter_fulltext_catalog],
     [$.alter_fulltext_index],

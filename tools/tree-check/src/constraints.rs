@@ -4506,4 +4506,42 @@ mod tests {
             assert_eq!(rules(bad), [rule], "{bad}");
         }
     }
+    #[test]
+    fn ddl_rest_misc_matches_engine_neighbours() {
+        for bad in [
+            "COMMIT WITH (WHATEVER = ON);",
+            "COMMIT WITH (DELAYED_DURABILITY = ON, DELAYED_DURABILITY = OFF);",
+            "COMMIT WITH (DELAYED_DURABILITY = 1);",
+            "COMMIT WITH (DELAYED_DURABILITY);",
+            "KILL QUERY NOTIFICATION SUBSCRIPTION 'x';",
+            "UPDATE STATISTICS dbo.t WITH FULLSCAN ON PARTITIONS (1);",
+            "UPDATE STATISTICS dbo.t WITH FULLSCAN, COLUMNS, INDEX;",
+            "UPDATE STATISTICS dbo.t WITH WHATEVER = 1;",
+            "ADD SENSITIVITY CLASSIFICATION TO dbo.t.c WITH (RANK = WRONG);",
+            "ADD SENSITIVITY CLASSIFICATION TO dbo.t.c WITH (LABEL = 1);",
+            "ADD SENSITIVITY CLASSIFICATION TO dbo.t.c WITH (LABEL = 'a', LABEL = 'b');",
+            "ADD SENSITIVITY CLASSIFICATION TO dbo.t.c WITH (WHATEVER = 'a');",
+            "DROP SENSITIVITY CLASSIFICATION FROM c;",
+            "ADD SIGNATURE TO dbo.p BY CERTIFICATE c WITH WHATEVER = 1;",
+            "ADD SIGNATURE TO dbo.p BY SYMMETRIC KEY k WITH PASSWORD = 'x';",
+        ] {
+            assert!(!parse(bad).root_node().has_error(), "{bad}");
+            assert_eq!(rules(bad), ["ddl-rest-misc"], "{bad}");
+        }
+        for good in [
+            "COMMIT;",
+            "COMMIT TRAN t WITH (DELAYED_DURABILITY = ON);",
+            "COMMIT WORK WITH (DELAYED_DURABILITY = OFF);",
+            "KILL QUERY NOTIFICATION SUBSCRIPTION ALL;",
+            "KILL STATS JOB -1;",
+            "UPDATE STATISTICS dbo.t WITH RESAMPLE ON PARTITIONS (1, 3 TO 5), COLUMNS;",
+            "ADD SENSITIVITY CLASSIFICATION TO dbo.t.c WITH (LABEL = N'기밀', RANK = HIGH);",
+            "DROP SENSITIVITY CLASSIFICATION FROM dbo.t.c;",
+            "ADD SIGNATURE TO dbo.p BY CERTIFICATE c WITH SIGNATURE = 0x0102;",
+            "ADD SIGNATURE TO dbo.p BY SYMMETRIC KEY k;",
+        ] {
+            assert!(!parse(good).root_node().has_error(), "{good}");
+            assert!(rules(good).is_empty(), "{good}");
+        }
+    }
 }
