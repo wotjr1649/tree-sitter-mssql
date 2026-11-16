@@ -129,3 +129,19 @@ The ddl-rest probes use LocalDB 17.0.1000.7 PARSEONLY at levels 100–170. New c
 Keep the positive oddities in accepted-gaps.md: engine acceptance takes precedence over assumed numeric ranges or option requirements. Windows double-quoted provider FILE strings follow the existing QUOTED_IDENTIFIER state check. New field and node types only extend the public contract.
 
 The closing-* neighbours cover XE scalar source parentheses versus whole-comparison groups; DROP SEQUENCE qualification; measured CONNECT ON AVAILABILITY GROUP rejections; and quoted multiword securable classes. The engine accepts ALTER/CONTROL with the same availability-group class and preserves ordinary SELECT parentheses. These checks close every newly clean syntax-negative committed case; undeclared variables remain contextual.
+
+
+## Final query-form evidence (R18)
+
+Evidence: `oracle/probes/last-forms.jsonl`, LocalDB 17.0.1000.7, levels 100-170.
+
+| Rule | Tree-decidable restriction | Rejected neighbours |
+| --- | --- | --- |
+| expression-like-escape | ESCAPE directly follows an unparenthesized LIKE/NOT LIKE predicate | escape-relation/arithmetic/twice/parenthesized-predicate; 156 |
+| expression-json-aggregate | One value or key:value; aggregate-specific ORDER BY, NULL handling, RETURNING json and window combinations; new JSON argument forms are not ordinary function arguments | json_arrayagg/json_objectagg-*, json-ordinary_*, json-quoted/schema; 102/156/174/10759 |
+| query-select-into-scope | INTO is allowed in every set branch, outside subqueries, CTEs, INSERT sources and view bodies | into-subquery/cte/insert/view/derived-first/scalar/exists; 156 |
+
+`last_forms_match_engine_evidence` checks every probe with explicit contextual/existing-gap
+exceptions. Several INTO branches, long/empty/non-string ESCAPE expressions and bare
+JSON_ARRAYAGG DISTINCT or WITHIN GROUP follow the measured PARSEONLY acceptance, not a guessed
+restriction. Boolean/scalar operands and existing reserved-word gaps stay documented in accepted-gaps.md.

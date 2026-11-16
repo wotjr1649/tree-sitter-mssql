@@ -1,0 +1,134 @@
+{"id":"last-forms/escape-literal","sha256":"60dc0d4b729e46c16105e588977776548fb63f1ce1d57689a03e5bbe7c08b5c0","source":"DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE '!';"}
+{"id":"last-forms/escape-variable","sha256":"bba2180a480c1d395ffd6e2087c94a7ba8cad7f34889ddc9b722ed9d2bdbd254","source":"DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE @e;"}
+{"id":"last-forms/escape-field","sha256":"4a828cc889d75eb9ae307c4cd20cc9e09aeef37f0d102a2e7a3a815964a77fb6","source":"DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE e;"}
+{"id":"last-forms/escape-call","sha256":"ff41f0f1f284fa25d39ffbd57c741fca2fcff2ea5699b6a63efe23cac6c64e20","source":"DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE CHAR(33);"}
+{"id":"last-forms/escape-concat","sha256":"25e17205228758e173bf03980c5e903de49644b9b35cf82f78d1abf52972cd48","source":"DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE '!' + '';"}
+{"id":"last-forms/escape-collate","sha256":"9d929cfad3191605a55c28d0b3f423556fd591b390e9ab9b023af5610cf46392","source":"DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE '!' COLLATE Latin1_General_CI_AS;"}
+{"id":"last-forms/escape-parenthesized","sha256":"4e6808e30350d9fab7b502e5035515e159c9b3e850b97d89913915ed1dc8913c","source":"DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE ('!');"}
+{"id":"last-forms/escape-integer","sha256":"a5604dc001d0d18a2d6f3c5b550bcded2e75bc6d463f8de0a4e695778825c3d6","source":"DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE 1;"}
+{"id":"last-forms/escape-null","sha256":"908526821caee894dfb32788c1f25e4ec76acc3613abb7892ff9f2a65b556147","source":"DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE NULL;"}
+{"id":"last-forms/escape-subquery","sha256":"5bf01726d91eeaaf78951e1cf5e40fd69b9c54d2b3e663110a2a478ce490441d","source":"DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE (SELECT '!');"}
+{"id":"last-forms/escape-negative","sha256":"ed17039d25da916635c6ad762f914f8903cc3ffaa35616d4dd19ac5df185273f","source":"DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE -1;"}
+{"id":"last-forms/escape-empty","sha256":"7211dae2bfce71a9c8d103531001d7d4abd44c6efefa2bfac23bc91b0887061b","source":"DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE '';"}
+{"id":"last-forms/escape-long","sha256":"4d4da3a25966d1fe86779193537dd1081df3f332beb21d444042b7dafdc30696","source":"DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE 'xx';"}
+{"id":"last-forms/escape-binary","sha256":"7586015f98ff2bac0c6176059839a6319e4a2a26a75c562f810c7736f8e9f6ed","source":"DECLARE @e varchar(1); SELECT 1 WHERE x LIKE '%!_%' ESCAPE 0x21;"}
+{"id":"last-forms/escape-not","sha256":"dd4bc0987f5d3cc9275f785a04fade8e4981e63f58065a2a5b2381f92ea90015","source":"SELECT 1 WHERE x NOT LIKE 'a' ESCAPE '!';"}
+{"id":"last-forms/escape-and","sha256":"b53585392ed7be06574f15f91f9b8a9c255e3b4881639d5443fed4f7ad1711a0","source":"SELECT 1 WHERE x LIKE 'a' ESCAPE '!' AND y=1;"}
+{"id":"last-forms/escape-or","sha256":"d03477d68ea27321218e809856174a87f56c28b9d4c78af03c2c941111e45da7","source":"SELECT 1 WHERE x LIKE 'a' ESCAPE '!' OR y LIKE 'b' ESCAPE '#';"}
+{"id":"last-forms/escape-nested","sha256":"ba2eb25132a6b2b3b1ff3ee8a621163569363e33816e89aa3c6dfda37e127055","source":"SELECT 1 WHERE NOT (x LIKE 'a' ESCAPE '!');"}
+{"id":"last-forms/escape-case","sha256":"f0c33e72d3cf12099dd89552836d14ce6c2b3f9391670a2c27b1af8f52651356","source":"SELECT 1 WHERE CASE WHEN x LIKE 'a' ESCAPE '!' THEN 1 ELSE 0 END = 1;"}
+{"id":"last-forms/escape-comment","sha256":"33735ea02d7e1730596ceb5f15c2dd8aed158cd15f1398e21e6089e4bd8b089b","source":"SELECT 1 WHERE x LIKE 'a' /* 경계 C:\\tmp */ ESCAPE /* 주석 */ '!';"}
+{"id":"last-forms/escape-relation","sha256":"a37c81115fb2fdbd257fcaad7014606e08c8228b9fea6aca2b227a216d15ed36","source":"SELECT 1 WHERE x = 'a' ESCAPE '!';"}
+{"id":"last-forms/escape-arithmetic","sha256":"20dcf2fd4fcff361a3bd64120ce4e203448c6edc23ababaa3efe1027d7bc4ab0","source":"SELECT 1 WHERE x + 'a' ESCAPE '!';"}
+{"id":"last-forms/escape-twice","sha256":"49d7c9c4697dab4e8b3400a14e7b25bb805b4e2d9c8a91948805c5bad2d63581","source":"SELECT 1 WHERE x LIKE 'a' ESCAPE '!' ESCAPE '#';"}
+{"id":"last-forms/escape-missing","sha256":"01c2266679db23960060c55ca76e93b5dd1367311d71e1e8c355fac6c6e08f6a","source":"SELECT 1 WHERE x LIKE 'a' ESCAPE;"}
+{"id":"last-forms/escape-pattern_missing","sha256":"6b0c2ad6a2bfd26aefde3da313fc2a4960cf91c8a95767b8d5d098ca3c1ec919","source":"SELECT 1 WHERE x LIKE ESCAPE '!';"}
+{"id":"last-forms/escape-boolean","sha256":"f7df8340c736a16a608cb0386ba86f3d9ce262919b40f36c70239f6bc7196142","source":"SELECT 1 WHERE x LIKE 'a' ESCAPE '!' = '!';"}
+{"id":"last-forms/escape-and_operand","sha256":"11cd7d3dfa9badd1da7ee06dbbf0f59ce69bd7021ab6da8750eff6701c26087b","source":"SELECT 1 WHERE x LIKE 'a' ESCAPE (y=1);"}
+{"id":"last-forms/json_arrayagg-plain","sha256":"a333003232a7f0e4239d9cd1db977ada03b21b85b46b197de9e7ec9e6f54eaef","source":"SELECT JSON_ARRAYAGG(x) FROM t;"}
+{"id":"last-forms/json_arrayagg-order","sha256":"7ca4e2641558f36a2c48b362567c9555a76238c9ae4a6f80822a2a422f89b4a5","source":"SELECT JSON_ARRAYAGG(x ORDER BY y DESC) FROM t;"}
+{"id":"last-forms/json_arrayagg-null","sha256":"ef327b6d0fa922c4de480472242c2ed5c66963c4fbd1e7c32881754c39a7eaa8","source":"SELECT JSON_ARRAYAGG(x NULL ON NULL) FROM t;"}
+{"id":"last-forms/json_arrayagg-absent","sha256":"d0827914ce28ea72fd93d1ae4c90001919eb26d3c4e088c7e11f634494985089","source":"SELECT JSON_ARRAYAGG(x ABSENT ON NULL) FROM t;"}
+{"id":"last-forms/json_arrayagg-returning","sha256":"c651dd28e1d272a88e056bc098e7c00512a37519ffe4aa9d6470bc8224af643b","source":"SELECT JSON_ARRAYAGG(x RETURNING json) FROM t;"}
+{"id":"last-forms/json_arrayagg-all","sha256":"0be5d699bee93406e63ba87c0fd25db7c1faf1b1e2b0e4eac4c74e67d18ad860","source":"SELECT JSON_ARRAYAGG(x ORDER BY y NULL ON NULL RETURNING json) FROM t;"}
+{"id":"last-forms/json_arrayagg-order_after","sha256":"29dc5af90d1cf799846e88de102a995733b29371cddf5ecc6abdbf9ae249cb25","source":"SELECT JSON_ARRAYAGG(x NULL ON NULL ORDER BY y) FROM t;"}
+{"id":"last-forms/json_arrayagg-double_null","sha256":"264c780b27332b4c69da50503616f5f51cb0ba3db0f56cc6734713a9a7e6e4dc","source":"SELECT JSON_ARRAYAGG(x NULL ON NULL ABSENT ON NULL) FROM t;"}
+{"id":"last-forms/json_arrayagg-empty","sha256":"8f7c4d6bfa4425dd9681cf0e8b695517a3c63994e81a4ebdc1ed0b07b58bc89f","source":"SELECT JSON_ARRAYAGG() FROM t;"}
+{"id":"last-forms/json_arrayagg-many","sha256":"84b9a94a57adfe448c64ec2b20a366ab7a6c6ba2f77a21278d5985b9ba6f4039","source":"SELECT JSON_ARRAYAGG(x, x) FROM t;"}
+{"id":"last-forms/json_arrayagg-distinct","sha256":"339b40ff38adafa9021d14003c7cd7e7530d0a087ec44d664d09bfcb161e3465","source":"SELECT JSON_ARRAYAGG(DISTINCT x) FROM t;"}
+{"id":"last-forms/json_arrayagg-star","sha256":"961073265f3ee2527e96994456ba12caa88a77bc988997baa2bedac73626e31f","source":"SELECT JSON_ARRAYAGG(*) FROM t;"}
+{"id":"last-forms/json_arrayagg-no_key","sha256":"2d26d2b27891f785affe938af0776d3815b4092756e7123d2a42e745ede5d0ee","source":"SELECT JSON_ARRAYAGG('k':x) FROM t;"}
+{"id":"last-forms/json_arrayagg-two_orders","sha256":"ad33b34a94c2a246020b13d20827e7a6e623b9ee1bfea35ec32bfcd8676e421b","source":"SELECT JSON_ARRAYAGG(x ORDER BY y ORDER BY z) FROM t;"}
+{"id":"last-forms/json_arrayagg-wrong_return","sha256":"dd8388e0e35c66625434c56b420e81f0ac54a3fd276c936355a0a7b88ea20000","source":"SELECT JSON_ARRAYAGG(x RETURNING int) FROM t;"}
+{"id":"last-forms/json_arrayagg-wrapped","sha256":"db2f9f3f44cae09bdc6cd31cbd78af8c53ab9fed78ed732964dd75c409c976d8","source":"SELECT JSON_ARRAYAGG(x WITH ARRAY WRAPPER) FROM t;"}
+{"id":"last-forms/json_objectagg-plain","sha256":"9d1ad1a867f96505edc4d016b3c4a073e4d36b2eac60741b651ca902c60122a8","source":"SELECT JSON_OBJECTAGG('k':x) FROM t;"}
+{"id":"last-forms/json_objectagg-order","sha256":"f82bb9b41877382b0abaf29d173f3e9362bbba8a9f726f214de7bfc5cf783c9a","source":"SELECT JSON_OBJECTAGG('k':x ORDER BY y DESC) FROM t;"}
+{"id":"last-forms/json_objectagg-null","sha256":"4ec982d0b441533d3d2406413c9f14df4ead4924edcbbf0625c846834c3ec0a7","source":"SELECT JSON_OBJECTAGG('k':x NULL ON NULL) FROM t;"}
+{"id":"last-forms/json_objectagg-absent","sha256":"eae674415e620142497d2e1875a1bbd558c4a5644abce0a3d2d5307c4b7c6d03","source":"SELECT JSON_OBJECTAGG('k':x ABSENT ON NULL) FROM t;"}
+{"id":"last-forms/json_objectagg-returning","sha256":"8b6a6e62c2052f46f5a056748d75e9a4373ebfa152f8846686cae3fedb7bd682","source":"SELECT JSON_OBJECTAGG('k':x RETURNING json) FROM t;"}
+{"id":"last-forms/json_objectagg-all","sha256":"b81ffcc4b47f97921780f09af3a3ac1028bfe380c679f253b470874e96339ca8","source":"SELECT JSON_OBJECTAGG('k':x ORDER BY y NULL ON NULL RETURNING json) FROM t;"}
+{"id":"last-forms/json_objectagg-order_after","sha256":"849ac0bb2a319df0291b097adf69e2fc5364813004fadc16857a7a409d60427c","source":"SELECT JSON_OBJECTAGG('k':x NULL ON NULL ORDER BY y) FROM t;"}
+{"id":"last-forms/json_objectagg-double_null","sha256":"294703417cbd695e830ee83fdb5dfb4e52988859ceb750c639b64e4251db6414","source":"SELECT JSON_OBJECTAGG('k':x NULL ON NULL ABSENT ON NULL) FROM t;"}
+{"id":"last-forms/json_objectagg-empty","sha256":"48f09cc9c43285618b6d0fd7d43190495dffa7a80c7493094007d0b6fbcfbf1e","source":"SELECT JSON_OBJECTAGG() FROM t;"}
+{"id":"last-forms/json_objectagg-many","sha256":"afea9bb1d8285715419559a5c7e7f808a2064131336425f763b084344f32daaa","source":"SELECT JSON_OBJECTAGG('k':x, 'k':x) FROM t;"}
+{"id":"last-forms/json_objectagg-distinct","sha256":"549f4a7a5614d180ef8ba65b02107896cf99a53ac91347bcff02cb665c25d957","source":"SELECT JSON_OBJECTAGG(DISTINCT 'k':x) FROM t;"}
+{"id":"last-forms/json_objectagg-star","sha256":"5d4da912737aaae76b5f1cc198ff4aa9c594181f7613be90d872cb06e4d9c42f","source":"SELECT JSON_OBJECTAGG(*) FROM t;"}
+{"id":"last-forms/json_objectagg-no_key","sha256":"ce3b013334803108b75d390fcddf034f02284afe88172c9341d1d7a16bcaf4e3","source":"SELECT JSON_OBJECTAGG(x) FROM t;"}
+{"id":"last-forms/json_objectagg-two_orders","sha256":"ab02691cd203021aa5db14a08150e5b4a8f9e8d30f642b3e9d97389b9b5dced5","source":"SELECT JSON_OBJECTAGG('k':x ORDER BY y ORDER BY z) FROM t;"}
+{"id":"last-forms/json_objectagg-wrong_return","sha256":"c3213ee875cdb12534d33b1f0776fdd290380f901ebbf261970fb9c3e5131f4a","source":"SELECT JSON_OBJECTAGG('k':x RETURNING int) FROM t;"}
+{"id":"last-forms/json_objectagg-wrapped","sha256":"6e4c31d12890761e7f1fad4a81d63d30ba696bb1d3d8bedc52b5b549e1f1203d","source":"SELECT JSON_OBJECTAGG('k':x WITH ARRAY WRAPPER) FROM t;"}
+{"id":"last-forms/into-last","sha256":"7d4aa4e7ea80a58aba2afb81439d57fad46f416bcc09a8338994b0dc95225bed","source":"SELECT 1 UNION SELECT 2 INTO #t;"}
+{"id":"last-forms/into-first","sha256":"9265dc23455b44bd7e4abfb85d64ee166892dbcce29b5f889ac5dac119c2d6e8","source":"SELECT 1 INTO #t UNION SELECT 2;"}
+{"id":"last-forms/into-both","sha256":"96cc263c011f895393eb9cf8cd683b4dca24bfba9c5a248b49cabf610630eea6","source":"SELECT 1 INTO #t UNION SELECT 2 INTO #u;"}
+{"id":"last-forms/into-middle","sha256":"9d32df78a7b1b9a2e90a40a447c6afb837273488334cb040037dd6be38f62407","source":"SELECT 1 UNION SELECT 2 INTO #t UNION SELECT 3;"}
+{"id":"last-forms/into-except","sha256":"4cd41e250b86da66293f97031d15291fc3ecd4377a2309eaf71b173a1683b00e","source":"SELECT 1 EXCEPT SELECT 2 INTO #t;"}
+{"id":"last-forms/into-intersect","sha256":"1eb7613540dc650545496e882a04faf9538febf3a63e623f746f74334e5c5dbb","source":"SELECT 1 INTERSECT SELECT 2 INTO #t;"}
+{"id":"last-forms/into-paren","sha256":"f67e832da36f2df3b9dabc50f45e2f2b77b5c56aaaa35845ffb098f3df8b63e5","source":"SELECT 1 UNION (SELECT 2 INTO #t);"}
+{"id":"last-forms/into-nested","sha256":"b9e655d6e8d7662fb9655585a4cc8f2051c1b2a2af47c3841f9b37f713570011","source":"SELECT 1 UNION (SELECT 2 UNION SELECT 3 INTO #t);"}
+{"id":"last-forms/into-subquery","sha256":"3f1cc451e387edd9e1e292ac1c38100c650644162166c2c3f758826a235a8bfe","source":"SELECT * FROM (SELECT 1 UNION SELECT 2 INTO #t) d;"}
+{"id":"last-forms/into-cte","sha256":"a15fd304640ff5a02d385d7ad1d713a9b97ee0b5201c36d15ef002f559ce1b6d","source":"WITH c AS (SELECT 1 UNION SELECT 2 INTO #t) SELECT * FROM c;"}
+{"id":"last-forms/into-order","sha256":"8e5dfd6292bfbfe6f08f40e664a90898bffb936d319dd8d58ad1ff1872da9924","source":"SELECT 1 UNION SELECT 2 INTO #t ORDER BY 1;"}
+{"id":"last-forms/into-on","sha256":"228e178005bc42bbaf8e451f79a0778ecb9eca65deee594147a6762ad0fb5176","source":"SELECT 1 UNION SELECT 2 INTO t ON [PRIMARY];"}
+{"id":"last-forms/into-multi_nested","sha256":"ec95bf04e708d5660c008e21677334dff5fb8d88a2d0543596588a6fa6ee1808","source":"(SELECT 1 INTO #t UNION SELECT 2) UNION (SELECT 3 INTO #u UNION SELECT 4);"}
+{"id":"last-forms/into-separate","sha256":"83ddb55124fa764a12784a5ec34d0da756d9fbe87315e67d91a197a35833931c","source":"SELECT 1 INTO #t; SELECT 2 INTO #u;"}
+{"id":"last-forms/json-ordinary_null","sha256":"84ca9d62a6bb589af8bfbf83c5eb336df49bf7cbb5d5cceddcf3af7f7a851af6","source":"SELECT foo(x NULL ON NULL) FROM t;"}
+{"id":"last-forms/json-ordinary_order","sha256":"90229db77edcdeda54f21f6d29699fffb136d22e4ad28b2c34ae84c8bfcf5a1e","source":"SELECT foo(x ORDER BY y) FROM t;"}
+{"id":"last-forms/json-ordinary_pair","sha256":"dc0f8b6a72aa382d89bb15e0e3a550152d6d4e0d307bbc9fa7ad51edc9554aed","source":"SELECT foo('k':x) FROM t;"}
+{"id":"last-forms/json-array_pair","sha256":"2d26d2b27891f785affe938af0776d3815b4092756e7123d2a42e745ede5d0ee","source":"SELECT JSON_ARRAYAGG('k':x) FROM t;"}
+{"id":"last-forms/json-object_order","sha256":"096a97d096e33e1ac3de17987a40dd1f17b665e7d7491be17d5b01dc30b6197d","source":"SELECT JSON_OBJECTAGG('k':x ORDER BY y) FROM t;"}
+{"id":"last-forms/json-quoted","sha256":"1b5c8e3d4793d22c64bd8f744c483b6a343efc85e13aaddab6e9da358e504932","source":"SELECT [JSON_ARRAYAGG](x NULL ON NULL) FROM t;"}
+{"id":"last-forms/json-schema","sha256":"c2c68d5355167129e646a89a0d760b97768dc8ef3edb62059b7ce1e069880a8a","source":"SELECT dbo.JSON_ARRAYAGG(x NULL ON NULL) FROM t;"}
+{"id":"last-forms/json-array_over","sha256":"df6d568b84ea01c134c76e41ba87cc0cc24df46ae0c5504adad5a4bcd7396c8a","source":"SELECT JSON_ARRAYAGG(x) OVER () FROM t;"}
+{"id":"last-forms/json-object_over","sha256":"b0f9633bb78c97cae36016363de9b2c5ddceeadb64b802ad8819db964a12d3f8","source":"SELECT JSON_OBJECTAGG('k':x) OVER () FROM t;"}
+{"id":"last-forms/json-array_constructor","sha256":"426df5e20da8c22b4d3afc3d7fac390675e5eb60daaffdabb669d17a341e5e4d","source":"SELECT JSON_ARRAY(x ORDER BY y) FROM t;"}
+{"id":"last-forms/escape-parenthesized-predicate","sha256":"089c9846fbdba34731782e22ed04190963630b55cbace71bc0dcc75274da001b","source":"SELECT 1 WHERE (x LIKE 'a') ESCAPE '!';"}
+{"id":"last-forms/escape-is-null","sha256":"a286ae35d800b9f27b93091e782d4bbf876834bf3d47d6d1d77a14e2c1dfc0a1","source":"SELECT 1 WHERE x LIKE 'a' ESCAPE '!' IS NULL;"}
+{"id":"last-forms/escape-in","sha256":"a63b6da7458511adbeaeb9b08e561aa535f9b94e4abd77177106171becfe11ea","source":"SELECT 1 WHERE x LIKE 'a' ESCAPE e IN ('!');"}
+{"id":"last-forms/escape-pattern-arithmetic","sha256":"b548c88bc4180f0d0fb45b14051b34aab18a097e4041bf6c21da9248b8e3ff62","source":"SELECT 1 WHERE x LIKE '%' + e ESCAPE '!' + '';"}
+{"id":"last-forms/escape-unicode","sha256":"b3a4bdaee937748e12d5d8e17784ad0b10b428ba30d91192e4bd788905901329","source":"SELECT 1 WHERE x NOT LIKE N'%한글!_%' ESCAPE N'!';"}
+{"id":"last-forms/escape-check","sha256":"a062e8c0ffc2b36afd85fa39678e6e61cee0dcec086e74fcb851ea872a11856e","source":"CREATE TABLE t(x varchar(20) CHECK(x LIKE 'a' ESCAPE '!'));"}
+{"id":"last-forms/escape-parenthesized-scalar","sha256":"91ec262aeca55a6778c3d9faebb4a0208a64c019dc3869f7f9623543737fdbde","source":"SELECT 1 WHERE x LIKE 'a' ESCAPE (e + '');"}
+{"id":"last-forms/escape-alias","sha256":"101bb6eb1cc43c3f69828005c277cbbf6d3449099048a11420a8393c11d5cfb5","source":"SELECT x AS escape FROM t;"}
+{"id":"last-forms/json-array-alias","sha256":"12e7c6a926f79e4fa0d114e0fd2da38a8f387a8c17947d22de052118dde5b734","source":"SELECT JSON_ARRAYAGG(x alias) FROM t;"}
+{"id":"last-forms/json-object-value-alias","sha256":"5a52afd875c06766add019ec92d4207337bc9f2ef6e9fc49edfd3d55915b01d0","source":"SELECT JSON_OBJECTAGG('k':x alias) FROM t;"}
+{"id":"last-forms/json-array-distinct-order","sha256":"a97a2fc67b76d3a44b089df617707f192052859767add95813c3131751d6ba6a","source":"SELECT JSON_ARRAYAGG(DISTINCT x ORDER BY y ABSENT ON NULL RETURNING json) FROM t;"}
+{"id":"last-forms/json-array-return-bracket","sha256":"1b30cc87c85c936114979938b5206a7f404276abaedb55f7aac383c9ac4e1e9f","source":"SELECT JSON_ARRAYAGG(x RETURNING [json]) FROM t;"}
+{"id":"last-forms/json-array-null-over","sha256":"8f8ce210e64e6dfd453a3bed18550e4db577b7f028de36bc8d7fdbcce5e5152f","source":"SELECT JSON_ARRAYAGG(x ORDER BY y NULL ON NULL RETURNING json) OVER (PARTITION BY z) FROM t;"}
+{"id":"last-forms/json-object-null-over","sha256":"1e4e730c863b23144bcf356066f2f0a4ae34f840844cc5c5c86c317fcdd21366","source":"SELECT JSON_OBJECTAGG('k':x ABSENT ON NULL RETURNING json) OVER () FROM t;"}
+{"id":"last-forms/json-object-subquery-key","sha256":"d5ca792be4836c3332ecf214aa12c48bdfa75b6415e74fdca2848b2c6128cb13","source":"SELECT JSON_OBJECTAGG((SELECT 'k'):COALESCE(x,0)) FROM t;"}
+{"id":"last-forms/json-nested","sha256":"8d725fe5bf489bc15a00c5ae357761ad517200574f111afd71123f03e880f3bf","source":"SELECT JSON_OBJECTAGG('k':JSON_ARRAYAGG(x ORDER BY y NULL ON NULL)) FROM t;"}
+{"id":"last-forms/json-constructor-neighbour","sha256":"bda4e10c4dc3919eb8e42e1f1f3a65e55f4d976eac35a7d5c60bfae4b4014048","source":"SELECT JSON_OBJECT('k':JSON_ARRAY(x ABSENT ON NULL) NULL ON NULL RETURNING json);"}
+{"id":"last-forms/json-scalar-null","sha256":"256bc6dcbb84fb1b6d48f0437b7de3ddbeb6e6e6a5a7e885d6e0f9ace633b519","source":"SELECT JSON_VALUE(x,'$.a' NULL ON NULL) FROM t;"}
+{"id":"last-forms/into-insert","sha256":"da89bccf6dc63db266033b322727d7410fbc725679c86bdd68c923f2702cca7a","source":"INSERT t SELECT 1 UNION SELECT 2 INTO #x;"}
+{"id":"last-forms/into-view","sha256":"c423c7ab2549d33b78c8ee7b24c0b35ef4ee86903b8c3c8b3fbc002bf379eab3","source":"CREATE VIEW v AS SELECT 1 UNION SELECT 2 INTO t;"}
+{"id":"last-forms/into-empty","sha256":"f9bec2c6acf1182884e5357dce56a5abdbd80ee20107485c7e175a93b793b1c0","source":"SELECT 1 UNION SELECT 2 INTO;"}
+{"id":"last-forms/into-derived-first","sha256":"247e8cbd1b68784e8e722e9ff1e6a416b9ffb73f669eb0e2e515d93983289948","source":"SELECT * FROM (SELECT 1 INTO #t UNION SELECT 2) d;"}
+{"id":"last-forms/into-cte-first","sha256":"8800e12e1102e32bcd54c3f059821edbd1d99622ff13d3ba5eeb6a597d2bdccf","source":"WITH c AS (SELECT 1 INTO #t UNION SELECT 2) SELECT * FROM c;"}
+{"id":"last-forms/into-scalar","sha256":"ab703d97a7f8ac5099dd88c190e5ba01e731f466d2494bc7185ef18a505314fd","source":"SELECT (SELECT 1 UNION SELECT 2 INTO #t);"}
+{"id":"last-forms/into-exists","sha256":"8935f8b438b7cf87a2dfc7765de157ce8c1cf0c3ee5bee356913ddc4e19fa99e","source":"SELECT 1 WHERE EXISTS(SELECT 1 UNION SELECT 2 INTO #t);"}
+{"id":"last-forms/json-array-distinct-same-order","sha256":"4009fca2646e84096d7dbc95ba5695b9f3b4357135ae2f5fc9cf0366333d9a78","source":"SELECT JSON_ARRAYAGG(DISTINCT x ORDER BY x) FROM t;"}
+{"id":"last-forms/json-array-distinct-null","sha256":"91dfe54b2749e26a1e90000fff70ef5fa46b2848b0ab9a514a38b02f7c5b785f","source":"SELECT JSON_ARRAYAGG(DISTINCT x NULL ON NULL) FROM t;"}
+{"id":"last-forms/json-array-distinct-return","sha256":"b5ea5b8dd70a2b1895ae6056bc464ff6e2d60d0b73ef7e7f3b3858829dfb29bf","source":"SELECT JSON_ARRAYAGG(DISTINCT x RETURNING json) FROM t;"}
+{"id":"last-forms/json-array-order-over","sha256":"a0a2552d88bd9275ef54d79b1c8f978ed1b3f97508d6cef3ca52a3a311c1e963","source":"SELECT JSON_ARRAYAGG(x ORDER BY y) OVER () FROM t;"}
+{"id":"last-forms/json-array-null-over-simple","sha256":"839ee16ae37bb74c30f841b1a1a9c18feb86128e019422c59f02d9d2860c7a05","source":"SELECT JSON_ARRAYAGG(x NULL ON NULL) OVER () FROM t;"}
+{"id":"last-forms/json-array-return-over","sha256":"2f9053800b22553edbca9fc0e1b6c7ae231ed2bd0e681489cfd73168c26ee3ce","source":"SELECT JSON_ARRAYAGG(x RETURNING json) OVER () FROM t;"}
+{"id":"last-forms/json-array-distinct-over","sha256":"f510e41638fc1e4ca3c41c4b3e2809ec25cbf54690a4ba126c79ee4706dca33d","source":"SELECT JSON_ARRAYAGG(DISTINCT x) OVER () FROM t;"}
+{"id":"last-forms/json-array-within","sha256":"6ebb3207e4ef6287e2461b899f73b03fd787c98cd8bc8ba72870ea54d6a3e914","source":"SELECT JSON_ARRAYAGG(x) WITHIN GROUP(ORDER BY y) FROM t;"}
+{"id":"last-forms/json-object-within","sha256":"077b5d28027fdcfc59310a4703852d4758bc0624e50d1a04052f659cb1419e43","source":"SELECT JSON_OBJECTAGG('k':x) WITHIN GROUP(ORDER BY y) FROM t;"}
+{"id":"last-forms/json-object-distinct-value","sha256":"00a38c9fb1aae99d9996bb5aba9981ab6269e5d8b3c4bf2a7948b3802ae3b629","source":"SELECT JSON_OBJECTAGG('k':DISTINCT x) FROM t;"}
+{"id":"last-forms/escape-operand-comparison-group","sha256":"692c6e3db418686af768fa19467aacd48c3d8c748fe0cdd5023bb502a2fc7eae","source":"SELECT 1 WHERE x LIKE 'a' ESCAPE (e = '!');"}
+{"id":"last-forms/escape-unparenthesized-not","sha256":"5468c18a42c134f796b0b3b27dd6f843885881589fe1698878468c11c4bf2430","source":"SELECT 1 WHERE NOT x LIKE 'a' ESCAPE '!';"}
+{"id":"last-forms/escape-keyword-column","sha256":"c08d33d6872595099fa92dc023d73a71ea54f4a2bac669313c49f972e8895f2e","source":"SELECT escape FROM t;"}
+{"id":"last-forms/escape-keyword-quoted-alias","sha256":"8b4dabab7b8b46f96ec5204ce33d6af192de57efff30dc92f41969df09eb8275","source":"SELECT x AS [escape] FROM t;"}
+{"id":"last-forms/json-array-within-order","sha256":"33299cb1a0c5ebe59a00713a28406a6d27d304c4d4990fabe6e766091cfbf6cc","source":"SELECT JSON_ARRAYAGG(x ORDER BY y) WITHIN GROUP(ORDER BY y) FROM t;"}
+{"id":"last-forms/json-array-within-null","sha256":"31defcdab7ddb96fd440729fa6f5bf14ea5b35527d888d21814391fe088b5548","source":"SELECT JSON_ARRAYAGG(x NULL ON NULL) WITHIN GROUP(ORDER BY y) FROM t;"}
+{"id":"last-forms/json-array-within-return","sha256":"3c4ccc3074854bba05e5cbef8ab2868e4f77a2f2144a611a04463f4d38d1ddf5","source":"SELECT JSON_ARRAYAGG(x RETURNING json) WITHIN GROUP(ORDER BY y) FROM t;"}
+{"id":"last-forms/json-array-within-distinct","sha256":"9b21e99d089ed8e3c31543a346556d22c189d2ad774cc802e18ca439de8ae880","source":"SELECT JSON_ARRAYAGG(DISTINCT x) WITHIN GROUP(ORDER BY y) FROM t;"}
+{"id":"last-forms/json-array-within-over","sha256":"e59b2470a3d4fe1321233c60e152b3857a797f96caa80913038a2c4bb7262a62","source":"SELECT JSON_ARRAYAGG(x) WITHIN GROUP(ORDER BY y) OVER() FROM t;"}
+{"id":"last-forms/json-array-return-quoted","sha256":"f00902a3a9f7d2a965ed8ff28dc34f538412f9543e6eb67135be12a19d4267ea","source":"SELECT JSON_ARRAYAGG(x RETURNING \"json\") FROM t;"}
+{"id":"last-forms/json-array-return-comment","sha256":"3b3e7dea6c8615bd17bae977287ff2ceb24bb0572657059bf5a9981a6c60fbdb","source":"SELECT JSON_ARRAYAGG(x RETURNING /* 형식 */ json) FROM t;"}
+{"id":"last-forms/json-object-return-quoted","sha256":"57590aaf11245816fca28d151d2e46b635aa026c8cc664fe22afadc02bc020d6","source":"SELECT JSON_OBJECTAGG('k':x RETURNING [json]) FROM t;"}
+{"id":"last-forms/json-sibling-string-agg","sha256":"9bb1182f8fdfe0748ba59526469f50a1f73b7f85940d9c522e341853ca8c5289","source":"SELECT STRING_AGG(x, ',') WITHIN GROUP(ORDER BY y) FROM t;"}
+{"id":"last-forms/json-sibling-percentile","sha256":"d4b6d8c0e3355a452f152013d977e1da5eb747158a8c704016641ee10665b0c4","source":"SELECT APPROX_PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY x) FROM t;"}
+{"id":"last-forms/json-sibling-provider-null","sha256":"ce14f4ea441feb8a98c20f2d6f69ab4d4b2fbb67df8ff7b8f9fbaf4ada85993d","source":"SELECT * FROM OPENROWSET('p', 's'; NULL; NULL, 'q');"}
+{"id":"last-forms/json-array-order-comma","sha256":"8beddfdf28767a8bd1f869bd9a85b6e0dd789093ab0249038c54eba3e5412027","source":"SELECT JSON_ARRAYAGG(x ORDER BY y DESC, z ASC ABSENT ON NULL) FROM t;"}

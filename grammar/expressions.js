@@ -321,12 +321,15 @@ export default {
     wrapped_in_parenthesis(
       seq(
         optional($._invocation_argument_list),
+        optional($.order_by),
+        optional($.json_null_clause),
         optional($.returning_clause),
         optional($.json_wrapper_clause),
       ),
     ),
 
-  // Reduce parameters before the optional JSON suffixes to share expression states.
+  // JSON aggregates share the existing argument reduction and json_key_value node.
+  // Function-specific argument and suffix boundaries are checked by tree-check.
   _invocation_argument_list: ($) =>
     comma_list(
       seq(
@@ -335,6 +338,7 @@ export default {
           'parameter',
           choice(
             $.term,
+            $.json_key_value,
             alias($._rowset_connection, $.term),
             $.keyword_default,
             alias($._fulltext_language, $.term),
@@ -356,7 +360,7 @@ export default {
     seq(field('schema', $.object_reference), '::', field('name', $.object_reference)),
 
   _rowset_connection: ($) =>
-    seq(field('value', $.literal), ';', optional($.literal), ';', optional($.literal)),
+    prec.right(seq(field('value', $.literal), ';', optional($.literal), ';', optional($.literal))),
 
   parenthesized_expression: ($) => prec(2, wrapped_in_parenthesis($._expression)),
 
@@ -392,6 +396,8 @@ export default {
         [$.keyword_collate, 'postfix_modifier'],
         [$.keyword_like, 'pattern_matching'],
         [$.not_like, 'pattern_matching'],
+        // A left-associative LIKE suffix; tree-check requires LIKE/NOT LIKE on its left.
+        [$.keyword_escape, 'pattern_matching'],
         // binary_is precedence disambiguates `(is not distinct from)` from an
         // `is (not distinct from)` with a unary `not`
         [$.distinct_from, 'binary_is'],

@@ -1314,15 +1314,13 @@ SELECT (SELECT 1 GROUP BY 1 WHERE 1=1);
                     (select_expression
                       (term
                         value: (literal))))
-                  (ERROR
-                    (group_by
-                      (keyword_group)
-                      (keyword_by)
-                      (literal)))
-                  (where
-                    (keyword_where)
-                    predicate: (binary_expression
+                  (group_by
+                    (keyword_group)
+                    (keyword_by)
+                    (binary_expression
                       left: (literal)
+                      (ERROR
+                        (literal))
                       right: (literal))))))))))))
 
 ================================================================================
@@ -1349,16 +1347,14 @@ WITH c AS (SELECT 1 AS a HAVING 1=1 WHERE 1=1) SELECT a FROM c;
                   value: (literal)
                   (keyword_as)
                   alias: (identifier))))
-            (ERROR
-              (having
-                (keyword_having)
-                (binary_expression
+            (having
+              (keyword_having)
+              (binary_expression
+                left: (binary_expression
                   left: (literal)
-                  right: (literal))))
-            (where
-              (keyword_where)
-              predicate: (binary_expression
-                left: (literal)
+                  right: (literal))
+                (ERROR
+                  (literal))
                 right: (literal))))))
       (query_specification
         (select

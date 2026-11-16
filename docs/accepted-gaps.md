@@ -58,9 +58,9 @@ not a claim of zero defects, and these are not option-set constraints covered by
 | `SELECT NOT 1 WHERE 1=1;` | LocalDB Msg 156 at levels 100–170 | Unresolved SELECT expression over-acceptance. The corresponding FROM-bearing control is already clean in main; no corpus case pins this gap |
 | `SELECT 1 WHERE CURRENT OF c;` | LocalDB Msg 102 at levels 100–170 | Unresolved statement restriction: CURRENT OF belongs to positioned UPDATE/DELETE. The corresponding FROM-bearing SELECT is already clean in main; no corpus case pins this gap |
 
-The focused probes also leave the existing later-UNION-branch INTO restriction unchanged:
+R18 also recovers the later-UNION-branch INTO form:
 `SELECT 1 UNION SELECT 2 INTO #r7 WHERE 2=2;` is accepted by LocalDB PARSEONLY at
-levels 100–170 but has a tree error. The grammar-kit issue-128 report distinguishes this
+levels 100–170 and now parses cleanly. The grammar-kit issue-128 report distinguishes this
 from NOEXEC Msg 196; compile-time rejection is not a syntax verdict.
 
 | Blocks containing only empty statements, including TRY/CATCH bodies | The existing block rules allow zero real statements. Adding anonymous semicolons extends that existing gap to semicolon-only blocks. LocalDB 100–170 returns 102; a future nonempty-body constraint should require a real statement. | `semicolon/block-empty`, `try-empty`; corpus `semicolon.txt` |
@@ -163,7 +163,7 @@ value bounds, and the wider remaining oracle failures are open inventory work.
 ## Query forms (R13): budget-stopped and preserved gaps
 
 These positive cases are pinned in oracle/probes/query-forms.jsonl and test/corpus/query-forms.txt,
-with LocalDB 17.0.1000.7 PARSEONLY verdicts at levels 100–170. They intentionally remain tree errors.
+with LocalDB 17.0.1000.7 PARSEONLY verdicts at levels 100–170. They were tree errors at R13; R17 and R18 recovery status is recorded below.
 The R13 patch stays within every +10% parser-cost limit. This list does not imply that a scanner
 change is needed or that every shape has had a full alternate implementation attempted.
 
@@ -193,7 +193,7 @@ Spaced comparisons retain the joined operator kinds. The external scanner consum
 operator including whitespace and nested/line comments; comments inside it are not separate nodes.
 The comparison-word and scalar-comparison probes retain the existing boolean/scalar contextual gap.
 
-`expr-forms/set/intoLast` retains the pre-existing later-branch INTO restriction (engine accepts).
+`expr-forms/set/intoLast` was deferred at R15 and is recovered by R18.
 Nested set operands recover on both sides; operand-local trailing clauses are constraint violations.
 
 Undeclared variables (Msg 137) in the probes remain contextual; syntax is accepted.
@@ -201,10 +201,32 @@ LIKE ESCAPE and JSON aggregates remain outside this change.
 
 ## Remaining routes (R17)
 
-R17 recovers all 119 remaining engine-accepted kit routes in scope, including the six R13 open query forms listed above. Positivity merges every committed engine and compatibility level. The excluded first errors remain LIKE ESCAPE (B01-r006) and JSON aggregates (V22-r014). Evidence: oracle/probes/ddl-rest.jsonl and LocalDB 17.0.1000.7 levels 100–170; the committed Linux verdicts identify edition-limited positive routes.
+R17 recovers all 119 remaining engine-accepted kit routes in scope, including the six R13 open query forms listed above. Positivity merges every committed engine and compatibility level. At R17, LIKE ESCAPE (B01-r006) and JSON aggregates (V22-r014) were excluded; R18 recovers both. Evidence: oracle/probes/ddl-rest.jsonl and LocalDB 17.0.1000.7 levels 100–170; the committed Linux verdicts identify edition-limited positive routes.
 
 The 533 neighbours include 328 engine positives, all clean. Four engine-negative probes remain clean: two pre-existing permission-name gaps (permission-new-permission-words, permission-unknown-permission) and two undeclared-variable cases newly supported syntactically (routes-implicit-exec-args, commit-off). The existing committed issue151-implicit-local case also remains a contextual error-to-clean transition. Do not infer catalog, type, permission or variable resolution from syntax trees.
 
 Closing probes reject scalar XE source parentheses, database/server-qualified DROP SEQUENCE names, measured CONNECT ON AVAILABILITY GROUP combinations, and quoted multiword class qualifiers. The graph_match.sql fixture is corrected to grouped SHORTEST_PATH and OR of complete MATCH predicates: the original and shortest-path-only correction are engine 102, the final fixture is accepted at every level. Original fixture bytes remain in the tree-preservation snapshot inputs.
 
-PARSEONLY accepts PRIORITY_LEVEL = 11, several spatial grid/bounding-box forms, and an application role without PASSWORD; no guessed restrictions are added. Event-session clause reordering beyond the fixed ADD/DROP sequence remains a pre-existing gap. Later set-operation INTO also remains outside this work.
+PARSEONLY accepts PRIORITY_LEVEL = 11, several spatial grid/bounding-box forms, and an application role without PASSWORD; no guessed restrictions are added. Event-session clause reordering beyond the fixed ADD/DROP sequence remains a pre-existing gap. Later set-operation INTO was deferred at R17 and is recovered by R18.
+
+
+## Final engine-accepted forms (R18)
+
+All seven deferred engine-positive LIKE ESCAPE, JSON aggregate and later set-branch INTO cases
+are clean. LocalDB 17.0.1000.7, levels 100-170, `last-forms/*` probes and the committed verdicts
+verify arguments, suffix ordering, nested forms and invalid neighbours. Every existing clean
+raw tree is preserved; ESCAPE adds an existing binary_expression with the LIKE predicate on
+its left and the escape expression on its right. JSON pairs and clauses reuse existing nodes.
+
+PARSEONLY accepts INTO on any set branch, including several branches in one set operation.
+Do not impose a single-INTO limit. Subquery/CTE, INSERT-source and view-body INTO are rejected
+by `query-select-into-scope`. JSON_ARRAYAGG supports ORDER BY, NULL handling, RETURNING json
+and windows subject to the measured combinations; JSON_OBJECTAGG takes one key:value pair,
+no argument ORDER BY or DISTINCT, and permits NULL handling, RETURNING json and windows.
+Bare JSON_ARRAYAGG(DISTINCT x) and WITHIN GROUP are accepted by PARSEONLY, so they remain allowed.
+
+Five negative escape-operand probes remain contextual (boolean versus scalar): escape-boolean,
+escape-and_operand, escape-is-null, escape-in and escape-operand-comparison-group.
+The unquoted reserved word ESCAPE as a column or alias (escape-keyword-column, escape-alias)
+is a pre-existing lexical gap: both probes were clean before R18. Quoted [escape] is accepted.
+No name, type or boolean/scalar resolution is inferred from a syntax tree.

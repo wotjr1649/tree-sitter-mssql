@@ -116,7 +116,10 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
                 builtin_arity(node, source, &mut out);
                 expression_language(node, source, &mut out);
                 expression_provider(node, source, &mut out);
+                json_aggregate(node, source, &mut out);
             }
+            "binary_expression" => like_escape(node, &mut out),
+            "query_specification" => select_into_scope(node, &mut out),
             "set_operation" => nested_set_clauses(node, &mut out),
             "object_reference" | "field" => static_reference(node, source, &mut out),
             "create_function" | "alter_function" => scalar_function_return(node, &mut out),
@@ -484,6 +487,118 @@ fn trigger_scope(trigger: Node, source: &[u8], out: &mut Vec<Violation>) {
             let mut c = n.walk();
             stack.extend(n.named_children(&mut c));
         }
+    }
+}
+
+/// R18 last-forms/escape: ESCAPE follows an unparenthesized LIKE/NOT LIKE predicate (156).
+/// Scalar versus boolean escape operands need expression context and are left to the consumer.
+fn like_escape(node: Node, out: &mut Vec<Violation>) {
+    if node
+        .child_by_field_name("operator")
+        .is_none_or(|n| n.kind() != "keyword_escape")
+    {
+        return;
+    }
+    let valid = node.child_by_field_name("left").is_some_and(|n| {
+        n.kind() == "binary_expression"
+            && n.child_by_field_name("operator")
+                .is_some_and(|op| matches!(op.kind(), "keyword_like" | "not_like"))
+    });
+    if !valid {
+        out.push(violation(
+            "expression-like-escape",
+            "ESCAPE must directly follow LIKE or NOT LIKE".into(),
+            node,
+        ));
+    }
+}
+
+/// R18 last-forms/json*: argument count/shape, NULL/ORDER/RETURNING and window boundaries
+/// measured on LocalDB 17.0.1000.7, levels 100-170 (102/156/174/10759).
+fn json_aggregate(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let Some(callee) = node.named_child(0) else {
+        return;
+    };
+    let name = upper_text(callee, source);
+    let array = name == "JSON_ARRAYAGG";
+    let object = name == "JSON_OBJECTAGG";
+    let mut c = node.walk();
+    let args: Vec<_> = node.children_by_field_name("parameter", &mut c).collect();
+    let pair = args.iter().any(|a| a.kind() == "json_key_value");
+    let argument_end = node
+        .children(&mut node.walk())
+        .find(|n| n.kind() == ")")
+        .map_or(node.end_byte(), |n| n.start_byte());
+    let order = node
+        .named_children(&mut node.walk())
+        .any(|n| n.kind() == "order_by" && n.start_byte() < argument_end);
+    let nulls = has_child(node, "json_null_clause");
+    if !array && !object {
+        if pair || order || nulls {
+            out.push(violation(
+                "expression-json-aggregate",
+                "JSON pairs, NULL handling and argument ORDER BY require a JSON aggregate".into(),
+                node,
+            ));
+        }
+        return;
+    }
+    let within = has_child(node, "keyword_within");
+    let distinct = has_child(node, "keyword_distinct");
+    let window = node.parent().is_some_and(|p| p.kind() == "window_function");
+    let returning = node
+        .named_children(&mut node.walk())
+        .find(|n| n.kind() == "returning_clause");
+    let wrong_return = returning.is_some_and(|n| {
+        n.named_children(&mut n.walk())
+            .filter(|ty| !ty.is_extra())
+            .nth(1)
+            .is_none_or(|ty| upper_text(ty, source).trim_matches(['[', ']', '"']) != "JSON")
+    });
+    let wrong_arg = args.len() != 1
+        || args.iter().any(|arg| {
+            if object {
+                arg.kind() != "json_key_value"
+            } else {
+                arg.kind() != "term"
+                    || arg.child_by_field_name("alias").is_some()
+                    || arg
+                        .child_by_field_name("value")
+                        .is_none_or(|v| v.kind() == "all_fields")
+            }
+        });
+    if wrong_arg
+        || wrong_return
+        || has_child(node, "json_wrapper_clause")
+        || (object && (order || distinct || within))
+        || (array && distinct && (order || nulls || returning.is_some() || window))
+        || (array && order && window)
+        || (array && within && (order || nulls || returning.is_some() || distinct))
+    {
+        out.push(violation("expression-json-aggregate", "JSON aggregates require one value or key:value, measured NULL/ORDER/RETURNING clauses and window form".into(), node));
+    }
+}
+
+/// R18 last-forms/into: any set branch may have INTO, even several branches; a nested
+/// query, INSERT source or view body cannot (LocalDB 17.0.1000.7, levels 100-170, 156).
+fn select_into_scope(node: Node, out: &mut Vec<Violation>) {
+    if !has_child(node, "keyword_into") {
+        return;
+    }
+    let mut parent = node.parent();
+    while let Some(n) = parent {
+        if matches!(
+            n.kind(),
+            "subquery" | "cte" | "insert" | "create_view" | "alter_view"
+        ) {
+            out.push(violation(
+                "query-select-into-scope",
+                "INTO is not allowed in a subquery, CTE, INSERT source or view".into(),
+                node,
+            ));
+            return;
+        }
+        parent = n.parent();
     }
 }
 
@@ -3422,6 +3537,53 @@ mod tests {
             .into_iter()
             .map(|v| v.rule)
             .collect()
+    }
+
+    #[test]
+    fn last_forms_match_engine_evidence() {
+        let verdict: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../oracle/verdicts/localdb-17.0.1000.7.last-forms.json"
+        ))
+        .unwrap();
+        for line in include_str!("../../../oracle/probes/last-forms.jsonl").lines() {
+            let case: serde_json::Value = serde_json::from_str(line).unwrap();
+            let id = case["id"].as_str().unwrap();
+            let sql = case["source"].as_str().unwrap();
+            let positive = verdict["verdicts"][id]
+                .as_object()
+                .unwrap()
+                .values()
+                .any(|v| v.as_array().is_some_and(|a| a.is_empty()));
+            let clean = !parse(sql).root_node().has_error() && rules(sql).is_empty();
+            // Existing reserved-word gaps and boolean/scalar context are outside this syntax fix.
+            let contextual_or_existing = matches!(
+                id,
+                "last-forms/escape-boolean"
+                    | "last-forms/escape-and_operand"
+                    | "last-forms/escape-is-null"
+                    | "last-forms/escape-in"
+                    | "last-forms/escape-operand-comparison-group"
+                    | "last-forms/escape-alias"
+                    | "last-forms/escape-keyword-column"
+            );
+            assert_eq!(clean, positive || contextual_or_existing, "{id}: {sql}");
+        }
+        for (sql, expected) in [
+            (
+                "SELECT 1 WHERE x = 'a' ESCAPE '!';",
+                "expression-like-escape",
+            ),
+            (
+                "SELECT JSON_OBJECTAGG('k':x ORDER BY y) FROM t;",
+                "expression-json-aggregate",
+            ),
+            (
+                "SELECT * FROM (SELECT 1 UNION SELECT 2 INTO #t) d;",
+                "query-select-into-scope",
+            ),
+        ] {
+            assert_eq!(rules(sql), [expected], "{sql}");
+        }
     }
 
     #[test]

@@ -5356,6 +5356,10 @@
             "named": true
           },
           {
+            "type": "keyword_escape",
+            "named": true
+          },
+          {
             "type": "keyword_in",
             "named": true
           },
@@ -17703,6 +17707,10 @@
         "required": false,
         "types": [
           {
+            "type": "json_key_value",
+            "named": true
+          },
+          {
             "type": "keyword_default",
             "named": true
           },
@@ -17717,6 +17725,10 @@
       "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "json_null_clause",
+          "named": true
+        },
         {
           "type": "json_wrapper_clause",
           "named": true
@@ -27910,6 +27922,10 @@
   },
   {
     "type": "keyword_error",
+    "named": true
+  },
+  {
+    "type": "keyword_escape",
     "named": true
   },
   {

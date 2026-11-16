@@ -38,19 +38,14 @@ function query_specification_rest($) {
   );
 }
 
-// SELECT [INTO] plus that rest. INTO is legal on a lone query and on the
-// first branch of a set operation only, so later branches use
-// `query_specification_body_no_into`.
+// SELECT [INTO] plus that rest. PARSEONLY accepts INTO on every set branch;
+// the constraint layer checks nested-query, INSERT-source and view scope.
 function query_specification_body($) {
   return seq(
     $.select,
     optional(seq($.keyword_into, $.object_reference, optional($.on_filegroup))),
     query_specification_rest($),
   );
-}
-
-function query_specification_body_no_into($) {
-  return seq($.select, query_specification_rest($));
 }
 
 export default {
@@ -98,10 +93,8 @@ export default {
   // either way — it already failed to parse before this rule existed, and
   // this change does not resolve or worsen that gap; see
   // test/fixtures/README.md's "Not parsed on purpose" section.
-  // The first branch may carry INTO. Every later branch is the same node
-  // kind with INTO removed, so `SELECT a INTO #x UNION SELECT b INTO #y`
-  // does not parse. Parentheses stay on the branch, not on the union's
-  // trailing ORDER BY / OPTION / FOR.
+  // Every branch may carry INTO (LocalDB 17.0.1000.7, levels 100-170).
+  // Parentheses stay on the branch, outside its query_specification core.
   set_operation: ($) =>
     prec.right(
       seq(
@@ -116,7 +109,7 @@ export default {
                 $.keyword_intersect,
               ),
             ),
-            alias($._query_specification_later, $.query_specification),
+            $.query_specification,
           ),
         ),
         trailing_sort_and_hint_clauses($),
@@ -134,13 +127,6 @@ export default {
   query_specification: ($) =>
     choice(
       optional_parenthesis($._query_specification_core),
-      wrapped_in_parenthesis($.set_operation),
-    ),
-
-  // Later set-operation branches: identical tree, no INTO.
-  _query_specification_later: ($) =>
-    choice(
-      optional_parenthesis(query_specification_body_no_into($)),
       wrapped_in_parenthesis($.set_operation),
     ),
 
