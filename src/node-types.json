@@ -18540,6 +18540,25 @@
     "fields": {}
   },
   {
+    "type": "keyword_for_system_time",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "keyword_for",
+          "named": true
+        },
+        {
+          "type": "keyword_system_time",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "keyword_int",
     "named": true,
     "fields": {}
@@ -28184,10 +28203,6 @@
   },
   {
     "type": "keyword_for",
-    "named": true
-  },
-  {
-    "type": "keyword_for_system_time",
     "named": true
   },
   {

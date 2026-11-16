@@ -522,23 +522,8 @@ export default {
 
   // Temporal tables, AT TIME ZONE, TABLESAMPLE, CHANGETABLE, OPENDATASOURCE
   //
-  // Both of the next two are single atomic tokens for a multi-word phrase,
-  // not a `seq` of separate keyword rules, and for two different reasons:
-  //
-  // `keyword_for_system_time` (FOR SYSTEM_TIME) exists because a bare FOR
-  // is also valid a few tokens later — the select statement's own
-  // trailing FOR XML/JSON/UPDATE/READ ONLY. The LALR follow set for the
-  // empty branch of `optional(for_system_time_clause)` in `relation`
-  // legitimately includes bare FOR, so a plain `seq(keyword_for,
-  // keyword_system_time)` there is a genuine shift/reduce ambiguity on the
-  // FOR token, not the kind a `conflicts` entry or prec.right resolves —
-  // it needs two tokens of lookahead tree-sitter's LALR(1) tables don't
-  // carry. Making the whole phrase one terminal moves the decision to the
-  // lexer's own longest-match rule instead.
-  //
-  // Keep PERIOD's atomic token for existing trees; column-lists.js also accepts
-  // separated words for comments and preserves an ordinary column named period.
-  // The separate FOR SYSTEM_TIME token still accepts whitespace only.
+  // Keep atomic multi-word tokens for existing comment-free trees; the corresponding
+  // clause rules also accept separated keywords so comments may appear between words.
   keyword_for_system_time: (_) =>
     token(seq(make_keyword('for'), /\s+/, make_keyword('system_time'))),
   keyword_period_for_system_time: (_) =>

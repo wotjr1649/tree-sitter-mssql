@@ -34732,12 +34732,39 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "keyword_for_system_time"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "keyword_for_system_time"
+            },
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_separated_for_system_time"
+              },
+              "named": true,
+              "value": "keyword_for_system_time"
+            }
+          ]
         },
         {
           "type": "SYMBOL",
           "name": "system_time_qualifier"
+        }
+      ]
+    },
+    "_separated_for_system_time": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "keyword_for"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_system_time"
         }
       ]
     },

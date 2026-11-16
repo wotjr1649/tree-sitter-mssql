@@ -234,6 +234,9 @@ jobs:
           CARGO_TARGET_DIR: target
         run: node tools/oracle-replay.mjs --tree-check target/debug/tree-check
 
+      - name: Comments must preserve every oracle and fixture verdict
+        run: node tools/comment-mutate.mjs --tree-check target/debug/tree-check
+
       - name: Build the pinned WASM reactor and check all oracle/fixture verdicts
         env:
           CARGO_TARGET_DIR: target
