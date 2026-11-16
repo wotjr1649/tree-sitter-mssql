@@ -1,0 +1,25 @@
+{
+"meta": {"mode":"PARSEONLY","engine":{"product_version":"16.0.4325.4","product_level":"RTM","edition":"Developer Edition (64-bit)","platform":"Linux","collation":"SQL_Latin1_General_CP1_CI_AS"},"session_set":{"quoted_identifier":1,"ansi_nulls":1,"ansi_padding":1,"ansi_warnings":1,"arithabort":0,"concat_null_yields_null":1},"levels":[100,110,120,130,140,150,160],"cases_sha256":"2f3b0a1df9ac235a0b9e359c5b42d85d3271b4dc831dd73b1a08d562007556b0","runner":"oracle/runner/ParseOnly (C#, Microsoft.Data.SqlClient)","runner_sha256":"a2995ba64f6c912af4e935db9d2897e758a7a889f4bc1d7a14b9e67ec051132c","observed_utc":"2026-11-16"},
+"verdicts": {
+  "surface-fix-queries/redistribute-inner": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[]},
+  "surface-fix-queries/redistribute-left": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[]},
+  "surface-fix-queries/redistribute-alias": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[]},
+  "surface-fix-queries/distributed-agg": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[]},
+  "surface-fix-queries/distributed-agg-spaced": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[]},
+  "surface-fix-queries/group-cube": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[]},
+  "surface-fix-queries/merge-values": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[]},
+  "surface-fix-queries/merge-values-no-as": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[]},
+  "surface-fix-queries/merge-joined-source": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[]},
+  "surface-fix-queries/merge-cross-source": {"100":[156],"110":[156],"120":[156],"130":[156],"140":[156],"150":[156],"160":[156]},
+  "surface-fix-queries/merge-old-source": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[]},
+  "surface-fix-queries/delete-two-output": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[]},
+  "surface-fix-queries/delete-two-output-columns": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[]},
+  "surface-fix-queries/update-two-output": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[]},
+  "surface-fix-queries/insert-two-output": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[]},
+  "surface-fix-queries/merge-two-output": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[]},
+  "surface-fix-queries/redistribute-missing-join": {"100":[155],"110":[155],"120":[155],"130":[155],"140":[155],"150":[155],"160":[155]},
+  "surface-fix-queries/distributed-agg-missing-close": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102]},
+  "surface-fix-queries/merge-empty-values": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102]},
+  "surface-fix-queries/output-missing-into-target": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102]}
+}
+}
