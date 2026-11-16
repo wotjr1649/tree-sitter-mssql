@@ -5,7 +5,8 @@ import { createHash } from 'node:crypto';
 import { copyFileSync, readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
+import { isMain } from './common.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const pins = JSON.parse(readFileSync(join(root, 'crates/tree-check/wasm-pins.json'), 'utf8'));
@@ -160,4 +161,4 @@ export function build() {
   return report;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) build();
+if (isMain(import.meta.url)) build();

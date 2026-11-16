@@ -7,8 +7,8 @@
 // is refused unless --approve-budget is given (the pull request must say which cells it adds).
 //
 // Usage: node scripts/parser-cost.mjs [--update [--approve-budget]]
-import { appendFileSync, readFileSync, statSync, writeFileSync } from 'node:fs';
-import { pathToFileURL } from 'node:url';
+import { readFileSync, statSync, writeFileSync } from 'node:fs';
+import { isMain, writeSummary } from './common.mjs';
 
 const DEFINES = [
   'STATE_COUNT',
@@ -61,8 +61,7 @@ function main(argv) {
     ...rows,
   ].join('\n');
   console.log(summary);
-  if (process.env.GITHUB_STEP_SUMMARY)
-    appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary + '\n');
+  writeSummary(summary);
   const over = (limit) => Object.keys(g).filter((k) => g[k] > limit);
   for (const k of over(0.05))
     console.log(`::warning::${k} grew ${(g[k] * 100).toFixed(2)} % over the baseline`);
@@ -87,7 +86,7 @@ function main(argv) {
   return 0;
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+if (isMain(import.meta.url)) {
   try {
     process.exitCode = main(process.argv.slice(2));
   } catch (e) {

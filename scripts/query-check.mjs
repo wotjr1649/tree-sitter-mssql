@@ -7,7 +7,7 @@ import { spawnSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { applyEdit, isMain, readCases, readJsonl } from './common.mjs';
 
 const CASES = 'test/queries/kit-cases.json';
 
@@ -21,21 +21,8 @@ export function parseCaptures(output) {
 }
 
 // The source after applying the first `step` edits (each replaces the first occurrence of `find`).
-export function applySteps(source, edits, step) {
-  let s = source;
-  for (const { find, replace } of edits.slice(0, step)) {
-    const i = s.indexOf(find);
-    if (i < 0) throw new Error(`edit target not found: ${find}`);
-    s = s.slice(0, i) + replace + s.slice(i + find.length);
-  }
-  return s;
-}
-
-const jsonl = (file) =>
-  readFileSync(file, 'utf8')
-    .split('\n')
-    .filter(Boolean)
-    .map((l) => JSON.parse(l));
+// The source after applying the first `step` edits (each replaces the first occurrence of `find`).
+export const applySteps = (source, edits, step) => edits.slice(0, step).reduce(applyEdit, source);
 
 function main() {
   const argv = process.argv.slice(2);
@@ -45,10 +32,16 @@ function main() {
   const update = argv.includes('--update');
   const cases = JSON.parse(readFileSync(CASES, 'utf8'));
   const sources = Object.fromEntries(
-    jsonl('oracle/data/probes/kit-routes.jsonl').map((c) => [c.id, c.source]),
+    readCases(readFileSync('oracle/data/probes/kit-routes.jsonl', 'utf8')).map((c) => [
+      c.id,
+      c.source,
+    ]),
   );
   const edits = Object.fromEntries(
-    jsonl('oracle/data/kit/route-edits.jsonl').map((h) => [h.id, h.edits]),
+    readJsonl(readFileSync('oracle/data/kit/route-edits.jsonl', 'utf8')).map((h) => [
+      h.id,
+      h.edits,
+    ]),
   );
   const dir = mkdtempSync(join(tmpdir(), 'query-check-'));
   let failed = 0;
@@ -83,4 +76,4 @@ function main() {
   if (failed) process.exit(1);
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) main();
+if (isMain(import.meta.url)) main();

@@ -4,8 +4,8 @@
 // are comparable, 2 when they are not (different cases, or not PARSEONLY verdicts).
 //
 // Usage: node scripts/verdict-diff.mjs <base.json> <other.json>
-import { appendFileSync, readFileSync } from 'node:fs';
-import { pathToFileURL } from 'node:url';
+import { readFileSync } from 'node:fs';
+import { isMain, writeSummary } from './common.mjs';
 import { quotedIdentifier } from './oracle-replay.mjs';
 
 export function diff(base, other) {
@@ -30,7 +30,7 @@ export function diff(base, other) {
 const engine = (v) =>
   `${v.meta.engine.product_version} ${v.meta.engine.product_level} ${v.meta.engine.edition} on ${v.meta.engine.platform}`;
 
-if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+if (isMain(import.meta.url)) {
   try {
     const [a, b] = process.argv.slice(2).map((f) => JSON.parse(readFileSync(f, 'utf8')));
     if (!a || !b) throw new Error('usage: verdict-diff.mjs <base.json> <other.json>');
@@ -50,8 +50,7 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
       ),
     ].join('\n');
     console.log(lines);
-    if (process.env.GITHUB_STEP_SUMMARY)
-      appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines + '\n');
+    writeSummary(lines);
   } catch (e) {
     console.error(`verdict-diff: ${e.message}`);
     process.exitCode = 2;

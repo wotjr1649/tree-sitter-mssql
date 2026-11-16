@@ -9,7 +9,6 @@
 // Usage: node scripts/runtime-cost.mjs --tree-sitter <cli> [--runs N]
 import { execFileSync, spawnSync } from 'node:child_process';
 import {
-  appendFileSync,
   existsSync,
   mkdirSync,
   mkdtempSync,
@@ -20,7 +19,7 @@ import {
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { caseSetFiles, isMain, readCases, writeSummary } from './common.mjs';
 
 const MILESTONE = 'test/runtime-cost.json';
 
@@ -82,15 +81,11 @@ function inputs(dir) {
   const files = readdirSync('test/fixtures')
     .filter((f) => f.endsWith('.sql'))
     .map((f) => join('test/fixtures', f));
-  const sets = [
-    'oracle/data/kit/cases.jsonl',
-    ...readdirSync('oracle/data/probes').map((f) => join('oracle/data/probes', f)),
-  ];
   let n = 0;
-  for (const set of sets) {
-    for (const line of readFileSync(set, 'utf8').split('\n').filter(Boolean)) {
+  for (const set of caseSetFiles()) {
+    for (const c of readCases(readFileSync(set, 'utf8'))) {
       const f = join(dir, `${n++}.sql`);
-      writeFileSync(f, JSON.parse(line).source);
+      writeFileSync(f, c.source);
       files.push(f);
     }
   }
@@ -156,8 +151,7 @@ function main() {
     ),
   ];
   console.log(lines.join('\n'));
-  if (process.env.GITHUB_STEP_SUMMARY)
-    appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${lines.join('\n')}\n`);
+  writeSummary(lines.join('\n'));
   const over = rows.filter((r) => !r.ok);
   if (over.length) {
     console.error(
@@ -167,4 +161,4 @@ function main() {
   }
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) main();
+if (isMain(import.meta.url)) main();

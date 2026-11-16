@@ -6,10 +6,8 @@
 //
 // Usage: node scripts/scriptdom-compare.mjs
 import { readdirSync, readFileSync } from 'node:fs';
-import { pathToFileURL } from 'node:url';
+import { isAccepted, isMain } from './common.mjs';
 import { quotedIdentifier, sessionId } from './oracle-replay.mjs';
-
-const accepted = (v) => Object.values(v).some((e) => Array.isArray(e) && e.length === 0);
 
 // Count cases per (engine, ScriptDOM, tree) cell and list the both-reject-but-clean ones.
 export function compare(engine, scriptdom, tree) {
@@ -32,7 +30,7 @@ export function observations(files, scriptdom = false) {
     );
     for (const [id, verdict] of Object.entries(v.verdicts)) {
       const key = sessionId(id, session);
-      results[key] = (results[key] ?? false) || accepted(verdict);
+      results[key] = (results[key] ?? false) || isAccepted(verdict);
     }
   }
   return results;
@@ -70,4 +68,4 @@ function main() {
   if (unclassified) process.exit(1);
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) main();
+if (isMain(import.meta.url)) main();

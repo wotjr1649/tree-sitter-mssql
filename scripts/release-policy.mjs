@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { isMain } from './common.mjs';
 import { pathToFileURL } from 'node:url';
 
 export function cargoVersion(manifest) {
@@ -39,6 +40,6 @@ export function runCommand(command) {
   console.log(`Cargo.toml, package.json, and tree-sitter.json all carry ${version}`);
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+if (isMain(import.meta.url)) {
   runCommand(process.argv[2]);
 }

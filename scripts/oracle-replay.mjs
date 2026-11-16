@@ -10,36 +10,20 @@
 // would turn an engine-accepted case from clean into an error; 2: inputs are inconsistent.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { createHash } from 'node:crypto';
-import {
-  appendFileSync,
-  mkdtempSync,
-  readFileSync,
-  readdirSync,
-  rmSync,
-  writeFileSync,
-} from 'node:fs';
+import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
-
-const sha256 = (data) => createHash('sha256').update(data).digest('hex');
-
-export function readCases(text) {
-  return text
-    .split('\n')
-    .filter((line) => line.trim())
-    .map((line) => {
-      const c = JSON.parse(line);
-      assert.equal(sha256(Buffer.from(c.source)), c.sha256, `source hash mismatch for ${c.id}`);
-      return c;
-    });
-}
-
-// A case is positive when any verified level accepts it; UNSUPPORTED_CONTROL never counts as accepted.
-export function isPositive(levels) {
-  return Object.values(levels).some((errors) => Array.isArray(errors) && errors.length === 0);
-}
+import {
+  caseSetFiles,
+  checkPaths,
+  editHistoryFiles,
+  isAccepted,
+  isMain,
+  readCases,
+  readJsonl,
+  sha256,
+  writeSummary,
+} from './common.mjs';
 
 // Historical verdicts record SESSIONPROPERTY as 1/0; accept explicit names as well.
 export function quotedIdentifier(meta) {
@@ -130,7 +114,7 @@ export function matrix(cases, verdicts, current, level) {
   // A per-level table counts only the cases that engine and level judged.
   const judged = level ? cases.filter((c) => Array.isArray(verdicts[c.id][level])) : cases;
   for (const c of judged) {
-    const accepted = level ? verdicts[c.id][level].length === 0 : isPositive(verdicts[c.id]);
+    const accepted = level ? verdicts[c.id][level].length === 0 : isAccepted(verdicts[c.id]);
     const error = current[c.id] === 'error';
     m[
       accepted
@@ -153,13 +137,7 @@ function main(argv) {
   const update = argv.includes('--update');
 
   // Case sets: grammar-kit's cases plus the probes measured while fixing defects (oracle/data/probes).
-  const setFiles = [
-    'oracle/data/kit/cases.jsonl',
-    ...readdirSync('oracle/data/probes')
-      .filter((f) => f.endsWith('.jsonl'))
-      .sort()
-      .map((f) => join('oracle/data/probes', f)),
-  ];
+  const setFiles = caseSetFiles();
   const sets = setFiles.map((file) => {
     const text = readFileSync(file);
     return { file, sha: sha256(text), cases: readCases(text.toString('utf8')) };
@@ -181,7 +159,7 @@ function main(argv) {
       data: JSON.parse(readFileSync(join('oracle/data/verdicts', file), 'utf8')),
     })),
   );
-  const positive = Object.fromEntries(cases.map((c) => [c.id, isPositive(verdicts[c.id])]));
+  const positive = Object.fromEntries(cases.map((c) => [c.id, isAccepted(verdicts[c.id])]));
 
   const dir = mkdtempSync(join(tmpdir(), 'oracle-replay-'));
   let current, incremental;
@@ -196,29 +174,19 @@ function main(argv) {
       const indices = cases.flatMap((c, i) => (c.session === session ? [i] : []));
       if (!indices.length) continue;
       const pathList = join(dir, `paths-${session}.txt`);
-      writeFileSync(pathList, indices.map((i) => paths[i]).join('\n'));
-      const rows = runTreeCheck(exe, ['--quoted-identifier', session, '--paths', pathList])
-        .stdout.trim()
-        .split('\n')
-        .map((l) => JSON.parse(l));
-      assert.equal(
-        rows.length,
-        indices.length,
-        'tree-check returned a different number of results',
+      const rows = checkPaths(
+        exe,
+        indices.map((i) => paths[i]),
+        pathList,
+        ['--quoted-identifier', session],
       );
       for (const [i, row] of rows.entries())
         current[cases[indices[i]].id] = row.ok ? 'clean' : 'error';
     }
     // Session settings do not change the grammar tree; edit histories compare that shared tree once.
-    const edits = readdirSync('oracle/data/kit')
-      .filter((f) => f.endsWith('edits.jsonl'))
-      .sort()
-      .flatMap((f) =>
-        runTreeCheck(exe, ['--edits', join('oracle/data/kit', f)])
-          .stdout.trim()
-          .split('\n')
-          .map((l) => JSON.parse(l)),
-      );
+    const edits = editHistoryFiles().flatMap((f) =>
+      readJsonl(runTreeCheck(exe, ['--edits', f]).stdout),
+    );
     incremental = Object.fromEntries(
       edits
         .filter((e) => e.incremental_differences.length)
@@ -272,8 +240,7 @@ function main(argv) {
     ...changes.map((c) => `  - ${c.regression ? 'REGRESSION ' : ''}${c.id}: ${c.from} -> ${c.to}`),
   ].join('\n');
   console.log(summary);
-  if (process.env.GITHUB_STEP_SUMMARY)
-    appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary + '\n');
+  writeSummary(summary);
 
   if (union.acceptedError) {
     console.error(
@@ -310,7 +277,7 @@ function main(argv) {
   return 0;
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+if (isMain(import.meta.url)) {
   try {
     process.exitCode = main(process.argv.slice(2));
   } catch (e) {
