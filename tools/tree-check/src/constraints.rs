@@ -3304,6 +3304,87 @@ mod tests {
     }
 
     #[test]
+    fn rest_create_constraints_follow_engine_neighbours() {
+        for (sql, expected) in [
+            (
+                "CREATE AGGREGATE dbo.a () RETURNS int EXTERNAL NAME asm.[Ns.Class];",
+                "ddl-rest-aggregate",
+            ),
+            (
+                "CREATE AGGREGATE dbo.a (@v int = 1) RETURNS int EXTERNAL NAME asm.[Ns.Class];",
+                "ddl-rest-aggregate",
+            ),
+            (
+                "CREATE CRYPTOGRAPHIC PROVIDER p FROM FILE = 0x1234;",
+                "ddl-rest-provider-file",
+            ),
+            (
+                "CREATE ASYMMETRIC KEY k FROM EXECUTABLE = 'C:\\a.dll';",
+                "ddl-rest-key-source",
+            ),
+            (
+                "CREATE EVENT SESSION e ON SERVER;",
+                "ddl-rest-event-session",
+            ),
+            (
+                "CREATE INDEX i ON dbo.t(c) USING GEOMETRY_GRID;",
+                "ddl-rest-index-form",
+            ),
+            (
+                "CREATE JSON INDEX i ON dbo.t(j) FOR (p = '$.a');",
+                "ddl-rest-index-form",
+            ),
+            ("CREATE JSON INDEX i ON dbo.t(a,b);", "ddl-rest-index-form"),
+            (
+                "CREATE SPATIAL INDEX i ON dbo.t(a,b);",
+                "ddl-rest-index-form",
+            ),
+            (
+                "CREATE XML INDEX i ON dbo.t(x) USING XML INDEX p FOR WRONG;",
+                "ddl-rest-index-form",
+            ),
+            (
+                "CREATE SELECTIVE XML INDEX i ON dbo.t(x);",
+                "ddl-rest-index-form",
+            ),
+            (
+                "CREATE PRIMARY XML INDEX i ON dbo.t(x) USING XML INDEX p;",
+                "ddl-rest-index-form",
+            ),
+            (
+                "CREATE INDEX i ON dbo.t(c) FOR ('$.a');",
+                "ddl-rest-index-form",
+            ),
+            (
+                "CREATE UNIQUE JSON INDEX i ON dbo.t(j);",
+                "ddl-rest-index-form",
+            ),
+        ] {
+            assert!(
+                parse(sql).root_node().has_error() || rules(sql).contains(&expected),
+                "{sql}: {expected}"
+            );
+        }
+        for sql in [
+            "CREATE AGGREGATE dbo.a (@v int) RETURNS int EXTERNAL NAME asm.[Ns.Class];",
+            "CREATE CRYPTOGRAPHIC PROVIDER p FROM FILE = N'C:\\provider.dll';",
+            "SET QUOTED_IDENTIFIER OFF; CREATE CRYPTOGRAPHIC PROVIDER p FROM FILE = \"provider.dll\";",
+            "CREATE ASYMMETRIC KEY k FROM EXECUTABLE FILE = 'C:\\a.dll';",
+            "CREATE EVENT SESSION e ON DATABASE ADD EVENT sqlserver.error_reported WITH (MAX_DURATION = 2 MINUTES);",
+            "CREATE JSON INDEX i ON dbo.t(j) FOR (N'$.a', N'$.b');",
+            "CREATE SELECTIVE XML INDEX i ON dbo.t(x) FOR (p = '/a' AS XQUERY 'xs:string');",
+            "CREATE PRIMARY XML INDEX i ON dbo.t(x);",
+            "CREATE XML INDEX i ON dbo.t(x) USING XML INDEX p FOR PATH;",
+            "CREATE XML INDEX i ON dbo.t(x) USING XML INDEX p FOR (a);",
+            "CREATE SPATIAL INDEX i ON dbo.t(g) USING BOGUS;",
+            "CREATE SPATIAL INDEX i ON dbo.t(g) USING GEOMETRY_GRID WITH (BOUNDING_BOX = (0,0,10));",
+            "CREATE APPLICATION ROLE a WITH DEFAULT_SCHEMA = dbo;",
+        ] {
+            assert!(rules(sql).is_empty(), "{sql}: {:?}", rules(sql));
+        }
+    }
+
+    #[test]
     fn ddl_rest_alter_neighbours_match_the_engine() {
         for (sql, rule) in [
             (

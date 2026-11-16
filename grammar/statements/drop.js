@@ -1,4 +1,4 @@
-import { comma_list } from '../helpers.js';
+import { comma_list, paren_list } from '../helpers.js';
 
 // DROP <object kind> [IF EXISTS] name [, ...]. T-SQL has no CASCADE or
 // RESTRICT on any DROP.
@@ -101,11 +101,30 @@ export default {
       $.keyword_drop,
       $.keyword_index,
       optional($._if_exists),
-      comma_list(
-        seq(field('name', $.object_reference), optional(seq($.keyword_on, $.object_reference))),
+      comma_list(seq(field('name', $.object_reference), optional($._drop_index_on)), true),
+    ),
+
+  _drop_index_on: ($) =>
+    prec.right(
+      seq($.keyword_on, $.object_reference, optional(alias($._drop_index_options, $.with_options))),
+    ),
+
+  _drop_index_options: ($) =>
+    seq(
+      $.keyword_with,
+      paren_list(
+        choice(
+          $.option,
+          alias($._compression_partitions, $.option),
+          alias($._move_to_option, $.option),
+          alias($._drop_index_filestream, $.option),
+        ),
         true,
       ),
     ),
+
+  _drop_index_filestream: ($) =>
+    seq(field('name', alias($.keyword_filestream_on, $.identifier)), field('value', $.identifier)),
 
   drop_procedure: ($) =>
     seq(

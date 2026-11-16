@@ -9628,6 +9628,10 @@
           "named": true
         },
         {
+          "type": "keyword_for",
+          "named": true
+        },
+        {
           "type": "keyword_index",
           "named": true
         },
@@ -9644,7 +9648,39 @@
           "named": true
         },
         {
+          "type": "keyword_primary",
+          "named": true
+        },
+        {
+          "type": "keyword_property",
+          "named": true
+        },
+        {
+          "type": "keyword_selective",
+          "named": true
+        },
+        {
           "type": "keyword_unique",
+          "named": true
+        },
+        {
+          "type": "keyword_using",
+          "named": true
+        },
+        {
+          "type": "keyword_value",
+          "named": true
+        },
+        {
+          "type": "keyword_with",
+          "named": true
+        },
+        {
+          "type": "keyword_xml",
+          "named": true
+        },
+        {
+          "type": "literal",
           "named": true
         },
         {
@@ -9660,11 +9696,27 @@
           "named": true
         },
         {
+          "type": "selective_xml_path",
+          "named": true
+        },
+        {
+          "type": "table_data_placement",
+          "named": true
+        },
+        {
           "type": "where",
           "named": true
         },
         {
+          "type": "with_clause",
+          "named": true
+        },
+        {
           "type": "with_options",
+          "named": true
+        },
+        {
+          "type": "xmlnamespaces",
           "named": true
         }
       ]
@@ -13611,6 +13663,10 @@
         },
         {
           "type": "object_reference",
+          "named": true
+        },
+        {
+          "type": "with_options",
           "named": true
         }
       ]
@@ -28687,6 +28743,10 @@
   },
   {
     "type": "keyword_select",
+    "named": true
+  },
+  {
+    "type": "keyword_selective",
     "named": true
   },
   {
