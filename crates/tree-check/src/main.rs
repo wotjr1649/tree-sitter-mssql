@@ -16,6 +16,7 @@ use std::{env, fs};
 use tree_check::{
     QuotedIdentifier, edits, grammar_parser, inspect_with_quoted_identifier, json_line,
     json_string, parse,
+    tree::{ancestors, preorder},
 };
 
 fn run_edits(file: &str) -> Result<bool, String> {
@@ -39,13 +40,12 @@ fn run_edits(file: &str) -> Result<bool, String> {
 
 fn keyword_ranges(tree: &tree_sitter::Tree, source: &[u8]) -> Vec<[usize; 2]> {
     let mut ranges = Vec::new();
-    let mut cursor = tree.walk();
-    loop {
-        let node = cursor.node();
+    for node in preorder(tree.root_node()) {
         if node.child_count() == 0
             && !node.is_extra()
             && !node.is_missing()
-            && std::iter::successors(Some(node), |n| n.parent())
+            && std::iter::once(node)
+                .chain(ancestors(node))
                 .any(|n| n.kind().starts_with("keyword_"))
         {
             ranges.push([node.start_byte(), node.end_byte()]);
@@ -74,24 +74,15 @@ fn keyword_ranges(tree: &tree_sitter::Tree, source: &[u8]) -> Vec<[usize; 2]> {
                 start = end.1;
             }
         }
-        if cursor.goto_first_child() {
-            continue;
-        }
-        while !cursor.goto_next_sibling() {
-            if !cursor.goto_parent() {
-                ranges.sort_unstable();
-                ranges.dedup();
-                return ranges;
-            }
-        }
     }
+    ranges.sort_unstable();
+    ranges.dedup();
+    ranges
 }
 
 fn token_ranges(tree: &tree_sitter::Tree) -> Vec<[usize; 2]> {
     let mut ranges = Vec::new();
-    let mut cursor = tree.walk();
-    loop {
-        let node = cursor.node();
+    for node in preorder(tree.root_node()) {
         if node.child_count() == 0
             && !node.is_missing()
             && !node.is_error()
@@ -99,15 +90,8 @@ fn token_ranges(tree: &tree_sitter::Tree) -> Vec<[usize; 2]> {
         {
             ranges.push([node.start_byte(), node.end_byte()]);
         }
-        if cursor.goto_first_child() {
-            continue;
-        }
-        while !cursor.goto_next_sibling() {
-            if !cursor.goto_parent() {
-                return ranges;
-            }
-        }
     }
+    ranges
 }
 
 fn run(args: &[String]) -> Result<bool, String> {

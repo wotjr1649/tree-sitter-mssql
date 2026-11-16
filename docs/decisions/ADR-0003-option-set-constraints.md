@@ -111,7 +111,7 @@ add small per-node checks rather than enumerating permutations in the grammar:
 | Encryption one assigned supported ALGORITHM | extra-encryption-options/case-001..004/006..009 |
 | Distributed option names (LISTENER_URL, not LISTENER) | distributed/listener, distributed/listener_url; route B03-r040 |
 
-Each check has a unit test in constraints.rs. Accepted top-level database SET repeats are preserved
+Each check has a unit test in `crates/tree-check/src/constraints/tests.rs`. Accepted top-level database SET repeats are preserved
 (extra-database-set/case-001/002); ALTER ADD file NAME and MODIFY file NAME are not required by PARSEONLY
 (files/negative-suspected-002/006). Engine evidence takes precedence over assumed restrictions.
 

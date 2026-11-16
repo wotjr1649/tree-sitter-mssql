@@ -5,8 +5,9 @@
 //! old tree is edited and reparsed incrementally, and the result must equal a fresh parse of the
 //! same text: same nodes, kinds, fields, byte ranges and error/missing/extra flags.
 
+use crate::tree::point;
 use serde_json::Value;
-use tree_sitter::{InputEdit, Parser, Point, Tree};
+use tree_sitter::{InputEdit, Parser, Tree};
 
 #[derive(Debug)]
 pub struct History {
@@ -43,20 +44,6 @@ pub fn read_histories(text: &str) -> Result<Vec<History>, String> {
         });
     }
     Ok(histories)
-}
-
-/// Row and byte column of a byte offset, as tree-sitter counts them.
-fn point(text: &str, byte: usize) -> Point {
-    let before = &text.as_bytes()[..byte];
-    let row = before.iter().filter(|&&b| b == b'\n').count();
-    let line_start = before
-        .iter()
-        .rposition(|&b| b == b'\n')
-        .map_or(0, |i| i + 1);
-    Point {
-        row,
-        column: byte - line_start,
-    }
 }
 
 fn dump(tree: &Tree) -> Vec<String> {
@@ -107,9 +94,9 @@ pub fn check_history(parser: &mut Parser, h: &History) -> Result<Vec<usize>, Str
             start_byte: start,
             old_end_byte: start + find.len(),
             new_end_byte: start + replace.len(),
-            start_position: point(&text, start),
-            old_end_position: point(&text, start + find.len()),
-            new_end_position: point(&new_text, start + replace.len()),
+            start_position: point(text.as_bytes(), start),
+            old_end_position: point(text.as_bytes(), start + find.len()),
+            new_end_position: point(new_text.as_bytes(), start + replace.len()),
         });
         let incremental = parse(parser, &new_text, Some(&tree))?;
         let fresh = parse(parser, &new_text, None)?;
@@ -125,6 +112,7 @@ pub fn check_history(parser: &mut Parser, h: &History) -> Result<Vec<usize>, Str
 #[cfg(test)]
 mod tests {
     use super::*;
+    use tree_sitter::Point;
 
     fn parser() -> Parser {
         let mut p = Parser::new();
@@ -135,9 +123,9 @@ mod tests {
     #[test]
     fn point_counts_rows_and_byte_columns() {
         let text = "ab\nc한d\n";
-        assert_eq!(point(text, 0), Point { row: 0, column: 0 });
-        assert_eq!(point(text, 3), Point { row: 1, column: 0 });
-        assert_eq!(point(text, 7), Point { row: 1, column: 4 }); // after "c한" (1 + 3 bytes)
+        assert_eq!(point(text.as_bytes(), 0), Point { row: 0, column: 0 });
+        assert_eq!(point(text.as_bytes(), 3), Point { row: 1, column: 0 });
+        assert_eq!(point(text.as_bytes(), 7), Point { row: 1, column: 4 }); // after "c한" (1 + 3 bytes)
     }
 
     #[test]
