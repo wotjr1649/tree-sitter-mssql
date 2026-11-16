@@ -1,5 +1,27 @@
 # Accepted gaps
 
+## R20: current status of the rejected-but-clean ledger
+
+The historical measurements below are superseded by `oracle/rejected-clean.json` for current status.
+R20 closes 125 of its original 127 `gap` entries through tree-local constraints, without changing
+any grammar, scanner, node kind, field or concrete tree. `gap-forms.jsonl` remeasures all 127 originals
+and adjacent accepted/rejected forms at LocalDB 17.0.1000.7 compatibility levels 100-170;
+`test/corpus/gap-forms.txt` pins representative trees, including trees whose rejection belongs to
+the constraint layer. Empty CATCH, qualified user functions, documented contextual names and
+engine-accepted option orders remain accepted.
+
+Two original entries retain their `gap` class pending a separate ledger decision:
+
+- `ddl-rest/commit-off`: declaring the transaction variable makes the identical COMMIT WITH clause
+  accepted. Rejecting its shape would reject valid programs; resolving the variable needs batch context.
+- `kit-routes/alt-tsql-V22-r018`: VECTOR_SEARCH needs a preview-enabled engine/database to separate syntax
+  from feature availability. The documented source alias is optional; no alias requirement is inferred.
+
+No original gap was reclassified to make it disappear. New context/environment observations are
+classified separately with their measured reason. The grammar still builds the same trees;
+consumers needing the validation results must also use the constraint layer (ADR-0003).
+
+
 This is the ledger of genuine mismatches between what SQL Server itself accepts or rejects and
 what this grammar's tree does — one row per gap, whether the grammar over- or under-accepts, and
 the corpus case (or fixture) that pins the current behavior so a future change is a reviewable

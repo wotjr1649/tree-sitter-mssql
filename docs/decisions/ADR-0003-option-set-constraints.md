@@ -146,3 +146,28 @@ Evidence: `oracle/probes/last-forms.jsonl`, LocalDB 17.0.1000.7, levels 100-170.
 exceptions. Several INTO branches, long/empty/non-string ESCAPE expressions and bare
 JSON_ARRAYAGG DISTINCT or WITHIN GROUP follow the measured PARSEONLY acceptance, not a guessed
 restriction. Boolean/scalar operands and existing reserved-word gaps stay documented in accepted-gaps.md.
+
+
+## Rejected-but-clean boundaries (R20)
+
+Evidence: `oracle/probes/gap-forms.jsonl` and the committed LocalDB 17.0.1000.7 verdicts,
+compatibility levels 100-170. The gap-forms unit test compares every probe to those verdicts,
+with explicit declaration, preview, connector and Azure-only exceptions.
+
+| Rule | Tree-local boundary |
+| --- | --- |
+| `gap-call-shape`, `gap-fulltext-string` | Write-target arguments are constants/local variables; OPENQUERY server/arity, PREDICT schema, COALESCE arity, delimited built-in names, and QUOTED_IDENTIFIER-sensitive fulltext strings |
+| `gap-scalar-shape`, `expression-like-escape` | Comparison operands, SELECT values and ESCAPE characters are scalar; SELECT aliases/variable assignments stay accepted; EXEC has no unary plus |
+| `gap-name-parts`, `gap-xml-drop`, `gap-reserved-name` | XML collection/HISTORY_TABLE/XE name components, XML DROP without IF EXISTS, and measured reserved identifiers (quoted spellings and SET OFFSETS are preserved) |
+| `gap-option-shape`, `gap-json-index` | Bare target/INDEX hints, MERGE source hints, MAXDOP decimal range, history names, compression placement, row/columnstore key options, SYSTEM_VERSIONING repetition, JSON ONLINE, security policy and external options |
+| `gap-statement-shape` | Nonempty BEGIN/TRY (not CATCH), ENABLE/DISABLE separation, unbounded-following short frames, XE bodies, route required/duplicate options, binary cache handles, measured configuration/audit/permission names and fixed trigger events |
+
+The first compression option with ON PARTITIONS needs REBUILD PARTITION=ALL; putting MAXDOP,
+FILLFACTOR or PAD_INDEX before it is accepted by this engine, while putting them after it still
+fails. The partition probes pin these order-sensitive engine results rather than imposing a
+uniform restriction. JSON WITH options such as FILLFACTOR remain accepted; ONLINE is rejected.
+
+The trigger event/group list comes from the existing `context/trig-*` engine enumeration.
+ALTER_SERVER_CONFIGURATION retains its existing trigger-scope rejection. No catalog lookup,
+name resolution, preview setting or edition inference is added. In particular COMMIT with a
+transaction variable and VECTOR_SEARCH remain clean: see the two R20 residuals in accepted-gaps.md.
