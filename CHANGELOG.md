@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Parse spaced/comment-separated comparison operators and nested set operands while retaining existing clean trees.
 - Parse BACKUP and RESTORE: file lists, MIRROR TO, BACKUP SERVER/GROUP, certificate, master, service master and symmetric key backups and restores, the metadata RESTOREs (FILELISTONLY, HEADERONLY, LABELONLY, VERIFYONLY, REWINDONLY) and their WITH options (MOVE ... TO, STOPATMARK ... AFTER, COMPRESSION/ENCRYPTION/FILESTREAM lists, signed numbers); tree-check checks option names, values, devices and files against the engine. `restore` is now a statement keyword, so a label named `restore` no longer parses (SQL Server rejects it too).
 - Parse EXTERNAL object, FULLTEXT and TCP ENDPOINT DDL sub-forms; enforce engine-verified option sets in tree-check without changing existing clean trees.
 - Parse oracle-verified query/DML/cursor/EXEC and native-module sub-forms while preserving existing clean trees; keep parser-cost growth below 10%.

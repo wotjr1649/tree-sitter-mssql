@@ -131,10 +131,18 @@ export default {
 
   // One branch of a set_operation. A named rule, not an inline helper, so
   // the branch is one node rather than a flat list of its children.
-  query_specification: ($) => optional_parenthesis($._query_specification_core),
+  query_specification: ($) =>
+    choice(
+      optional_parenthesis($._query_specification_core),
+      wrapped_in_parenthesis($.set_operation),
+    ),
 
   // Later set-operation branches: identical tree, no INTO.
-  _query_specification_later: ($) => optional_parenthesis(query_specification_body_no_into($)),
+  _query_specification_later: ($) =>
+    choice(
+      optional_parenthesis(query_specification_body_no_into($)),
+      wrapped_in_parenthesis($.set_operation),
+    ),
 
   // SELECT ... [INTO new_table] [FROM ...] [WHERE ...] [GROUP BY ...]
   // [HAVING ...] [WINDOW ...] [ORDER BY ...] [OFFSET ... FETCH ...]

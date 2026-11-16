@@ -29,6 +29,12 @@ export default grammar({
     $._sqlcmd_empty,
     $._hint_integer,
     $._hint_numeric,
+    $._spaced_not_equal,
+    $._spaced_less_equal,
+    $._spaced_greater_equal,
+    $._spaced_not_equal_alt,
+    $._spaced_not_less,
+    $._spaced_not_greater,
   ],
 
   // Every entry arbitrates a real fork the parser must carry a few tokens

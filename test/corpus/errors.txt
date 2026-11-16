@@ -294,24 +294,7 @@ UPDATE t TABLESAMPLE (10 PERCENT) SET a = 1;
 
 ---
 
-(program
-  (batch
-    (statement
-      (update
-        (keyword_update)
-        (invocation
-          (object_reference
-            name: (identifier))
-          (ERROR)
-          parameter: (term
-            value: (literal)
-            alias: (identifier)))
-        (keyword_set)
-        (assignment
-          left: (field
-            name: (identifier))
-          (assignment_operator)
-          right: (literal))))))
+(program (batch (statement (update (keyword_update) (invocation (object_reference name: (identifier)) (ERROR (keyword_tablesample)) parameter: (term value: (literal) alias: (identifier))) (keyword_set) (assignment left: (field name: (identifier)) (assignment_operator) right: (literal))))))
 
 ==================
 CREATE TABLE's trailing clauses stop after two TEXTIMAGE_ON/FILESTREAM_ON pairs (ARCH-7)

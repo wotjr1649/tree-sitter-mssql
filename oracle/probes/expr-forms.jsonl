@@ -1,3 +1,117 @@
+{"id":"expr-forms/comparison/bangeq-joined","sha256":"739986c5f4bf6bfd456a0f73207691d26eef7396e0b7446f786de03374051a9a","source":"SELECT 1 WHERE 1 != 2;\n"}
+{"id":"expr-forms/comparison/bangeq-space","sha256":"512daffbdd93e452f2b59c4d3ca4061b644a363cc9f91d1936357080347abcb2","source":"SELECT 1 WHERE 1 ! = 2;\n"}
+{"id":"expr-forms/comparison/bangeq-spaces","sha256":"9ef9eeede8ac2190c81453824526cf5ee03e515675fc83778f59b24396939b71","source":"SELECT 1 WHERE 1 !   = 2;\n"}
+{"id":"expr-forms/comparison/bangeq-tab","sha256":"b47706ccd9393108cdd27a76f602593ed0bb39990316c399f3fe6f9d36dde3ea","source":"SELECT 1 WHERE 1 !\t= 2;\n"}
+{"id":"expr-forms/comparison/bangeq-lf","sha256":"c04edbd99fe1f6ace4b102c5be4efac94b0549b316d29cd352cd1e227a4cb183","source":"SELECT 1 WHERE 1 !\n= 2;\n"}
+{"id":"expr-forms/comparison/bangeq-crlf","sha256":"7002bf646c90aae5b5cda42707f513ceb10da314ea85132813c71bacebfc75f3","source":"SELECT 1 WHERE 1 !\r\n= 2;\n"}
+{"id":"expr-forms/comparison/bangeq-cr","sha256":"0178c612114661c061bf31653c3dc2b549632a088e5214cb6ea0290066ac3c88","source":"SELECT 1 WHERE 1 !\r= 2;\n"}
+{"id":"expr-forms/comparison/bangeq-vt","sha256":"98acc06d4143e277553e643f54d1d34a85dcaca6222e869c0d7cfe3fbea90e6a","source":"SELECT 1 WHERE 1 !\u000b= 2;\n"}
+{"id":"expr-forms/comparison/bangeq-ff","sha256":"f20b53733380ad5cfa071f9573c4904885259c3c785f3e5cc0105126cfa37a18","source":"SELECT 1 WHERE 1 !\f= 2;\n"}
+{"id":"expr-forms/comparison/bangeq-nbsp","sha256":"4057a6f972268eea04b703adc459ca46e91b9bc37805dc0fea55f6ed34b27e77","source":"SELECT 1 WHERE 1 ! = 2;\n"}
+{"id":"expr-forms/comparison/bangeq-line","sha256":"f34832ad342865deceef77b40f68b797cff4dcbfb8fbcd189172271052476652","source":"SELECT 1 WHERE 1 !--gap\n= 2;\n"}
+{"id":"expr-forms/comparison/bangeq-block","sha256":"0a2da395ab635348cc910cab51934a016b0897adde9331e39a8cfe7c28240dda","source":"SELECT 1 WHERE 1 !/* gap */= 2;\n"}
+{"id":"expr-forms/comparison/bangeq-nested","sha256":"367b6e7e5a4210395eec326b93745c38ce60e09b27c378296b5f23b2a22fd141","source":"SELECT 1 WHERE 1 !/* a /* b */ c */= 2;\n"}
+{"id":"expr-forms/comparison/bangeq-mixed","sha256":"1367a2057ac89ab1fc44ecfcda4e355f2f457e28376f0482d2ab10e7ee064b0e","source":"SELECT 1 WHERE 1 ! \n/* x */-- y\n = 2;\n"}
+{"id":"expr-forms/comparison/bangeq-unclosed","sha256":"280cab2e765c012a31ce48a1c704992794afab6896273f7e792b4506ddd21fd7","source":"SELECT 1 WHERE 1 !/* open= 2;\n"}
+{"id":"expr-forms/comparison/bangeq-word","sha256":"91026ae4a03728b08d88ad816a013364f4f9fc18c0e913dfa7343fcb242afd08","source":"SELECT 1 WHERE 1 !x= 2;\n"}
+{"id":"expr-forms/comparison/bangeq-dash","sha256":"9102acdecbfb9231f3e0eeb2953b7298fa5e2f6ca6cf45225104c6e8f2f26592","source":"SELECT 1 WHERE 1 !-= 2;\n"}
+{"id":"expr-forms/comparison/bangeq-slash","sha256":"5ad118f155e54771c9483c5e22e76e29ca7b76b1acd500ef064b8bdd869936ae","source":"SELECT 1 WHERE 1 !/= 2;\n"}
+{"id":"expr-forms/comparison/bangeq-zero","sha256":"dceb4768a06987bb1bd6d284a2bb94ba88e7db297765a30d17e19ef2958797c0","source":"SELECT 1 WHERE 1 !​= 2;\n"}
+{"id":"expr-forms/comparison/lteq-joined","sha256":"eb4cb44c2fb85657541df122718f84b49974a0bd69918a16e5139d5b1c02ff5f","source":"SELECT 1 WHERE 1 <= 2;\n"}
+{"id":"expr-forms/comparison/lteq-space","sha256":"7f9d2356a63665bfeeee076db6174e611ff63dcd3dc84deca70856cc07c7ef31","source":"SELECT 1 WHERE 1 < = 2;\n"}
+{"id":"expr-forms/comparison/lteq-spaces","sha256":"e858e15a12fe375379eead85013b281003942610b02bfc9e49f7d3054e60a858","source":"SELECT 1 WHERE 1 <   = 2;\n"}
+{"id":"expr-forms/comparison/lteq-tab","sha256":"b0fe2e98a0d5f02dcc8f18c307384b778670d7682499464a67abcc00485461ca","source":"SELECT 1 WHERE 1 <\t= 2;\n"}
+{"id":"expr-forms/comparison/lteq-lf","sha256":"588e97ace22e820c5343a75a26e902daa8c7a69cbdbe4ffd4b9c7b5304942ae4","source":"SELECT 1 WHERE 1 <\n= 2;\n"}
+{"id":"expr-forms/comparison/lteq-crlf","sha256":"b2ad944a2b68b5da24faef693fffae96d12cc52d59809b192a7526ada97d7b28","source":"SELECT 1 WHERE 1 <\r\n= 2;\n"}
+{"id":"expr-forms/comparison/lteq-cr","sha256":"5b9c8d310b2bbc18fdc865934ec75bbf68c0de7d7cb81dd05bb3721d83de9bdf","source":"SELECT 1 WHERE 1 <\r= 2;\n"}
+{"id":"expr-forms/comparison/lteq-vt","sha256":"7a50bf026a41aec622550227e9922698f46945d5b53bc61106a124dd9114bd8e","source":"SELECT 1 WHERE 1 <\u000b= 2;\n"}
+{"id":"expr-forms/comparison/lteq-ff","sha256":"56c298881c1e1a0a17f4996f7619b56484552ed6e44f5a38a551a15369c14927","source":"SELECT 1 WHERE 1 <\f= 2;\n"}
+{"id":"expr-forms/comparison/lteq-nbsp","sha256":"b7c4467016afed9ac2ad4599f1863791abee201ec97927563d18bd36ea5772f3","source":"SELECT 1 WHERE 1 < = 2;\n"}
+{"id":"expr-forms/comparison/lteq-line","sha256":"5523b48de7106e9f3cd72f9d2dc25f3dbff53bc0747813a0032d44d358311415","source":"SELECT 1 WHERE 1 <--gap\n= 2;\n"}
+{"id":"expr-forms/comparison/lteq-block","sha256":"f95b25166483d4cdc3cf3071c3c7918024dfd38232179c587e23fc5aab6046fc","source":"SELECT 1 WHERE 1 </* gap */= 2;\n"}
+{"id":"expr-forms/comparison/lteq-nested","sha256":"323284e55a1bb461bf252bf09d1a523e30005520df353cef3f21e0c92ba6209a","source":"SELECT 1 WHERE 1 </* a /* b */ c */= 2;\n"}
+{"id":"expr-forms/comparison/lteq-mixed","sha256":"fd079c767ec56b120e93b60dc1e3cc76fdc9f1e822cc7cecb1eb3123b921763f","source":"SELECT 1 WHERE 1 < \n/* x */-- y\n = 2;\n"}
+{"id":"expr-forms/comparison/lteq-unclosed","sha256":"cdd1e6f635d387b4990b41247da8de80f549cc52478166cf52450ff8f7816f8a","source":"SELECT 1 WHERE 1 </* open= 2;\n"}
+{"id":"expr-forms/comparison/lteq-word","sha256":"42bb3f74da982e0820b0216f1e0c6a2001ef7d3b5f45387b0a5804f801e03542","source":"SELECT 1 WHERE 1 <x= 2;\n"}
+{"id":"expr-forms/comparison/lteq-dash","sha256":"42318362b357e62f8a19559f30c3e91b9799ef0335d3e517ea996530f0313228","source":"SELECT 1 WHERE 1 <-= 2;\n"}
+{"id":"expr-forms/comparison/lteq-slash","sha256":"ae417fad2fcda6cdeee6ffde30d891bb34a2b45dc4b8e0c2ba9d5c3804a699f2","source":"SELECT 1 WHERE 1 </= 2;\n"}
+{"id":"expr-forms/comparison/lteq-zero","sha256":"30b4c563f6b70451ecb24542898b5f76359dc74e4ee90e84715247206a16c733","source":"SELECT 1 WHERE 1 <​= 2;\n"}
+{"id":"expr-forms/comparison/gteq-joined","sha256":"b39f6f88e92c13b6bf2b9042a2772e68f642c63787e79067ce2ab73fbe21ba6b","source":"SELECT 1 WHERE 1 >= 2;\n"}
+{"id":"expr-forms/comparison/gteq-space","sha256":"d256684b975ed71c9fe7c969799e25591375b3a471cd32dd732afda06cd15935","source":"SELECT 1 WHERE 1 > = 2;\n"}
+{"id":"expr-forms/comparison/gteq-spaces","sha256":"80968ae0155139fef488ba0a0d681ac8fd618397f389e39d52344ebc9fc2cf76","source":"SELECT 1 WHERE 1 >   = 2;\n"}
+{"id":"expr-forms/comparison/gteq-tab","sha256":"836f0d0eaf810ed4791fc8694b78c575a6a83cb7f4bd489567f6a196a60eda01","source":"SELECT 1 WHERE 1 >\t= 2;\n"}
+{"id":"expr-forms/comparison/gteq-lf","sha256":"0a324bfd6281a74ac24d4647bc6143fa2cbba53405f412c0a7afbb1e658f5fbf","source":"SELECT 1 WHERE 1 >\n= 2;\n"}
+{"id":"expr-forms/comparison/gteq-crlf","sha256":"a7eee000fda36d6b3ec1c1426f177ebc3ac67167f037f4ccae21c8025cce7a34","source":"SELECT 1 WHERE 1 >\r\n= 2;\n"}
+{"id":"expr-forms/comparison/gteq-cr","sha256":"2c3701d79ea157ec3c10837105596204bf09cd7c13fa0859c842e20b39bd6d87","source":"SELECT 1 WHERE 1 >\r= 2;\n"}
+{"id":"expr-forms/comparison/gteq-vt","sha256":"8b0aeeeabea32863d496c5ca15a24ad4392637a52bb77fe13f4bccc5dd0b7808","source":"SELECT 1 WHERE 1 >\u000b= 2;\n"}
+{"id":"expr-forms/comparison/gteq-ff","sha256":"707a27e390ac2a66dba81bfc59441c42e321f924a6f482c0e5146a1c3c10dbab","source":"SELECT 1 WHERE 1 >\f= 2;\n"}
+{"id":"expr-forms/comparison/gteq-nbsp","sha256":"924006e5c62a397b6b08be58f74910265e0cadac2ac3e5eb3b41c5614e713f70","source":"SELECT 1 WHERE 1 > = 2;\n"}
+{"id":"expr-forms/comparison/gteq-line","sha256":"eb1893ac96bc01ef7459992f5e1bb7cecc150c8e7f70be41b2a7d80722c4d4a8","source":"SELECT 1 WHERE 1 >--gap\n= 2;\n"}
+{"id":"expr-forms/comparison/gteq-block","sha256":"c30cea00d50434faa94d2fba412bdc6df9c28b7503b6e92a890589e247b1a474","source":"SELECT 1 WHERE 1 >/* gap */= 2;\n"}
+{"id":"expr-forms/comparison/gteq-nested","sha256":"9bac845ee862a198a4892d96ab37af79821d8a80a2039c09dcdaf8d4f1d68f5e","source":"SELECT 1 WHERE 1 >/* a /* b */ c */= 2;\n"}
+{"id":"expr-forms/comparison/gteq-mixed","sha256":"16921ef877cf894f870a9e5722175f0f7660fff40d5ac0771fe7e69e28353b92","source":"SELECT 1 WHERE 1 > \n/* x */-- y\n = 2;\n"}
+{"id":"expr-forms/comparison/gteq-unclosed","sha256":"17b330a9c5e21b81a5906c49383043a53ce884daa4b5840e9b0be75fd604e17a","source":"SELECT 1 WHERE 1 >/* open= 2;\n"}
+{"id":"expr-forms/comparison/gteq-word","sha256":"7058a81b0de9b5e2469339c556b58183f8178731b6b5fbeddf5d5d10c6f17dc0","source":"SELECT 1 WHERE 1 >x= 2;\n"}
+{"id":"expr-forms/comparison/gteq-dash","sha256":"afdcca160cfc211b0cff1f69684b000403064ff0b4d1f99a32fc49db982f10b8","source":"SELECT 1 WHERE 1 >-= 2;\n"}
+{"id":"expr-forms/comparison/gteq-slash","sha256":"7c937e923e5bbb498b856300d78df014bf9b3455fe24c5bc38b667f680a94402","source":"SELECT 1 WHERE 1 >/= 2;\n"}
+{"id":"expr-forms/comparison/gteq-zero","sha256":"ed3ff2aa8f2d0f634b21a51e81e6bca092c80a90cad725b532294358d80d70f7","source":"SELECT 1 WHERE 1 >​= 2;\n"}
+{"id":"expr-forms/comparison/ltgt-joined","sha256":"488290fa725335719385147637a48381771c760fda1f3e498cbea7638a4ff414","source":"SELECT 1 WHERE 1 <> 2;\n"}
+{"id":"expr-forms/comparison/ltgt-space","sha256":"19d22b41a2e737467fa11439a72c995bd1ee144916ef1e5d129cdd2279a6519d","source":"SELECT 1 WHERE 1 < > 2;\n"}
+{"id":"expr-forms/comparison/ltgt-spaces","sha256":"1b8bd796122a99e4bbcc92b40c18d44e3fda1d269df77eb3eaec9c3d2aadeef5","source":"SELECT 1 WHERE 1 <   > 2;\n"}
+{"id":"expr-forms/comparison/ltgt-tab","sha256":"d41db81040fa4a097767ab7130829b96d1df7c6c5849af1771a03407c8de8b4e","source":"SELECT 1 WHERE 1 <\t> 2;\n"}
+{"id":"expr-forms/comparison/ltgt-lf","sha256":"9d8a2a95091abe80e03cfacc1c950f8b2db774881f0152c26be59161021362ec","source":"SELECT 1 WHERE 1 <\n> 2;\n"}
+{"id":"expr-forms/comparison/ltgt-crlf","sha256":"195fb819f2787a2490c89033964a33b9910ca6460a42bcebf72ea6442ddec2c9","source":"SELECT 1 WHERE 1 <\r\n> 2;\n"}
+{"id":"expr-forms/comparison/ltgt-cr","sha256":"72a72669319fd98cd8768ff8733c936adec51ee8a662344b8065e15dc57761b5","source":"SELECT 1 WHERE 1 <\r> 2;\n"}
+{"id":"expr-forms/comparison/ltgt-vt","sha256":"4133294575fdcf883039a679620ec2fd4bc5cf35b2ed3e70072da2dd77ad5883","source":"SELECT 1 WHERE 1 <\u000b> 2;\n"}
+{"id":"expr-forms/comparison/ltgt-ff","sha256":"923305736efa477e9e6c87b26b7b9caa553fd157d3e06f2ffaaafb003f9b4c3a","source":"SELECT 1 WHERE 1 <\f> 2;\n"}
+{"id":"expr-forms/comparison/ltgt-nbsp","sha256":"54582b4651e3ed75e149f0d30d93a97d41c2d1a02ef896134f9bf0ac6004207f","source":"SELECT 1 WHERE 1 < > 2;\n"}
+{"id":"expr-forms/comparison/ltgt-line","sha256":"3ebe8e329766f3a4a7b4020770face63d1746eae2fb8221ab08b94d1f4228816","source":"SELECT 1 WHERE 1 <--gap\n> 2;\n"}
+{"id":"expr-forms/comparison/ltgt-block","sha256":"ddd5f81cf56e7c680e62cc4529dbff5c47c65dba51ed60e9e921614426cec587","source":"SELECT 1 WHERE 1 </* gap */> 2;\n"}
+{"id":"expr-forms/comparison/ltgt-nested","sha256":"861eba84c6ac6925567dd4ed68e463619655744e441ed32c1e9d2053c1d76313","source":"SELECT 1 WHERE 1 </* a /* b */ c */> 2;\n"}
+{"id":"expr-forms/comparison/ltgt-mixed","sha256":"d316cb75e69283e8826df4b2e656c170e8f2dbce1ed14ac9cbbd50ce496d2a7e","source":"SELECT 1 WHERE 1 < \n/* x */-- y\n > 2;\n"}
+{"id":"expr-forms/comparison/ltgt-unclosed","sha256":"5b8c26935240bfbfbb2912e661364dbb29413d02640736ac2abcaa66e5f4759f","source":"SELECT 1 WHERE 1 </* open> 2;\n"}
+{"id":"expr-forms/comparison/ltgt-word","sha256":"62b8da37920de02b9eba3737114f0fe97535409255f5c9a8e83aed37f4cf36ef","source":"SELECT 1 WHERE 1 <x> 2;\n"}
+{"id":"expr-forms/comparison/ltgt-dash","sha256":"4e00ab0c38838c0ef24718c35734e8218721c9a93e384cbb143238d00f3dfee1","source":"SELECT 1 WHERE 1 <-> 2;\n"}
+{"id":"expr-forms/comparison/ltgt-slash","sha256":"3d56d0a43bbe36f1d46c6e81b3c7853c2c9463dca3b96a1068f3ed6bd7ffcb4e","source":"SELECT 1 WHERE 1 </> 2;\n"}
+{"id":"expr-forms/comparison/ltgt-zero","sha256":"a36ca4253e6e05625a15405afb463360cfe2d5b14111506a3195d5b4161a1710","source":"SELECT 1 WHERE 1 <​> 2;\n"}
+{"id":"expr-forms/comparison/banglt-joined","sha256":"c31e05a537af38a79a17ebe762f7b3c3022f90567d9066200f6362547c7ff92c","source":"SELECT 1 WHERE 1 !< 2;\n"}
+{"id":"expr-forms/comparison/banglt-space","sha256":"f1427b38b072f54899c450535b92060b55195c3c11e40f6f03f4154dc37a1927","source":"SELECT 1 WHERE 1 ! < 2;\n"}
+{"id":"expr-forms/comparison/banglt-spaces","sha256":"60480ddfcf5f81de809096b243e3a1b11c62b6fe0937b56023e4bf47cc496b87","source":"SELECT 1 WHERE 1 !   < 2;\n"}
+{"id":"expr-forms/comparison/banglt-tab","sha256":"0acba06d2b9e665533a70c4e24c203ae0dfcfa376c8e807c59055a3c6c78444b","source":"SELECT 1 WHERE 1 !\t< 2;\n"}
+{"id":"expr-forms/comparison/banglt-lf","sha256":"269f9e2f56f36ef7784d2b522696b9d7a2cd2abb72b3d661c675df16794a97f3","source":"SELECT 1 WHERE 1 !\n< 2;\n"}
+{"id":"expr-forms/comparison/banglt-crlf","sha256":"504634e1559d714a031ad6f9140e034712362265493516adb41cac503722780d","source":"SELECT 1 WHERE 1 !\r\n< 2;\n"}
+{"id":"expr-forms/comparison/banglt-cr","sha256":"1b11f2382b82474bbc98ce161c26880dc536d01b89159be1ba897b21213d9858","source":"SELECT 1 WHERE 1 !\r< 2;\n"}
+{"id":"expr-forms/comparison/banglt-vt","sha256":"2a3649c02a6930f074677482c3767cf1ef1302d04cd5b1b334bd53c9b45ba25e","source":"SELECT 1 WHERE 1 !\u000b< 2;\n"}
+{"id":"expr-forms/comparison/banglt-ff","sha256":"fce8285d6e3f1dbef5f93457b4433d8ba46a3b4e9cf7e7017724083482ef2020","source":"SELECT 1 WHERE 1 !\f< 2;\n"}
+{"id":"expr-forms/comparison/banglt-nbsp","sha256":"a602898b4faa2bf6cc4c020cba3bb4f9b50e0c0360d4c760e369de2410c64b7f","source":"SELECT 1 WHERE 1 ! < 2;\n"}
+{"id":"expr-forms/comparison/banglt-line","sha256":"bb5b195eb290fb76b54cc4f88dc88d65e217eda151819f0e650448c18088243f","source":"SELECT 1 WHERE 1 !--gap\n< 2;\n"}
+{"id":"expr-forms/comparison/banglt-block","sha256":"b759ae15e6dcb10afe2e634f6682aa86c33a28432442b6fb0a79fb6e4358c31b","source":"SELECT 1 WHERE 1 !/* gap */< 2;\n"}
+{"id":"expr-forms/comparison/banglt-nested","sha256":"0f42068220d3b93518b34433d6c1c22a7fd29294ab779eb3860e0e7879c2135c","source":"SELECT 1 WHERE 1 !/* a /* b */ c */< 2;\n"}
+{"id":"expr-forms/comparison/banglt-mixed","sha256":"98244d8c080a668ee7d335251681ca6d272af42e9e5d7263787505b888517417","source":"SELECT 1 WHERE 1 ! \n/* x */-- y\n < 2;\n"}
+{"id":"expr-forms/comparison/banglt-unclosed","sha256":"a2a51be3b4e401aab8b0fb98bd15420bd1624d8cc2bf6a1838a4a448f80545ac","source":"SELECT 1 WHERE 1 !/* open< 2;\n"}
+{"id":"expr-forms/comparison/banglt-word","sha256":"968646180ba6ff2bb9d6262073c07e5aa153de6a89fa313619478d2dc9825c1e","source":"SELECT 1 WHERE 1 !x< 2;\n"}
+{"id":"expr-forms/comparison/banglt-dash","sha256":"38fbea9f37cbc63ffbc82bd86478b27713c459e0d7d54923cf2bbc3908c259f3","source":"SELECT 1 WHERE 1 !-< 2;\n"}
+{"id":"expr-forms/comparison/banglt-slash","sha256":"b35d34458e8d8bc0d1f41d3ae3d389b05094f8915c9e0caa64c47644d6dcdfc4","source":"SELECT 1 WHERE 1 !/< 2;\n"}
+{"id":"expr-forms/comparison/banglt-zero","sha256":"f51329cb99295ea961e02ed7c6b020afa8629bad89621b8c64c7c95209c67cc5","source":"SELECT 1 WHERE 1 !​< 2;\n"}
+{"id":"expr-forms/comparison/banggt-joined","sha256":"72139e6876d0fe28ba378aba761df5113a7fe17e15bfd8545e10540a8b4de9ef","source":"SELECT 1 WHERE 1 !> 2;\n"}
+{"id":"expr-forms/comparison/banggt-space","sha256":"3c7c61656d0d53a428596fb8e917416ff29e8e142a9bf5b2a157253e5140503e","source":"SELECT 1 WHERE 1 ! > 2;\n"}
+{"id":"expr-forms/comparison/banggt-spaces","sha256":"042664a630b52eae7baf21bc833dfd5d917a97ced02d4971611464dbe125138f","source":"SELECT 1 WHERE 1 !   > 2;\n"}
+{"id":"expr-forms/comparison/banggt-tab","sha256":"c5fe21f0058ff54cd2e2621a237459b7024ca03130bdf2dca9d49c71a7bd295a","source":"SELECT 1 WHERE 1 !\t> 2;\n"}
+{"id":"expr-forms/comparison/banggt-lf","sha256":"05768ae2da23f77afc7666fd89ac69efff92b22355af5c5448a1d341940d813d","source":"SELECT 1 WHERE 1 !\n> 2;\n"}
+{"id":"expr-forms/comparison/banggt-crlf","sha256":"a3479bc3a1053174bb23fe8635ac5496695df0f2acc85b8806906841612c4ac1","source":"SELECT 1 WHERE 1 !\r\n> 2;\n"}
+{"id":"expr-forms/comparison/banggt-cr","sha256":"18e6cf361cc0cf22acc40880751a63211f6aea67aaab28cde70c6b01e9c9116e","source":"SELECT 1 WHERE 1 !\r> 2;\n"}
+{"id":"expr-forms/comparison/banggt-vt","sha256":"a5bd521bc6b67ac20a672ab5565010df5235d6b4b0d2ae2af995b0b7699013aa","source":"SELECT 1 WHERE 1 !\u000b> 2;\n"}
+{"id":"expr-forms/comparison/banggt-ff","sha256":"10d1a5f9b8c231a09b71b309eadefdf08cc39da894c811514335d02137c15d55","source":"SELECT 1 WHERE 1 !\f> 2;\n"}
+{"id":"expr-forms/comparison/banggt-nbsp","sha256":"3c71a2abe4c6d91a1f67567b997cf70b90deb635bf43a347033d2cb0a4e90c71","source":"SELECT 1 WHERE 1 ! > 2;\n"}
+{"id":"expr-forms/comparison/banggt-line","sha256":"bcad25d511626841f08a97df1d3aa98a030e3f4625be439cfcab63da02fca8cb","source":"SELECT 1 WHERE 1 !--gap\n> 2;\n"}
+{"id":"expr-forms/comparison/banggt-block","sha256":"5da7ffdc7a3a3d90f40339268c835bfd1e9269e7f4c7af3155587b6b02ce6457","source":"SELECT 1 WHERE 1 !/* gap */> 2;\n"}
+{"id":"expr-forms/comparison/banggt-nested","sha256":"bce05d1de7e98c01a68cc3f5f36ebe3c91188b04481868ad7095a9f641e24757","source":"SELECT 1 WHERE 1 !/* a /* b */ c */> 2;\n"}
+{"id":"expr-forms/comparison/banggt-mixed","sha256":"85487c326f17a5f3e3afe30a042fdb12cf27785246dd71110523b92bd939afb4","source":"SELECT 1 WHERE 1 ! \n/* x */-- y\n > 2;\n"}
+{"id":"expr-forms/comparison/banggt-unclosed","sha256":"100b0d4a16fd4ae43b06a62029ca6d6a390b1a29803fce3afe2455692fbd596e","source":"SELECT 1 WHERE 1 !/* open> 2;\n"}
+{"id":"expr-forms/comparison/banggt-word","sha256":"3d420f1bd109ef8eb26a35263d0cffc49ed9eac50ca4499ee570d0a13711c07f","source":"SELECT 1 WHERE 1 !x> 2;\n"}
+{"id":"expr-forms/comparison/banggt-dash","sha256":"601b3d03d6ba389d11aacb685f2f03a855a34bbbf1a6494e693f44488f56950f","source":"SELECT 1 WHERE 1 !-> 2;\n"}
+{"id":"expr-forms/comparison/banggt-slash","sha256":"756f24ba9e084faa93d0ce2c9afef356d38ebf3f8aacb731c8aea522c4bdd5d3","source":"SELECT 1 WHERE 1 !/> 2;\n"}
+{"id":"expr-forms/comparison/banggt-zero","sha256":"7c25d113f074c2ef4b9d61020e4612d92396e8c403dcddf4021a5bbafc3a6c24","source":"SELECT 1 WHERE 1 !​> 2;\n"}
 {"id":"expr-forms/language/contains-integer","sha256":"f9e14d68374f8c653957521a7f3659634ae4747b124b5661d399218cacfb9391","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE 1033);\n"}
 {"id":"expr-forms/language/contains-hex","sha256":"845152e1a6fe422ee817ee5310e042ebf77894bae3d1738cd4b2b3a58d174cff","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE 0x409);\n"}
 {"id":"expr-forms/language/contains-name","sha256":"efc87bf19d8a0b29b65dbd05bf9bfe32c486354a836e789abae790b8c3b21eeb","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE 'English');\n"}
@@ -88,6 +202,29 @@
 {"id":"expr-forms/language/property","sha256":"34991fd31038d3d284a93973551bbe31a3391e17bf5dfe9ead3d4f9611d35a02","source":"SELECT * FROM t WHERE CONTAINS(PROPERTY(c,'title'),'x',LANGUAGE 1033);\n"}
 {"id":"expr-forms/language/four","sha256":"1647bdcf32669412fb1fade5614d655dad6d5653c44af3dbebcc41e06f9aacc9","source":"SELECT * FROM t WHERE CONTAINS(c,'x',LANGUAGE 1033,1);\n"}
 {"id":"expr-forms/language/late","sha256":"70d4a3cfd76b973e24eb2c9bf3c6b7fda816a96b082362c02bd787638c1ce51c","source":"SELECT * FROM t WHERE CONTAINS(c,LANGUAGE 1033,'x');\n"}
+{"id":"expr-forms/set/left","sha256":"7b82bebbe19902dd8110e6be1e0554b7a96a0eb1b572dc10ee521d3ad865e61b","source":"(SELECT 1 UNION SELECT 2) EXCEPT SELECT 3;\n"}
+{"id":"expr-forms/set/right","sha256":"a555406b729812ca6264b10ddce22377b0d383791d3b5d28e38201e5ee92d19c","source":"SELECT 1 UNION (SELECT 2 EXCEPT SELECT 3);\n"}
+{"id":"expr-forms/set/both","sha256":"b257b2f2710c03a0da483a7a12e08f2cb6ca738386cb92df0023861c1ddba5f8","source":"(SELECT 1 UNION SELECT 2) EXCEPT (SELECT 3 INTERSECT SELECT 4);\n"}
+{"id":"expr-forms/set/outer","sha256":"66b47e8b9c46fb80fb49c0fe9a5e16fe64424e8769cf9f565bc38e9eada5a473","source":"(SELECT 1 UNION SELECT 2);\n"}
+{"id":"expr-forms/set/double","sha256":"d0ef57772f844784162d29819213d7c6500c35d8f65839dab19aa128f900a351","source":"((SELECT 1 UNION SELECT 2));\n"}
+{"id":"expr-forms/set/deep","sha256":"1da5198a2ea19c023003f374c7c5c9c9a143db94ded12d6ea96302f4e86fc989","source":"SELECT 1 UNION ((SELECT 2 EXCEPT SELECT 3) INTERSECT SELECT 4);\n"}
+{"id":"expr-forms/set/derived","sha256":"653cdc07a989dbd7f27f5acc71451902bf2e3368f0cdbcf5ddbd16e053755680","source":"SELECT * FROM (SELECT 1 AS x UNION (SELECT 2 EXCEPT SELECT 3)) AS t;\n"}
+{"id":"expr-forms/set/cte","sha256":"c758b322c7cec0a8806cf2206d1b48acbe33f77da26c263c9afafb3e35d54a57","source":"WITH c AS (SELECT 1 AS x UNION (SELECT 2 EXCEPT SELECT 3)) SELECT * FROM c;\n"}
+{"id":"expr-forms/set/insert","sha256":"4cac423ba3a156650a08457d23dc95f48cbe2b97bd168d67b8c3e5c65832f22a","source":"INSERT INTO t SELECT 1 UNION (SELECT 2 EXCEPT SELECT 3);\n"}
+{"id":"expr-forms/set/sort","sha256":"1b634491f654590745d33bae55401953c47b7f52f9272dc991a691c80bbd2e60","source":"SELECT 1 UNION (SELECT 2 EXCEPT SELECT 3) ORDER BY 1;\n"}
+{"id":"expr-forms/set/innerTop","sha256":"06e9f3cef88cb6b53f038dd47d27c2ce4a3ae29405a3265517b2f4b5657f94d6","source":"SELECT 1 UNION (SELECT TOP 1 2 UNION SELECT 3 ORDER BY 1);\n"}
+{"id":"expr-forms/set/innerSort","sha256":"544585ccfa7fd8c83fc4122f4ed44e7a683a7bb8f65ea4360964b20ec9374f7f","source":"SELECT 1 UNION (SELECT 2 UNION SELECT 3 ORDER BY 1);\n"}
+{"id":"expr-forms/set/branchTop","sha256":"3698ffe29712020097ee4bec7f4986b0169fa8ab9fc115c93d69e69c09e1e3bf","source":"SELECT 1 UNION (SELECT TOP 1 2 ORDER BY 1);\n"}
+{"id":"expr-forms/set/branchSort","sha256":"ae3616689668f213af26ecff687b75ae0fb607a1f6e5e8f41dc738a7dd7ceec7","source":"SELECT 1 UNION (SELECT 2 ORDER BY 1);\n"}
+{"id":"expr-forms/set/intoFirst","sha256":"f5c58eb7e40e7f9d51fdab49176a6ef1a60987628327ad4ef82007f57baaf0e2","source":"(SELECT 1 AS x INTO #t UNION SELECT 2) EXCEPT SELECT 3;\n"}
+{"id":"expr-forms/set/intoLater","sha256":"5c02b1be2785a03aabab56bb19510d7f7838b86aa93ed680d618944d60792dcb","source":"SELECT 1 UNION (SELECT 2 INTO #t UNION SELECT 3);\n"}
+{"id":"expr-forms/set/intoLast","sha256":"0d410703997d6115f57e4d1e4f382fee67d6052a519ad302f0aeb3d19201e938","source":"(SELECT 1 UNION SELECT 2) UNION SELECT 3 INTO #t;\n"}
+{"id":"expr-forms/set/allExcept","sha256":"7f387b67844bd31290e5d5cbd0803a4540d29d36035d623d3137da8532528c13","source":"SELECT 1 EXCEPT ALL (SELECT 2 UNION SELECT 3);\n"}
+{"id":"expr-forms/set/empty","sha256":"06c72f9689c752b132b490694e665600faf63b130892f2cb3a076c29f6d79f57","source":"SELECT 1 UNION ();\n"}
+{"id":"expr-forms/set/missing","sha256":"2265a28f80781ba8621acb06eb00601c2a8328fcd14715e02028f5f245b19f66","source":"SELECT 1 UNION (SELECT 2 EXCEPT);\n"}
+{"id":"expr-forms/set/with","sha256":"8ccd0cb5c416d959284481fb077aaf6e6179eeb0b8c6b2483937268a3153a5fd","source":"SELECT 1 UNION (WITH c AS (SELECT 2 AS x) SELECT x FROM c);\n"}
+{"id":"expr-forms/set/orderBefore","sha256":"373406d2895c736f698f608d942f2922617d0aa71ea4eba49b53e27b27ccadc5","source":"(SELECT 1 UNION SELECT 2 ORDER BY 1) EXCEPT SELECT 3;\n"}
+{"id":"expr-forms/set/offset","sha256":"77e40a228c1612014ded2b27471b8ebd099a9489f9cd6f6dbbeb044d080974e1","source":"SELECT 1 UNION (SELECT 2 UNION SELECT 3 ORDER BY 1 OFFSET 0 ROWS);\n"}
 {"id":"expr-forms/static/hierarchy","sha256":"49f8379ba4b44bc7b12e86af8c80fa2ad3296fb9552549acf5f7bd41886d5d46","source":"SELECT hierarchyid::GetRoot();\n"}
 {"id":"expr-forms/static/geometry","sha256":"7515bf559fc24994670ba686546d62515fde7cfe099dae4a7bb09e898e21c448","source":"SELECT geometry::Point(1,2,0);\n"}
 {"id":"expr-forms/static/schema","sha256":"9cd5850d007347602155555a062f7d6d90e770cde3f680ce00e7a6dbe390b91f","source":"SELECT dbo.t::f(1);\n"}
@@ -110,6 +247,39 @@
 {"id":"expr-forms/static/comparison","sha256":"376e0292733e315aadad91cc1cf7ff7394b8e2f8bdbc7c5c1754968efbd6570a","source":"SELECT dbo.t::f(1) = 1;\n"}
 {"id":"expr-forms/static/binary","sha256":"911291c8c0f6391e0d06cc6125bb35d9f50fb7f2cb8ebe07c7d68e165d72817e","source":"SELECT 1 + dbo.t::f(1);\n"}
 {"id":"expr-forms/static/cast","sha256":"65736a5c8be1806d5cfc1a3d19c4312bcbaa4021fbbed9f2657881cd506852fb","source":"SELECT CAST(dbo.t::f(1) AS int);\n"}
+{"id":"expr-forms/comparison/unicode-0","sha256":"686b24ddd3fa90c7721db163c76b8ec6c1067febd9d6940aab86df50cd8a4e03","source":"SELECT 1 WHERE 1 !\u0000= 2;\n"}
+{"id":"expr-forms/comparison/unicode-1","sha256":"6f7b3d96b6863327e0e41b6b2a45eeec5e7ebb06f935ec9c4a3617a8a3d7fd39","source":"SELECT 1 WHERE 1 !\u0001= 2;\n"}
+{"id":"expr-forms/comparison/unicode-8","sha256":"d0e354699b3058b6ad7b564f8d6fd769d59f77a127113a3442b3f84ebc0e057d","source":"SELECT 1 WHERE 1 !\b= 2;\n"}
+{"id":"expr-forms/comparison/unicode-9","sha256":"b47706ccd9393108cdd27a76f602593ed0bb39990316c399f3fe6f9d36dde3ea","source":"SELECT 1 WHERE 1 !\t= 2;\n"}
+{"id":"expr-forms/comparison/unicode-a","sha256":"c04edbd99fe1f6ace4b102c5be4efac94b0549b316d29cd352cd1e227a4cb183","source":"SELECT 1 WHERE 1 !\n= 2;\n"}
+{"id":"expr-forms/comparison/unicode-b","sha256":"98acc06d4143e277553e643f54d1d34a85dcaca6222e869c0d7cfe3fbea90e6a","source":"SELECT 1 WHERE 1 !\u000b= 2;\n"}
+{"id":"expr-forms/comparison/unicode-c","sha256":"f20b53733380ad5cfa071f9573c4904885259c3c785f3e5cc0105126cfa37a18","source":"SELECT 1 WHERE 1 !\f= 2;\n"}
+{"id":"expr-forms/comparison/unicode-d","sha256":"0178c612114661c061bf31653c3dc2b549632a088e5214cb6ea0290066ac3c88","source":"SELECT 1 WHERE 1 !\r= 2;\n"}
+{"id":"expr-forms/comparison/unicode-1c","sha256":"21dd84b042c71c73904ad07974a373e579500c4a42b8f5cfac719db1861ee657","source":"SELECT 1 WHERE 1 !\u001c= 2;\n"}
+{"id":"expr-forms/comparison/unicode-1f","sha256":"ea763d44b2aff9123f65c27eb562d6e416babdd1990dd1e87a21401eb59465fd","source":"SELECT 1 WHERE 1 !\u001f= 2;\n"}
+{"id":"expr-forms/comparison/unicode-20","sha256":"512daffbdd93e452f2b59c4d3ca4061b644a363cc9f91d1936357080347abcb2","source":"SELECT 1 WHERE 1 ! = 2;\n"}
+{"id":"expr-forms/comparison/unicode-85","sha256":"71f59e9c2933f334bba192640343e906d41738dd9d5ad7575b10728eb2c1aa36","source":"SELECT 1 WHERE 1 != 2;\n"}
+{"id":"expr-forms/comparison/unicode-a0","sha256":"4057a6f972268eea04b703adc459ca46e91b9bc37805dc0fea55f6ed34b27e77","source":"SELECT 1 WHERE 1 ! = 2;\n"}
+{"id":"expr-forms/comparison/unicode-1680","sha256":"9ab4c9904c12ae5f297b1e80d89168405680547b90b391d0939a83d88357d4b9","source":"SELECT 1 WHERE 1 ! = 2;\n"}
+{"id":"expr-forms/comparison/unicode-180e","sha256":"6bc3fdd2ead65597662f117df02e91cfea942f50e81101c6f73bd65470bf141d","source":"SELECT 1 WHERE 1 !᠎= 2;\n"}
+{"id":"expr-forms/comparison/unicode-2000","sha256":"cc96f988aa74bce19f606e93ba3c1d6cf4307c25143692936ea4603e176385cd","source":"SELECT 1 WHERE 1 ! = 2;\n"}
+{"id":"expr-forms/comparison/unicode-2001","sha256":"b266c37ae7deccad9599c415dd27ce0b652fc0e6673125a6a06ce628064a28ca","source":"SELECT 1 WHERE 1 ! = 2;\n"}
+{"id":"expr-forms/comparison/unicode-2002","sha256":"e7210dba308eab48df238a0f06c2d09b38c090303b9573b2716bb67553b1c4ad","source":"SELECT 1 WHERE 1 ! = 2;\n"}
+{"id":"expr-forms/comparison/unicode-2003","sha256":"2aeb26a862f9ab31a391728e714ed3d632ea16f99029b0f7731256f35823a1f8","source":"SELECT 1 WHERE 1 ! = 2;\n"}
+{"id":"expr-forms/comparison/unicode-2004","sha256":"88f5cfbae42900563a678ec6305cd6867bd366d2f767a17d1db06a8b189dd519","source":"SELECT 1 WHERE 1 ! = 2;\n"}
+{"id":"expr-forms/comparison/unicode-2005","sha256":"8985d33d4d40b0c216912a61fc7ec6ba16693037a4566c157f7d5bde9607e254","source":"SELECT 1 WHERE 1 ! = 2;\n"}
+{"id":"expr-forms/comparison/unicode-2006","sha256":"43854ed4583bb25eb71088846668efec503ae729062ce38144c14b8817042542","source":"SELECT 1 WHERE 1 ! = 2;\n"}
+{"id":"expr-forms/comparison/unicode-2007","sha256":"4fca8166e58ac99c919bfb84935bce19f693f7cc0f20ce24aa6ed875309102dc","source":"SELECT 1 WHERE 1 ! = 2;\n"}
+{"id":"expr-forms/comparison/unicode-2008","sha256":"8011e7a2d14a15da43d1e586c37b36c85cf2f730948f5d46d222cc3028a196bb","source":"SELECT 1 WHERE 1 ! = 2;\n"}
+{"id":"expr-forms/comparison/unicode-2009","sha256":"da261bc486354dd6c02de7c2176273ba32790d373025d81d55f81bf9f6933b54","source":"SELECT 1 WHERE 1 ! = 2;\n"}
+{"id":"expr-forms/comparison/unicode-200a","sha256":"8a8a15dbd97293f40d21f3b1d0c37578e00782a0e44fb9ae902f6bd242710a8f","source":"SELECT 1 WHERE 1 ! = 2;\n"}
+{"id":"expr-forms/comparison/unicode-200b","sha256":"dceb4768a06987bb1bd6d284a2bb94ba88e7db297765a30d17e19ef2958797c0","source":"SELECT 1 WHERE 1 !​= 2;\n"}
+{"id":"expr-forms/comparison/unicode-2028","sha256":"0046f660afb045613d32b09d26dba2200817c72c1447f2b1473fe4d706ef006f","source":"SELECT 1 WHERE 1 ! = 2;\n"}
+{"id":"expr-forms/comparison/unicode-2029","sha256":"b71b19b2eac25c2dc27d04078c7f0ca6619faeeba20067268d26d58971d6488a","source":"SELECT 1 WHERE 1 ! = 2;\n"}
+{"id":"expr-forms/comparison/unicode-202f","sha256":"ca9a0c8c5fb8c13d9c82e2a0570f5c779811defd6dcd6e799921f83678ad190d","source":"SELECT 1 WHERE 1 ! = 2;\n"}
+{"id":"expr-forms/comparison/unicode-205f","sha256":"954adcc14b457b629a5b5872f0cbb07b0262cff282c417de4f389a1c67d2df3f","source":"SELECT 1 WHERE 1 ! = 2;\n"}
+{"id":"expr-forms/comparison/unicode-3000","sha256":"3e511a5be42d3966b101cbec71154396e57aa059f160b21cb195514ccdae90fa","source":"SELECT 1 WHERE 1 !　= 2;\n"}
+{"id":"expr-forms/comparison/unicode-feff","sha256":"60a2bfdadd24f0c4a91fcde1ded64b3003c85bf292264e46a2f9cb95e5cc00ba","source":"SELECT 1 WHERE 1 !﻿= 2;\n"}
 {"id":"expr-forms/language/contains-declared","sha256":"18eaf364080354f79544aa03015093415118646812720a39b25c4043a627cedf","source":"DECLARE @lang int; SELECT * FROM t WHERE CONTAINS(c,'x', LANGUAGE @lang);\n"}
 {"id":"expr-forms/language/contains-quoted-off","sha256":"49d2f3a709962ca4ec2ebb9e0bdbb5a238fa586de28fadcfc4384d7688b5c24a","source":"SET QUOTED_IDENTIFIER OFF; SELECT * FROM t WHERE CONTAINS(c,'x', LANGUAGE \"English\");\n"}
 {"id":"expr-forms/language/contains-system","sha256":"450d6e8249a1bab5abe237ddfd46ccfd08cea7812d22ec432b90c740286f7c6c","source":"SELECT * FROM t WHERE CONTAINS(c,'x', LANGUAGE @@LANGID);\n"}
@@ -154,6 +324,28 @@
 {"id":"expr-forms/static/extra-systemType","sha256":"1bdd27f8aa1ff797dc121985b59afb9a207bce540e4ccffa11563f46760fb487","source":"SELECT int::f();\n"}
 {"id":"expr-forms/static/extra-quotedType","sha256":"2de658b8754d9b18a8c0b260bbeb4bd42c9932fa8450525f678bb36c8f07d592","source":"SELECT [geometry]::[Null];\n"}
 {"id":"expr-forms/static/extra-dotted","sha256":"1e7281dc976f0c9bc3fbaf855f6585267d9dbed941d4e5496fa9d1b613173182","source":"SELECT geometry::Point(1,2,0).STAsText();\n"}
+{"id":"expr-forms/comparison/unicode-2","sha256":"2e9991f4aaea13fe8115bccb863f84263d83e7a6de485d7298ceebd4d59c2b3e","source":"SELECT 1 WHERE 1 !\u0002= 2;\n"}
+{"id":"expr-forms/comparison/unicode-3","sha256":"4bfa62268fdcd500a3673849e740445721dd49374e0ec7e95106d8857bf64165","source":"SELECT 1 WHERE 1 !\u0003= 2;\n"}
+{"id":"expr-forms/comparison/unicode-4","sha256":"a02ea8ef43e9a1a165b48857c898da1abe19af3a44b0ffd44967d8af3ea60ff5","source":"SELECT 1 WHERE 1 !\u0004= 2;\n"}
+{"id":"expr-forms/comparison/unicode-5","sha256":"5a37028b9e667be768b289cb83c84fb5869fd7823dab6d90f2d27c2b83c2061e","source":"SELECT 1 WHERE 1 !\u0005= 2;\n"}
+{"id":"expr-forms/comparison/unicode-6","sha256":"977370e050157b498071f9b5d0685d26c918931492e8d2f3ad8185d3192ab3a3","source":"SELECT 1 WHERE 1 !\u0006= 2;\n"}
+{"id":"expr-forms/comparison/unicode-7","sha256":"26a18e5adba2947d968a8455df4661c6076ce73326d90826545d00a8f3885866","source":"SELECT 1 WHERE 1 !\u0007= 2;\n"}
+{"id":"expr-forms/comparison/unicode-e","sha256":"003c815e22541d6cebca1921b8dc5bdcb1a6c4958e56a5ea4678dc3d08c19404","source":"SELECT 1 WHERE 1 !\u000e= 2;\n"}
+{"id":"expr-forms/comparison/unicode-f","sha256":"b0b66a27fc80b8f2921f9eff14eb81643e12de365fc0db9a0547b56d62bb1d8f","source":"SELECT 1 WHERE 1 !\u000f= 2;\n"}
+{"id":"expr-forms/comparison/unicode-10","sha256":"2d5a42db2cbfc35fa4e5b33a8df7639d3534c333f71303259262c49e28c00950","source":"SELECT 1 WHERE 1 !\u0010= 2;\n"}
+{"id":"expr-forms/comparison/unicode-11","sha256":"b41073cac89307f2ce1c46f8b89d8437ac8154b56ef227b3d8e39d0012894a3e","source":"SELECT 1 WHERE 1 !\u0011= 2;\n"}
+{"id":"expr-forms/comparison/unicode-12","sha256":"249aaed771b779147d1ed55fcb4b87fecd73390ef1b1eda6518ee45fe4254ebf","source":"SELECT 1 WHERE 1 !\u0012= 2;\n"}
+{"id":"expr-forms/comparison/unicode-13","sha256":"a3ba882843255d34afba469f00ca0b88c446e3fa8094ed3d4064a1e347da92dc","source":"SELECT 1 WHERE 1 !\u0013= 2;\n"}
+{"id":"expr-forms/comparison/unicode-14","sha256":"70dc0717c6cf67443ce6109f373b6ff0be4a88fcaefee5483bdbf9493d051216","source":"SELECT 1 WHERE 1 !\u0014= 2;\n"}
+{"id":"expr-forms/comparison/unicode-15","sha256":"6c9bd70e62f62e7677e656bb9d51e8c00fdc9dac5eb12057079bb6d9f2565b7b","source":"SELECT 1 WHERE 1 !\u0015= 2;\n"}
+{"id":"expr-forms/comparison/unicode-16","sha256":"ff4ef4392381ba6e1f64626d1aeb24a9c95a41bdebf13ec427f27b4a3074a772","source":"SELECT 1 WHERE 1 !\u0016= 2;\n"}
+{"id":"expr-forms/comparison/unicode-17","sha256":"509ba072be77e392dff3610b33e1ca7ce8dbe76784314a87616ae5d8654d7c03","source":"SELECT 1 WHERE 1 !\u0017= 2;\n"}
+{"id":"expr-forms/comparison/unicode-18","sha256":"fed4f7d9bb03e56c498186b90a034ea6bc26016e827b5fb2bd0a9e4f6829d902","source":"SELECT 1 WHERE 1 !\u0018= 2;\n"}
+{"id":"expr-forms/comparison/unicode-19","sha256":"8e3db90984ecd7c80a3fe086cdbc30eac7c1b58fc6f339641efcdce2a3a84964","source":"SELECT 1 WHERE 1 !\u0019= 2;\n"}
+{"id":"expr-forms/comparison/unicode-1a","sha256":"5a7c24adddf3ad01bba0909243b115666fd2b753f8b7826df5305a8f06b6e783","source":"SELECT 1 WHERE 1 !\u001a= 2;\n"}
+{"id":"expr-forms/comparison/unicode-1b","sha256":"7842126a7a8c5f28bc713a8245dc63ae76efca60dc004ef422e7a0d6bcfa8382","source":"SELECT 1 WHERE 1 !\u001b= 2;\n"}
+{"id":"expr-forms/comparison/unicode-1d","sha256":"23891dc3fe772b0df6d2c171d34789498b37f5b895ad544df347b3b6c418561d","source":"SELECT 1 WHERE 1 !\u001d= 2;\n"}
+{"id":"expr-forms/comparison/unicode-1e","sha256":"0f7ae6b57148d224067ebf98c2f10428cf4ed53d06c12ecd8f472636ef5cb1bd","source":"SELECT 1 WHERE 1 !\u001e= 2;\n"}
 {"id":"expr-forms/language/qi-comment","sha256":"e4ae9399324ddfbf436c00956da0a17dda380fc21b9c0764721a68f70283985c","source":"SET/*a*/QUOTED_IDENTIFIER/*b*/OFF; SELECT * FROM t WHERE CONTAINS(c,'x',LANGUAGE \"English\");\n"}
 {"id":"expr-forms/language/qi-options","sha256":"4ce75a71dfd4697d497850713ae92ce1d33824cca14dd53c0138cbf42289192c","source":"SET ANSI_NULLS, QUOTED_IDENTIFIER OFF; SELECT * FROM t WHERE CONTAINS(c,'x',LANGUAGE \"English\");\n"}
 {"id":"expr-forms/language/qi-reset","sha256":"2387d45808065f26ea4401a45323d5d6ad59e35c6c30ce400c006f457b2ac2e4","source":"SET QUOTED_IDENTIFIER OFF; SET QUOTED_IDENTIFIER ON; SELECT * FROM t WHERE CONTAINS(c,'x',LANGUAGE \"English\");\n"}
@@ -162,3 +354,9 @@
 {"id":"expr-forms/static/nullQualified","sha256":"8d3f650db6f499970d9c0b8d5b67fa02339905dfa040e348d5e59ddcf533ce9d","source":"SELECT dbo.t::Null;\n"}
 {"id":"expr-forms/static/propertyParen","sha256":"cda21bc0f9d614830023f5143f4bf669f2673b5a775c862a67e7068a23a13800","source":"SELECT dbo.t::p(1).x(2).y(3);\n"}
 {"id":"expr-forms/static/ordinaryChain","sha256":"89d9eded3fbad1515cab03943ccd341889fd1b119e12c90d4339f0a20b62c086","source":"SELECT dbo.f(1).x(2);\n"}
+{"id":"expr-forms/comparison/mixed-bangeq","sha256":"ad39131b8e2c6fe9ccdb5fdfc46d44fd6cdcc6a75a60c7bfa20c5e97b71f058e","source":"SELECT 1 WHERE 1 !​/* a /* b */ c */-- d\r\n= 2;\n"}
+{"id":"expr-forms/comparison/mixed-lteq","sha256":"87274ac25c7f8b38412f45b4ab09c54e642df3d8ccf1182844621f1587e6a131","source":"SELECT 1 WHERE 1 <​/* a /* b */ c */-- d\r\n= 2;\n"}
+{"id":"expr-forms/comparison/mixed-gteq","sha256":"4ce3612f3a98b0feb5605687525b33fd5b59fdf2c376b8c56b6ff1f642fae782","source":"SELECT 1 WHERE 1 >​/* a /* b */ c */-- d\r\n= 2;\n"}
+{"id":"expr-forms/comparison/mixed-ltgt","sha256":"8ada76321ad88f09bf9c49827a2f1038e5872c3f827a59ded2e8df06f9b7ffd7","source":"SELECT 1 WHERE 1 <​/* a /* b */ c */-- d\r\n> 2;\n"}
+{"id":"expr-forms/comparison/mixed-banglt","sha256":"fc1a1d76484119cb464b5c50dbab171257557625b5cd1399483f8f3ffc67a015","source":"SELECT 1 WHERE 1 !​/* a /* b */ c */-- d\r\n< 2;\n"}
+{"id":"expr-forms/comparison/mixed-banggt","sha256":"4ee7c8b8f03e07d4013cfb53f4a810345f553184bf2cdfbbab4563525ed0afd7","source":"SELECT 1 WHERE 1 !​/* a /* b */ c */-- d\r\n> 2;\n"}
