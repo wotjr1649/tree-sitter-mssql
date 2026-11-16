@@ -76,6 +76,15 @@ All following evidence is query-forms on LocalDB 17.0.1000.7, levels 100–170.
 
 | query-native-null-input | native functions | RETURNS NULL ON NULL INPUT is unsupported; CALLED ON NULL INPUT is accepted | query-forms/function-native-returns-null, kit B04-r052/r089; 10794 |
 
+BACKUP and RESTORE evidence is the backup-restore probe set on LocalDB 17.0.1000.7, levels 100–170 (666 cases). Repeated and conflicting options are accepted there (`backup-duplicate-*`, `backup-init-noinit`, `restore-recovery-norecovery`), so these rules check names and shapes, not uniqueness.
+
+| Rule | Scope | Check | Evidence |
+| --- | --- | --- | --- |
+| backup-restore-option | BACKUP/RESTORE WITH | the option belongs to the statement (BACKUP and RESTORE each have their own list); flags take no value, value options need one; values are a string, an integer or a variable; RESTORE FILE is a number or variable; AFTER only after STOPATMARK/STOPBEFOREMARK; MOVE only in RESTORE, with strings or variables; COMPRESSION (ALGORITHM [, LEVEL]), ENCRYPTION (ALGORITHM, SERVER ...) and FILESTREAM (DIRECTORY_NAME) keys and values | `opt-*` (every name bare, `= 1`, `= 'x'` in both statements), `value-*`, `compression-*`, `encryption-*`, `filestream-*`, `move-*`, `mark-*`; 155/153/102/156/1080 |
+| backup-restore-device | TO / MIRROR TO / FROM, BACKUP GROUP | a device is a logical name or variable, or DISK/TAPE/URL/DATABASE_SNAPSHOT/VIRTUAL_DEVICE = string or variable; GROUP takes no variables | `device-*`, `backup-device-*`, `restore-from-*`, `backup-group-var`; 155/156/102 |
+| backup-restore-file | file list after the database name | FILE/FILEGROUP/PAGE = string or variable, or bare READ_WRITE_FILEGROUPS (not in RESTORE LOG) | `backup-db-*`, `restore-db-*`, `restore-log-rwfg`; 102/156 |
+| backup-certificate-options | BACKUP CERTIFICATE WITH | one FORMAT = string; the PRIVATE KEY lists together need FILE and take FILE, ALGORITHM (strings) and ENCRYPTION/DECRYPTION BY PASSWORD = string once each | `cert-*`, `backup-cert-*`; 102 |
+
 ## Consequences
 
 - Grammar changes for option lists stay within the cost budget (ADR-0002 §6), and public node shapes stay stable.

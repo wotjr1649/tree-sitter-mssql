@@ -32,12 +32,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Parse BACKUP and RESTORE: file lists, MIRROR TO, BACKUP SERVER/GROUP, certificate, master, service master and symmetric key backups and restores, the metadata RESTOREs (FILELISTONLY, HEADERONLY, LABELONLY, VERIFYONLY, REWINDONLY) and their WITH options (MOVE ... TO, STOPATMARK ... AFTER, COMPRESSION/ENCRYPTION/FILESTREAM lists, signed numbers); tree-check checks option names, values, devices and files against the engine. `restore` is now a statement keyword, so a label named `restore` no longer parses (SQL Server rejects it too).
 - Parse EXTERNAL object, FULLTEXT and TCP ENDPOINT DDL sub-forms; enforce engine-verified option sets in tree-check without changing existing clean trees.
 - Parse oracle-verified query/DML/cursor/EXEC and native-module sub-forms while preserving existing clean trees; keep parser-cost growth below 10%.
 - Parse table/column/constraint and partitioned index DDL verified by the SQL Server oracle; preserve existing clean trees.
 
 ### Added
 
+- Add `restore_statement` and 7 keyword node kinds (`keyword_restore`, `keyword_mirror`, `keyword_filelistonly`, `keyword_headeronly`, `keyword_labelonly`, `keyword_verifyonly`, `keyword_rewindonly`); `backup_statement` and `option` gain child kinds (`option` also takes a `unary_expression` value). No node kind or field is removed, and the existing BACKUP trees keep their shape.
+- Add 666 backup-restore probes (LocalDB 17.0.1000.7, levels 100-170) and 262 corpus cases.
 - Add 174 query-form probes/corpus cases, local statement constraints and incremental edit coverage; existing node kinds and fields remain.
 - Add `generated_always`, `selective_xml_path` and 20 keyword node kinds; no existing node kinds or fields are removed.
 - Database file/filegroup, nested database SET, mirroring/HADR, database encryption-key and audit-specification DDL; availability-group replica/listener and server-configuration forms.

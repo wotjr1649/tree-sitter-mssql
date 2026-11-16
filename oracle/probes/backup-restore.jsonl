@@ -1,0 +1,666 @@
+{"id":"backup-restore/backup-db-minimal","sha256":"650f5ac2db81c4caee613b1e3c81a59bd4b3550522aa2698c7af7a3a9e6a9bd7","source":"BACKUP DATABASE d TO DISK = 'a.bak';\n"}
+{"id":"backup-restore/backup-db-var-device","sha256":"3ba6e5581344d31e5bcf8c68d6612166fb7ab0f254a4dad2667f441f09ae0815","source":"DECLARE @db nvarchar(260) = N'x', @dev nvarchar(260) = N'x';\nBACKUP DATABASE @db TO @dev;\n"}
+{"id":"backup-restore/backup-db-string-name","sha256":"d2c43b083e5b613e6bceb7d2feb901eeb5141f0202e5268efa2d9544edcea906","source":"BACKUP DATABASE 'd' TO DISK = 'a.bak';\n"}
+{"id":"backup-restore/backup-db-no-to","sha256":"2b66777aeccbbd76329afae949df4872bb4322b1bcd778de4e154cd48c6f35de","source":"BACKUP DATABASE d;\n"}
+{"id":"backup-restore/backup-db-to-empty","sha256":"b388f75e1c56a3a95883ba99a36c218142bd8027215cfba1cdeeca5b5cc86be7","source":"BACKUP DATABASE d TO;\n"}
+{"id":"backup-restore/backup-mirror-two","sha256":"f97811db25b8d25cae5f30c561b7bd96839b96df28d83a9ce46f670277d9a9a8","source":"BACKUP DATABASE d TO DISK = 'a' MIRROR TO DISK = 'b' MIRROR TO DISK = 'c' WITH FORMAT;\n"}
+{"id":"backup-restore/backup-mirror-no-format","sha256":"34a195559a8b439f31ca764a22f119eab8313bd2313885a98b3f0f0b26cfbfc4","source":"BACKUP DATABASE d TO DISK = 'a' MIRROR TO DISK = 'b';\n"}
+{"id":"backup-restore/backup-mirror-empty","sha256":"c4733ad2bce29ff9a29ab2a2b70db8e9d20b3a216bd652b90bd3bd3a2c04fbf0","source":"BACKUP DATABASE d TO DISK = 'a' MIRROR TO WITH FORMAT;\n"}
+{"id":"backup-restore/backup-mirror-no-to","sha256":"a111d9836fbe6820c7dbd9135a68c29c013aa5c71b9bed6fbcdc5ad8873ba68d","source":"BACKUP DATABASE d TO DISK = 'a' MIRROR DISK = 'b' WITH FORMAT;\n"}
+{"id":"backup-restore/backup-log-files","sha256":"30214e2cc98708c280609814105ec624657eae2cb9be03b03298bc2c9baa5946","source":"BACKUP LOG d FILE = 'f' TO DISK = 'a';\n"}
+{"id":"backup-restore/backup-db-page","sha256":"3a883d09bdd7fa809a7d3d39d45f5ed9e8a26db0e565293079707bb440fec63a","source":"BACKUP DATABASE d PAGE = '1:57' TO DISK = 'a';\n"}
+{"id":"backup-restore/backup-db-file-bare","sha256":"808574a5e5cfecb0a2c21d8de66196afb9e857656cf0fdc9d19a5a7e48b0d20e","source":"BACKUP DATABASE d FILE TO DISK = 'a';\n"}
+{"id":"backup-restore/backup-db-unknown-file-item","sha256":"618b15435b0b84d48f2eb37d6fd0fca3d87813ba7fe7b5db69980cff62d3ceb4","source":"BACKUP DATABASE d FOO = 'f' TO DISK = 'a';\n"}
+{"id":"backup-restore/backup-db-rwfg-value","sha256":"7d0329f324005b60940d577a3e47e42e4f3484d5e579563652d6c151776eb939","source":"BACKUP DATABASE d READ_WRITE_FILEGROUPS = 'x' TO DISK = 'a';\n"}
+{"id":"backup-restore/backup-device-no-equals","sha256":"62c57e9236bf131aed137246d0fcbee822e8a868bf79973e298925c54b74ac27","source":"BACKUP DATABASE d TO DISK 'a';\n"}
+{"id":"backup-restore/backup-device-unknown-type","sha256":"200ed0c8fe9b76dbe1897980b88feaf4de833c0ab48f21e39c1c5dcd45671be7","source":"BACKUP DATABASE d TO FOO = 'a';\n"}
+{"id":"backup-restore/backup-device-expression","sha256":"cb7bad433466fc4f4104cd5a7a0550fe9c3e48d0a030a30a077ccf36fa6c6467","source":"BACKUP DATABASE d TO DISK = 'a' + 'b';\n"}
+{"id":"backup-restore/backup-stats-bare","sha256":"61f99833b89a02ff524b41bb03b09654707bb06f021d13da3a45b3a7ec2e3fa3","source":"BACKUP DATABASE d TO DISK = 'a' WITH STATS;\n"}
+{"id":"backup-restore/backup-stats-var","sha256":"106acbced3a514990f180c47f9315d924e535fe01419fdc551299c9ac376ff51","source":"DECLARE @s int = 1, @t nvarchar(260) = N'x';\nBACKUP DATABASE d TO DISK = 'a' WITH STATS = @s, DESCRIPTION = @t;\n"}
+{"id":"backup-restore/backup-stats-expression","sha256":"1f3efd9069299a15bcbc32a841461f3280fc90bd7a746a3f3af0e35bc78a9af7","source":"BACKUP DATABASE d TO DISK = 'a' WITH STATS = 5 + 5;\n"}
+{"id":"backup-restore/backup-unknown-option","sha256":"05c531eead0959460196e4ff910f56db67764628451b94a95b4a091cf93af824","source":"BACKUP DATABASE d TO DISK = 'a' WITH FOO;\n"}
+{"id":"backup-restore/backup-unknown-option-value","sha256":"fb530551fa5e9730f1e4160785c61d0a83f1788420b3068dd6eddcfe268ea014","source":"BACKUP DATABASE d TO DISK = 'a' WITH FOO = 1;\n"}
+{"id":"backup-restore/backup-flag-with-value","sha256":"e41b3f6ed398f0f1a4afd9780977e198e21a2b0e7f1ea8ac2be098386a200f01","source":"BACKUP DATABASE d TO DISK = 'a' WITH INIT = 1;\n"}
+{"id":"backup-restore/backup-name-bare","sha256":"a8f61812ccd9833cc6c075b53989bcdf13699f488e078f7db513092f9a2a17df","source":"BACKUP DATABASE d TO DISK = 'a' WITH NAME;\n"}
+{"id":"backup-restore/backup-credential-bare","sha256":"a2cf8aa935fc9da4bb41664c0f95b927109b663a8c8baf5b8cb3ab09450c12a1","source":"BACKUP DATABASE d TO URL = 'https://x/y.bak' WITH CREDENTIAL;\n"}
+{"id":"backup-restore/backup-credential-value","sha256":"a1b9996bae7ca75fcb28f98c191d5967370322cd395c41ff7d20ef0461a42164","source":"BACKUP DATABASE d TO URL = 'https://x/y.bak' WITH CREDENTIAL = 'c';\n"}
+{"id":"backup-restore/backup-duplicate-flag","sha256":"a889a456d7d2f07d92e3b0fbed61aded641c2ba74faa4075f25dea21ffede41b","source":"BACKUP DATABASE d TO DISK = 'a' WITH INIT, INIT;\n"}
+{"id":"backup-restore/backup-duplicate-value","sha256":"347c6c4ab9feb147a9d213176f832cc46a421e07fa8ef30f569de408ec3d3902","source":"BACKUP DATABASE d TO DISK = 'a' WITH NAME = 'a', NAME = 'b';\n"}
+{"id":"backup-restore/backup-init-noinit","sha256":"65f632d7e5f509cbaf498babcdc04ced4149eb30122728b7eea0d3916ed751c6","source":"BACKUP DATABASE d TO DISK = 'a' WITH INIT, NOINIT;\n"}
+{"id":"backup-restore/backup-compression-bare-list","sha256":"05eb83e4b106e8b67d631212b311fb29ea89bbe27973a50dc366baa665bba0e6","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (ALGORITHM = ZSTD);\n"}
+{"id":"backup-restore/backup-compression-unknown-key","sha256":"50f8c4a1190cba3414796d29b46a33ae310eb44fbd23f0d1e99cac9c6c784489","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (FOO = 1);\n"}
+{"id":"backup-restore/backup-compression-equals","sha256":"fbe6e5d94289d263fd1db65226c0dd1c47671faf99b9546609f12ae07a8fc05f","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION = ON;\n"}
+{"id":"backup-restore/backup-encryption-bare","sha256":"dc877f8350e2afcaceb0a9c9cfb120409e7df852104f9d97cc5803dab1ded125","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION;\n"}
+{"id":"backup-restore/backup-encryption-no-server","sha256":"19f7e67b40052c02bf8e90290b80d3c6b55a7ee58b279b47a4f93c3fa6224ed9","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_256, CERTIFICATE = c);\n"}
+{"id":"backup-restore/backup-encryption-algorithm-only","sha256":"b98e5d33715bfab06a284ef728f72adb62446a41171e5f0644f200006601abe9","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_256);\n"}
+{"id":"backup-restore/backup-encryption-server-only","sha256":"700fae2c7b9ff5f5d88a688b5aa3e60cab6d7a7de9dbc6519f8772a4c59d6db8","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (SERVER CERTIFICATE = c);\n"}
+{"id":"backup-restore/backup-encryption-both-servers","sha256":"27b16996ec66ee4bf218d8950cffcd8e5a58ce8a767fd573aba94c1d538ea522","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_256, SERVER CERTIFICATE = c, SERVER ASYMMETRIC KEY = k);\n"}
+{"id":"backup-restore/backup-encryption-server-first","sha256":"2522cb6d24ff6ef204f3e45fd310c14830b93cda6ef7d125451c8f8958868974","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (SERVER CERTIFICATE = c, ALGORITHM = AES_256);\n"}
+{"id":"backup-restore/backup-encryption-server-string","sha256":"de581233fd1ccf5b9b64837a9cca601ad0ff0dde7ca48a43bae2fbc45da231ad","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_256, SERVER CERTIFICATE = 'c');\n"}
+{"id":"backup-restore/backup-encryption-server-symmetric","sha256":"09d465e0eb8f59bd604c74edfb8a7cdd51fca1b202e8e7d73cc9211877fa31ed","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_256, SERVER SYMMETRIC KEY = k);\n"}
+{"id":"backup-restore/backup-move","sha256":"f23bf04f95ce378fe6671dbe714b7aae56b0792ff1dffe9a3cd20565d0921151","source":"BACKUP DATABASE d TO DISK = 'a' WITH MOVE 'x' TO 'y';\n"}
+{"id":"backup-restore/backup-stopat","sha256":"3918f46678892805dfd4df8100b819f75f03f377add5da814b651d0f950e03ba","source":"BACKUP LOG d TO DISK = 'a' WITH STOPAT = '2024-01-01';\n"}
+{"id":"backup-restore/backup-standby-var","sha256":"7950f0c9b7169c01d4a51f91e04a3e921f2491d33e25554ccf7111ada7b7ab4a","source":"DECLARE @u nvarchar(260) = N'x';\nBACKUP LOG d TO DISK = 'a' WITH STANDBY = @u;\n"}
+{"id":"backup-restore/backup-password","sha256":"ea1b4cdb3b9d5482cd71d20e6a74de783ad66a872d88f93d4d1fe5d2447fc24d","source":"DECLARE @m nvarchar(260) = N'x';\nBACKUP DATABASE d TO DISK = 'a' WITH PASSWORD = 'p', MEDIAPASSWORD = @m;\n"}
+{"id":"backup-restore/backup-filestream-option","sha256":"ae91d63876a07ab85be551725a138d51c0a03825173ec26e0339a5e8091cb3b2","source":"BACKUP DATABASE d TO DISK = 'a' WITH FILESTREAM (DIRECTORY_NAME = 'x');\n"}
+{"id":"backup-restore/backup-server-minimal","sha256":"09fca90596658daa0cce4e994213e9e3a393d84cfe9096e6d4ae3b87a1e41118","source":"BACKUP SERVER TO DISK = 'a';\n"}
+{"id":"backup-restore/backup-server-name","sha256":"fefe5edddc77b773a8c20389a8799864275809dc0563455570d9d1ef8c599247","source":"BACKUP SERVER s TO DISK = 'a';\n"}
+{"id":"backup-restore/backup-server-files","sha256":"6e04932439cca4a6a9ae8690b78d5738bf402c2c83ed76baaea874eec0d2a60e","source":"BACKUP SERVER FILE = 'x' TO DISK = 'a';\n"}
+{"id":"backup-restore/backup-group-single","sha256":"836c525f13ed9da37dc30ff86d2fba84f2e458aa403ce11d8a06aeed821d9b52","source":"BACKUP GROUP d TO DISK = 'a' WITH METADATA_ONLY;\n"}
+{"id":"backup-restore/backup-group-empty","sha256":"8774a8426b99831c265dd9b5956a7d3439f7c77ddbe011a319410cb4c14ab676","source":"BACKUP GROUP TO DISK = 'a';\n"}
+{"id":"backup-restore/backup-group-var","sha256":"e8d0898eabe5cd5a9f9cbc2a23beedb8718102b8b9a3dc66cd6cae156c22c1d4","source":"DECLARE @a nvarchar(260) = N'x', @b nvarchar(260) = N'x';\nBACKUP GROUP @a, @b TO DISK = 'a';\n"}
+{"id":"backup-restore/backup-group-mirror","sha256":"d5c3f951c27c1ddc3e8691c1f946531ae60f1377af49aef7f540c6bef877f165","source":"BACKUP GROUP a, b TO DISK = 'a' MIRROR TO DISK = 'b' WITH FORMAT;\n"}
+{"id":"backup-restore/backup-group-files","sha256":"b33b2c94662aa12419c1c9c0804ff19a79d2313a43436bb567cad995c91f5df5","source":"BACKUP GROUP a FILE = 'f' TO DISK = 'a';\n"}
+{"id":"backup-restore/backup-cert-plain","sha256":"fec2090883a1d69ef5045be659daab5e9c57a73c2f9ed62d4c9a3f697299c279","source":"BACKUP CERTIFICATE c TO FILE = 'a';\n"}
+{"id":"backup-restore/backup-cert-private-key","sha256":"56f618ec7f3602a826651ae8161c075173d6e53630672b9593b1c1845d78580d","source":"BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (FILE = 'b', ENCRYPTION BY PASSWORD = 'p');\n"}
+{"id":"backup-restore/backup-cert-private-key-decryption","sha256":"2be77e2d3eb2460cdba797ecd16db6940c1c308fa236735a5b5ba078452969a8","source":"BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (DECRYPTION BY PASSWORD = 'q', FILE = 'b', ENCRYPTION BY PASSWORD = 'p');\n"}
+{"id":"backup-restore/backup-cert-pfx-only","sha256":"94e0a1671cca5361f9ed2d6fa38d2a968cca9b710d2eb2f6bee4ab773460bc0e","source":"BACKUP CERTIFICATE c TO FILE = 'a' WITH FORMAT = 'PFX';\n"}
+{"id":"backup-restore/backup-cert-pk-then-format","sha256":"9b5b82f4d77a77d43a9546e3d82e14ecce69aca6ac536cfaa016220d83ebdfe8","source":"BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (FILE = 'b', ENCRYPTION BY PASSWORD = 'p'), FORMAT = 'PFX';\n"}
+{"id":"backup-restore/backup-cert-format-var","sha256":"06e05c380f55a731d743fcc0144e8cbb280a9cf4be27985885b279abe3b3362a","source":"DECLARE @f nvarchar(260) = N'x';\nBACKUP CERTIFICATE c TO FILE = 'a' WITH FORMAT = @f, PRIVATE KEY (ENCRYPTION BY PASSWORD = 'p');\n"}
+{"id":"backup-restore/backup-cert-other-option","sha256":"98ec11c85d6e7c3a09a03cd9470723bfbd63efd2095310a835fa719607460188","source":"BACKUP CERTIFICATE c TO FILE = 'a' WITH FOO = 'x', PRIVATE KEY (ENCRYPTION BY PASSWORD = 'p');\n"}
+{"id":"backup-restore/backup-cert-url","sha256":"9e482c2cc384ee8e5b9fc2e871092d4cea66226095c4c2230729d2d767595562","source":"BACKUP CERTIFICATE c TO URL = 'https://x/c.cer';\n"}
+{"id":"backup-restore/backup-cert-disk","sha256":"0f1db2457ddaea368e13def5251e418b877130e2542366bafd23adaf5de7e690","source":"BACKUP CERTIFICATE c TO DISK = 'a';\n"}
+{"id":"backup-restore/backup-cert-var-file","sha256":"48852607caca1d5940ab3609ecadd06221443371b4bffb3ed2b19fcc1d1cab06","source":"DECLARE @f nvarchar(260) = N'x';\nBACKUP CERTIFICATE c TO FILE = @f;\n"}
+{"id":"backup-restore/backup-cert-encryption","sha256":"28907d95d3037fa228f18d068024bc35ea9a53c10f9d43560a1677380838bda7","source":"BACKUP CERTIFICATE c TO FILE = 'a' ENCRYPTION BY PASSWORD = 'p';\n"}
+{"id":"backup-restore/backup-master-key-no-encryption","sha256":"3d0628969c8ed8782b8ff949240daca1b544303ef702997fb4ad110ea2195798","source":"BACKUP MASTER KEY TO FILE = 'a';\n"}
+{"id":"backup-restore/backup-master-key-disk","sha256":"052b4c05d8a80d56ba0e109100dfb0236464a25e880f0ee3cd3173cfe59f6246","source":"BACKUP MASTER KEY TO DISK = 'a' ENCRYPTION BY PASSWORD = 'p';\n"}
+{"id":"backup-restore/backup-master-key-decryption","sha256":"9c834789d3ea593c32239754939f57292fbc5a33c2c86a03ac88d2388acaa0cc","source":"BACKUP MASTER KEY TO FILE = 'a' DECRYPTION BY PASSWORD = 'p';\n"}
+{"id":"backup-restore/backup-master-key-var","sha256":"ab6e5ed05f6df9687289c4ae3a8bce44b37b082fa5f47abf5dfc0e04a9b23092","source":"DECLARE @f nvarchar(260) = N'x', @p nvarchar(260) = N'x';\nBACKUP MASTER KEY TO FILE = @f ENCRYPTION BY PASSWORD = @p;\n"}
+{"id":"backup-restore/backup-master-key-certificate","sha256":"d0f6d86e03f4b99cf65b15c3fc2d787351f3d586246cc31f3ac3a7320297d683","source":"BACKUP MASTER KEY TO FILE = 'a' ENCRYPTION BY CERTIFICATE c;\n"}
+{"id":"backup-restore/backup-master-key-force","sha256":"33bf1f165c5ec8abc5ed84457799a1f458533d10367f53c3d8e33c6b01df200c","source":"BACKUP MASTER KEY TO FILE = 'a' ENCRYPTION BY PASSWORD = 'p' FORCE;\n"}
+{"id":"backup-restore/backup-service-master-key-url","sha256":"a6f9cc3420c8df984cc7d5fcebc1f8e49dc340c089b20d891c070b1c3eede4e9","source":"BACKUP SERVICE MASTER KEY TO URL = 'https://x/k' ENCRYPTION BY PASSWORD = 'p';\n"}
+{"id":"backup-restore/backup-symmetric-key-decryption","sha256":"ebc54b2574a348934bb489ff676f3e9a9f16bed5bad4437eec4b1d0f66a701bb","source":"BACKUP SYMMETRIC KEY k TO FILE = 'a' DECRYPTION BY PASSWORD = 'p';\n"}
+{"id":"backup-restore/backup-symmetric-key-no-name","sha256":"33de21e9501ac84dc2f8bb0769b9e0f74f9d0ab9af13fb43af62a7d8ae697eca","source":"BACKUP SYMMETRIC KEY TO FILE = 'a' ENCRYPTION BY PASSWORD = 'p';\n"}
+{"id":"backup-restore/backup-asymmetric-key","sha256":"1e35e8b7bb89214c2c6c9253c0c5392e02b13708bdaa2e23fbdb08c29be153bb","source":"BACKUP ASYMMETRIC KEY k TO FILE = 'a' ENCRYPTION BY PASSWORD = 'p';\n"}
+{"id":"backup-restore/backup-master-key-two-encryptions","sha256":"28accfe83cfd89a999beae8a3687a53daaef26ea49f17e18063b5dea9d0ded1a","source":"BACKUP MASTER KEY TO FILE = 'a' ENCRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q';\n"}
+{"id":"backup-restore/restore-db-bare","sha256":"5a1e58cc5d3e9cab94eaafde8bd78ecd7c493efca9f817d8dfd8313e22e6dfa6","source":"RESTORE DATABASE d;\n"}
+{"id":"backup-restore/restore-db-with-recovery","sha256":"e74ed74f69606e1447e00945af11b450f4fbc98ab8aea641cdfcfa7be17bc8ed","source":"RESTORE DATABASE d WITH RECOVERY;\n"}
+{"id":"backup-restore/restore-log-bare-with","sha256":"8415486fe70213775775fc1b9b82df55e0358361554cec15692f184e0c3f0869","source":"RESTORE LOG d WITH RECOVERY;\n"}
+{"id":"backup-restore/restore-log-files","sha256":"43ea2a1284f4d955dc460adeb6ba0d868fb287e8b724350ee2c46d2c4bb2248c","source":"RESTORE LOG d FILE = 'f' FROM DISK = 'a';\n"}
+{"id":"backup-restore/restore-log-page","sha256":"cdc20bee3027ff340ec07235dc8dd49a318c73dbc73a5a62b8a59800d3b85312","source":"RESTORE LOG d PAGE = '1:1' FROM DISK = 'a';\n"}
+{"id":"backup-restore/restore-db-files-no-from","sha256":"8036ea922c9507ffbe478a2990023bf02bdc7c6df018977bf16b7639abd47469","source":"RESTORE DATABASE d FILE = 'f' WITH RECOVERY;\n"}
+{"id":"backup-restore/restore-db-string-name","sha256":"2a82f00efd27e6617eb8ffca2aed081dd659a9774247b64549d80b96b0ed16b3","source":"RESTORE DATABASE 'd' FROM DISK = 'a';\n"}
+{"id":"backup-restore/restore-from-empty","sha256":"83d36232c862b2e628baca94ddff64e5b31340409a62c237af729adad49e9704","source":"RESTORE DATABASE d FROM;\n"}
+{"id":"backup-restore/restore-from-no-equals","sha256":"a35d8b87d72fe690aaed7211f446e04646772a872008ae52a2dd0118d5913571","source":"RESTORE DATABASE d FROM DISK 'a';\n"}
+{"id":"backup-restore/restore-from-unknown-type","sha256":"9aadf5b0179f167728ac4ccc8ca5e7844301ac96350453c9bb04f41b959648fe","source":"RESTORE DATABASE d FROM FOO = 'a';\n"}
+{"id":"backup-restore/restore-db-unknown-file-item","sha256":"e60a69c10312bedf2e82e088da6046f95625e898ba262ef389616c710a43b2d9","source":"RESTORE DATABASE d FOO = 'f' FROM DISK = 'a';\n"}
+{"id":"backup-restore/restore-db-mirror","sha256":"37d2a046e03f1b0dc7c317253f0980915adf9999651e7833d8669fc681988c81","source":"RESTORE DATABASE d FROM DISK = 'a' MIRROR TO DISK = 'b';\n"}
+{"id":"backup-restore/restore-db-to","sha256":"600b1e7f93bb7912152222c3a0b2f24756ac883cdf5d70ef21264815418db0ec","source":"RESTORE DATABASE d TO DISK = 'a';\n"}
+{"id":"backup-restore/restore-db-snapshot-with","sha256":"62e90a23e1b2a95d91237db5f90b75e84d9e3e1654ad29f170b8f44d025433bb","source":"RESTORE DATABASE d FROM DATABASE_SNAPSHOT = 's' WITH RECOVERY;\n"}
+{"id":"backup-restore/restore-db-snapshot-var","sha256":"4d631de85445980492fcbcd44c716f2aaca2dd9de142cd6f2d17a00dc549e13b","source":"DECLARE @s int = 1;\nRESTORE DATABASE d FROM DATABASE_SNAPSHOT = @s;\n"}
+{"id":"backup-restore/restore-move-vars","sha256":"09aa4dd1d66adc1c76b68186046bdbc82cc9fe26fbae6b06d9997d4235c4628d","source":"DECLARE @a nvarchar(260) = N'x', @b nvarchar(260) = N'x';\nRESTORE DATABASE d FROM DISK = 'a' WITH MOVE @a TO @b;\n"}
+{"id":"backup-restore/restore-move-no-to","sha256":"3cfbe304a74b3604791a0b7e28b53955a48b877fa6e55e9756ca7c65b76e721d","source":"RESTORE DATABASE d FROM DISK = 'a' WITH MOVE 'a' 'b';\n"}
+{"id":"backup-restore/restore-move-equals","sha256":"3857fc363fc571b2ceef32a4caea128e88869fada001eec556765847a9818a75","source":"RESTORE DATABASE d FROM DISK = 'a' WITH MOVE = 'a';\n"}
+{"id":"backup-restore/restore-move-identifier","sha256":"aff3c2e73cc5a2e28fd4a27b71cb800d1003c65db98c552f4130c49bc61d0b70","source":"RESTORE DATABASE d FROM DISK = 'a' WITH MOVE a TO b;\n"}
+{"id":"backup-restore/restore-stopatmark-var-after","sha256":"3175f53e211f36548da9d0a5db0e6f9d52428a3101d09a9af2386cd12f8dfa99","source":"DECLARE @m nvarchar(260) = N'x', @t nvarchar(260) = N'x';\nRESTORE LOG d FROM DISK = 'a' WITH STOPATMARK = @m AFTER @t;\n"}
+{"id":"backup-restore/restore-stopbeforemark-after","sha256":"6a2c4b6b66a709090d22cd3616abd2d7e6db8a1fcf57faedd21e1ae79bd98813","source":"RESTORE LOG d FROM DISK = 'a' WITH STOPBEFOREMARK = 'm' AFTER '2024-01-01';\n"}
+{"id":"backup-restore/restore-stopat-after","sha256":"4a0489c747f1b40cd62b158338893fd6b2da0ad4f9b6f25eb258ef4951663cd8","source":"RESTORE LOG d FROM DISK = 'a' WITH STOPAT = '2024-01-01' AFTER '2024-01-02';\n"}
+{"id":"backup-restore/restore-stopatmark-after-missing","sha256":"3797a32412373a7674d12de3bd406a13bb3f33445501ddf792e8a8167b771d50","source":"RESTORE LOG d FROM DISK = 'a' WITH STOPATMARK = 'm' AFTER;\n"}
+{"id":"backup-restore/restore-credential-bare","sha256":"618ec17c7fb5b94cf73c6540b0d0422aa7aaf5576164716498c4a8a85a41cc28","source":"RESTORE DATABASE d FROM URL = 'https://x/y.bak' WITH CREDENTIAL;\n"}
+{"id":"backup-restore/restore-credential-value","sha256":"3ef147850e169b800385ece2f3bb919a74832a0bd9d2689908bf06dd3718cd63","source":"RESTORE DATABASE d FROM URL = 'https://x/y.bak' WITH CREDENTIAL = 'c', NORECOVERY;\n"}
+{"id":"backup-restore/restore-unknown-option","sha256":"94e7ca1ea7f47dcfa8ac6f9d2a43b53c837ebd4dd9a6de7c14d971263642265b","source":"RESTORE DATABASE d FROM DISK = 'a' WITH FOO;\n"}
+{"id":"backup-restore/restore-flag-with-value","sha256":"bbd737bf1540bf588d1458c9fef169c5925507bd007b566279e71c8f0327cb3b","source":"RESTORE DATABASE d FROM DISK = 'a' WITH REPLACE = 1;\n"}
+{"id":"backup-restore/restore-duplicate-flag","sha256":"4f05eb0a82ff122a3c94913592c0bab98698409bba89ac28758f52955f2c6116","source":"RESTORE DATABASE d FROM DISK = 'a' WITH REPLACE, REPLACE;\n"}
+{"id":"backup-restore/restore-recovery-norecovery","sha256":"2dc61261e06740d7e5cfdb3bda3cd0dd45e7ef422c349aaf3066909d768f91f6","source":"RESTORE DATABASE d FROM DISK = 'a' WITH RECOVERY, NORECOVERY;\n"}
+{"id":"backup-restore/restore-file-bare","sha256":"d5630529af6293ed6737e0a1ec28d82ae023854eaefe1e183fe3666921145d5c","source":"RESTORE DATABASE d FROM DISK = 'a' WITH FILE;\n"}
+{"id":"backup-restore/restore-stats-bare","sha256":"172add8e802890ed7fbea9f00cb67ca57e9884e65df067146c1ae89d30cd7a86","source":"RESTORE DATABASE d FROM DISK = 'a' WITH STATS;\n"}
+{"id":"backup-restore/restore-filestream-bare","sha256":"4ee5409cc8ce320cd0e02e54dfb5cdc175984c07745d2763e76ff3cbf7ba296f","source":"RESTORE DATABASE d FROM DISK = 'a' WITH FILESTREAM;\n"}
+{"id":"backup-restore/restore-encryption","sha256":"3b8397bce1c8f52dacc8eb3a962bc15aec18388bf6af65d29d7e86b4eae582dc","source":"RESTORE DATABASE d FROM DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_256, SERVER CERTIFICATE = c);\n"}
+{"id":"backup-restore/restore-compression","sha256":"82cea8efff623a81ee4e602d4d4716d9449188ed20239a78b7a2a36c071ebe6c","source":"RESTORE DATABASE d FROM DISK = 'a' WITH COMPRESSION;\n"}
+{"id":"backup-restore/restore-partial-page","sha256":"0b6ef9a6e88c0f80c17f8a29ecd759a9d3fcdb20f10228ff2832bd02e2c1c9c9","source":"RESTORE DATABASE d PAGE = '1:1', PAGE = '1:2' FROM DISK = 'a';\n"}
+{"id":"backup-restore/restore-filelistonly-no-from","sha256":"ff49ae6f52dcef0fcf609246a00503f71cf1abaf890632f1ad261eeb800f0e64","source":"RESTORE FILELISTONLY;\n"}
+{"id":"backup-restore/restore-filelistonly-with-no-from","sha256":"5f57b2d4b7dcec1fe579a33831707a7d0b8c92c7619590a593457d8a1864ee81","source":"RESTORE FILELISTONLY WITH FILE = 1;\n"}
+{"id":"backup-restore/restore-headeronly-files","sha256":"b3f0d98c1548e9c0f9507c6b5a652e8e5f64ce42b8f8fce81434aec10be61c5a","source":"RESTORE HEADERONLY FILE = 'f' FROM DISK = 'a';\n"}
+{"id":"backup-restore/restore-labelonly-name","sha256":"58153575d9cfdeb19ce47dc91a8c1c7f88bfd9d29ce0c6975e4e52c32fd4d0ab","source":"RESTORE LABELONLY d FROM DISK = 'a';\n"}
+{"id":"backup-restore/restore-verifyonly-stopat","sha256":"b13ea62197515a11d96ea7b708c3986cceb4321105ea847db991a2c718ceaf8f","source":"RESTORE VERIFYONLY FROM DISK = 'a' WITH STOPAT = '2024-01-01';\n"}
+{"id":"backup-restore/restore-rewindonly-file","sha256":"d53f3cbf89d34e5b98a4b6aba0c425e067d0740be12302381e767f684e5df188","source":"RESTORE REWINDONLY FROM TAPE = 't' WITH FILE = 1;\n"}
+{"id":"backup-restore/restore-rewindonly-disk","sha256":"73381aecffe7d9e2bab2f6577ac8801762754cb37742ae310c487a63fed446cf","source":"RESTORE REWINDONLY FROM DISK = 'a';\n"}
+{"id":"backup-restore/restore-headeronly-unknown-option","sha256":"61f2c17e93d0718fc9fe4843f970b7a856bc6e6eef1147eb26430a3b28ea9ccb","source":"RESTORE HEADERONLY FROM DISK = 'a' WITH FOO;\n"}
+{"id":"backup-restore/restore-headeronly-move","sha256":"91c5ee328a51d72c74b13126e971a04fb8bf3171779d54a1b5b0e38b707b40e2","source":"RESTORE HEADERONLY FROM DISK = 'a' WITH MOVE 'a' TO 'b';\n"}
+{"id":"backup-restore/restore-verifyonly-mirror","sha256":"6dbdfde667b69b528fd3a09ef1234a5f64524e67644d5f6d7ff3b8eb19fbc1d6","source":"RESTORE VERIFYONLY FROM DISK = 'a' MIRROR TO DISK = 'b';\n"}
+{"id":"backup-restore/restore-master-key-no-encryption","sha256":"3c9dbc593a864987c6f883166eb4fa980ef9ba4fa618a6e25bb30f5b55710066","source":"RESTORE MASTER KEY FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p';\n"}
+{"id":"backup-restore/restore-master-key-no-decryption","sha256":"3250407cf5e139d22c2b5135c371e2f3d4ac66a6dfe8d7352d3a72917a9f3818","source":"RESTORE MASTER KEY FROM FILE = 'a' ENCRYPTION BY PASSWORD = 'p';\n"}
+{"id":"backup-restore/restore-master-key-reversed","sha256":"e36632ba501ef9493582769cadd7a0949a959f4ec2fce894e40ef2e713d40727","source":"RESTORE MASTER KEY FROM FILE = 'a' ENCRYPTION BY PASSWORD = 'q' DECRYPTION BY PASSWORD = 'p';\n"}
+{"id":"backup-restore/restore-master-key-force-first","sha256":"82bd9051d482ee5723a4d0fbe28d2f2590e5ca7882ab2a86336db69221a3111a","source":"RESTORE MASTER KEY FROM FILE = 'a' FORCE DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q';\n"}
+{"id":"backup-restore/restore-master-key-disk","sha256":"528d3a824abe6abe9d66300e7403b165b2a43e46015885dbe307fc0d2e880a0a","source":"RESTORE MASTER KEY FROM DISK = 'a' DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q';\n"}
+{"id":"backup-restore/restore-master-key-var","sha256":"8ed944799f44a130c72d70aef045581561adbeef46fa98bcf1fbb7a3e4506c7f","source":"DECLARE @f nvarchar(260) = N'x', @p nvarchar(260) = N'x', @q nvarchar(260) = N'x';\nRESTORE MASTER KEY FROM FILE = @f DECRYPTION BY PASSWORD = @p ENCRYPTION BY PASSWORD = @q;\n"}
+{"id":"backup-restore/restore-master-key-certificate","sha256":"2729976fe288584d3b4cb98d0f4ba1771dc28875a3c87015231067324765e514","source":"RESTORE MASTER KEY FROM FILE = 'a' DECRYPTION BY CERTIFICATE c ENCRYPTION BY PASSWORD = 'q';\n"}
+{"id":"backup-restore/restore-service-master-key-encryption","sha256":"5a4f9ebed6720d0b43a31bc4f0b743ddf64abf2705f5e5d3cb8cab71338d3016","source":"RESTORE SERVICE MASTER KEY FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q';\n"}
+{"id":"backup-restore/restore-service-master-key-url","sha256":"1102130bdabf12aeec7e506d6d70ed65c4684731c7416b37b982813656cfb815","source":"RESTORE SERVICE MASTER KEY FROM URL = 'https://x/k' DECRYPTION BY PASSWORD = 'p';\n"}
+{"id":"backup-restore/restore-symmetric-key-force","sha256":"1a7ebd096fb2c963cf98bac6a8e52f34ba79f272d4490572d96fba4b0ad73869","source":"RESTORE SYMMETRIC KEY k FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q' FORCE;\n"}
+{"id":"backup-restore/restore-symmetric-key-no-encryption","sha256":"ab45c7e2b5142ac3fab651fec3dc80ce98d4118faecc1b71266ec0cca8b36cb8","source":"RESTORE SYMMETRIC KEY k FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p';\n"}
+{"id":"backup-restore/restore-certificate","sha256":"5cb28dd6edfeba392135c29e045533ac884b1d3a2bbd1e27b550dc5d57dfc3e3","source":"RESTORE CERTIFICATE c FROM FILE = 'a';\n"}
+{"id":"backup-restore/restore-asymmetric-key","sha256":"a7061e4f285b494fa9c9d4fa13ca61340ee0c7f012d866a7d8a0b8e54cd0426f","source":"RESTORE ASYMMETRIC KEY k FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q';\n"}
+{"id":"backup-restore/restore-then-cte","sha256":"c5d505d0193b05d03e5fcf4cb65e93e1d7f810a48409b2082c76c7809073ad09","source":";WITH c AS (SELECT 1 AS x) SELECT x FROM c;\nRESTORE DATABASE d FROM DISK = 'a'\n;WITH c AS (SELECT 1 AS x) SELECT x FROM c;\n"}
+{"id":"backup-restore/backup-in-procedure","sha256":"4ce2d7684ee624032d5ecfef9b30bde5dc1f5e15693b95e3dbbe889567903c85","source":"CREATE PROCEDURE p AS\nBACKUP DATABASE d TO DISK = 'a' WITH INIT;\nRESTORE DATABASE d FROM DISK = 'a' WITH REPLACE;\n"}
+{"id":"backup-restore/restore-label","sha256":"57b6248958d0c60d4182ea2a05c6c1e9202d0c2c5e42e13246ccce72e7a669f8","source":"restore: PRINT 1;\n"}
+{"id":"backup-restore/opt-backup-differential-flag","sha256":"3b81a8f5b041728a67a4512a77f0a451ca6914b494e447fc5fb09b69af9a4499","source":"BACKUP DATABASE d TO DISK = 'a' WITH DIFFERENTIAL;\n"}
+{"id":"backup-restore/opt-backup-differential-number","sha256":"a64282656f989f8090a557f0a4ef9b0ad7d5fd58b8d5baf6691e1094463dbca3","source":"BACKUP DATABASE d TO DISK = 'a' WITH DIFFERENTIAL = 1;\n"}
+{"id":"backup-restore/opt-backup-differential-string","sha256":"22a790e87992fe8526120d9f83d3c5a86864ecfe74c340fdae3cb5b438fdb3a8","source":"BACKUP DATABASE d TO DISK = 'a' WITH DIFFERENTIAL = 'x';\n"}
+{"id":"backup-restore/opt-backup-copy-only-flag","sha256":"99c20f6c93432e1f193914c3697444317bf4dc8dd5323c6e5c0bf1f64f941ead","source":"BACKUP DATABASE d TO DISK = 'a' WITH COPY_ONLY;\n"}
+{"id":"backup-restore/opt-backup-copy-only-number","sha256":"cf2eceb76eec6ba531cc3df99d657b3a34fff80a4a65d4486faf02b793077cec","source":"BACKUP DATABASE d TO DISK = 'a' WITH COPY_ONLY = 1;\n"}
+{"id":"backup-restore/opt-backup-copy-only-string","sha256":"b9b0168e1f8b01528e609145040a161ea5084133b9673a084ed4728bba48a4d1","source":"BACKUP DATABASE d TO DISK = 'a' WITH COPY_ONLY = 'x';\n"}
+{"id":"backup-restore/opt-backup-compression-flag","sha256":"e73e709289731843705db422508f275e3665cb2e9373aacec043189ddccbfc30","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION;\n"}
+{"id":"backup-restore/opt-backup-compression-number","sha256":"76abb8a194f8b135d443b446d03f237e45b4cfd47d2aef771cf1e585e98f7b6f","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION = 1;\n"}
+{"id":"backup-restore/opt-backup-compression-string","sha256":"5681ed6adc5e630d38adc60be0376ccf256af7c6cf398158e77460f771a90ff5","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION = 'x';\n"}
+{"id":"backup-restore/opt-backup-no-compression-flag","sha256":"e3675613c0f19523fea3c770b1811431e29b5daa0b58776896e72afd5df04c7a","source":"BACKUP DATABASE d TO DISK = 'a' WITH NO_COMPRESSION;\n"}
+{"id":"backup-restore/opt-backup-no-compression-number","sha256":"fcb55193bb98b809117bd4e6e8e06836155461c9772525ee52b76c1cd78f7197","source":"BACKUP DATABASE d TO DISK = 'a' WITH NO_COMPRESSION = 1;\n"}
+{"id":"backup-restore/opt-backup-no-compression-string","sha256":"ff869528fd242f716b4cf89246873b680eb13ce3a896ceb53e40e08ded486672","source":"BACKUP DATABASE d TO DISK = 'a' WITH NO_COMPRESSION = 'x';\n"}
+{"id":"backup-restore/opt-backup-file-snapshot-flag","sha256":"7bb008db35c3e1b7b7593fe993dc36419fabadd22ca48d98fa6b50bdeea68fa8","source":"BACKUP DATABASE d TO DISK = 'a' WITH FILE_SNAPSHOT;\n"}
+{"id":"backup-restore/opt-backup-file-snapshot-number","sha256":"faa89d0872bdaecb500fa5da6c95435d1120642c3bc594d960f329c176cdb530","source":"BACKUP DATABASE d TO DISK = 'a' WITH FILE_SNAPSHOT = 1;\n"}
+{"id":"backup-restore/opt-backup-file-snapshot-string","sha256":"fa0d50d391364db7ff2c5a05f19aefe103e4ad63fc51251739903e2a7f27830a","source":"BACKUP DATABASE d TO DISK = 'a' WITH FILE_SNAPSHOT = 'x';\n"}
+{"id":"backup-restore/opt-backup-noinit-flag","sha256":"06a09550e4c807f1a9d39898002af5372d37a2d76d2ca7b34c2fd02c02239a3a","source":"BACKUP DATABASE d TO DISK = 'a' WITH NOINIT;\n"}
+{"id":"backup-restore/opt-backup-noinit-number","sha256":"357ead1036f5a2694fa2fe275f28dec9474895593a74282787f6eaa227d8aff4","source":"BACKUP DATABASE d TO DISK = 'a' WITH NOINIT = 1;\n"}
+{"id":"backup-restore/opt-backup-noinit-string","sha256":"13b3d00fbff49eb08238ae42887f7e8e396199f24befc64b78907e471ce7c0d5","source":"BACKUP DATABASE d TO DISK = 'a' WITH NOINIT = 'x';\n"}
+{"id":"backup-restore/opt-backup-init-flag","sha256":"89e8c2151eddf4572bdc4c3040848896397451b897a16aa15f3953ca58fa2597","source":"BACKUP DATABASE d TO DISK = 'a' WITH INIT;\n"}
+{"id":"backup-restore/opt-backup-init-number","sha256":"e41b3f6ed398f0f1a4afd9780977e198e21a2b0e7f1ea8ac2be098386a200f01","source":"BACKUP DATABASE d TO DISK = 'a' WITH INIT = 1;\n"}
+{"id":"backup-restore/opt-backup-init-string","sha256":"df63adcec4a3c343ffb49da6d8b2e9d3fa03a637f87e2b4bfb54de69adbb1694","source":"BACKUP DATABASE d TO DISK = 'a' WITH INIT = 'x';\n"}
+{"id":"backup-restore/opt-backup-noskip-flag","sha256":"58eb8d55422a34071c4cd0dbcfa4067ec577e4b3a3d6e152d609b02f7d136b48","source":"BACKUP DATABASE d TO DISK = 'a' WITH NOSKIP;\n"}
+{"id":"backup-restore/opt-backup-noskip-number","sha256":"d047ac9580bbf1c7b3765cdea6975e6a95ed94671ecaed07dd072c1fa4d62101","source":"BACKUP DATABASE d TO DISK = 'a' WITH NOSKIP = 1;\n"}
+{"id":"backup-restore/opt-backup-noskip-string","sha256":"c3bb928be3f48ca68adf085b1f665668da0e71f7f1f9abac6fa18f83791230d6","source":"BACKUP DATABASE d TO DISK = 'a' WITH NOSKIP = 'x';\n"}
+{"id":"backup-restore/opt-backup-skip-flag","sha256":"95446d58c162d46f07aa8c68b97459d9a6a06c334797577e3f91ba173b72688d","source":"BACKUP DATABASE d TO DISK = 'a' WITH SKIP;\n"}
+{"id":"backup-restore/opt-backup-skip-number","sha256":"e13a431cc470e0cec0f69a75bc957196297b6f9c3f22236f3593305475df35a5","source":"BACKUP DATABASE d TO DISK = 'a' WITH SKIP = 1;\n"}
+{"id":"backup-restore/opt-backup-skip-string","sha256":"f7e91febf7653142c214bd8c69e034c04be6f73946b51cce1c5e14a21fa71c98","source":"BACKUP DATABASE d TO DISK = 'a' WITH SKIP = 'x';\n"}
+{"id":"backup-restore/opt-backup-noformat-flag","sha256":"987f1c5cebebfcb840b125bdfa0798517e890671fa8ad7ad491b7b699026847d","source":"BACKUP DATABASE d TO DISK = 'a' WITH NOFORMAT;\n"}
+{"id":"backup-restore/opt-backup-noformat-number","sha256":"06da8926fdbeb20e234a7bb791d94e552037f136346e23fa10363ece6e896941","source":"BACKUP DATABASE d TO DISK = 'a' WITH NOFORMAT = 1;\n"}
+{"id":"backup-restore/opt-backup-noformat-string","sha256":"ac60f7b2d17fb5c978032f7f4f33dee173df91ed44c31148d2dce15691a451d5","source":"BACKUP DATABASE d TO DISK = 'a' WITH NOFORMAT = 'x';\n"}
+{"id":"backup-restore/opt-backup-format-flag","sha256":"4106ed2d84820bf81ff2466f76da291df111bb6fc48b00bc873a22e89b5f7c54","source":"BACKUP DATABASE d TO DISK = 'a' WITH FORMAT;\n"}
+{"id":"backup-restore/opt-backup-format-number","sha256":"9cdd7014da87b245278ac45e2c628599ec450bd9efd2a050235f34a92b378216","source":"BACKUP DATABASE d TO DISK = 'a' WITH FORMAT = 1;\n"}
+{"id":"backup-restore/opt-backup-format-string","sha256":"c09a1487ec6868d9d218e6457ae27c556fbd38b62d91c088758ed9c12b4df2ef","source":"BACKUP DATABASE d TO DISK = 'a' WITH FORMAT = 'x';\n"}
+{"id":"backup-restore/opt-backup-no-checksum-flag","sha256":"2107594246a83b496b80c58fddc55538cdf8909d82f0e0f69eedb4f1e6b04c51","source":"BACKUP DATABASE d TO DISK = 'a' WITH NO_CHECKSUM;\n"}
+{"id":"backup-restore/opt-backup-no-checksum-number","sha256":"672e5578c8f13e617657a7b7bdfd2fd624abab53f0cd18edcdc483ce70779853","source":"BACKUP DATABASE d TO DISK = 'a' WITH NO_CHECKSUM = 1;\n"}
+{"id":"backup-restore/opt-backup-no-checksum-string","sha256":"19b5b9f3d916653256666902d4d9fd6164e87fd150690f92573720a6f8768b55","source":"BACKUP DATABASE d TO DISK = 'a' WITH NO_CHECKSUM = 'x';\n"}
+{"id":"backup-restore/opt-backup-checksum-flag","sha256":"03589e6f3438207cd9f97313638e99c5beb38e43f3fdddf08ffac893273926a5","source":"BACKUP DATABASE d TO DISK = 'a' WITH CHECKSUM;\n"}
+{"id":"backup-restore/opt-backup-checksum-number","sha256":"c053f954ed3dab0ebc175c75b50490bb55adfaa62aeba2b87784e1b0b9e69e75","source":"BACKUP DATABASE d TO DISK = 'a' WITH CHECKSUM = 1;\n"}
+{"id":"backup-restore/opt-backup-checksum-string","sha256":"d8af62db303139d3fa80c809f7c1df5300a3b1c7a97248e836df497eb826941f","source":"BACKUP DATABASE d TO DISK = 'a' WITH CHECKSUM = 'x';\n"}
+{"id":"backup-restore/opt-backup-stop-on-error-flag","sha256":"51d7141d3f843426169788843dbab8425ebc08f3419144dde2f488b22ae1f182","source":"BACKUP DATABASE d TO DISK = 'a' WITH STOP_ON_ERROR;\n"}
+{"id":"backup-restore/opt-backup-stop-on-error-number","sha256":"1b8f7ccf23967276fa281b94df316fb42147794ad6e96b026ed9f7ac3c783be4","source":"BACKUP DATABASE d TO DISK = 'a' WITH STOP_ON_ERROR = 1;\n"}
+{"id":"backup-restore/opt-backup-stop-on-error-string","sha256":"20666cbb87f91543198c8d6ed1b5a3fec6f1bb28a9c7b8847b69b4407d91138a","source":"BACKUP DATABASE d TO DISK = 'a' WITH STOP_ON_ERROR = 'x';\n"}
+{"id":"backup-restore/opt-backup-continue-after-error-flag","sha256":"ef638fdb5811e31611fae3011552fff2b77eee6c548ae1f2b758338dc263d794","source":"BACKUP DATABASE d TO DISK = 'a' WITH CONTINUE_AFTER_ERROR;\n"}
+{"id":"backup-restore/opt-backup-continue-after-error-number","sha256":"f0aadd5f31ff3d8ab34537e9fc936db8a989407650e263ca311f8954a54f2c9c","source":"BACKUP DATABASE d TO DISK = 'a' WITH CONTINUE_AFTER_ERROR = 1;\n"}
+{"id":"backup-restore/opt-backup-continue-after-error-string","sha256":"19c64865e2606736c2201b92f5956cd0ce1573d0fcf89dbe4a6aa891c4cb658a","source":"BACKUP DATABASE d TO DISK = 'a' WITH CONTINUE_AFTER_ERROR = 'x';\n"}
+{"id":"backup-restore/opt-backup-restart-flag","sha256":"1f0931633e8d5902c4ce8a27d3c075532a22334bac8614f948b191ffe56519a7","source":"BACKUP DATABASE d TO DISK = 'a' WITH RESTART;\n"}
+{"id":"backup-restore/opt-backup-restart-number","sha256":"67dc235e6a4a4b1d9e7ba645173de78b65c28df66f25e6b74c8a49825772289e","source":"BACKUP DATABASE d TO DISK = 'a' WITH RESTART = 1;\n"}
+{"id":"backup-restore/opt-backup-restart-string","sha256":"3dd4bd08f7a222922ea822145d6b50903e62b1623cc015f0eebe7fb5f9971aa4","source":"BACKUP DATABASE d TO DISK = 'a' WITH RESTART = 'x';\n"}
+{"id":"backup-restore/opt-backup-rewind-flag","sha256":"caeac47fe688d42d0e7ee664ddd8e5ca6652971af3905511a44e6a94e4e84438","source":"BACKUP DATABASE d TO DISK = 'a' WITH REWIND;\n"}
+{"id":"backup-restore/opt-backup-rewind-number","sha256":"966a03ccbf8df15de2caa9ab1bb69063896ad6ed0c6f804f15e4eee133f753a7","source":"BACKUP DATABASE d TO DISK = 'a' WITH REWIND = 1;\n"}
+{"id":"backup-restore/opt-backup-rewind-string","sha256":"b753bfca9079a745783113b7dc98aeef6b049fd75a00f48e73a201078d166b53","source":"BACKUP DATABASE d TO DISK = 'a' WITH REWIND = 'x';\n"}
+{"id":"backup-restore/opt-backup-norewind-flag","sha256":"0ce9210114911d5e8e3d4dd5721b9c46179fb7c39dfbdd71c6fde72d2299f2ed","source":"BACKUP DATABASE d TO DISK = 'a' WITH NOREWIND;\n"}
+{"id":"backup-restore/opt-backup-norewind-number","sha256":"cab4b489d084891081c3fcbf9c7fc93ac99debb6ff03d135ca1a693f5f50f3df","source":"BACKUP DATABASE d TO DISK = 'a' WITH NOREWIND = 1;\n"}
+{"id":"backup-restore/opt-backup-norewind-string","sha256":"85efd2b8f19177e7a0cf98f58280e25a4cc391ded5d49f10d7bad552cec7133e","source":"BACKUP DATABASE d TO DISK = 'a' WITH NOREWIND = 'x';\n"}
+{"id":"backup-restore/opt-backup-unload-flag","sha256":"a9a4de92cee465ffd94fbaa194dc986d3219474aa57a8dd4e854fa1aae762e83","source":"BACKUP DATABASE d TO DISK = 'a' WITH UNLOAD;\n"}
+{"id":"backup-restore/opt-backup-unload-number","sha256":"f3040ad6e4ce1ddb7ec196a1ad6d63e06523c4d897ca5385fd0f3ea2f41a3818","source":"BACKUP DATABASE d TO DISK = 'a' WITH UNLOAD = 1;\n"}
+{"id":"backup-restore/opt-backup-unload-string","sha256":"4065af39b6ca3794df86f8fa29cce5fcccf773ff8cdac2868b45acee6847c725","source":"BACKUP DATABASE d TO DISK = 'a' WITH UNLOAD = 'x';\n"}
+{"id":"backup-restore/opt-backup-nounload-flag","sha256":"dec0ea96c3b68a00d498cb619973730d08557509cdaa690efb51d13d703e0583","source":"BACKUP DATABASE d TO DISK = 'a' WITH NOUNLOAD;\n"}
+{"id":"backup-restore/opt-backup-nounload-number","sha256":"ddc8489bbc44e5266b6f30038c05c51a3b22390199142de285ae570095bc0442","source":"BACKUP DATABASE d TO DISK = 'a' WITH NOUNLOAD = 1;\n"}
+{"id":"backup-restore/opt-backup-nounload-string","sha256":"7531f657b24ec18ec48328303b79791d7e0159f6358f192f022a7e79a9822d8b","source":"BACKUP DATABASE d TO DISK = 'a' WITH NOUNLOAD = 'x';\n"}
+{"id":"backup-restore/opt-backup-norecovery-flag","sha256":"3795386086fe287f3b0bf5ca42cca1f61c5d8a776dab41fc5704b2ffd79d2d94","source":"BACKUP DATABASE d TO DISK = 'a' WITH NORECOVERY;\n"}
+{"id":"backup-restore/opt-backup-norecovery-number","sha256":"248ef0c3c22f6299944f2fff4d86735436b659645eb8909808de156abaa0d5ff","source":"BACKUP DATABASE d TO DISK = 'a' WITH NORECOVERY = 1;\n"}
+{"id":"backup-restore/opt-backup-norecovery-string","sha256":"525e6ce1de5c8705ca1b57b9bdea81d92b6f1a7afc34ccbc0172e1d70cd6b0da","source":"BACKUP DATABASE d TO DISK = 'a' WITH NORECOVERY = 'x';\n"}
+{"id":"backup-restore/opt-backup-recovery-flag","sha256":"5525efc070910edb62daefb0b9f5fd7a5a06d325d1755fb3c175439a2476c819","source":"BACKUP DATABASE d TO DISK = 'a' WITH RECOVERY;\n"}
+{"id":"backup-restore/opt-backup-recovery-number","sha256":"dbe703ba152d6567388766dbacb33524127cbbc5de1d8413206a48bf56bcf391","source":"BACKUP DATABASE d TO DISK = 'a' WITH RECOVERY = 1;\n"}
+{"id":"backup-restore/opt-backup-recovery-string","sha256":"096d7a28c9695a016988c656081dba2e61e46b0e303491a57258d48698a2602a","source":"BACKUP DATABASE d TO DISK = 'a' WITH RECOVERY = 'x';\n"}
+{"id":"backup-restore/opt-backup-no-truncate-flag","sha256":"83201b04c5cd2f020c5dba4d3258419cd2c114b43741938bc28c217dbea9734c","source":"BACKUP DATABASE d TO DISK = 'a' WITH NO_TRUNCATE;\n"}
+{"id":"backup-restore/opt-backup-no-truncate-number","sha256":"4d16f8e88e6eb43f86daba83fff07248baf8fed43df48edb24c9c8cb70507618","source":"BACKUP DATABASE d TO DISK = 'a' WITH NO_TRUNCATE = 1;\n"}
+{"id":"backup-restore/opt-backup-no-truncate-string","sha256":"e2d04ffc9b785ed8ed5e0c7cc60c5525498c52ab517cd228b9d6c8c4aeede646","source":"BACKUP DATABASE d TO DISK = 'a' WITH NO_TRUNCATE = 'x';\n"}
+{"id":"backup-restore/opt-backup-metadata-only-flag","sha256":"88287a2d79faeadb189247dd876dd9c221a9163800bc3249b0d349842e287166","source":"BACKUP DATABASE d TO DISK = 'a' WITH METADATA_ONLY;\n"}
+{"id":"backup-restore/opt-backup-metadata-only-number","sha256":"b4e5af96539e58f6af73a6a655e7e0e19c21d74daff9e0d90a1922a8f3dbe488","source":"BACKUP DATABASE d TO DISK = 'a' WITH METADATA_ONLY = 1;\n"}
+{"id":"backup-restore/opt-backup-metadata-only-string","sha256":"289ec219459f6f0f6a096b76e0e532060cdcf45d33b972368a6d62d011da4a28","source":"BACKUP DATABASE d TO DISK = 'a' WITH METADATA_ONLY = 'x';\n"}
+{"id":"backup-restore/opt-backup-snapshot-flag","sha256":"e8e1d9e8ae2e1afe7c9c83b436c2de5aabd9229e518dba0617d93188e1afd899","source":"BACKUP DATABASE d TO DISK = 'a' WITH SNAPSHOT;\n"}
+{"id":"backup-restore/opt-backup-snapshot-number","sha256":"82ff6b85b5a5cd4486688904f35399ab500e1ffcdb7a26132f1fc22734df4a00","source":"BACKUP DATABASE d TO DISK = 'a' WITH SNAPSHOT = 1;\n"}
+{"id":"backup-restore/opt-backup-snapshot-string","sha256":"bbca09f41e363e16c64abe57797435cd8674cbda39a0cbdf33fa0180b3fc0fad","source":"BACKUP DATABASE d TO DISK = 'a' WITH SNAPSHOT = 'x';\n"}
+{"id":"backup-restore/opt-backup-stats-flag","sha256":"61f99833b89a02ff524b41bb03b09654707bb06f021d13da3a45b3a7ec2e3fa3","source":"BACKUP DATABASE d TO DISK = 'a' WITH STATS;\n"}
+{"id":"backup-restore/opt-backup-stats-number","sha256":"b09185a307fbcde82cfa16baf04e82083f0e42cbae2211812d3f4f041dfa31bc","source":"BACKUP DATABASE d TO DISK = 'a' WITH STATS = 1;\n"}
+{"id":"backup-restore/opt-backup-stats-string","sha256":"71e31342ec499b17fa19ddd0caabc796d5a769357aef7b9a23f2e1d614024c4e","source":"BACKUP DATABASE d TO DISK = 'a' WITH STATS = 'x';\n"}
+{"id":"backup-restore/opt-backup-description-flag","sha256":"33cd2f661f461424f38971ff65a5925a6feedfd8ae93aaa3acd5b1b216c6ac30","source":"BACKUP DATABASE d TO DISK = 'a' WITH DESCRIPTION;\n"}
+{"id":"backup-restore/opt-backup-description-number","sha256":"53fcc9f71531f496afaf1cb2148ef179260e2cbf30c236359d23dd95950e674a","source":"BACKUP DATABASE d TO DISK = 'a' WITH DESCRIPTION = 1;\n"}
+{"id":"backup-restore/opt-backup-description-string","sha256":"f44e0d9d3ff723d3188fb9c9e144509aa086b47e5b4d404a51df6957cbc9ffde","source":"BACKUP DATABASE d TO DISK = 'a' WITH DESCRIPTION = 'x';\n"}
+{"id":"backup-restore/opt-backup-name-flag","sha256":"a8f61812ccd9833cc6c075b53989bcdf13699f488e078f7db513092f9a2a17df","source":"BACKUP DATABASE d TO DISK = 'a' WITH NAME;\n"}
+{"id":"backup-restore/opt-backup-name-number","sha256":"d4ca762fb6dc3dfe3d52581617ccbb84fb34a5ae76630ed360880f7f6aa0de73","source":"BACKUP DATABASE d TO DISK = 'a' WITH NAME = 1;\n"}
+{"id":"backup-restore/opt-backup-name-string","sha256":"721b7dc5cee9de087af67b86e9e60e3a4b14cb82da3c74caf0604c14e06fe7cf","source":"BACKUP DATABASE d TO DISK = 'a' WITH NAME = 'x';\n"}
+{"id":"backup-restore/opt-backup-credential-flag","sha256":"33da05fc73ded222089a049a669d1eb28802a77af5233904c5c57c6ee941f8da","source":"BACKUP DATABASE d TO DISK = 'a' WITH CREDENTIAL;\n"}
+{"id":"backup-restore/opt-backup-credential-number","sha256":"7cba74e6d67b7f5d1f2a49710763ba4bb33bddaf76f4cd2ddc4dc604c6dcfb25","source":"BACKUP DATABASE d TO DISK = 'a' WITH CREDENTIAL = 1;\n"}
+{"id":"backup-restore/opt-backup-credential-string","sha256":"b224f7eb09bb73197c200e9da8f873b329cdc04cabafde5af8c03a8190a04094","source":"BACKUP DATABASE d TO DISK = 'a' WITH CREDENTIAL = 'x';\n"}
+{"id":"backup-restore/opt-backup-expiredate-flag","sha256":"e1235930063e3feb427be64d3e1e70c6a16220ae5ab294592cf49f88d8b6ed75","source":"BACKUP DATABASE d TO DISK = 'a' WITH EXPIREDATE;\n"}
+{"id":"backup-restore/opt-backup-expiredate-number","sha256":"8d79b9f70afa503595ccfd9431c1ce8fcecced339a645b7db9bf104efc6ac7bf","source":"BACKUP DATABASE d TO DISK = 'a' WITH EXPIREDATE = 1;\n"}
+{"id":"backup-restore/opt-backup-expiredate-string","sha256":"000b8d0a0b05ed1501ff805daa0c1d6ee28e97cd5fe6f1bd11eb8d18e1e2676a","source":"BACKUP DATABASE d TO DISK = 'a' WITH EXPIREDATE = 'x';\n"}
+{"id":"backup-restore/opt-backup-retaindays-flag","sha256":"6ca13c5150367bb98abb5d01da84f372a2d01f0db219145ba5de9499575a748a","source":"BACKUP DATABASE d TO DISK = 'a' WITH RETAINDAYS;\n"}
+{"id":"backup-restore/opt-backup-retaindays-number","sha256":"1407e1ccb224c0a18d0976ac942e89914a003718b2b1c730c2c550e211ac89c4","source":"BACKUP DATABASE d TO DISK = 'a' WITH RETAINDAYS = 1;\n"}
+{"id":"backup-restore/opt-backup-retaindays-string","sha256":"80597e64d9794887849293b67d157cd4127045e280eaaff95e99c44764f5c4d6","source":"BACKUP DATABASE d TO DISK = 'a' WITH RETAINDAYS = 'x';\n"}
+{"id":"backup-restore/opt-backup-mediadescription-flag","sha256":"b5e38502ccdbda03556336ae9b28e49175ed59e1033d7d0f5945ed2d79955de3","source":"BACKUP DATABASE d TO DISK = 'a' WITH MEDIADESCRIPTION;\n"}
+{"id":"backup-restore/opt-backup-mediadescription-number","sha256":"9afc3c9138cb1297d9a6902fb3668405f7b347fb2762de86352825467f03c63e","source":"BACKUP DATABASE d TO DISK = 'a' WITH MEDIADESCRIPTION = 1;\n"}
+{"id":"backup-restore/opt-backup-mediadescription-string","sha256":"eca6fda8ce76304793796edc0f81fa516a10ac9f93856e237e822fd0c074af1c","source":"BACKUP DATABASE d TO DISK = 'a' WITH MEDIADESCRIPTION = 'x';\n"}
+{"id":"backup-restore/opt-backup-medianame-flag","sha256":"e97f7f93e6d219f8ee0230db44c422a4c9998380443d51eac4febaedd571423b","source":"BACKUP DATABASE d TO DISK = 'a' WITH MEDIANAME;\n"}
+{"id":"backup-restore/opt-backup-medianame-number","sha256":"b77f01773ff48c2d6e791961954af7a05d7d6c03318444130fe30e568a0b19c4","source":"BACKUP DATABASE d TO DISK = 'a' WITH MEDIANAME = 1;\n"}
+{"id":"backup-restore/opt-backup-medianame-string","sha256":"60ed26f257cc39291c5fa1ae4acecdd2acc9aba474993b8ee9bee5554a2ade19","source":"BACKUP DATABASE d TO DISK = 'a' WITH MEDIANAME = 'x';\n"}
+{"id":"backup-restore/opt-backup-blocksize-flag","sha256":"64bd7a92cea7c67540c5559d14753b53b1e5cbfbf786231702448a894056e32c","source":"BACKUP DATABASE d TO DISK = 'a' WITH BLOCKSIZE;\n"}
+{"id":"backup-restore/opt-backup-blocksize-number","sha256":"e4c167f5d06629124389d7615754f1f254d8ffe953d0ca1780c19b64c3b0b7bb","source":"BACKUP DATABASE d TO DISK = 'a' WITH BLOCKSIZE = 1;\n"}
+{"id":"backup-restore/opt-backup-blocksize-string","sha256":"5b3a265305f32103327ec731d43c5a16a11ebfaef179161f35b9e4eb54c97f09","source":"BACKUP DATABASE d TO DISK = 'a' WITH BLOCKSIZE = 'x';\n"}
+{"id":"backup-restore/opt-backup-buffercount-flag","sha256":"09870ac77306f28fe8eca07e79696b8e57382a4138fcd00e88a755a828f28391","source":"BACKUP DATABASE d TO DISK = 'a' WITH BUFFERCOUNT;\n"}
+{"id":"backup-restore/opt-backup-buffercount-number","sha256":"aedeac58377b3b4efa635f6dfdf47af8682036f858f75bb844bdc00005a20867","source":"BACKUP DATABASE d TO DISK = 'a' WITH BUFFERCOUNT = 1;\n"}
+{"id":"backup-restore/opt-backup-buffercount-string","sha256":"e44bb2a36d999f46cfb68b3d9408b81e9e4dec25e6922d57d88d2ec7855ae81c","source":"BACKUP DATABASE d TO DISK = 'a' WITH BUFFERCOUNT = 'x';\n"}
+{"id":"backup-restore/opt-backup-maxtransfersize-flag","sha256":"0980c55cb8b7580d5fae2833ede535d07648e32e8e4d2d7d3bd098511e0c062b","source":"BACKUP DATABASE d TO DISK = 'a' WITH MAXTRANSFERSIZE;\n"}
+{"id":"backup-restore/opt-backup-maxtransfersize-number","sha256":"3d284412ea3e7d7e559f18471ee72b8bc79840c8ae86c7677592a8a4f1df7ccc","source":"BACKUP DATABASE d TO DISK = 'a' WITH MAXTRANSFERSIZE = 1;\n"}
+{"id":"backup-restore/opt-backup-maxtransfersize-string","sha256":"0aef339d895188430a2ccf94c7c4efed798f480c6f865f02cfaba823393c54b2","source":"BACKUP DATABASE d TO DISK = 'a' WITH MAXTRANSFERSIZE = 'x';\n"}
+{"id":"backup-restore/opt-backup-standby-flag","sha256":"544bd6e13636e35072e8df661f09b4fc86903393706be407ea0640ac3c2d7845","source":"BACKUP DATABASE d TO DISK = 'a' WITH STANDBY;\n"}
+{"id":"backup-restore/opt-backup-standby-number","sha256":"859a8f87587077dce21a7080b89ec53b56871ac06a0912f1e78add41a8f642d7","source":"BACKUP DATABASE d TO DISK = 'a' WITH STANDBY = 1;\n"}
+{"id":"backup-restore/opt-backup-standby-string","sha256":"cbdd4cf0aaad17c139e4a6ba0e34defcb14a2cf0099c986fed38e13531afc7cc","source":"BACKUP DATABASE d TO DISK = 'a' WITH STANDBY = 'x';\n"}
+{"id":"backup-restore/opt-backup-password-flag","sha256":"848584cc9274c9c326918a8042d24d2014d34745550b0f9ae25616e350defa18","source":"BACKUP DATABASE d TO DISK = 'a' WITH PASSWORD;\n"}
+{"id":"backup-restore/opt-backup-password-number","sha256":"27e127a76c66dd9bf733a6e8b622fef25768b9a92f3e5b5be9676734b7060f69","source":"BACKUP DATABASE d TO DISK = 'a' WITH PASSWORD = 1;\n"}
+{"id":"backup-restore/opt-backup-password-string","sha256":"25bebe9f2f15cc96752813c52213e32a33393fdd3fa3c14ac3ac34e8e88a099f","source":"BACKUP DATABASE d TO DISK = 'a' WITH PASSWORD = 'x';\n"}
+{"id":"backup-restore/opt-backup-mediapassword-flag","sha256":"ed84880b2c729a5a9c30f912dd5b86978eed04ad5e80a9264f5c90143b942f7e","source":"BACKUP DATABASE d TO DISK = 'a' WITH MEDIAPASSWORD;\n"}
+{"id":"backup-restore/opt-backup-mediapassword-number","sha256":"48d267bbdeff2f0023383edc15a9ee2e3f22dfb87aa6aa64c22d3cd5db4dcf99","source":"BACKUP DATABASE d TO DISK = 'a' WITH MEDIAPASSWORD = 1;\n"}
+{"id":"backup-restore/opt-backup-mediapassword-string","sha256":"0eff90c5efc893cf079e4a760a95cde31f729ea2a5c5f158b9c01b11cd2a0903","source":"BACKUP DATABASE d TO DISK = 'a' WITH MEDIAPASSWORD = 'x';\n"}
+{"id":"backup-restore/opt-backup-encryption-flag","sha256":"dc877f8350e2afcaceb0a9c9cfb120409e7df852104f9d97cc5803dab1ded125","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION;\n"}
+{"id":"backup-restore/opt-backup-encryption-number","sha256":"b157f501f22d52f942ae9a2584b20d6342aff93e8d401580f2a9c903278338d1","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION = 1;\n"}
+{"id":"backup-restore/opt-backup-encryption-string","sha256":"b72670563c8a00aa47ce2e1606f008435366946b9e94d5b6aab1e25e5a96fdb2","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION = 'x';\n"}
+{"id":"backup-restore/opt-backup-replace-flag","sha256":"895735b2f425a5d4afb489274a6d99625296b373f5146c393ad7f793c435af86","source":"BACKUP DATABASE d TO DISK = 'a' WITH REPLACE;\n"}
+{"id":"backup-restore/opt-backup-replace-number","sha256":"7e73daf885ea16e2048da405b96ca2a1f13a54118e1f56e4a7a0cef0c02c3837","source":"BACKUP DATABASE d TO DISK = 'a' WITH REPLACE = 1;\n"}
+{"id":"backup-restore/opt-backup-replace-string","sha256":"f065e802eccb02ad812a6ff47de6478fc48c587cc217510d0b0c7bea634e48a1","source":"BACKUP DATABASE d TO DISK = 'a' WITH REPLACE = 'x';\n"}
+{"id":"backup-restore/opt-backup-restricted-user-flag","sha256":"9cd3a9c0603f41e1c7f0293cc3c91341f04cb9ac6c5af5e527b3f28618e178f5","source":"BACKUP DATABASE d TO DISK = 'a' WITH RESTRICTED_USER;\n"}
+{"id":"backup-restore/opt-backup-restricted-user-number","sha256":"60c4a5dadecf02dc705a7c8d82c9746ede1754f295c31f05ce9017950d544000","source":"BACKUP DATABASE d TO DISK = 'a' WITH RESTRICTED_USER = 1;\n"}
+{"id":"backup-restore/opt-backup-restricted-user-string","sha256":"808ad0848978b79f474919f7dd7937d11816d047bde7b1073d1b55805e275c41","source":"BACKUP DATABASE d TO DISK = 'a' WITH RESTRICTED_USER = 'x';\n"}
+{"id":"backup-restore/opt-backup-partial-flag","sha256":"9258e590f6b6d1f48bf8e199168b64f8e0e42083bdf24fda1257c58afbd522e6","source":"BACKUP DATABASE d TO DISK = 'a' WITH PARTIAL;\n"}
+{"id":"backup-restore/opt-backup-partial-number","sha256":"5c3e2f91da2583bcf762d9acd5e2cd7171883314ab2e21846942e259fd2535ea","source":"BACKUP DATABASE d TO DISK = 'a' WITH PARTIAL = 1;\n"}
+{"id":"backup-restore/opt-backup-partial-string","sha256":"be3c693d498907566fc6ca7b5296227993c6ee4805062409d1093a227a5239ef","source":"BACKUP DATABASE d TO DISK = 'a' WITH PARTIAL = 'x';\n"}
+{"id":"backup-restore/opt-backup-keep-replication-flag","sha256":"5dbada545036ed98325754b60f383296d7f86c8ca4fc2e688853c87faf33940a","source":"BACKUP DATABASE d TO DISK = 'a' WITH KEEP_REPLICATION;\n"}
+{"id":"backup-restore/opt-backup-keep-replication-number","sha256":"fcc05dea24de728faaf4e587025804689c1d0ddf4bbc06e2d5284992cf3a5100","source":"BACKUP DATABASE d TO DISK = 'a' WITH KEEP_REPLICATION = 1;\n"}
+{"id":"backup-restore/opt-backup-keep-replication-string","sha256":"4572ee4de98b4be3bc51e5928dcd386557a3ace17612e9744331f913e7f1b890","source":"BACKUP DATABASE d TO DISK = 'a' WITH KEEP_REPLICATION = 'x';\n"}
+{"id":"backup-restore/opt-backup-keep-cdc-flag","sha256":"feb2b9c68a33168e5e6b7c8ac0f43b41d0d964be94e9ee02ae6f520c5ad3449b","source":"BACKUP DATABASE d TO DISK = 'a' WITH KEEP_CDC;\n"}
+{"id":"backup-restore/opt-backup-keep-cdc-number","sha256":"92ce008bfe45b17662c91727059e99842b7fe1c9848d2fb5a8097d6a92cdcd89","source":"BACKUP DATABASE d TO DISK = 'a' WITH KEEP_CDC = 1;\n"}
+{"id":"backup-restore/opt-backup-keep-cdc-string","sha256":"27a451061a0c8f07d2ce515de589470620e0c85ece0184e97fec50ac48d59505","source":"BACKUP DATABASE d TO DISK = 'a' WITH KEEP_CDC = 'x';\n"}
+{"id":"backup-restore/opt-backup-enable-broker-flag","sha256":"57efea9a78fd5d543630a86f82ed8288e3806e0ff7453557ffd2070529daaa2c","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENABLE_BROKER;\n"}
+{"id":"backup-restore/opt-backup-enable-broker-number","sha256":"deee10d03ba1dee50003c3ee5a72843c614acbb33ba674c0dbb1d68ec4584ad1","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENABLE_BROKER = 1;\n"}
+{"id":"backup-restore/opt-backup-enable-broker-string","sha256":"014848419c06f3291a1c81586edf3c5f482fe9785720b245defa31140190d4ca","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENABLE_BROKER = 'x';\n"}
+{"id":"backup-restore/opt-backup-error-broker-conversations-flag","sha256":"650772fc009431545f5e6f61a2d9a9679c0ca33998d833c77ff50addce5f507d","source":"BACKUP DATABASE d TO DISK = 'a' WITH ERROR_BROKER_CONVERSATIONS;\n"}
+{"id":"backup-restore/opt-backup-error-broker-conversations-number","sha256":"0a50969d2b2d45cc68abcfe0894c16102b939838c0fae4e67daf61247654eb4b","source":"BACKUP DATABASE d TO DISK = 'a' WITH ERROR_BROKER_CONVERSATIONS = 1;\n"}
+{"id":"backup-restore/opt-backup-error-broker-conversations-string","sha256":"0386e8b0c8a10407510ae89f17694125bcc1ec646b083414ce99f85301ebffa3","source":"BACKUP DATABASE d TO DISK = 'a' WITH ERROR_BROKER_CONVERSATIONS = 'x';\n"}
+{"id":"backup-restore/opt-backup-new-broker-flag","sha256":"cf59c2e49bc5304c4ada0da3676986a823b1d42fd3202ae64cd74a57a9f9c882","source":"BACKUP DATABASE d TO DISK = 'a' WITH NEW_BROKER;\n"}
+{"id":"backup-restore/opt-backup-new-broker-number","sha256":"557540b7173cb95d49e56625094caab2c2dc6aa3a4b5f4d359a75d0c45bd988c","source":"BACKUP DATABASE d TO DISK = 'a' WITH NEW_BROKER = 1;\n"}
+{"id":"backup-restore/opt-backup-new-broker-string","sha256":"213d66370fece9d1e650e94379e627f9c93876c05163b28c06cf1761e1dc03b7","source":"BACKUP DATABASE d TO DISK = 'a' WITH NEW_BROKER = 'x';\n"}
+{"id":"backup-restore/opt-backup-loadhistory-flag","sha256":"d992e5a4d6aa15a806bb5eeb82a590d21389e974202d90cdc6338f3904af07a2","source":"BACKUP DATABASE d TO DISK = 'a' WITH LOADHISTORY;\n"}
+{"id":"backup-restore/opt-backup-loadhistory-number","sha256":"e2c47701c00d3612b5da7c1336fcbbc62c78586815bdca54c55bc038493d88cd","source":"BACKUP DATABASE d TO DISK = 'a' WITH LOADHISTORY = 1;\n"}
+{"id":"backup-restore/opt-backup-loadhistory-string","sha256":"a50b1d13db13a1e8df23b84632b1f93382c1084e316805a526e1bd10c6138010","source":"BACKUP DATABASE d TO DISK = 'a' WITH LOADHISTORY = 'x';\n"}
+{"id":"backup-restore/opt-backup-file-flag","sha256":"317cec4cc571d1718c951f211c6eb36ca81125daf969bc8e61c7ba50f4d817da","source":"BACKUP DATABASE d TO DISK = 'a' WITH FILE;\n"}
+{"id":"backup-restore/opt-backup-file-number","sha256":"408d9ef916380482b650e4a45bbaf833f831b1c315fc8d95cf8413b8936307f3","source":"BACKUP DATABASE d TO DISK = 'a' WITH FILE = 1;\n"}
+{"id":"backup-restore/opt-backup-file-string","sha256":"3729b49ba80801bf6f56be0fd3fd05058ac2c2320ffc151cecd7464432520d37","source":"BACKUP DATABASE d TO DISK = 'a' WITH FILE = 'x';\n"}
+{"id":"backup-restore/opt-backup-dbname-flag","sha256":"c7fff95db4f41eeb2d0964a1e70d9662b29914b62aacdc0991c39f794ea4b57f","source":"BACKUP DATABASE d TO DISK = 'a' WITH DBNAME;\n"}
+{"id":"backup-restore/opt-backup-dbname-number","sha256":"7c6eb563cf8f64245da07444877fd14ab216c704f8049d4a3332566e2ac4a909","source":"BACKUP DATABASE d TO DISK = 'a' WITH DBNAME = 1;\n"}
+{"id":"backup-restore/opt-backup-dbname-string","sha256":"93d69a04fe42caf0fd9451848f5d10f071e1a6123e39ba3f1ad39cab0c80532d","source":"BACKUP DATABASE d TO DISK = 'a' WITH DBNAME = 'x';\n"}
+{"id":"backup-restore/opt-backup-stopat-flag","sha256":"9094b3075f2cea9d8ac630503334a206cbf42bba4048cececd01678bcdb57603","source":"BACKUP DATABASE d TO DISK = 'a' WITH STOPAT;\n"}
+{"id":"backup-restore/opt-backup-stopat-number","sha256":"101a0f8c407ad15cd338744fb14d3d4c6c92cd81dbebbc1d035eded397b8129b","source":"BACKUP DATABASE d TO DISK = 'a' WITH STOPAT = 1;\n"}
+{"id":"backup-restore/opt-backup-stopat-string","sha256":"5b344c299ff1f051bfb93270f2d1b64c7c58478cb548c1a6e7ea856687ffdef8","source":"BACKUP DATABASE d TO DISK = 'a' WITH STOPAT = 'x';\n"}
+{"id":"backup-restore/opt-backup-stopatmark-flag","sha256":"d62af8bb4cc0392d7c63d8012f3c4c449988af9f8ac65531c8a95e5dfb7f93f2","source":"BACKUP DATABASE d TO DISK = 'a' WITH STOPATMARK;\n"}
+{"id":"backup-restore/opt-backup-stopatmark-number","sha256":"52171c9aae217094ac9d7d8665c504fb25a719193376869b431802cd6bfcc7b1","source":"BACKUP DATABASE d TO DISK = 'a' WITH STOPATMARK = 1;\n"}
+{"id":"backup-restore/opt-backup-stopatmark-string","sha256":"691fd17135b9a5d0b753b1a43f616591df9c8ff172582885dbba5319cab19485","source":"BACKUP DATABASE d TO DISK = 'a' WITH STOPATMARK = 'x';\n"}
+{"id":"backup-restore/opt-backup-stopbeforemark-flag","sha256":"7d49668fff61d29334218755af4e9eebd0cb9f65771d23b4457c0025e581014d","source":"BACKUP DATABASE d TO DISK = 'a' WITH STOPBEFOREMARK;\n"}
+{"id":"backup-restore/opt-backup-stopbeforemark-number","sha256":"5804a6b45a38a14ba504929e79e901720343362db8da17ead873606c617a3071","source":"BACKUP DATABASE d TO DISK = 'a' WITH STOPBEFOREMARK = 1;\n"}
+{"id":"backup-restore/opt-backup-stopbeforemark-string","sha256":"6df58ab4e3387f5b23e83be96ea56e3f4e5e71b6cffcf2b45363e28b5380de36","source":"BACKUP DATABASE d TO DISK = 'a' WITH STOPBEFOREMARK = 'x';\n"}
+{"id":"backup-restore/opt-backup-filestream-flag","sha256":"57f0bad56c23c8eb07c3b17e2de87ab0f39182580d3c7747455216abb6f3f16d","source":"BACKUP DATABASE d TO DISK = 'a' WITH FILESTREAM;\n"}
+{"id":"backup-restore/opt-backup-filestream-number","sha256":"451affa219f052c28939f7a12c54880bf190b6a34b09f592b229dd4cf6c59121","source":"BACKUP DATABASE d TO DISK = 'a' WITH FILESTREAM = 1;\n"}
+{"id":"backup-restore/opt-backup-filestream-string","sha256":"330c80aa253bcf447d3d20c314ced13993d5d9559e651d42b7fbe035d98b82f0","source":"BACKUP DATABASE d TO DISK = 'a' WITH FILESTREAM = 'x';\n"}
+{"id":"backup-restore/opt-backup-move-flag","sha256":"bac0d260c169f6b42292c0372fb9c2bae1d59bedbe82b822202e0ddb668c67e0","source":"BACKUP DATABASE d TO DISK = 'a' WITH MOVE;\n"}
+{"id":"backup-restore/opt-backup-move-number","sha256":"53065225ba388ca4a27556fcacc9093bbdcbab5d8c77cbd2bfd5c7155e37e3f7","source":"BACKUP DATABASE d TO DISK = 'a' WITH MOVE = 1;\n"}
+{"id":"backup-restore/opt-backup-move-string","sha256":"b26296e20169933f7bdb8e28da988bbd023e11a4d8142c6b5a92b5356e22827c","source":"BACKUP DATABASE d TO DISK = 'a' WITH MOVE = 'x';\n"}
+{"id":"backup-restore/opt-backup-no-log-flag","sha256":"aca02d5a0f1f4b08aec37611415f40e9ec24179e07556794a450960d115265ca","source":"BACKUP DATABASE d TO DISK = 'a' WITH NO_LOG;\n"}
+{"id":"backup-restore/opt-backup-no-log-number","sha256":"7750963af318a543fa46a6eef1c56784238410834d2e148f6dbd11c364dc3458","source":"BACKUP DATABASE d TO DISK = 'a' WITH NO_LOG = 1;\n"}
+{"id":"backup-restore/opt-backup-no-log-string","sha256":"893dbb9ee2e18bc74d893f7b856b924b9f11c2ff515f1f79cfa0d94442d37bcd","source":"BACKUP DATABASE d TO DISK = 'a' WITH NO_LOG = 'x';\n"}
+{"id":"backup-restore/opt-backup-truncate-only-flag","sha256":"592cc80982c6e65269fbf60f32f19281625ead0d9ddbb4b4f0d482765beeb14c","source":"BACKUP DATABASE d TO DISK = 'a' WITH TRUNCATE_ONLY;\n"}
+{"id":"backup-restore/opt-backup-truncate-only-number","sha256":"060520debfa32230d2c297cfc65d3b0a3d358f10b802da16d38218d5b06ee816","source":"BACKUP DATABASE d TO DISK = 'a' WITH TRUNCATE_ONLY = 1;\n"}
+{"id":"backup-restore/opt-backup-truncate-only-string","sha256":"e4cdebab6656eee7b7c8508841fab9f4d5879d6f466924a5053437f584490199","source":"BACKUP DATABASE d TO DISK = 'a' WITH TRUNCATE_ONLY = 'x';\n"}
+{"id":"backup-restore/opt-backup-dbo-only-flag","sha256":"9aabe41627da742b98b4c9b4b538f0f169804a4a4c84eb1cd1d8d409c5ffba68","source":"BACKUP DATABASE d TO DISK = 'a' WITH DBO_ONLY;\n"}
+{"id":"backup-restore/opt-backup-dbo-only-number","sha256":"0b2d8b42288c6403970db79612ca34d7a68c38a4d8ee189a7a813805d13ae270","source":"BACKUP DATABASE d TO DISK = 'a' WITH DBO_ONLY = 1;\n"}
+{"id":"backup-restore/opt-backup-dbo-only-string","sha256":"58856eb32cd3ab5161b60066daed47a4037d224d50ac3a0753fb43301cedcbe8","source":"BACKUP DATABASE d TO DISK = 'a' WITH DBO_ONLY = 'x';\n"}
+{"id":"backup-restore/opt-backup-backup-options-flag","sha256":"f698a2ed07c323f07290b9ffb59423e11cff2b2d07524ce5ee58c3d1bc7da4f5","source":"BACKUP DATABASE d TO DISK = 'a' WITH BACKUP_OPTIONS;\n"}
+{"id":"backup-restore/opt-backup-backup-options-number","sha256":"c8adac81bf5544595880ac593c31a1335c8984665fe93375541a59bd26b5ce1a","source":"BACKUP DATABASE d TO DISK = 'a' WITH BACKUP_OPTIONS = 1;\n"}
+{"id":"backup-restore/opt-backup-backup-options-string","sha256":"4d3da49d57b6d2f4acb9f43a74ab24bb17c94d1de625c12a06ca919de3fe0421","source":"BACKUP DATABASE d TO DISK = 'a' WITH BACKUP_OPTIONS = 'x';\n"}
+{"id":"backup-restore/opt-backup-restore-options-flag","sha256":"110252f6a5edd25b9bce73df2588399d47f4d16203a4bc00d61d1f08f8425427","source":"BACKUP DATABASE d TO DISK = 'a' WITH RESTORE_OPTIONS;\n"}
+{"id":"backup-restore/opt-backup-restore-options-number","sha256":"cc4c7cffb79a5df430f68880b28da08e974ec50b673c7ef76b4f3d07b0798933","source":"BACKUP DATABASE d TO DISK = 'a' WITH RESTORE_OPTIONS = 1;\n"}
+{"id":"backup-restore/opt-backup-restore-options-string","sha256":"79ebf0f38c8829fc8ffa19c9c47978345842f83bf5359aa710caef60e5d8f21b","source":"BACKUP DATABASE d TO DISK = 'a' WITH RESTORE_OPTIONS = 'x';\n"}
+{"id":"backup-restore/opt-backup-enhancedintegrity-flag","sha256":"c3df7ed62478e29c38e20288a7c8233148093e0492e06441b5a737b1466287ee","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENHANCEDINTEGRITY;\n"}
+{"id":"backup-restore/opt-backup-enhancedintegrity-number","sha256":"abaf4330ab971948426b6ef8cc9741adb4e7f9fa1f8150f285c515accbe7d975","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENHANCEDINTEGRITY = 1;\n"}
+{"id":"backup-restore/opt-backup-enhancedintegrity-string","sha256":"d01acd100bcd6171ad1afe324871bcee47bed3f64f5a83fd82450f77f2d5a969","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENHANCEDINTEGRITY = 'x';\n"}
+{"id":"backup-restore/opt-backup-commit-differential-base-flag","sha256":"f321d23d989c3c26ff99cdcc883e81d7ee6ac56e1e5d5b66263119d184414b0e","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMMIT_DIFFERENTIAL_BASE;\n"}
+{"id":"backup-restore/opt-backup-commit-differential-base-number","sha256":"ef289c81c9b565907e6a9338ff14fbae1c286ef7bbe8ce87d234a171bfe3e59f","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMMIT_DIFFERENTIAL_BASE = 1;\n"}
+{"id":"backup-restore/opt-backup-commit-differential-base-string","sha256":"0a172aa9082d441fab18b888583502aab262695da783c6be10d815f06b8fa9ba","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMMIT_DIFFERENTIAL_BASE = 'x';\n"}
+{"id":"backup-restore/opt-backup-url-flag","sha256":"d4d7a1fdb97d5baa067a52dd8ab84fee07352e4faca038f2d9338508db56e559","source":"BACKUP DATABASE d TO DISK = 'a' WITH URL;\n"}
+{"id":"backup-restore/opt-backup-url-number","sha256":"aaa3e2d96491026773d76d0ded3715c678fba1f61cb4174d23f5ad7297cdbd02","source":"BACKUP DATABASE d TO DISK = 'a' WITH URL = 1;\n"}
+{"id":"backup-restore/opt-backup-url-string","sha256":"06666ee01b360ce69a25deb63bae0f6105b30eb154b2d86bfb1e092a28d0d5f1","source":"BACKUP DATABASE d TO DISK = 'a' WITH URL = 'x';\n"}
+{"id":"backup-restore/opt-backup-keep-temporal-retention-flag","sha256":"cbf5fc4dcf8ff19108ded1b3b916f94aa618672b1a0f67bc1eeff20ec908b808","source":"BACKUP DATABASE d TO DISK = 'a' WITH KEEP_TEMPORAL_RETENTION;\n"}
+{"id":"backup-restore/opt-backup-keep-temporal-retention-number","sha256":"0c095235bc29cecd62c284761bab0f47225de6c0feb4e2cf551dfe4663cf22af","source":"BACKUP DATABASE d TO DISK = 'a' WITH KEEP_TEMPORAL_RETENTION = 1;\n"}
+{"id":"backup-restore/opt-backup-keep-temporal-retention-string","sha256":"035b0c08800ce8e82f0f5072b0648170c84a4ecb1d0c53a1c6d42bce8fb39054","source":"BACKUP DATABASE d TO DISK = 'a' WITH KEEP_TEMPORAL_RETENTION = 'x';\n"}
+{"id":"backup-restore/opt-backup-compression-list","sha256":"912653993beb78372944d286b1e02ff42e1412aa4eb544e341b8f156db3d0232","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (DIRECTORY_NAME = 'x');\n"}
+{"id":"backup-restore/opt-backup-encryption-list","sha256":"0ed5a1b155fd04335b160799c634d0a482406862a1fe12ff54e2e718cc630267","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (DIRECTORY_NAME = 'x');\n"}
+{"id":"backup-restore/opt-backup-filestream-list","sha256":"ae91d63876a07ab85be551725a138d51c0a03825173ec26e0339a5e8091cb3b2","source":"BACKUP DATABASE d TO DISK = 'a' WITH FILESTREAM (DIRECTORY_NAME = 'x');\n"}
+{"id":"backup-restore/opt-backup-backup-options-list","sha256":"228ce8341ea0013bea11bc609187cc4f3a89011a7338152e508446548385b057","source":"BACKUP DATABASE d TO DISK = 'a' WITH BACKUP_OPTIONS (DIRECTORY_NAME = 'x');\n"}
+{"id":"backup-restore/opt-backup-restore-options-list","sha256":"92920fb1664d14e9505d0343c670a088a76181f9c094917a384af37e5f4133ff","source":"BACKUP DATABASE d TO DISK = 'a' WITH RESTORE_OPTIONS (DIRECTORY_NAME = 'x');\n"}
+{"id":"backup-restore/opt-backup-stats-list","sha256":"f68aed56cc3eb17557e9948f7252a625ee4729231f26c052fbf514b528d7cf4d","source":"BACKUP DATABASE d TO DISK = 'a' WITH STATS (DIRECTORY_NAME = 'x');\n"}
+{"id":"backup-restore/opt-backup-name-list","sha256":"0cd7f37841e147baf189fb8fa254538e59f6673289b23efc6ba1dccea94a4630","source":"BACKUP DATABASE d TO DISK = 'a' WITH NAME (DIRECTORY_NAME = 'x');\n"}
+{"id":"backup-restore/device-backup-disk","sha256":"e06e3cac4deca236e0d75db94057769e8600e50b4ef399ce857f5d3c835b8d07","source":"BACKUP DATABASE d TO DISK = 'a';\n"}
+{"id":"backup-restore/device-backup-tape","sha256":"94d793361b7272fa69eba701bf37191d3ef83b27e379abcd102895bcf7b27015","source":"BACKUP DATABASE d TO TAPE = 'a';\n"}
+{"id":"backup-restore/device-backup-url","sha256":"6128e5b0973d8ec5a64fb25541dd1500aed5aaea67d394baf086459b08e2d008","source":"BACKUP DATABASE d TO URL = 'a';\n"}
+{"id":"backup-restore/device-backup-database-snapshot","sha256":"60dc9f7f2325a18d171eb06ecf8c92c8991258e3637b45f2308b2f6c1154be3f","source":"BACKUP DATABASE d TO DATABASE_SNAPSHOT = 'a';\n"}
+{"id":"backup-restore/device-backup-file","sha256":"d677af2961eb0133e4b1e476747868dc768a13cb318f729dde852a4a3edffebb","source":"BACKUP DATABASE d TO FILE = 'a';\n"}
+{"id":"backup-restore/device-backup-virtual-device","sha256":"50c958fa13cf4699f007de496af6645d9dfd22384852ca9e10c543efcefbae3f","source":"BACKUP DATABASE d TO VIRTUAL_DEVICE = 'a';\n"}
+{"id":"backup-restore/device-backup-pipe","sha256":"ec5807a9b59b680578798a18d4531ba156b8cc5b5b4f7330896bbb9438830d91","source":"BACKUP DATABASE d TO PIPE = 'a';\n"}
+{"id":"backup-restore/opt-restore-differential-flag","sha256":"194b2502ab51112dabdb9edf62dc737cf298719ee79a26647d75ec4b93a61371","source":"RESTORE DATABASE d FROM DISK = 'a' WITH DIFFERENTIAL;\n"}
+{"id":"backup-restore/opt-restore-differential-number","sha256":"cf9644cf2e2043461cc3ad18bfe115717e6de050a48ba452d640eebf86fdd832","source":"RESTORE DATABASE d FROM DISK = 'a' WITH DIFFERENTIAL = 1;\n"}
+{"id":"backup-restore/opt-restore-differential-string","sha256":"5fbae457f823a2710850fdc56f26a0a23a866775b24aa19e626b12f2c4e9bc90","source":"RESTORE DATABASE d FROM DISK = 'a' WITH DIFFERENTIAL = 'x';\n"}
+{"id":"backup-restore/opt-restore-copy-only-flag","sha256":"312ea422bab3af875a417a46f83ac080852a8b04011d397b692a974c87fe2688","source":"RESTORE DATABASE d FROM DISK = 'a' WITH COPY_ONLY;\n"}
+{"id":"backup-restore/opt-restore-copy-only-number","sha256":"6d14839551c013f1ce4dc4533cd0af024b5d8b0de40f69d16902ce513211433b","source":"RESTORE DATABASE d FROM DISK = 'a' WITH COPY_ONLY = 1;\n"}
+{"id":"backup-restore/opt-restore-copy-only-string","sha256":"5c901627b63e2e5286d4fc7a04527e7613ca66df0ed89dc86ffd9086e8b719eb","source":"RESTORE DATABASE d FROM DISK = 'a' WITH COPY_ONLY = 'x';\n"}
+{"id":"backup-restore/opt-restore-compression-flag","sha256":"82cea8efff623a81ee4e602d4d4716d9449188ed20239a78b7a2a36c071ebe6c","source":"RESTORE DATABASE d FROM DISK = 'a' WITH COMPRESSION;\n"}
+{"id":"backup-restore/opt-restore-compression-number","sha256":"e417d6048f5922b186e9e29a293446ec00c5965a389477338e8d22c30bda2cfe","source":"RESTORE DATABASE d FROM DISK = 'a' WITH COMPRESSION = 1;\n"}
+{"id":"backup-restore/opt-restore-compression-string","sha256":"0803e3171edc0a6798549458059f14d98b107e4e30406ddd2612ec3a8f5e730d","source":"RESTORE DATABASE d FROM DISK = 'a' WITH COMPRESSION = 'x';\n"}
+{"id":"backup-restore/opt-restore-no-compression-flag","sha256":"ca5936c0ae7e2ca9385f6cd6b6093b08a9790c83ce51290e7469309b47ea3124","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NO_COMPRESSION;\n"}
+{"id":"backup-restore/opt-restore-no-compression-number","sha256":"e90604035a452640bf431e5f0f4c4f0635efa366a9a4bffe20ea2ad2aaf8dec9","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NO_COMPRESSION = 1;\n"}
+{"id":"backup-restore/opt-restore-no-compression-string","sha256":"dfa02be7c6a7719bb78c73d43e23fe633a9214db43f63e1ce93180b5715e732b","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NO_COMPRESSION = 'x';\n"}
+{"id":"backup-restore/opt-restore-file-snapshot-flag","sha256":"fc6eb6b2d8c4356790e595e774aef1153c8a6b4d7dcb3e7ca10ed7eae6b95835","source":"RESTORE DATABASE d FROM DISK = 'a' WITH FILE_SNAPSHOT;\n"}
+{"id":"backup-restore/opt-restore-file-snapshot-number","sha256":"9165bcfc9547882c6bfa11cda5d232655224eeb8857d907a9f3a4e00a904580f","source":"RESTORE DATABASE d FROM DISK = 'a' WITH FILE_SNAPSHOT = 1;\n"}
+{"id":"backup-restore/opt-restore-file-snapshot-string","sha256":"b6a87849ffec9e8c28cfce92e6c5e5a0ee651f80aaafda98f3b64218b2cff0bc","source":"RESTORE DATABASE d FROM DISK = 'a' WITH FILE_SNAPSHOT = 'x';\n"}
+{"id":"backup-restore/opt-restore-noinit-flag","sha256":"eb2040b0843286540491f64bfa9db5289670d4b06537c089151d60d2e533fc0c","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NOINIT;\n"}
+{"id":"backup-restore/opt-restore-noinit-number","sha256":"21f68a30779560e7dc38b9bfc50bcad5348f841ce588259da784497b9f8b052d","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NOINIT = 1;\n"}
+{"id":"backup-restore/opt-restore-noinit-string","sha256":"f2530a7bf8002e788e37f63ec69f05b4cf853cec717b0a7998fafdc64bfe63d8","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NOINIT = 'x';\n"}
+{"id":"backup-restore/opt-restore-init-flag","sha256":"f034de261aba13834cdb04d1976e01c8773f3fb8f8705338c3f8d9c7c9e25d55","source":"RESTORE DATABASE d FROM DISK = 'a' WITH INIT;\n"}
+{"id":"backup-restore/opt-restore-init-number","sha256":"438ef83c8c286d1db55e6faf525aa5a61072196f590e0472aa0ba11a78972953","source":"RESTORE DATABASE d FROM DISK = 'a' WITH INIT = 1;\n"}
+{"id":"backup-restore/opt-restore-init-string","sha256":"839575c779760fd2c61c6adb3c05a4ffe5cd0190871ff698924c9ce59f1ec457","source":"RESTORE DATABASE d FROM DISK = 'a' WITH INIT = 'x';\n"}
+{"id":"backup-restore/opt-restore-noskip-flag","sha256":"361b97f56b394cdbbaf6343dec6a76db7624de12c61d78192f1720788be83946","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NOSKIP;\n"}
+{"id":"backup-restore/opt-restore-noskip-number","sha256":"8015ccde22e97d3cde9478eba86f263dff38491310ee5e0cbd0b1f49806c2d60","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NOSKIP = 1;\n"}
+{"id":"backup-restore/opt-restore-noskip-string","sha256":"c7525c31f30306cab1fa81342b596f6953b205a9dfd7d94d296424419197b1fa","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NOSKIP = 'x';\n"}
+{"id":"backup-restore/opt-restore-skip-flag","sha256":"fdd32fa1e786435ec382d2aad1412194c88939a00c377b66047273da24278ed9","source":"RESTORE DATABASE d FROM DISK = 'a' WITH SKIP;\n"}
+{"id":"backup-restore/opt-restore-skip-number","sha256":"1085027b3eceb0235853758c9f64207a192658f5dbd5d1a0ba3c19e577630973","source":"RESTORE DATABASE d FROM DISK = 'a' WITH SKIP = 1;\n"}
+{"id":"backup-restore/opt-restore-skip-string","sha256":"9f9b29ee78507aab8d55338bd350d30ec1189e9017e18a37357ff7a67c3db98a","source":"RESTORE DATABASE d FROM DISK = 'a' WITH SKIP = 'x';\n"}
+{"id":"backup-restore/opt-restore-noformat-flag","sha256":"82b5e721c855c431584d98010b2d1096dceb7ac534d5d8216e89049c57aea2b2","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NOFORMAT;\n"}
+{"id":"backup-restore/opt-restore-noformat-number","sha256":"5dd79364f2fe4e534347749505ebddc3120c93a88d21ea221c968a697398264a","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NOFORMAT = 1;\n"}
+{"id":"backup-restore/opt-restore-noformat-string","sha256":"fe906176c77308d6af84033e4dcc38b033ec487503f3dae2c89907f905984bdc","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NOFORMAT = 'x';\n"}
+{"id":"backup-restore/opt-restore-format-flag","sha256":"787133395fff35bafe817a83b88cc09b0b31b870797c8413e3a25d2d13a81d6e","source":"RESTORE DATABASE d FROM DISK = 'a' WITH FORMAT;\n"}
+{"id":"backup-restore/opt-restore-format-number","sha256":"e83b39366e849dc16a41e06223f34a943e2401ae5395a63fe4ba6b34620a69f0","source":"RESTORE DATABASE d FROM DISK = 'a' WITH FORMAT = 1;\n"}
+{"id":"backup-restore/opt-restore-format-string","sha256":"4176b6c49ff42d411e6ef791a30f84e73e1f8c444336b96dec88bf3a010166d2","source":"RESTORE DATABASE d FROM DISK = 'a' WITH FORMAT = 'x';\n"}
+{"id":"backup-restore/opt-restore-no-checksum-flag","sha256":"ed3dc9101516d7585dd3e6b5d583fa750d50ddb90e14214f077ff31b4e78aa3f","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NO_CHECKSUM;\n"}
+{"id":"backup-restore/opt-restore-no-checksum-number","sha256":"fc4a9106d04389298dc2f2d9bc2f4ce805ddf89e5276d0d72ecf5942b964ce7e","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NO_CHECKSUM = 1;\n"}
+{"id":"backup-restore/opt-restore-no-checksum-string","sha256":"fe97cd964f84b316ff3ad92e3fe020448db29ac35cbab6c0fd9e1dccb7a91fb2","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NO_CHECKSUM = 'x';\n"}
+{"id":"backup-restore/opt-restore-checksum-flag","sha256":"d560175a70041c1114b4e86335b73c7bdf900ad320683ab8ba820c49d8f12fff","source":"RESTORE DATABASE d FROM DISK = 'a' WITH CHECKSUM;\n"}
+{"id":"backup-restore/opt-restore-checksum-number","sha256":"7495beef0fe57f46986f2d32f5801490ac174a113381672f77747a3005213ef2","source":"RESTORE DATABASE d FROM DISK = 'a' WITH CHECKSUM = 1;\n"}
+{"id":"backup-restore/opt-restore-checksum-string","sha256":"1ca2022c8e250492000b924cae5c36da33176354ccd18c49253213651f00381c","source":"RESTORE DATABASE d FROM DISK = 'a' WITH CHECKSUM = 'x';\n"}
+{"id":"backup-restore/opt-restore-stop-on-error-flag","sha256":"754e86a5858411476cbebc49ba6471f83070cf01da06269c8d56e306077339cf","source":"RESTORE DATABASE d FROM DISK = 'a' WITH STOP_ON_ERROR;\n"}
+{"id":"backup-restore/opt-restore-stop-on-error-number","sha256":"1c49f64863fecab97eac8e06f9c6a2f39b86fc50e4b53e470a08f608f5da7491","source":"RESTORE DATABASE d FROM DISK = 'a' WITH STOP_ON_ERROR = 1;\n"}
+{"id":"backup-restore/opt-restore-stop-on-error-string","sha256":"8685b5a15430fc4792ca303481dc18b1ee96d465fa188a6d968e61517296bfbc","source":"RESTORE DATABASE d FROM DISK = 'a' WITH STOP_ON_ERROR = 'x';\n"}
+{"id":"backup-restore/opt-restore-continue-after-error-flag","sha256":"d89986803f5093feb824a79fd50b62252eccd8f7d7c4117136346f80b2fdc3d5","source":"RESTORE DATABASE d FROM DISK = 'a' WITH CONTINUE_AFTER_ERROR;\n"}
+{"id":"backup-restore/opt-restore-continue-after-error-number","sha256":"98fc9243dbefb1261b6a62d4c56f306e1d3fd7f1b502cef9012598f018c5e18d","source":"RESTORE DATABASE d FROM DISK = 'a' WITH CONTINUE_AFTER_ERROR = 1;\n"}
+{"id":"backup-restore/opt-restore-continue-after-error-string","sha256":"cc6582f4ecaf640de27229e9ee3fafbbe4244952f4ec0c0de0b482244cada2cd","source":"RESTORE DATABASE d FROM DISK = 'a' WITH CONTINUE_AFTER_ERROR = 'x';\n"}
+{"id":"backup-restore/opt-restore-restart-flag","sha256":"2fc78cf0e2d55e92faaa19d2eab294b5991d75fce03facbbe8be34bf38a81edc","source":"RESTORE DATABASE d FROM DISK = 'a' WITH RESTART;\n"}
+{"id":"backup-restore/opt-restore-restart-number","sha256":"eb54976640ac432eb193037cc8c4c038eb303f565b914088012c640033f9598b","source":"RESTORE DATABASE d FROM DISK = 'a' WITH RESTART = 1;\n"}
+{"id":"backup-restore/opt-restore-restart-string","sha256":"e36459c85f6c28fafc00c23db87bc951702346a6bdb060764fe3bc3cf76ac5fc","source":"RESTORE DATABASE d FROM DISK = 'a' WITH RESTART = 'x';\n"}
+{"id":"backup-restore/opt-restore-rewind-flag","sha256":"70958a2e75b299a2aff548d769922e0a28bcad9a2621d1e10a0a05ee36ae54d6","source":"RESTORE DATABASE d FROM DISK = 'a' WITH REWIND;\n"}
+{"id":"backup-restore/opt-restore-rewind-number","sha256":"c289ffc37a1a176497a4eeb244d6f45fed11ef5c564e5d15713b5e6c51092f36","source":"RESTORE DATABASE d FROM DISK = 'a' WITH REWIND = 1;\n"}
+{"id":"backup-restore/opt-restore-rewind-string","sha256":"b2d3b814f7e7b8d825305b41ed40ac7dbd0945ef2f8b1adfa466d0728c6f9d61","source":"RESTORE DATABASE d FROM DISK = 'a' WITH REWIND = 'x';\n"}
+{"id":"backup-restore/opt-restore-norewind-flag","sha256":"1f0625ef2a70837a345811949b64a3fb123dbfcd77d6000997eb9d16355e5d07","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NOREWIND;\n"}
+{"id":"backup-restore/opt-restore-norewind-number","sha256":"b028a1a3053d7c9aae3d8e5644976a3a8c53b4e42ef9e7fda54ac955fa475c4a","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NOREWIND = 1;\n"}
+{"id":"backup-restore/opt-restore-norewind-string","sha256":"f53c431a0aff6b9bf4c2888a6ebe9d9a7a5d22c9a9fd8711387d2791089b767b","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NOREWIND = 'x';\n"}
+{"id":"backup-restore/opt-restore-unload-flag","sha256":"46a16f7278987b44308a171790ded7473e9931e00954ff064d1c93b7eed79cdf","source":"RESTORE DATABASE d FROM DISK = 'a' WITH UNLOAD;\n"}
+{"id":"backup-restore/opt-restore-unload-number","sha256":"3a621289a0e7b99a9b1bb232906ab8f6c64e159aef9c7c1f1fa51a8403d2afa2","source":"RESTORE DATABASE d FROM DISK = 'a' WITH UNLOAD = 1;\n"}
+{"id":"backup-restore/opt-restore-unload-string","sha256":"9417c9e8fb5958873b5f79203479947fe189495bb125df0ba554f34e5690694f","source":"RESTORE DATABASE d FROM DISK = 'a' WITH UNLOAD = 'x';\n"}
+{"id":"backup-restore/opt-restore-nounload-flag","sha256":"a5a2dd550255c1622efd0c57c76c0d49fa849333fb4bc7e1cd257d35bcd8ab0c","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NOUNLOAD;\n"}
+{"id":"backup-restore/opt-restore-nounload-number","sha256":"8c7b05275239024080bc480142d6341bb25d158668f68d48463a6ccc2cc2238e","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NOUNLOAD = 1;\n"}
+{"id":"backup-restore/opt-restore-nounload-string","sha256":"1bf45af398f7d9df4facd2ec6fe87691b3073ca2fbdb51f957d439c3eae63430","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NOUNLOAD = 'x';\n"}
+{"id":"backup-restore/opt-restore-norecovery-flag","sha256":"4932e1f4017d7b41b7d2893bf41de43050208a3d0ca8d0fce8c2fb6b240b8fa1","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NORECOVERY;\n"}
+{"id":"backup-restore/opt-restore-norecovery-number","sha256":"78124acbca95cc8c8efb368239d86a17783d671862b1e9067767f1b51c4d56ac","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NORECOVERY = 1;\n"}
+{"id":"backup-restore/opt-restore-norecovery-string","sha256":"3be9287a4fcdf0c737bc9b56f97a1083e538979fcf5a270a2b9f68e782efa20d","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NORECOVERY = 'x';\n"}
+{"id":"backup-restore/opt-restore-recovery-flag","sha256":"7af518cbffa28a58c4e5970b873d1c50d513322c851240fc97c4e46474af989c","source":"RESTORE DATABASE d FROM DISK = 'a' WITH RECOVERY;\n"}
+{"id":"backup-restore/opt-restore-recovery-number","sha256":"171a214c1a9a725b87298f9c272bae84c520563ea7dccd03bfe14e8d21209e4e","source":"RESTORE DATABASE d FROM DISK = 'a' WITH RECOVERY = 1;\n"}
+{"id":"backup-restore/opt-restore-recovery-string","sha256":"04ada2f4f05dd04069c8ebf7897706b951b306e9ca63b14ae70f9629dd0aad09","source":"RESTORE DATABASE d FROM DISK = 'a' WITH RECOVERY = 'x';\n"}
+{"id":"backup-restore/opt-restore-no-truncate-flag","sha256":"5d3ba5ce0f20bf0749db5a5f53fc624984d0412f24b79bfefa7edfa0c4b57236","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NO_TRUNCATE;\n"}
+{"id":"backup-restore/opt-restore-no-truncate-number","sha256":"291ab03376d9a024c2ddad7a31633b09ec3f4729ec04422081a73532e548e0d2","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NO_TRUNCATE = 1;\n"}
+{"id":"backup-restore/opt-restore-no-truncate-string","sha256":"fbd6bda5219170546db03590a50453cd6ba4ed547ba82402e4dd7464ee3e882c","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NO_TRUNCATE = 'x';\n"}
+{"id":"backup-restore/opt-restore-metadata-only-flag","sha256":"224b12a7d2c7195d2c19f3a1a80267c6ec055349e943e13a4233f3ace6188bbc","source":"RESTORE DATABASE d FROM DISK = 'a' WITH METADATA_ONLY;\n"}
+{"id":"backup-restore/opt-restore-metadata-only-number","sha256":"dcf11b00b82103985832345fe7ab8beabf9db20084ce4d102b168505186e8f16","source":"RESTORE DATABASE d FROM DISK = 'a' WITH METADATA_ONLY = 1;\n"}
+{"id":"backup-restore/opt-restore-metadata-only-string","sha256":"1c2d79a548c821a2203651a5cd8966624d6633d1ff58567aae76e9ef29d69fef","source":"RESTORE DATABASE d FROM DISK = 'a' WITH METADATA_ONLY = 'x';\n"}
+{"id":"backup-restore/opt-restore-snapshot-flag","sha256":"a2de2941ea17d673a5f876c81e41f1a3c5722450cf48be7f3abdb3000363bcbf","source":"RESTORE DATABASE d FROM DISK = 'a' WITH SNAPSHOT;\n"}
+{"id":"backup-restore/opt-restore-snapshot-number","sha256":"16f26671149172714a2773d81e0dd53fda8a1048520111a7de41e0735ae52602","source":"RESTORE DATABASE d FROM DISK = 'a' WITH SNAPSHOT = 1;\n"}
+{"id":"backup-restore/opt-restore-snapshot-string","sha256":"03242a3b5e5ed3b37217e1e33cc92e256e63a91547055dc7374b1bd5153805bc","source":"RESTORE DATABASE d FROM DISK = 'a' WITH SNAPSHOT = 'x';\n"}
+{"id":"backup-restore/opt-restore-stats-flag","sha256":"172add8e802890ed7fbea9f00cb67ca57e9884e65df067146c1ae89d30cd7a86","source":"RESTORE DATABASE d FROM DISK = 'a' WITH STATS;\n"}
+{"id":"backup-restore/opt-restore-stats-number","sha256":"05bf66fab6b4ceffd8c0054e777acf53f4c158269eeb35de69f4eb201e7c48e5","source":"RESTORE DATABASE d FROM DISK = 'a' WITH STATS = 1;\n"}
+{"id":"backup-restore/opt-restore-stats-string","sha256":"802f526edca523008d92b862c4e85d95315b3ff5e6542df19057778c1c2a58db","source":"RESTORE DATABASE d FROM DISK = 'a' WITH STATS = 'x';\n"}
+{"id":"backup-restore/opt-restore-description-flag","sha256":"16fc7dcae3f40d13405cee3c6959eadc5f545073ac782a1866b6feaca65f9403","source":"RESTORE DATABASE d FROM DISK = 'a' WITH DESCRIPTION;\n"}
+{"id":"backup-restore/opt-restore-description-number","sha256":"ca2f7296a7d1ad40987a5399350ea4f1bfadcb59841c978aa80fc527ece559bc","source":"RESTORE DATABASE d FROM DISK = 'a' WITH DESCRIPTION = 1;\n"}
+{"id":"backup-restore/opt-restore-description-string","sha256":"dc6d7ba98added48cd33f9fc143c7d50fd700d242109f7c642af5792c16d3f7d","source":"RESTORE DATABASE d FROM DISK = 'a' WITH DESCRIPTION = 'x';\n"}
+{"id":"backup-restore/opt-restore-name-flag","sha256":"bfe68575580d489d2fa10d81b543b03a96e3684f6eb2bb9f9880b4570deca071","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NAME;\n"}
+{"id":"backup-restore/opt-restore-name-number","sha256":"7d64120effdfebff7bb2224e518bf3a872bfeb66f1c938012f850b7c0e0424a9","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NAME = 1;\n"}
+{"id":"backup-restore/opt-restore-name-string","sha256":"2e1d428eb0de686d0de12eacd98836c9f5b662f7a5f71074932c656a30fe3ccf","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NAME = 'x';\n"}
+{"id":"backup-restore/opt-restore-credential-flag","sha256":"d63192a406302c0fe8eb8ae21fc7cabcabcef67e086311fee28ec2b62d9c591c","source":"RESTORE DATABASE d FROM DISK = 'a' WITH CREDENTIAL;\n"}
+{"id":"backup-restore/opt-restore-credential-number","sha256":"81a8105d9faf5669cb9bead61f6da0ab21a284028bc2bb1868d6542770a912a5","source":"RESTORE DATABASE d FROM DISK = 'a' WITH CREDENTIAL = 1;\n"}
+{"id":"backup-restore/opt-restore-credential-string","sha256":"68e478dea3d02a5f2c3b6070fe780097175808e3f7582efb47fde227a93afa51","source":"RESTORE DATABASE d FROM DISK = 'a' WITH CREDENTIAL = 'x';\n"}
+{"id":"backup-restore/opt-restore-expiredate-flag","sha256":"8810c013d0128b172b21e73405ea06fd424ff57de76054f74d722056000c4cab","source":"RESTORE DATABASE d FROM DISK = 'a' WITH EXPIREDATE;\n"}
+{"id":"backup-restore/opt-restore-expiredate-number","sha256":"721ccf074bb821b5cdd258993e3b815ffc6e81da6a13dff5e5a890e948e4a85e","source":"RESTORE DATABASE d FROM DISK = 'a' WITH EXPIREDATE = 1;\n"}
+{"id":"backup-restore/opt-restore-expiredate-string","sha256":"8c671a35b23cffd1c4eeab0da72f123c0bdf9da63ce535d373d56c11a0c1b0ba","source":"RESTORE DATABASE d FROM DISK = 'a' WITH EXPIREDATE = 'x';\n"}
+{"id":"backup-restore/opt-restore-retaindays-flag","sha256":"c8fffdaffffceb045955f2254b70ca16d9856c78accb4e52846bc0823bba572a","source":"RESTORE DATABASE d FROM DISK = 'a' WITH RETAINDAYS;\n"}
+{"id":"backup-restore/opt-restore-retaindays-number","sha256":"7f72064f9b7633c1222a093266d0d097c6f49ba0ceea1eb47e94c371e197af7e","source":"RESTORE DATABASE d FROM DISK = 'a' WITH RETAINDAYS = 1;\n"}
+{"id":"backup-restore/opt-restore-retaindays-string","sha256":"1b2beed4af3d6e8bf5097c759857a62405c8f9daca09ff522dc38e4cdce67bfc","source":"RESTORE DATABASE d FROM DISK = 'a' WITH RETAINDAYS = 'x';\n"}
+{"id":"backup-restore/opt-restore-mediadescription-flag","sha256":"3e4a3a61771a920b92ad6b3933db40e0ea94bd6397e3923cdf4f57067fb9582f","source":"RESTORE DATABASE d FROM DISK = 'a' WITH MEDIADESCRIPTION;\n"}
+{"id":"backup-restore/opt-restore-mediadescription-number","sha256":"6b331b09ee1ceed43b606518df555ac2270b9267df666a48adfacc8e85bda57f","source":"RESTORE DATABASE d FROM DISK = 'a' WITH MEDIADESCRIPTION = 1;\n"}
+{"id":"backup-restore/opt-restore-mediadescription-string","sha256":"604e970b7e8734e50eb792bc9199489724a17a5714041e28e249aca770eaf5f0","source":"RESTORE DATABASE d FROM DISK = 'a' WITH MEDIADESCRIPTION = 'x';\n"}
+{"id":"backup-restore/opt-restore-medianame-flag","sha256":"15c0670857d594d6c49d7359cdee4f8f499f715370c93fdb3db9a6441c0aa065","source":"RESTORE DATABASE d FROM DISK = 'a' WITH MEDIANAME;\n"}
+{"id":"backup-restore/opt-restore-medianame-number","sha256":"af4906d40a83c74cfd1c19cc727b0eb16a6e6b9f1bfb019f707e2bf9279612af","source":"RESTORE DATABASE d FROM DISK = 'a' WITH MEDIANAME = 1;\n"}
+{"id":"backup-restore/opt-restore-medianame-string","sha256":"691e3868a6592eeacefb40bed347d85e4e73a1517603397f8e9d6d2edacecfba","source":"RESTORE DATABASE d FROM DISK = 'a' WITH MEDIANAME = 'x';\n"}
+{"id":"backup-restore/opt-restore-blocksize-flag","sha256":"f50713ee87c51c2b9ec1749472b5a2d87779cdf84a6d486e1780ba4bfd1591ce","source":"RESTORE DATABASE d FROM DISK = 'a' WITH BLOCKSIZE;\n"}
+{"id":"backup-restore/opt-restore-blocksize-number","sha256":"2d7fae1fc2a49eb67dd317118d6274961504c286ea5d71541fa97924c059e0c4","source":"RESTORE DATABASE d FROM DISK = 'a' WITH BLOCKSIZE = 1;\n"}
+{"id":"backup-restore/opt-restore-blocksize-string","sha256":"f2e016946c19117a219e2a3a0c1dc19181050e33579925977fccf397e9b3b2b2","source":"RESTORE DATABASE d FROM DISK = 'a' WITH BLOCKSIZE = 'x';\n"}
+{"id":"backup-restore/opt-restore-buffercount-flag","sha256":"119ccca2223930cdabdb3a58124ec6988376bc14839b2c851aadd33b8df7b9e1","source":"RESTORE DATABASE d FROM DISK = 'a' WITH BUFFERCOUNT;\n"}
+{"id":"backup-restore/opt-restore-buffercount-number","sha256":"4712c8c81bca875c5e333fd2e91235e25103232aeba79ba3e733acd71a5faa8a","source":"RESTORE DATABASE d FROM DISK = 'a' WITH BUFFERCOUNT = 1;\n"}
+{"id":"backup-restore/opt-restore-buffercount-string","sha256":"67ffd299e248ed63d7862633b75fbb10a59c061e6e323bbe896dcc9bdda15304","source":"RESTORE DATABASE d FROM DISK = 'a' WITH BUFFERCOUNT = 'x';\n"}
+{"id":"backup-restore/opt-restore-maxtransfersize-flag","sha256":"61cc541946e709e04793e4847ea503813b4218ebadbb16cf00926296170fd253","source":"RESTORE DATABASE d FROM DISK = 'a' WITH MAXTRANSFERSIZE;\n"}
+{"id":"backup-restore/opt-restore-maxtransfersize-number","sha256":"77bd098400c890b8595650b3449dd9e3492c8afa1036ab73bdf2b4fdd4c53aef","source":"RESTORE DATABASE d FROM DISK = 'a' WITH MAXTRANSFERSIZE = 1;\n"}
+{"id":"backup-restore/opt-restore-maxtransfersize-string","sha256":"35d2498964ae28e94b76f1facad7b552259eeb5a9c1e3ef3d0198d3cfb92c0e9","source":"RESTORE DATABASE d FROM DISK = 'a' WITH MAXTRANSFERSIZE = 'x';\n"}
+{"id":"backup-restore/opt-restore-standby-flag","sha256":"6e9a1f183cfb37c85f3c8e5e7ab38a30478c386a2d900c03fd9a2bb9dd8bc4d9","source":"RESTORE DATABASE d FROM DISK = 'a' WITH STANDBY;\n"}
+{"id":"backup-restore/opt-restore-standby-number","sha256":"4a9abbbee55a28a16ee270703d6be2310d3b2b0c57d64ebebbc88c7e503f4992","source":"RESTORE DATABASE d FROM DISK = 'a' WITH STANDBY = 1;\n"}
+{"id":"backup-restore/opt-restore-standby-string","sha256":"f1e32d03eab985cec04d7ce6bd9e1997302408c7573bc50c025b5789946c9a21","source":"RESTORE DATABASE d FROM DISK = 'a' WITH STANDBY = 'x';\n"}
+{"id":"backup-restore/opt-restore-password-flag","sha256":"97dea89a8b502a2bf50c9ca8275a125cbeb6b2e3cf58b84df49d04285c07ef0d","source":"RESTORE DATABASE d FROM DISK = 'a' WITH PASSWORD;\n"}
+{"id":"backup-restore/opt-restore-password-number","sha256":"95bcff829b621a9e3c7bb222ae71ab9c95a84386a7e2b705304f575afc95caa8","source":"RESTORE DATABASE d FROM DISK = 'a' WITH PASSWORD = 1;\n"}
+{"id":"backup-restore/opt-restore-password-string","sha256":"e40cdf5411a735d3ff7b8fd8c220df298bb7afb848b181d6e10edd6c49bae2ed","source":"RESTORE DATABASE d FROM DISK = 'a' WITH PASSWORD = 'x';\n"}
+{"id":"backup-restore/opt-restore-mediapassword-flag","sha256":"34c74d442a6ec7238394f928563dfea3d0707c9aeb24ba3e901fe08976fb5bf7","source":"RESTORE DATABASE d FROM DISK = 'a' WITH MEDIAPASSWORD;\n"}
+{"id":"backup-restore/opt-restore-mediapassword-number","sha256":"bec0f3c61143eaf42e838c2b670da26673e0e10de155d9e3e50a6bf26e24b8fa","source":"RESTORE DATABASE d FROM DISK = 'a' WITH MEDIAPASSWORD = 1;\n"}
+{"id":"backup-restore/opt-restore-mediapassword-string","sha256":"3793382680f251469d2f8861e9e057897befefa87f78f4fe5339c9cf833aa3c4","source":"RESTORE DATABASE d FROM DISK = 'a' WITH MEDIAPASSWORD = 'x';\n"}
+{"id":"backup-restore/opt-restore-encryption-flag","sha256":"824caf79bd131099a3cc9ab702e0e3ec0c4be52028f4622046ac4ce90f9e485f","source":"RESTORE DATABASE d FROM DISK = 'a' WITH ENCRYPTION;\n"}
+{"id":"backup-restore/opt-restore-encryption-number","sha256":"28c5ac56f80eecf87955d074675c3f26d71fafa051b73626c321ccadb40bea75","source":"RESTORE DATABASE d FROM DISK = 'a' WITH ENCRYPTION = 1;\n"}
+{"id":"backup-restore/opt-restore-encryption-string","sha256":"ada7b2173496c7a6346d1961a401bc394b49d743154ed108c00920ae8844ef06","source":"RESTORE DATABASE d FROM DISK = 'a' WITH ENCRYPTION = 'x';\n"}
+{"id":"backup-restore/opt-restore-replace-flag","sha256":"de701ca68a63bf4411985e6bb1663d93cb5bb9d8817b84d05e744a34e0b14ede","source":"RESTORE DATABASE d FROM DISK = 'a' WITH REPLACE;\n"}
+{"id":"backup-restore/opt-restore-replace-number","sha256":"bbd737bf1540bf588d1458c9fef169c5925507bd007b566279e71c8f0327cb3b","source":"RESTORE DATABASE d FROM DISK = 'a' WITH REPLACE = 1;\n"}
+{"id":"backup-restore/opt-restore-replace-string","sha256":"1eb774c9957d4c2051d9c96abca2dbe1557d6cdf0a34aba121ac14e2bcea695f","source":"RESTORE DATABASE d FROM DISK = 'a' WITH REPLACE = 'x';\n"}
+{"id":"backup-restore/opt-restore-restricted-user-flag","sha256":"0cf391ebc3dc2b4f5f5d205961121487b97696a1cf497ede25fc7885245bde71","source":"RESTORE DATABASE d FROM DISK = 'a' WITH RESTRICTED_USER;\n"}
+{"id":"backup-restore/opt-restore-restricted-user-number","sha256":"067e0abfbade995ad27eafae8a4ccc7bab2ca98262599168897a3351abf25045","source":"RESTORE DATABASE d FROM DISK = 'a' WITH RESTRICTED_USER = 1;\n"}
+{"id":"backup-restore/opt-restore-restricted-user-string","sha256":"10bd0681c6d9fb35b9795e948fccfd320dfff225fa8d0608529883b807c24ec0","source":"RESTORE DATABASE d FROM DISK = 'a' WITH RESTRICTED_USER = 'x';\n"}
+{"id":"backup-restore/opt-restore-partial-flag","sha256":"52d1dcb044c057242140a94070fbf193e5e3c788fa9d0404a7f09c4af6151b86","source":"RESTORE DATABASE d FROM DISK = 'a' WITH PARTIAL;\n"}
+{"id":"backup-restore/opt-restore-partial-number","sha256":"743bdfb62859c894275f3f7afbf2ee0c1de90215da1e0d562ffdc589e4917238","source":"RESTORE DATABASE d FROM DISK = 'a' WITH PARTIAL = 1;\n"}
+{"id":"backup-restore/opt-restore-partial-string","sha256":"aa8a9a06ce74c8b20490fdc5e83c624d38b465e3e97c4b30a38aac92c88df8c2","source":"RESTORE DATABASE d FROM DISK = 'a' WITH PARTIAL = 'x';\n"}
+{"id":"backup-restore/opt-restore-keep-replication-flag","sha256":"5a46bc900a1eb5d9eadc3516e4b72da0cc1267d294047bd6350737b48a6c9803","source":"RESTORE DATABASE d FROM DISK = 'a' WITH KEEP_REPLICATION;\n"}
+{"id":"backup-restore/opt-restore-keep-replication-number","sha256":"6a367fa7470930cdd45b3814d538b2f6629978f15b4f80492cd5eb2feb3c83cb","source":"RESTORE DATABASE d FROM DISK = 'a' WITH KEEP_REPLICATION = 1;\n"}
+{"id":"backup-restore/opt-restore-keep-replication-string","sha256":"a7f50f89d3fbf2bc13e029ba46b342c43b741030440680b244a82dcf26784999","source":"RESTORE DATABASE d FROM DISK = 'a' WITH KEEP_REPLICATION = 'x';\n"}
+{"id":"backup-restore/opt-restore-keep-cdc-flag","sha256":"214f64f51285bfd86da82e0dbf3d1715ae885f1d152c34087c274dbe68f60421","source":"RESTORE DATABASE d FROM DISK = 'a' WITH KEEP_CDC;\n"}
+{"id":"backup-restore/opt-restore-keep-cdc-number","sha256":"0540dc0c7c0806a1bbb99cce04b8dc5a4d8c6f0916719e3b22f781241bb9e77c","source":"RESTORE DATABASE d FROM DISK = 'a' WITH KEEP_CDC = 1;\n"}
+{"id":"backup-restore/opt-restore-keep-cdc-string","sha256":"57ac78b44ee91d1d713b79e2278159868412930411cc69ccaaa716e27f13cd89","source":"RESTORE DATABASE d FROM DISK = 'a' WITH KEEP_CDC = 'x';\n"}
+{"id":"backup-restore/opt-restore-enable-broker-flag","sha256":"529f44e2237e52be309dbf596af21e1a2cda5e63f14e3028caed0057fcbd66ac","source":"RESTORE DATABASE d FROM DISK = 'a' WITH ENABLE_BROKER;\n"}
+{"id":"backup-restore/opt-restore-enable-broker-number","sha256":"e2de17af9b56488d2fa5ce95d7552de8e1584a342b8f0684fbdf0d32e4c46bf0","source":"RESTORE DATABASE d FROM DISK = 'a' WITH ENABLE_BROKER = 1;\n"}
+{"id":"backup-restore/opt-restore-enable-broker-string","sha256":"7e0049fe00c14a538bcb680f9b6929de1811de4c633d53eb04779e6ade5fc6a1","source":"RESTORE DATABASE d FROM DISK = 'a' WITH ENABLE_BROKER = 'x';\n"}
+{"id":"backup-restore/opt-restore-error-broker-conversations-flag","sha256":"296bc909a29888c26b98d8bccbca97927635807856d524bd37e4f013673020ed","source":"RESTORE DATABASE d FROM DISK = 'a' WITH ERROR_BROKER_CONVERSATIONS;\n"}
+{"id":"backup-restore/opt-restore-error-broker-conversations-number","sha256":"a83e38f97306d94fb6c66e5256c295a052041d6d85ad7a4ce26c6f8300bf3982","source":"RESTORE DATABASE d FROM DISK = 'a' WITH ERROR_BROKER_CONVERSATIONS = 1;\n"}
+{"id":"backup-restore/opt-restore-error-broker-conversations-string","sha256":"563faa41ab28c6a6daeb0c0b81800daf90786b32b95a8c1ba854722b5c73ea94","source":"RESTORE DATABASE d FROM DISK = 'a' WITH ERROR_BROKER_CONVERSATIONS = 'x';\n"}
+{"id":"backup-restore/opt-restore-new-broker-flag","sha256":"8c862e5fb988f691296368042609b5b1f84243240e59c9fa813edde37dac55ab","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NEW_BROKER;\n"}
+{"id":"backup-restore/opt-restore-new-broker-number","sha256":"a3f3f19caf67f3d8f83391a8e55c1b116f6c0c00368ab0b1fefd8aeffb550858","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NEW_BROKER = 1;\n"}
+{"id":"backup-restore/opt-restore-new-broker-string","sha256":"1a1b6d5c23112fe5afef3addbe972e0ddfef557f39afcc0dcea1b9b33e9661a6","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NEW_BROKER = 'x';\n"}
+{"id":"backup-restore/opt-restore-loadhistory-flag","sha256":"bcf76ae8a96087aa0b5815e9a6dce305dd07e9087f9b332b176add0d5065b15a","source":"RESTORE DATABASE d FROM DISK = 'a' WITH LOADHISTORY;\n"}
+{"id":"backup-restore/opt-restore-loadhistory-number","sha256":"97a0b2a5195f5d9560e6fe9591cd6cd3b9968a6f96d0e53fd5e2292d70609e0a","source":"RESTORE DATABASE d FROM DISK = 'a' WITH LOADHISTORY = 1;\n"}
+{"id":"backup-restore/opt-restore-loadhistory-string","sha256":"9bd51438eca33e865d2f48e98cbfaf222d4b1edadf7b9e8f8a53cd7bfe3e542b","source":"RESTORE DATABASE d FROM DISK = 'a' WITH LOADHISTORY = 'x';\n"}
+{"id":"backup-restore/opt-restore-file-flag","sha256":"d5630529af6293ed6737e0a1ec28d82ae023854eaefe1e183fe3666921145d5c","source":"RESTORE DATABASE d FROM DISK = 'a' WITH FILE;\n"}
+{"id":"backup-restore/opt-restore-file-number","sha256":"fa3e3a657cf705385e118b19b1a09381f90facdd66028e5dd64b7074bcb67aa7","source":"RESTORE DATABASE d FROM DISK = 'a' WITH FILE = 1;\n"}
+{"id":"backup-restore/opt-restore-file-string","sha256":"d1d0c7e4b4b087871a6263b403f87cf85d7115882d1481b1e00320403e8708a6","source":"RESTORE DATABASE d FROM DISK = 'a' WITH FILE = 'x';\n"}
+{"id":"backup-restore/opt-restore-dbname-flag","sha256":"6ff01eb6da33c68dc3d96e177b17a258391ccee2fe0daf5cb5960892ba28db47","source":"RESTORE DATABASE d FROM DISK = 'a' WITH DBNAME;\n"}
+{"id":"backup-restore/opt-restore-dbname-number","sha256":"d4f1642974e2848e7e26f5bf2ae1fb3cd5d646e49e00c447935dc2f216bb13a5","source":"RESTORE DATABASE d FROM DISK = 'a' WITH DBNAME = 1;\n"}
+{"id":"backup-restore/opt-restore-dbname-string","sha256":"18d2b113c865935d9b6dc1dc93177f6e08341d8086006cb46f865dca8700cdaf","source":"RESTORE DATABASE d FROM DISK = 'a' WITH DBNAME = 'x';\n"}
+{"id":"backup-restore/opt-restore-stopat-flag","sha256":"172fecaa5f989b9741b6a0042ef435527251713f4b75fd289ec3e789ad4ea46b","source":"RESTORE DATABASE d FROM DISK = 'a' WITH STOPAT;\n"}
+{"id":"backup-restore/opt-restore-stopat-number","sha256":"4c8ac1954ff6b70577e0250634600a4820754dba42cfc32318202aa876cb6076","source":"RESTORE DATABASE d FROM DISK = 'a' WITH STOPAT = 1;\n"}
+{"id":"backup-restore/opt-restore-stopat-string","sha256":"abc216596a2368cc88b739b0035fcf32a6d607aba5163ebdbb7c17d9d0b72c01","source":"RESTORE DATABASE d FROM DISK = 'a' WITH STOPAT = 'x';\n"}
+{"id":"backup-restore/opt-restore-stopatmark-flag","sha256":"2d971d5937a611739a2177d7beb7f5f84d89d922d87f137760c3dca16e1c97a0","source":"RESTORE DATABASE d FROM DISK = 'a' WITH STOPATMARK;\n"}
+{"id":"backup-restore/opt-restore-stopatmark-number","sha256":"3d04762ab16f950bde851a1cb3f0b8e88c5b5297b32812228f9d596db9b1980b","source":"RESTORE DATABASE d FROM DISK = 'a' WITH STOPATMARK = 1;\n"}
+{"id":"backup-restore/opt-restore-stopatmark-string","sha256":"6e253d8fa4d9933c90569cf4c28840490872fe8b5f6bcbb26ef8969f7471449f","source":"RESTORE DATABASE d FROM DISK = 'a' WITH STOPATMARK = 'x';\n"}
+{"id":"backup-restore/opt-restore-stopbeforemark-flag","sha256":"2e9865a019bd702814a525dbce5b86e381d5548f2679fffaae9e2a4f4b9035a1","source":"RESTORE DATABASE d FROM DISK = 'a' WITH STOPBEFOREMARK;\n"}
+{"id":"backup-restore/opt-restore-stopbeforemark-number","sha256":"e1387ba15e757c15c71eba660e0d64d1914c51fa54bf267b28a1c615c7ef9810","source":"RESTORE DATABASE d FROM DISK = 'a' WITH STOPBEFOREMARK = 1;\n"}
+{"id":"backup-restore/opt-restore-stopbeforemark-string","sha256":"17ab45fe0aef36a5b5898b96782706634cc49c7a4993c3c0ae20c12b9f749344","source":"RESTORE DATABASE d FROM DISK = 'a' WITH STOPBEFOREMARK = 'x';\n"}
+{"id":"backup-restore/opt-restore-filestream-flag","sha256":"4ee5409cc8ce320cd0e02e54dfb5cdc175984c07745d2763e76ff3cbf7ba296f","source":"RESTORE DATABASE d FROM DISK = 'a' WITH FILESTREAM;\n"}
+{"id":"backup-restore/opt-restore-filestream-number","sha256":"5274dbf3ae5a1adaa1c95912787ba08a70d323804660ebf26d437f05899e670a","source":"RESTORE DATABASE d FROM DISK = 'a' WITH FILESTREAM = 1;\n"}
+{"id":"backup-restore/opt-restore-filestream-string","sha256":"8bfcc2d6a6b6c15cd38defcc815ceae978d74267c340611ce1c677a25ba24063","source":"RESTORE DATABASE d FROM DISK = 'a' WITH FILESTREAM = 'x';\n"}
+{"id":"backup-restore/opt-restore-move-flag","sha256":"464cc6212a0502dd853330b29d463fa1e2d8a82cf610ed4a5db81a340489fa4a","source":"RESTORE DATABASE d FROM DISK = 'a' WITH MOVE;\n"}
+{"id":"backup-restore/opt-restore-move-number","sha256":"2c6cf8dd86456f05f75c751c8cc49717da7c12e7a13bb891dbea8c7c07cb1750","source":"RESTORE DATABASE d FROM DISK = 'a' WITH MOVE = 1;\n"}
+{"id":"backup-restore/opt-restore-move-string","sha256":"9cb2437723e27727f0cd33ce564ae84d7a89b03e974bd8ad726609acf09e23b4","source":"RESTORE DATABASE d FROM DISK = 'a' WITH MOVE = 'x';\n"}
+{"id":"backup-restore/opt-restore-no-log-flag","sha256":"6569928fc3f256792553cb9d3ea9371333010531e9d00dc9e06a7adc8ce44b91","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NO_LOG;\n"}
+{"id":"backup-restore/opt-restore-no-log-number","sha256":"98d10bbf0d9581b86e41c441d24dbcfb36498550d07a671245720a0f59eaf0c8","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NO_LOG = 1;\n"}
+{"id":"backup-restore/opt-restore-no-log-string","sha256":"42e944cb3553283c62456db766c3d36b6dd0d506e9ff4b405555b2f1946b6682","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NO_LOG = 'x';\n"}
+{"id":"backup-restore/opt-restore-truncate-only-flag","sha256":"a3906086f5fcfe80024e89cc02b6d13d96ac58ddd33331cea0d66c4d3727b01a","source":"RESTORE DATABASE d FROM DISK = 'a' WITH TRUNCATE_ONLY;\n"}
+{"id":"backup-restore/opt-restore-truncate-only-number","sha256":"642be68241c71cd1cd1b52d570cf1b267ad0ad50b87c1c78d99c13b041f57254","source":"RESTORE DATABASE d FROM DISK = 'a' WITH TRUNCATE_ONLY = 1;\n"}
+{"id":"backup-restore/opt-restore-truncate-only-string","sha256":"12dce8d9d3988f5c5b9cc6e08495781ac4ee5a26442c81b4a5c20606a939cee4","source":"RESTORE DATABASE d FROM DISK = 'a' WITH TRUNCATE_ONLY = 'x';\n"}
+{"id":"backup-restore/opt-restore-dbo-only-flag","sha256":"32728c513b742c8c97cd3c65931e8547f1a62683b7d448a25506dd8f164951ce","source":"RESTORE DATABASE d FROM DISK = 'a' WITH DBO_ONLY;\n"}
+{"id":"backup-restore/opt-restore-dbo-only-number","sha256":"b24935c42149ac791be0fbd8ad349da389a89ccd505dbf201634118cfa23807b","source":"RESTORE DATABASE d FROM DISK = 'a' WITH DBO_ONLY = 1;\n"}
+{"id":"backup-restore/opt-restore-dbo-only-string","sha256":"27164e7e94ac58e978b8f0cf6fa1668c98ed91adfe89c7ed3c35487e64ec2a81","source":"RESTORE DATABASE d FROM DISK = 'a' WITH DBO_ONLY = 'x';\n"}
+{"id":"backup-restore/opt-restore-backup-options-flag","sha256":"bd78b9970f166f8b4972b879d5689ee9a1e1f57197c72add32de4e0a07c43c3f","source":"RESTORE DATABASE d FROM DISK = 'a' WITH BACKUP_OPTIONS;\n"}
+{"id":"backup-restore/opt-restore-backup-options-number","sha256":"3fb9436d546453ad48fbc00b47343dd44a69ca0eadbf6dad8dfbe8ca7163f7db","source":"RESTORE DATABASE d FROM DISK = 'a' WITH BACKUP_OPTIONS = 1;\n"}
+{"id":"backup-restore/opt-restore-backup-options-string","sha256":"99f7db7e59052b2e3767c2fb952fa81826361cfd9cc9e502124ef428b037ffbf","source":"RESTORE DATABASE d FROM DISK = 'a' WITH BACKUP_OPTIONS = 'x';\n"}
+{"id":"backup-restore/opt-restore-restore-options-flag","sha256":"db4c1ee1111b3bcd06dff5eb7e3de21e67f05a9199c8159c754170fe754a065f","source":"RESTORE DATABASE d FROM DISK = 'a' WITH RESTORE_OPTIONS;\n"}
+{"id":"backup-restore/opt-restore-restore-options-number","sha256":"6f0892172b43728fe166fffc36bf54ac1552dd44f98157f93cda4f992073cc6a","source":"RESTORE DATABASE d FROM DISK = 'a' WITH RESTORE_OPTIONS = 1;\n"}
+{"id":"backup-restore/opt-restore-restore-options-string","sha256":"288735411b8be567779e7c7948b78b6be633209b35c0bd1cf6a7ba92cbaeb1ba","source":"RESTORE DATABASE d FROM DISK = 'a' WITH RESTORE_OPTIONS = 'x';\n"}
+{"id":"backup-restore/opt-restore-enhancedintegrity-flag","sha256":"d426a81f38d0f2347fad2e3c66836d36d04652df60da9e789e68a3d8d0f55e13","source":"RESTORE DATABASE d FROM DISK = 'a' WITH ENHANCEDINTEGRITY;\n"}
+{"id":"backup-restore/opt-restore-enhancedintegrity-number","sha256":"1757a301118e797892039af86ece078aa49bda4250b6d4c16b464e97e359e9a9","source":"RESTORE DATABASE d FROM DISK = 'a' WITH ENHANCEDINTEGRITY = 1;\n"}
+{"id":"backup-restore/opt-restore-enhancedintegrity-string","sha256":"d01e5a437d98d791970a89565934be540e5c1f9096fab468e956b42ab6f28aaf","source":"RESTORE DATABASE d FROM DISK = 'a' WITH ENHANCEDINTEGRITY = 'x';\n"}
+{"id":"backup-restore/opt-restore-commit-differential-base-flag","sha256":"bf175903b6a0a123c0f6e4f3f49c2393fce19435beb72a10d6d18c1b290c6f47","source":"RESTORE DATABASE d FROM DISK = 'a' WITH COMMIT_DIFFERENTIAL_BASE;\n"}
+{"id":"backup-restore/opt-restore-commit-differential-base-number","sha256":"00827c9c11a0fadede4fc8893cce2140b799529ecaa1c214890d7d58c19eddc9","source":"RESTORE DATABASE d FROM DISK = 'a' WITH COMMIT_DIFFERENTIAL_BASE = 1;\n"}
+{"id":"backup-restore/opt-restore-commit-differential-base-string","sha256":"e1e32196d85e0e4c5205286212d1011e01d1c4eeec549bbbd583e31c859f0ecc","source":"RESTORE DATABASE d FROM DISK = 'a' WITH COMMIT_DIFFERENTIAL_BASE = 'x';\n"}
+{"id":"backup-restore/opt-restore-url-flag","sha256":"fb7e460fc9b23ead0f7649d5ffbaf6caa15db0717ad8f2be479bd95dfee7245b","source":"RESTORE DATABASE d FROM DISK = 'a' WITH URL;\n"}
+{"id":"backup-restore/opt-restore-url-number","sha256":"e1b836d5ae72024cff3000468f34965a6830f7e107242ccd91b5409b629bf8ef","source":"RESTORE DATABASE d FROM DISK = 'a' WITH URL = 1;\n"}
+{"id":"backup-restore/opt-restore-url-string","sha256":"3eeafa148e452fa0f48ab399ff363ef2c25d5cd0a274e1e7a765536d5c982cc3","source":"RESTORE DATABASE d FROM DISK = 'a' WITH URL = 'x';\n"}
+{"id":"backup-restore/opt-restore-keep-temporal-retention-flag","sha256":"e50dfc44a2915411d68158c06d5319fc1812eda3b403a019ef264e4c4a994ea6","source":"RESTORE DATABASE d FROM DISK = 'a' WITH KEEP_TEMPORAL_RETENTION;\n"}
+{"id":"backup-restore/opt-restore-keep-temporal-retention-number","sha256":"515a5551212be620590be8dce75b61c933099f27ac73d2ba962be37f5658d38a","source":"RESTORE DATABASE d FROM DISK = 'a' WITH KEEP_TEMPORAL_RETENTION = 1;\n"}
+{"id":"backup-restore/opt-restore-keep-temporal-retention-string","sha256":"9da10ba61f8f9b350972f5a50c7772439956d9f37aa4992e736ccdcbde54f3d2","source":"RESTORE DATABASE d FROM DISK = 'a' WITH KEEP_TEMPORAL_RETENTION = 'x';\n"}
+{"id":"backup-restore/opt-restore-compression-list","sha256":"69a383c0d9a179590556fc49d6bb7ba38af4bd7b5f15e7d4f34070118e36f102","source":"RESTORE DATABASE d FROM DISK = 'a' WITH COMPRESSION (DIRECTORY_NAME = 'x');\n"}
+{"id":"backup-restore/opt-restore-encryption-list","sha256":"fd1aab8fb3b26cbf6d67a0c35e7036d765f69bb3842812961c55dcad7991122d","source":"RESTORE DATABASE d FROM DISK = 'a' WITH ENCRYPTION (DIRECTORY_NAME = 'x');\n"}
+{"id":"backup-restore/opt-restore-filestream-list","sha256":"edb9dfa989d9a7a10c42070e1c1a8670df42db5496910011f21e4e37397585a2","source":"RESTORE DATABASE d FROM DISK = 'a' WITH FILESTREAM (DIRECTORY_NAME = 'x');\n"}
+{"id":"backup-restore/opt-restore-backup-options-list","sha256":"6d204ba460cdf90f3b70647410375a295c454227de5987e1d22960116c14fa76","source":"RESTORE DATABASE d FROM DISK = 'a' WITH BACKUP_OPTIONS (DIRECTORY_NAME = 'x');\n"}
+{"id":"backup-restore/opt-restore-restore-options-list","sha256":"4e98dac901650158de825fa74981118c1524b37d22385f51978161cad6af4914","source":"RESTORE DATABASE d FROM DISK = 'a' WITH RESTORE_OPTIONS (DIRECTORY_NAME = 'x');\n"}
+{"id":"backup-restore/opt-restore-stats-list","sha256":"bf1d2536509d130b01977ca94a51f47a74a73282fd7949f8255d4eb7b9bcce31","source":"RESTORE DATABASE d FROM DISK = 'a' WITH STATS (DIRECTORY_NAME = 'x');\n"}
+{"id":"backup-restore/opt-restore-name-list","sha256":"3a5d52b5b54bbca4e79b5f474476f2a2f1eccb16d2112858adb0eb35b6c04460","source":"RESTORE DATABASE d FROM DISK = 'a' WITH NAME (DIRECTORY_NAME = 'x');\n"}
+{"id":"backup-restore/device-restore-disk","sha256":"3efbe1a5284b8a030c1ffb0bbf29c3be84119e334ac26ed98987bb7d618c544f","source":"RESTORE DATABASE d FROM DISK = 'a';\n"}
+{"id":"backup-restore/device-restore-tape","sha256":"3ba18e33df2b2804e05d1bf2af543b655e4659e3cb6fde2dd41d86f701581e1b","source":"RESTORE DATABASE d FROM TAPE = 'a';\n"}
+{"id":"backup-restore/device-restore-url","sha256":"9677043949aff46a536d210d70922597a0d72cbe2bc77e4551b0cd1aabcfb757","source":"RESTORE DATABASE d FROM URL = 'a';\n"}
+{"id":"backup-restore/device-restore-database-snapshot","sha256":"4a71cffc65f9d3994c1f967a7db9b65657f05e3e994c9bb4b165fa3a54d6a158","source":"RESTORE DATABASE d FROM DATABASE_SNAPSHOT = 'a';\n"}
+{"id":"backup-restore/device-restore-file","sha256":"cf55a0b4c98ef12975dc54e763ccb6ec62d76ea1ea3c3cc8aadba3f4cbc3b2b6","source":"RESTORE DATABASE d FROM FILE = 'a';\n"}
+{"id":"backup-restore/device-restore-virtual-device","sha256":"33d73f24f9ea5653d01b9899265b60c00c7d29be4d0c0381fec4c604aa4b88b2","source":"RESTORE DATABASE d FROM VIRTUAL_DEVICE = 'a';\n"}
+{"id":"backup-restore/device-restore-pipe","sha256":"0df0a01bb579c5457c0583a27a70c12388bd326fd551e8d59a204e0e23929f8f","source":"RESTORE DATABASE d FROM PIPE = 'a';\n"}
+{"id":"backup-restore/backup-log-differential","sha256":"d0898f04c5d701939c8f16ed0c1b90894a416ca2c229d4a0885b1e90ffed8cb5","source":"BACKUP LOG d TO DISK = 'a' WITH DIFFERENTIAL;\n"}
+{"id":"backup-restore/backup-server-differential","sha256":"391edf52656f4fac0b24887c531e80da4cef7b192878c9fc5b589d61c226b460","source":"BACKUP SERVER TO DISK = 'a' WITH DIFFERENTIAL, NAME = 'n';\n"}
+{"id":"backup-restore/backup-server-move","sha256":"aefe63c598f087291708a64103f03ec13e34d107f26ac5ff5e81106d01fe17cf","source":"BACKUP SERVER TO DISK = 'a' WITH MOVE 'a' TO 'b';\n"}
+{"id":"backup-restore/backup-server-with-only","sha256":"0575ed595e298c208b8cf06854208cc36f5d5ff62773b0618559f6c3bad393d4","source":"BACKUP SERVER WITH METADATA_ONLY;\n"}
+{"id":"backup-restore/backup-log-no-to","sha256":"c661208c8c244747e5ac06ea9df405a55fce8251e6a9e34a20c3ff3005eb5b5b","source":"BACKUP LOG d;\n"}
+{"id":"backup-restore/backup-log-with-only","sha256":"944cc8697a70362ba58e833f5e681e31532be11845c009701532c23afc53e330","source":"BACKUP LOG d WITH NO_TRUNCATE;\n"}
+{"id":"backup-restore/backup-group-no-to","sha256":"af42dfb7405bfb84ef28311defb11e2ff66c9a5d9d1d6c8d44de0087799e4967","source":"BACKUP GROUP a, b;\n"}
+{"id":"backup-restore/backup-group-bracketed","sha256":"01edc1faa9c8fa9abb89f8e10a7443c5ffc9958052d30dbc2f0ea73cd0ef3d20","source":"BACKUP GROUP [a], b TO DISK = 'a';\n"}
+{"id":"backup-restore/restore-labelonly-partial","sha256":"735435973a3d2b5c9fb7ad618458e7332df3cbfe5b6456a6ea3f76f26cc7b115","source":"RESTORE LABELONLY FROM DISK = 'a' WITH PARTIAL;\n"}
+{"id":"backup-restore/restore-rewindonly-stopatmark","sha256":"bff73dd37f6a79129221ef3de652f3145253e573d70b55ecde8bf135ba40feab","source":"RESTORE REWINDONLY FROM DISK = 'a' WITH STOPATMARK = 'm' AFTER 'x';\n"}
+{"id":"backup-restore/restore-filelistonly-unknown","sha256":"7fb6030a348a8fb4e83ee2f69d5a3e0e1f6067b624ae7a0d72f208d066510398","source":"RESTORE FILELISTONLY FROM DISK = 'a' WITH FOO;\n"}
+{"id":"backup-restore/restore-headeronly-name","sha256":"f00e67726584ac10bb21fbccfa62b62bcd7b18648180356747b6291fd8be392c","source":"RESTORE HEADERONLY FROM DISK = 'a' WITH NAME = 'x';\n"}
+{"id":"backup-restore/restore-log-move","sha256":"1057fd91426e0f95cd3b3899c17be7f946d590b2ea0d4597ee9da97edd3fb8ae","source":"RESTORE LOG d FROM DISK = 'a' WITH MOVE 'a' TO 'b';\n"}
+{"id":"backup-restore/restore-db-rwfg","sha256":"6315e0084c358a19f4e0a96cfabb55e12edc7fad919b535ecac0b2d847029d54","source":"RESTORE DATABASE d READ_WRITE_FILEGROUPS FROM DISK = 'a';\n"}
+{"id":"backup-restore/restore-db-rwfg-filegroup","sha256":"fd1ff290fe4b6c3aae4ba79ce464ec0f725f1a8f6743ee894d8ed1234ffa2b64","source":"RESTORE DATABASE d READ_WRITE_FILEGROUPS, FILEGROUP = 'g' FROM DISK = 'a';\n"}
+{"id":"backup-restore/restore-log-rwfg","sha256":"a3a51e18b7c2bb48c92b124a34eedf6b2c0c65aad9a210ecdd5f641e83c1c24f","source":"RESTORE LOG d READ_WRITE_FILEGROUPS FROM DISK = 'a';\n"}
+{"id":"backup-restore/restore-db-file-var","sha256":"102e66a2078c28b70f4e4ad79d19f60ca51bd3cac5c70867f99a1106671c1b71","source":"DECLARE @v nvarchar(260) = N'x', @p nvarchar(260) = N'x', @w nvarchar(260) = N'x';\nRESTORE DATABASE d FILE = @v, PAGE = @p FROM DISK = @w;\n"}
+{"id":"backup-restore/restore-db-file-number","sha256":"9b261bfaeed1cc37bf9fb1caa27cb024bf8ca85516ba0b84d1fb56f3566e7720","source":"RESTORE DATABASE d FILE = 1 FROM DISK = 'a';\n"}
+{"id":"backup-restore/restore-db-filegroup-identifier","sha256":"39253ae5841600b3338181c593d3b054baa3251ab49fc5590c4b1ac6c91b4f3d","source":"RESTORE DATABASE d FILEGROUP = g FROM DISK = 'a';\n"}
+{"id":"backup-restore/backup-db-file-identifier","sha256":"c6c6c0a724e4019e168659f55ab9663807cbd0a72c2483f71eee438f1a68bbe7","source":"BACKUP DATABASE d FILE = f TO DISK = 'a';\n"}
+{"id":"backup-restore/backup-db-filegroup-number","sha256":"261a3f08354c55e0573b850850b7f874b88539f2d249662d92004463f56bc06c","source":"BACKUP DATABASE d FILEGROUP = 1 TO DISK = 'a';\n"}
+{"id":"backup-restore/backup-db-rwfg-first-only","sha256":"1ea6e3131885b53c5bd0f89bbbb380859f390a2bfaa1946184dbb4a0ff95eaec","source":"BACKUP DATABASE d FILEGROUP = 'g', READ_WRITE_FILEGROUPS TO DISK = 'a';\n"}
+{"id":"backup-restore/backup-db-page-var","sha256":"81a782d10d32ed339254ff9ed4d4ab3fc6fa552dfe3d7c52e878e5dd7a5e6501","source":"DECLARE @p nvarchar(260) = N'x', @w nvarchar(260) = N'x';\nBACKUP DATABASE d PAGE = @p TO DISK = @w;\n"}
+{"id":"backup-restore/device-backup-number","sha256":"dca23f5f47591b0a0dc57365a3905c1f84341fcd9c01a7fa0f32b1e7e343ca83","source":"BACKUP DATABASE d TO DISK = 1;\n"}
+{"id":"backup-restore/device-backup-identifier","sha256":"085d7ffaa02a3d3170db4c51fca9221707cfb05f4ea1d21643d6dba488ab11b3","source":"BACKUP DATABASE d TO DISK = foo;\n"}
+{"id":"backup-restore/device-backup-mixed","sha256":"eb5884121c2511c2df6d8edc230ef28a3ec34bfe4eb84c267aa414f776044d3a","source":"DECLARE @v nvarchar(260) = N'x';\nBACKUP DATABASE d TO DISK = 'a', TAPE = 'b', dev1, @v;\n"}
+{"id":"backup-restore/device-backup-bracketed","sha256":"4e2b6cc777734cb939bfdb4fca5066c75a38224d1815220b1b142c72a81fa5af","source":"BACKUP DATABASE d TO [dev 1];\n"}
+{"id":"backup-restore/device-backup-string","sha256":"003f72b7f6f81f9fb0340cd582208fe11657bde58453f63262a370e12bac2b8e","source":"BACKUP DATABASE d TO 'a';\n"}
+{"id":"backup-restore/device-restore-identifier","sha256":"f29b70bd7065cbe2b504be2203079e5bebe33cd42b77f87df8802c9f158d354a","source":"RESTORE DATABASE d FROM DISK = foo;\n"}
+{"id":"backup-restore/device-restore-string","sha256":"76ec521b31a69db3d3279b3efdaa01d946d81288fd39c78d2e5e3fbd91f8a2ac","source":"RESTORE DATABASE d FROM 'a';\n"}
+{"id":"backup-restore/value-name-identifier","sha256":"baaa717ae4e88a365c90d66274dd0f72e145df7c28cce33bbd45322457914aad","source":"BACKUP DATABASE d TO DISK = 'a' WITH NAME = foo;\n"}
+{"id":"backup-restore/value-stats-negative","sha256":"1642cd321b5c5d05767cc630bbf4285cdbbcc6e9e25063d3ff814ebf9d9e727a","source":"BACKUP DATABASE d TO DISK = 'a' WITH STATS = -1;\n"}
+{"id":"backup-restore/value-file-null","sha256":"fc7be1694ca241344dc3f4c174db7137b4129410d6c938827b6a33e2bd412754","source":"RESTORE DATABASE d FROM DISK = 'a' WITH FILE = NULL;\n"}
+{"id":"backup-restore/value-expiredate-number","sha256":"04f081a1afb1e08f6fd947df314744ff635585fb0ac081fddc7373fb0dd5a937","source":"BACKUP DATABASE d TO DISK = 'a' WITH EXPIREDATE = 20240101;\n"}
+{"id":"backup-restore/value-description-unicode","sha256":"ff293539c1c4fdeb9d5c867a81ebd6b44c81524eb5d45b581a19cd32f902ab03","source":"BACKUP DATABASE d TO DISK = 'a' WITH DESCRIPTION = N'x';\n"}
+{"id":"backup-restore/value-blocksize-hex","sha256":"d01e74dcd14df3c0c81cfbf188cb47de48625589cd8c7eed110b78792f46373d","source":"BACKUP DATABASE d TO DISK = 'a' WITH BLOCKSIZE = 0x10;\n"}
+{"id":"backup-restore/value-stats-decimal","sha256":"877bfb04714f11d888dcd0613641e3be52489591bd19c97c15d1fea1656e83bc","source":"BACKUP DATABASE d TO DISK = 'a' WITH STATS = 1.5;\n"}
+{"id":"backup-restore/value-name-function","sha256":"7f785d1887083d3203f1f635b5d11b6b65bb3eee552b652cc95dd16bc8b1084e","source":"BACKUP DATABASE d TO DISK = 'a' WITH NAME = DB_NAME();\n"}
+{"id":"backup-restore/value-stats-unit","sha256":"b0bd22cb1a9ac3efc45e3cd4d775cfca7677bcd24fc581e4db01fa39303e1e0d","source":"BACKUP DATABASE d TO DISK = 'a' WITH MAXTRANSFERSIZE = 4 MB;\n"}
+{"id":"backup-restore/encryption-cert","sha256":"01fab22f4f309d3cb699d9b1a4b7b0ccc1352a25448dab83b6ff5b322bccab0c","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_256, SERVER CERTIFICATE = c);\n"}
+{"id":"backup-restore/encryption-asym","sha256":"aecfdaa7d11ec26b3c7128672f1846d0af025425ed85925415748cc107df9838","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_128, SERVER ASYMMETRIC KEY = k);\n"}
+{"id":"backup-restore/encryption-bracketed","sha256":"0f60719bfb039bf4f071a459b7730527a2b86c47ba244f4844f2a08e42ecf05d","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_256, SERVER CERTIFICATE = [c 1]);\n"}
+{"id":"backup-restore/encryption-var","sha256":"833223743f3c4e4129f6106c820771e0fde0bf0ee8e64205ee1307cf6ca9aa28","source":"DECLARE @c nvarchar(260) = N'x';\nBACKUP DATABASE d TO DISK = N'a' WITH ENCRYPTION (ALGORITHM = AES_256, SERVER CERTIFICATE = @c);\n"}
+{"id":"backup-restore/encryption-algorithm-string","sha256":"ee6e18c82c391ef28a19d1d57e061363366e57ca3becbbac949676998ff66f92","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = 'AES_256', SERVER CERTIFICATE = c);\n"}
+{"id":"backup-restore/encryption-algorithm-unknown","sha256":"f06e45055cbe61db7c963b4cbdc9a35b7a2d0412469c3e5cd04810ab807fe98e","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = FOO, SERVER CERTIFICATE = c);\n"}
+{"id":"backup-restore/encryption-algorithm-other-key","sha256":"07aeff23f0ebbebcb2a86e134f9fac2bf22cc70e39f789c8ec0f8b9f53f90f44","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (FOO = AES_256, SERVER CERTIFICATE = c);\n"}
+{"id":"backup-restore/encryption-algorithm-var","sha256":"191df60419923c57843646ef3ddb8cb6960ff385bec895fa3c4b629e05943933","source":"DECLARE @a nvarchar(260) = N'x';\nBACKUP DATABASE d TO DISK = N'a' WITH ENCRYPTION (ALGORITHM = @a, SERVER CERTIFICATE = c);\n"}
+{"id":"backup-restore/encryption-no-comma","sha256":"8713397e14b25cfb31b023f619a6f090fa6db39aba24b11e6d28ecc85822a88a","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_256 SERVER CERTIFICATE = c);\n"}
+{"id":"backup-restore/encryption-triple-des","sha256":"1b5c63ec9e01035047d1cf212ae9f889cd13185217687a3024b9f88d439b27e3","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = TRIPLE_DES_3KEY, SERVER CERTIFICATE = c);\n"}
+{"id":"backup-restore/encryption-twice","sha256":"3d0e5044f182a70288752ad270a3cc3325e6793d0fecb0a906641d308c99bcc8","source":"BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_256, SERVER CERTIFICATE = c), ENCRYPTION (ALGORITHM = AES_256, SERVER CERTIFICATE = c);\n"}
+{"id":"backup-restore/compression-level-only","sha256":"ffd962542e1c1b038903f4db1a7535574329024b10ae59d9a488b9dba913bd0e","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (LEVEL = LOW);\n"}
+{"id":"backup-restore/compression-level-first","sha256":"62eac6fae8a52139988a1ef9a9e87949a32f43dbc9f0632c2b4f3110739c7f10","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (LEVEL = LOW, ALGORITHM = ZSTD);\n"}
+{"id":"backup-restore/compression-algorithm-unknown","sha256":"828759cda69c87236993a934f54926a875408c1e23f1f6f6b578543c545f6e7b","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (ALGORITHM = FOO);\n"}
+{"id":"backup-restore/compression-algorithm-string","sha256":"553f3754351e9d0b11e2ee1e77d47ec05a063995e9d1a322f1115f996242ad73","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (ALGORITHM = 'ZSTD');\n"}
+{"id":"backup-restore/compression-algorithm-var","sha256":"58be1b6548ebb6c5040137c618d885517a9e9904b94856f4eecbbfe0d7431fb3","source":"DECLARE @a nvarchar(260) = N'x';\nBACKUP DATABASE d TO DISK = N'a' WITH COMPRESSION (ALGORITHM = @a);\n"}
+{"id":"backup-restore/compression-algorithm-twice","sha256":"1c778cd8242d126c7d40b72d69bc2c653d20dcdb5e888c4c06bc90012cca0497","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (ALGORITHM = ZSTD, ALGORITHM = ZSTD);\n"}
+{"id":"backup-restore/compression-level-unknown","sha256":"0e5e86acf07e12ebbd59a536a5816c28c2376f58c64836b9def70c898369659f","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (ALGORITHM = ZSTD, LEVEL = FOO);\n"}
+{"id":"backup-restore/compression-level-number","sha256":"9001bd8ab8c4461cd7df9696daeda931f63ce423b40a7ac0eeff404aed6bb19b","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (ALGORITHM = ZSTD, LEVEL = 1);\n"}
+{"id":"backup-restore/compression-empty","sha256":"d19fa8ed72939f53e362b27d59c2afdbc703cf102c277efc97f02896de80f81d","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION ();\n"}
+{"id":"backup-restore/compression-and-flag","sha256":"02494c709d6f679d27f4046c9e505d9fa99dc7cd29009a4d7024115ad429acea","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION, COMPRESSION (ALGORITHM = ZSTD);\n"}
+{"id":"backup-restore/filestream-unknown-key","sha256":"66a3d77fbf9fd47fc0c186ee36e1670290c8b454e9075c5c1fe18f11260d446b","source":"RESTORE DATABASE d FROM DISK = 'a' WITH FILESTREAM (FOO = 'x');\n"}
+{"id":"backup-restore/filestream-var","sha256":"7b75c2bc8501fd5c5a76df9dcd8b078cf5fef648afa650b95d6dbebde26ce5f2","source":"DECLARE @v nvarchar(260) = N'x';\nRESTORE DATABASE d FROM DISK = N'a' WITH FILESTREAM (DIRECTORY_NAME = @v);\n"}
+{"id":"backup-restore/filestream-identifier","sha256":"255d89c66ab186b7a5dc218713ea6bd6de796733a9f209c795fdd04f7b1c8149","source":"RESTORE DATABASE d FROM DISK = 'a' WITH FILESTREAM (DIRECTORY_NAME = x);\n"}
+{"id":"backup-restore/move-mixed","sha256":"7daea20646631400e1b65ea0a05a166f1cf45fd1b706ba760f46939b87e36db1","source":"DECLARE @b nvarchar(260) = N'x', @c nvarchar(260) = N'x';\nRESTORE DATABASE d FROM DISK = N'a' WITH MOVE N'a' TO @b, MOVE @c TO 'x';\n"}
+{"id":"backup-restore/move-number","sha256":"de7b7867b994674fec5bf69c7b6fd86071a59eaaff449cda2ba1baaf84f92724","source":"RESTORE DATABASE d FROM DISK = 'a' WITH MOVE 1 TO 2;\n"}
+{"id":"backup-restore/move-filegroup-paren","sha256":"2673f9616c66d24752357e55d3f28f98d151ca3b1ccb889073db2b75045f4982","source":"RESTORE DATABASE d FROM DISK = 'a' WITH MOVE 'a' TO 'b' (c);\n"}
+{"id":"backup-restore/mark-plain","sha256":"ad951be1b8d9cb238f792707ad37f55b02801da75182dcbd30129eb3643d9e67","source":"RESTORE LOG d FROM DISK = 'a' WITH STOPATMARK = 'm';\n"}
+{"id":"backup-restore/mark-after-number","sha256":"96716b58be219c6ac0f45031d50af5a9dd87f2b07512ea40829aaa9905205a31","source":"RESTORE LOG d FROM DISK = 'a' WITH STOPATMARK = 'm' AFTER 1;\n"}
+{"id":"backup-restore/mark-identifier","sha256":"6814a0cae6b196a3f0d29c0d1a0a5a727b109ff37199601198a7684504b994ef","source":"RESTORE LOG d FROM DISK = 'a' WITH STOPATMARK = m;\n"}
+{"id":"backup-restore/stopat-var","sha256":"219018922865ce8bfd1ea5a235778df9ffa53f593e211fd54a2abe27a422be65","source":"DECLARE @t nvarchar(260) = N'x';\nRESTORE LOG d FROM DISK = N'a' WITH STOPAT = @t;\n"}
+{"id":"backup-restore/key-backup-master-file-var","sha256":"7a9c0c54b000ff6a19b45431f35611b797011a54d9927bc170ad7e9647f7ea8b","source":"DECLARE @f nvarchar(260) = N'x';\nBACKUP MASTER KEY TO FILE = @f ENCRYPTION BY PASSWORD = 'p';\n"}
+{"id":"backup-restore/key-backup-master-password-var","sha256":"599c5a52aff380057daee1b0ef7a45af5786e5a4647839b45dbb108adc527649","source":"DECLARE @p nvarchar(260) = N'x';\nBACKUP MASTER KEY TO FILE = 'a' ENCRYPTION BY PASSWORD = @p;\n"}
+{"id":"backup-restore/key-backup-master-unicode","sha256":"c4819328f0180a328fb5cbc2ad0e51d628e7c91c12b06f1b7b6c8281c8f9d891","source":"BACKUP MASTER KEY TO FILE = N'a' ENCRYPTION BY PASSWORD = N'p';\n"}
+{"id":"backup-restore/key-backup-master-number","sha256":"0b25ac92ceece1e03d42d5001d012efb4bf175e1a2eccd2bbf01fa823dddc124","source":"BACKUP MASTER KEY TO FILE = 1 ENCRYPTION BY PASSWORD = 'p';\n"}
+{"id":"backup-restore/key-backup-service-master-force","sha256":"c2c2ba64a5763fb600eb83ca307de0f5063b1f0b704986e292f4bb91b4732636","source":"BACKUP SERVICE MASTER KEY TO FILE = 'a' ENCRYPTION BY PASSWORD = 'p' FORCE;\n"}
+{"id":"backup-restore/key-backup-symmetric-var","sha256":"69ea11b93bd87ef5ead49e60e50ffc6ebc662cade354d3fd8b071e05406c0a59","source":"DECLARE @f nvarchar(260) = N'x';\nBACKUP SYMMETRIC KEY k TO FILE = @f ENCRYPTION BY PASSWORD = 'p';\n"}
+{"id":"backup-restore/key-backup-symmetric-bracketed","sha256":"35dfa44745ee854fdf186676e5b15cda91cfc343691d07e148b1759c367055c3","source":"BACKUP SYMMETRIC KEY [k 1] TO FILE = 'a' ENCRYPTION BY PASSWORD = 'p';\n"}
+{"id":"backup-restore/key-backup-symmetric-disk","sha256":"e38faaac8bab17264a1186ac4796e765926225d760c21da5cb783b9321f7eae7","source":"BACKUP SYMMETRIC KEY k TO DISK = 'a' ENCRYPTION BY PASSWORD = 'p';\n"}
+{"id":"backup-restore/key-restore-master-plain","sha256":"bf130c19dc2bb808ab65e1a2eb3caf2f3bcbefd71593383e6ae85613e43093e0","source":"RESTORE MASTER KEY FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q';\n"}
+{"id":"backup-restore/key-restore-master-file-var","sha256":"79835c920ef9369eb055c0fe5b23c1f555f90d437f91e6404b0dc314b256c63d","source":"DECLARE @f nvarchar(260) = N'x';\nRESTORE MASTER KEY FROM FILE = @f DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q';\n"}
+{"id":"backup-restore/key-restore-master-password-var","sha256":"2e76047a96fd1fcb5f96da06223fda60d1f5afbe4abbd99b1bdb3c9eda26ccb9","source":"DECLARE @p nvarchar(260) = N'x';\nRESTORE MASTER KEY FROM FILE = 'a' DECRYPTION BY PASSWORD = @p ENCRYPTION BY PASSWORD = 'q';\n"}
+{"id":"backup-restore/key-restore-service-plain","sha256":"97231765421704ee064817172c214af6e07cc9562c12c3f458d66da925923717","source":"RESTORE SERVICE MASTER KEY FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p';\n"}
+{"id":"backup-restore/key-restore-service-var","sha256":"880c04a20ae354d11eb2187c180731affda17d0e9517ea122fe5e2fbf237a362","source":"DECLARE @p nvarchar(260) = N'x';\nRESTORE SERVICE MASTER KEY FROM FILE = 'a' DECRYPTION BY PASSWORD = @p;\n"}
+{"id":"backup-restore/key-restore-symmetric-plain","sha256":"f9b1857e2b539a2ed568198f275ebce41098baceea54bd70de10c0f9de938834","source":"RESTORE SYMMETRIC KEY k FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q';\n"}
+{"id":"backup-restore/key-restore-symmetric-url-force","sha256":"0c1944a3569ca4ba53d65cbe755d7b193c0a7673c012699508df394b3c93edc9","source":"RESTORE SYMMETRIC KEY k FROM URL = 'a' DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q' FORCE;\n"}
+{"id":"backup-restore/key-restore-symmetric-reversed","sha256":"74dba1201f57ca98b4c152b204769e1ebc07d7c17027e1c35cde95399990b624","source":"RESTORE SYMMETRIC KEY k FROM FILE = 'a' ENCRYPTION BY PASSWORD = 'q' DECRYPTION BY PASSWORD = 'p';\n"}
+{"id":"backup-restore/key-restore-master-force-twice","sha256":"f96c20691d889aacc36c74b67250d990e8274054054a9d4f0c4e3724130d6f35","source":"RESTORE MASTER KEY FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q' FORCE FORCE;\n"}
+{"id":"backup-restore/cert-pfx-der","sha256":"3054ed025a4a36eafb6a32cf164b182b8689a44bb661669088c412544027fcf9","source":"BACKUP CERTIFICATE c TO FILE = 'a' WITH FORMAT = 'DER';\n"}
+{"id":"backup-restore/cert-pfx-unknown","sha256":"7bf26ff94e9489b68ec6d476381319684ab80ce223f4709edb2bd126b492308b","source":"BACKUP CERTIFICATE c TO FILE = 'a' WITH FORMAT = 'FOO';\n"}
+{"id":"backup-restore/cert-format-identifier","sha256":"baf1987812c9284471695641e86455276fa8fe1f400a217a8ff0d8cd894e9695","source":"BACKUP CERTIFICATE c TO FILE = 'a' WITH FORMAT = PFX;\n"}
+{"id":"backup-restore/cert-format-twice","sha256":"ed3250867ef9d18c43a6c5fd786e3aa41427012b754acd067d16def4cb7ebfc8","source":"BACKUP CERTIFICATE c TO FILE = 'a' WITH FORMAT = 'PFX', FORMAT = 'PFX';\n"}
+{"id":"backup-restore/cert-pk-twice","sha256":"1a7c51e5f245ed01e69d6dfcd441a4b690a0bd7f08c17c730bbe17c483641abf","source":"BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (ENCRYPTION BY PASSWORD = 'p'), PRIVATE KEY (ENCRYPTION BY PASSWORD = 'p');\n"}
+{"id":"backup-restore/cert-pk-encryption-only","sha256":"3f1ac63a0a465612c89e4f5f198c61a1b9abf954cb63c32679fb8ac729831b67","source":"BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (ENCRYPTION BY PASSWORD = 'p');\n"}
+{"id":"backup-restore/cert-pk-file-only","sha256":"4e36eba0f921b6dbd9c986a37ed0275892592a48ae71c8163fa429f24e9c4944","source":"BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (FILE = 'b');\n"}
+{"id":"backup-restore/cert-pk-unknown","sha256":"cca4e527450cd16b5b17914ee261addcadd402c029d3b7199c33bc1102fd9ac2","source":"BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (FOO = 'b', ENCRYPTION BY PASSWORD = 'p');\n"}
+{"id":"backup-restore/cert-pk-file-var","sha256":"18f54266b1764b8435bf97c154bda6c9114b174a4088465f3bebce02df39d8dd","source":"DECLARE @f nvarchar(260) = N'x';\nBACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (FILE = @f, ENCRYPTION BY PASSWORD = 'p');\n"}
+{"id":"backup-restore/cert-pk-format-pk","sha256":"9f44329612145baa82fa3229f8ed486d55a254d477e8808599d4b2e39f34bd15","source":"BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (ENCRYPTION BY PASSWORD = 'p'), FORMAT = 'PFX', PRIVATE KEY (FILE = 'b');\n"}
+{"id":"backup-restore/cert-unicode-file","sha256":"1f5b766ce6bee9e3db41f9360fc9755e1e2002c355dc44a5ce0e0cf1fc9a7136","source":"BACKUP CERTIFICATE c TO FILE = N'a';\n"}
+{"id":"backup-restore/cert-bracketed","sha256":"8d0ed85e163d707279aa26e92720e9e10d683a0d142528f610235c102f6b5884","source":"BACKUP CERTIFICATE [c 1] TO FILE = 'a';\n"}
+{"id":"backup-restore/cert-pk-algorithm","sha256":"26ed8a99db7c4d59bb4682a2dba802ec412fee6a9465684a63059b1a52927737","source":"BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (FILE = 'b', ENCRYPTION BY PASSWORD = 'p', ALGORITHM = 'AES_256');\n"}
+{"id":"backup-restore/cert-pk-algorithm-unknown","sha256":"686042461d4c71ea5d90c9cbc0cea66c04b544cd724a729c168515ac34062d62","source":"BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (FILE = 'b', ENCRYPTION BY PASSWORD = 'p', ALGORITHM = 'FOO');\n"}
+{"id":"backup-restore/cert-pk-algorithm-identifier","sha256":"7acbccf2168974af66a04eea902757ae373a65989a7493d15295b7d57aa507e6","source":"BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (FILE = 'b', ENCRYPTION BY PASSWORD = 'p', ALGORITHM = AES_256);\n"}
+{"id":"backup-restore/cert-pk-algorithm-twice","sha256":"c293776a3a52bd3c4d8cc4642677eb9fd8f674e78ef92a756e4d58556275d2b7","source":"BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (FILE = 'b', ALGORITHM = 'AES_256', ALGORITHM = 'AES_256');\n"}
+{"id":"backup-restore/cert-pk-algorithm-no-file","sha256":"82745810527d3bb27a61c5d2549e4bff0f3b665e0733873c14e3cd2449a9c23c","source":"BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (ENCRYPTION BY PASSWORD = 'p', ALGORITHM = 'AES_256');\n"}
+{"id":"backup-restore/cert-pk-algorithm-format","sha256":"3d6ded567d20c373a241f40e36b966b6bcf61ba9bda8e3883f71fe5489daf9d7","source":"BACKUP CERTIFICATE c TO FILE = 'a' WITH FORMAT = 'PFX', PRIVATE KEY (ALGORITHM = 'AES_256', FILE = 'b');\n"}
+{"id":"backup-restore/compression-zstd-level","sha256":"d0a9bdef6a8f7403c1361b2196d65d30ffaefcdac8ef68cf84fec0488ae69da1","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (ALGORITHM = ZSTD, LEVEL = HIGH);\n"}
+{"id":"backup-restore/compression-xpress-medium","sha256":"2ee03bcad912d35414cec0b7a25a4f001538aa509a262dbd3bbe85a087909f09","source":"BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (ALGORITHM = MS_XPRESS, LEVEL = MEDIUM);\n"}
+{"id":"backup-restore/backup-if-body","sha256":"cd4e1eaf5ebdd0b6eef93f4dddda77fe0d5cdee6d8d6046e0e76bda499cdada0","source":"IF 1 = 1 BACKUP LOG d TO DISK = 'a' ELSE RESTORE LOG d FROM DISK = 'a' WITH NORECOVERY;\n"}
+{"id":"backup-restore/restore-file-negative","sha256":"333fc4863623718945feb62633b2f22be931bc0be51d31bd934af58fb1492b61","source":"RESTORE DATABASE d FROM DISK = 'a' WITH FILE = -1;\n"}
+{"id":"backup-restore/restore-stopat-number","sha256":"cff3de3875fa3ddb31db397513d0f643f273029e2f5a80cc585364f6007cfaac","source":"RESTORE LOG d FROM DISK = 'a' WITH STOPAT = 1;\n"}
+{"id":"backup-restore/backup-url-credential-options","sha256":"88076fdf26d4467fbf3e6049f3f3bb29b705e795e1d93d9c2c24fd673992e4d1","source":"BACKUP DATABASE d TO URL = 'https://x/y.bak' WITH CREDENTIAL = 'c', BACKUP_OPTIONS = '{}', STATS = 5;\n"}
+{"id":"backup-restore/restore-labelonly-no-with-no-from","sha256":"5c24fe72be64a58f9b11cfd3915c2b51101161bab590f6a54b6867d56a194e21","source":"RESTORE LABELONLY;\n"}

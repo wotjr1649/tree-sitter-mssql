@@ -218,6 +218,15 @@ export default {
   keyword_override: (_) => make_keyword('override'),
   keyword_kill: (_) => make_keyword('kill'),
   keyword_backup: (_) => make_keyword('backup'),
+  keyword_restore: (_) => make_keyword('restore'),
+  keyword_mirror: (_) => make_keyword('mirror'),
+  keyword_url: (_) => make_keyword('url'),
+  keyword_password: (_) => make_keyword('password'),
+  keyword_filelistonly: (_) => make_keyword('filelistonly'),
+  keyword_headeronly: (_) => make_keyword('headeronly'),
+  keyword_labelonly: (_) => make_keyword('labelonly'),
+  keyword_verifyonly: (_) => make_keyword('verifyonly'),
+  keyword_rewindonly: (_) => make_keyword('rewindonly'),
   keyword_log: (_) => make_keyword('log'),
 
   // Deprecated statements that still execute: SETUSER and the text-pointer
