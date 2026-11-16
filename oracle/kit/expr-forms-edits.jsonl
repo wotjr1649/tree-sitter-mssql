@@ -1,0 +1,5 @@
+{"id":"expr-forms/language-lcid","source":"-- 한글 경로 C:\\임시\nSELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE 1033);\n","edits":[{"find":"1033","replace":"1033.0"},{"find":"1033.0","replace":"1033"}]}
+{"id":"expr-forms/language-top","source":"-- 한글 경로 C:\\임시\nSELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE 1033, 10);\n","edits":[{"find":", 10","replace":", -1"},{"find":", -1","replace":", 10"}]}
+{"id":"expr-forms/language-quoted","source":"-- 한글 경로 C:\\임시\nSET/*a*/QUOTED_IDENTIFIER/*b*/OFF; SELECT * FROM t WHERE CONTAINS(c,'x',LANGUAGE \"English\");\n","edits":[{"find":"OFF","replace":"ON"},{"find":"ON","replace":"OFF"}]}
+{"id":"expr-forms/static-type","source":"-- 한글 경로 C:\\임시\nSELECT dbo.t::f(1);\n","edits":[{"find":"dbo.t","replace":"db.dbo.t"},{"find":"db.dbo.t","replace":"dbo.t"}]}
+{"id":"expr-forms/static-member","source":"-- 한글 경로 C:\\임시\nSELECT geometry::Point(1,2,0).STAsText();\n","edits":[{"find":"STAsText()","replace":"STAsText("},{"find":"STAsText(","replace":"STAsText()"}]}

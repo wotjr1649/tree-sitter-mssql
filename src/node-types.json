@@ -13583,6 +13583,20 @@
           {
             "type": "identifier",
             "named": true
+          },
+          {
+            "type": "object_reference",
+            "named": true
+          }
+        ]
+      },
+      "schema": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "object_reference",
+            "named": true
           }
         ]
       }
@@ -16523,6 +16537,14 @@
       "required": true,
       "types": [
         {
+          "type": "invocation",
+          "named": true
+        },
+        {
+          "type": "method_call",
+          "named": true
+        },
+        {
           "type": "parenthesized_expression",
           "named": true
         },
@@ -16848,6 +16870,10 @@
           {
             "type": "identifier",
             "named": true
+          },
+          {
+            "type": "object_reference",
+            "named": true
           }
         ]
       },
@@ -16857,6 +16883,10 @@
         "types": [
           {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "object_reference",
             "named": true
           }
         ]

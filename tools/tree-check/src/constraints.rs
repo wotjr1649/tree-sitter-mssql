@@ -70,7 +70,11 @@ pub fn check(tree: &Tree, source: &[u8]) -> Vec<Violation> {
             }
             "grant_statement" => column_permissions(node, source, &mut out),
             "create_trigger" | "alter_trigger" => trigger_scope(node, source, &mut out),
-            "invocation" => builtin_arity(node, source, &mut out),
+            "invocation" => {
+                builtin_arity(node, source, &mut out);
+                expression_language(node, source, &mut out);
+            }
+            "object_reference" | "field" => static_reference(node, source, &mut out),
             "create_function" | "alter_function" => scalar_function_return(node, &mut out),
             "window_specification" => window_frame_order(node, &mut out),
             "merge" => merge_terminator(node, &mut out),
@@ -398,6 +402,154 @@ fn trigger_scope(trigger: Node, source: &[u8], out: &mut Vec<Violation>) {
             let mut c = n.walk();
             stack.extend(n.named_children(&mut c));
         }
+    }
+}
+
+/// R15: LocalDB 17.0.1000.7, levels 100-170, expr-forms/language.
+/// Keep argument positions and value restrictions here instead of multiplying grammar states.
+fn expression_language(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let Some(callee) = node.named_child(0) else {
+        return;
+    };
+    let name = upper_text(callee, source);
+    let mut cursor = node.walk();
+    let args: Vec<_> = node
+        .children_by_field_name("parameter", &mut cursor)
+        .collect();
+    let language: Vec<_> = args
+        .iter()
+        .enumerate()
+        .filter(|(_, arg)| {
+            arg.child_by_field_name("value")
+                .is_some_and(|v| v.kind() == "field" && upper_text(v, source) == "LANGUAGE")
+                && (arg.child_by_field_name("alias").is_some()
+                    || matches!(
+                        name.as_str(),
+                        "CONTAINS" | "FREETEXT" | "CONTAINSTABLE" | "FREETEXTTABLE"
+                    ))
+        })
+        .collect();
+    if !language.is_empty() {
+        let table = matches!(name.as_str(), "CONTAINSTABLE" | "FREETEXTTABLE");
+        let expected = if table { 3 } else { 2 };
+        let valid_name = table || matches!(name.as_str(), "CONTAINS" | "FREETEXT");
+        let mut invalid = !valid_name
+            || language.len() != 1
+            || language[0].0 != expected
+            || args.len() < expected + 1
+            || args.len() > expected + 1 + usize::from(table);
+        for (_, arg) in &language {
+            invalid |= !arg.child_by_field_name("alias").is_some_and(|value| {
+                let text = &source[value.byte_range()];
+                string_literal(value, source)
+                    || integer_literal(value, source)
+                    || local_variable(value, source)
+                    || (text.first() == Some(&b'"') && quoted_strings(node, source))
+            });
+        }
+        if table && args.len() == expected + 2 {
+            let top = args[expected + 1];
+            invalid |= top.child_by_field_name("alias").is_some()
+                || !top.child_by_field_name("value").is_some_and(|v| {
+                    local_variable(v, source)
+                        || (v.kind() == "literal"
+                            && source[v.byte_range()].iter().all(u8::is_ascii_digit))
+                });
+        }
+        if invalid {
+            out.push(violation("expression-fulltext-language", "LANGUAGE needs a full-text function, its language argument position and a language name, LCID or local variable".into(), node));
+        }
+    }
+}
+
+fn string_literal(node: Node, source: &[u8]) -> bool {
+    let text = &source[node.byte_range()];
+    node.kind() == "literal"
+        && (text.starts_with(b"'") || text.starts_with(b"N'") || text.starts_with(b"n'"))
+}
+
+fn integer_literal(node: Node, source: &[u8]) -> bool {
+    let text = &source[node.byte_range()];
+    node.kind() == "literal"
+        && (!text.is_empty() && text.iter().all(u8::is_ascii_digit)
+            || text
+                .strip_prefix(b"0x")
+                .or_else(|| text.strip_prefix(b"0X"))
+                .is_some_and(|digits| digits.iter().all(u8::is_ascii_hexdigit)))
+}
+
+fn local_variable(node: Node, source: &[u8]) -> bool {
+    let text = &source[node.byte_range()];
+    matches!(node.kind(), "field" | "identifier")
+        && text.starts_with(b"@")
+        && !text.starts_with(b"@@")
+}
+
+// QUOTED_IDENTIFIER is explicit in the oracle's quoted-language neighbours.
+fn quoted_strings(node: Node, source: &[u8]) -> bool {
+    let mut root = node;
+    while let Some(parent) = root.parent() {
+        root = parent;
+    }
+    let mut cursor = root.walk();
+    let mut strings = false;
+    loop {
+        let n = cursor.node();
+        if n.start_byte() >= node.start_byte() {
+            break;
+        }
+        if n.kind() == "set_statement" {
+            let mut c = n.walk();
+            let children: Vec<_> = n.named_children(&mut c).collect();
+            if children.iter().any(|p| {
+                p.kind() == "object_reference" && upper_text(*p, source) == "QUOTED_IDENTIFIER"
+            }) {
+                if children.iter().any(|p| p.kind() == "keyword_off") {
+                    strings = true;
+                }
+                if children.iter().any(|p| p.kind() == "keyword_on") {
+                    strings = false;
+                }
+            }
+        }
+        if cursor.goto_first_child() {
+            continue;
+        }
+        while !cursor.goto_next_sibling() {
+            if !cursor.goto_parent() {
+                return strings;
+            }
+        }
+    }
+    strings
+}
+
+/// R15 expr-forms/static: type names have at most two parts; variables are not type/member names.
+fn static_reference(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let mut c = node.walk();
+    if !node.children(&mut c).any(|n| n.kind() == "::") {
+        return;
+    }
+    let Some(ty) = node.child_by_field_name("schema") else {
+        return;
+    };
+    let Some(member) = node.child_by_field_name("name") else {
+        return;
+    };
+    let mut c = ty.walk();
+    let mut invalid = ty.children(&mut c).filter(|n| n.kind() == ".").count() > 1;
+    for part in [ty, member] {
+        let mut c = part.walk();
+        invalid |= part
+            .named_children(&mut c)
+            .any(|n| source[n.byte_range()].starts_with(b"@") || upper_text(n, source) == "NULL");
+    }
+    if invalid {
+        out.push(violation(
+            "expression-static-reference",
+            "a static type has at most schema.name and no variable type or member".into(),
+            node,
+        ));
     }
 }
 
@@ -2438,6 +2590,51 @@ mod tests {
             .into_iter()
             .map(|v| v.rule)
             .collect()
+    }
+
+    #[test]
+    fn expression_constraints_match_engine_neighbours() {
+        let cases: Vec<serde_json::Value> = include_str!("../../../oracle/probes/expr-forms.jsonl")
+            .lines()
+            .map(|line| serde_json::from_str(line).unwrap())
+            .collect();
+        for (id, expected) in [
+            ("language/contains-float", "expression-fulltext-language"),
+            ("language/contains-repeat", "expression-fulltext-language"),
+            ("language/ordinary", "expression-fulltext-language"),
+            (
+                "language/containstable-top-before",
+                "expression-fulltext-language",
+            ),
+            (
+                "language/containstable-top-hex",
+                "expression-fulltext-language",
+            ),
+            ("static/database", "expression-static-reference"),
+            ("static/extra-methodVariable", "expression-static-reference"),
+            ("static/nullCall", "expression-static-reference"),
+        ] {
+            let case = cases
+                .iter()
+                .find(|c| c["id"] == format!("expr-forms/{id}"))
+                .unwrap();
+            assert_eq!(rules(case["source"].as_str().unwrap()), [expected], "{id}");
+        }
+        for id in [
+            "language/contains-name",
+            "language/contains-declared",
+            "language/containstable-top-declared",
+            "language/qi-comment",
+            "language/qi-options",
+            "static/schema",
+            "static/nullQuoted",
+        ] {
+            let case = cases
+                .iter()
+                .find(|c| c["id"] == format!("expr-forms/{id}"))
+                .unwrap();
+            assert!(rules(case["source"].as_str().unwrap()).is_empty(), "{id}");
+        }
     }
 
     const FULL: &str = "PROCEDURE_NAME = dbo.p, MAX_QUEUE_READERS = 1, EXECUTE AS OWNER";

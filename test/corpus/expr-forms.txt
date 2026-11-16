@@ -1,0 +1,449 @@
+==================
+expr-forms/language/contains-integer - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE 1033);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (object_reference schema: (identifier) name: (identifier)))) (where (keyword_where) predicate: (invocation (object_reference name: (identifier)) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal))))))))
+
+==================
+expr-forms/language/contains-hex - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE 0x409);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (object_reference schema: (identifier) name: (identifier)))) (where (keyword_where) predicate: (invocation (object_reference name: (identifier)) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal))))))))
+
+==================
+expr-forms/language/contains-name - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE 'English');
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (object_reference schema: (identifier) name: (identifier)))) (where (keyword_where) predicate: (invocation (object_reference name: (identifier)) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal))))))))
+
+==================
+expr-forms/language/freetext-integer - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE 1033);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (object_reference schema: (identifier) name: (identifier)))) (where (keyword_where) predicate: (invocation (object_reference name: (identifier)) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal))))))))
+
+==================
+expr-forms/language/freetext-hex - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE 0x409);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (object_reference schema: (identifier) name: (identifier)))) (where (keyword_where) predicate: (invocation (object_reference name: (identifier)) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal))))))))
+
+==================
+expr-forms/language/freetext-name - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE 'English');
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (object_reference schema: (identifier) name: (identifier)))) (where (keyword_where) predicate: (invocation (object_reference name: (identifier)) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal))))))))
+
+==================
+expr-forms/language/containstable-integer - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE 1033);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (field (object_reference name: (identifier)) name: (identifier))) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal)))))))))
+
+==================
+expr-forms/language/containstable-hex - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE 0x409);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (field (object_reference name: (identifier)) name: (identifier))) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal)))))))))
+
+==================
+expr-forms/language/containstable-name - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE 'English');
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (field (object_reference name: (identifier)) name: (identifier))) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal)))))))))
+
+==================
+expr-forms/language/containstable-top - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE 1033, 10);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (field (object_reference name: (identifier)) name: (identifier))) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal)) parameter: (term value: (literal)))))))))
+
+==================
+expr-forms/language/freetexttable-integer - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE 1033);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (field (object_reference name: (identifier)) name: (identifier))) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal)))))))))
+
+==================
+expr-forms/language/freetexttable-hex - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE 0x409);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (field (object_reference name: (identifier)) name: (identifier))) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal)))))))))
+
+==================
+expr-forms/language/freetexttable-name - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE 'English');
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (field (object_reference name: (identifier)) name: (identifier))) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal)))))))))
+
+==================
+expr-forms/language/freetexttable-top - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE 1033, 10);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (field (object_reference name: (identifier)) name: (identifier))) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal)) parameter: (term value: (literal)))))))))
+
+==================
+expr-forms/language/star - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM t WHERE CONTAINS(*,'x',LANGUAGE 1033);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (object_reference name: (identifier)))) (where (keyword_where) predicate: (invocation (object_reference name: (identifier)) parameter: (term value: (all_fields)) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal))))))))
+
+==================
+expr-forms/language/columns - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM t WHERE FREETEXT((a,b),'x',LANGUAGE 1033);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (object_reference name: (identifier)))) (where (keyword_where) predicate: (invocation (object_reference name: (identifier)) parameter: (term value: (list (field name: (identifier)) (field name: (identifier)))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal))))))))
+
+==================
+expr-forms/language/property - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT * FROM t WHERE CONTAINS(PROPERTY(c,'title'),'x',LANGUAGE 1033);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (object_reference name: (identifier)))) (where (keyword_where) predicate: (invocation (object_reference name: (identifier)) parameter: (term value: (invocation (object_reference name: (identifier)) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal))))))))
+
+==================
+expr-forms/static/hierarchy - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT hierarchyid::GetRoot();
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (invocation (object_reference schema: (object_reference name: (identifier)) name: (object_reference name: (identifier)))))))))))
+
+==================
+expr-forms/static/geometry - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT geometry::Point(1,2,0);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (invocation (object_reference schema: (object_reference name: (identifier)) name: (object_reference name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (literal)) parameter: (term value: (literal))))))))))
+
+==================
+expr-forms/static/schema - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT dbo.t::f(1);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (invocation (object_reference schema: (object_reference schema: (identifier) name: (identifier)) name: (object_reference name: (identifier))) parameter: (term value: (literal))))))))))
+
+==================
+expr-forms/static/bracket - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT [dbo].[Type]::[Method](1);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (invocation (object_reference schema: (object_reference schema: (identifier) name: (identifier)) name: (object_reference name: (identifier))) parameter: (term value: (literal))))))))))
+
+==================
+expr-forms/static/property - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT dbo.t::p;
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (field schema: (object_reference schema: (identifier) name: (identifier)) name: (object_reference name: (identifier))))))))))
+
+==================
+expr-forms/static/methodQualified - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT dbo.t::dbo.f(1);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (invocation (object_reference schema: (object_reference schema: (identifier) name: (identifier)) name: (object_reference schema: (identifier) name: (identifier))) parameter: (term value: (literal))))))))))
+
+==================
+expr-forms/static/chain - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT dbo.t::f(1).g(2);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (method_call (invocation (object_reference schema: (object_reference schema: (identifier) name: (identifier)) name: (object_reference name: (identifier))) parameter: (term value: (literal))) method: (identifier) parameter: (term value: (literal))))))))))
+
+==================
+expr-forms/static/callArgs - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT ABS(dbo.t::f(1));
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (invocation (object_reference name: (identifier)) parameter: (term value: (invocation (object_reference schema: (object_reference schema: (identifier) name: (identifier)) name: (object_reference name: (identifier))) parameter: (term value: (literal))))))))))))
+
+==================
+expr-forms/static/binary - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT 1 + dbo.t::f(1);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (binary_expression left: (literal) right: (invocation (object_reference schema: (object_reference schema: (identifier) name: (identifier)) name: (object_reference name: (identifier))) parameter: (term value: (literal)))))))))))
+
+==================
+expr-forms/static/cast - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT CAST(dbo.t::f(1) AS int);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (cast name: (keyword_cast) parameter: (invocation (object_reference schema: (object_reference schema: (identifier) name: (identifier)) name: (object_reference name: (identifier))) parameter: (term value: (literal))) (keyword_as) (keyword_int)))))))))
+
+==================
+expr-forms/language/contains-declared - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+DECLARE @lang int; SELECT * FROM t WHERE CONTAINS(c,'x', LANGUAGE @lang);
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (object_reference name: (identifier)))) (where (keyword_where) predicate: (invocation (object_reference name: (identifier)) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (identifier))))))))
+
+==================
+expr-forms/language/contains-quoted-off - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SET QUOTED_IDENTIFIER OFF; SELECT * FROM t WHERE CONTAINS(c,'x', LANGUAGE "English");
+
+---
+
+(program (batch (statement (set_statement (keyword_set) (object_reference name: (identifier)) (keyword_off))) (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (object_reference name: (identifier)))) (where (keyword_where) predicate: (invocation (object_reference name: (identifier)) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (identifier))))))))
+
+==================
+expr-forms/language/freetext-declared - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+DECLARE @lang int; SELECT * FROM t WHERE FREETEXT(c,'x', LANGUAGE @lang);
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (object_reference name: (identifier)))) (where (keyword_where) predicate: (invocation (object_reference name: (identifier)) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (identifier))))))))
+
+==================
+expr-forms/language/freetext-quoted-off - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SET QUOTED_IDENTIFIER OFF; SELECT * FROM t WHERE FREETEXT(c,'x', LANGUAGE "English");
+
+---
+
+(program (batch (statement (set_statement (keyword_set) (object_reference name: (identifier)) (keyword_off))) (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (object_reference name: (identifier)))) (where (keyword_where) predicate: (invocation (object_reference name: (identifier)) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (identifier))))))))
+
+==================
+expr-forms/language/containstable-declared - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+DECLARE @lang int; SELECT * FROM CONTAINSTABLE(dbo.t,c,'x', LANGUAGE @lang);
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (field (object_reference name: (identifier)) name: (identifier))) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (identifier)))))))))
+
+==================
+expr-forms/language/containstable-quoted-off - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SET QUOTED_IDENTIFIER OFF; SELECT * FROM CONTAINSTABLE(dbo.t,c,'x', LANGUAGE "English");
+
+---
+
+(program (batch (statement (set_statement (keyword_set) (object_reference name: (identifier)) (keyword_off))) (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (field (object_reference name: (identifier)) name: (identifier))) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (identifier)))))))))
+
+==================
+expr-forms/language/containstable-top-declared - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+DECLARE @n int; SELECT * FROM CONTAINSTABLE(dbo.t,c,'x',LANGUAGE 1033,@n);
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (field (object_reference name: (identifier)) name: (identifier))) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal)) parameter: (term value: (field name: (identifier))))))))))
+
+==================
+expr-forms/language/freetexttable-declared - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+DECLARE @lang int; SELECT * FROM FREETEXTTABLE(dbo.t,c,'x', LANGUAGE @lang);
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (field (object_reference name: (identifier)) name: (identifier))) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (identifier)))))))))
+
+==================
+expr-forms/language/freetexttable-quoted-off - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SET QUOTED_IDENTIFIER OFF; SELECT * FROM FREETEXTTABLE(dbo.t,c,'x', LANGUAGE "English");
+
+---
+
+(program (batch (statement (set_statement (keyword_set) (object_reference name: (identifier)) (keyword_off))) (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (field (object_reference name: (identifier)) name: (identifier))) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (identifier)))))))))
+
+==================
+expr-forms/language/freetexttable-top-declared - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+DECLARE @n int; SELECT * FROM FREETEXTTABLE(dbo.t,c,'x',LANGUAGE 1033,@n);
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int)))) (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (field (object_reference name: (identifier)) name: (identifier))) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal)) parameter: (term value: (field name: (identifier))))))))))
+
+==================
+expr-forms/static/extra-qualifiedMethod - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT t::s.f();
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (invocation (object_reference schema: (object_reference name: (identifier)) name: (object_reference schema: (identifier) name: (identifier)))))))))))
+
+==================
+expr-forms/static/extra-threeMethod - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT t::db.s.f();
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (invocation (object_reference schema: (object_reference name: (identifier)) name: (object_reference database: (identifier) schema: (identifier) name: (identifier)))))))))))
+
+==================
+expr-forms/static/extra-fourMethod - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT t::srv.db.s.f();
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (invocation (object_reference schema: (object_reference name: (identifier)) name: (object_reference server: (identifier) database: (identifier) schema: (identifier) name: (identifier)))))))))))
+
+==================
+expr-forms/static/extra-dotted - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT geometry::Point(1,2,0).STAsText();
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (method_call (invocation (object_reference schema: (object_reference name: (identifier)) name: (object_reference name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (literal)) parameter: (term value: (literal))) method: (identifier)))))))))
+
+==================
+expr-forms/language/qi-comment - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SET/*a*/QUOTED_IDENTIFIER/*b*/OFF; SELECT * FROM t WHERE CONTAINS(c,'x',LANGUAGE "English");
+
+---
+
+(program (batch (statement (set_statement (keyword_set) (marginalia) (object_reference name: (identifier)) (marginalia) (keyword_off))) (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (object_reference name: (identifier)))) (where (keyword_where) predicate: (invocation (object_reference name: (identifier)) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (identifier))))))))
+
+==================
+expr-forms/language/qi-options - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SET ANSI_NULLS, QUOTED_IDENTIFIER OFF; SELECT * FROM t WHERE CONTAINS(c,'x',LANGUAGE "English");
+
+---
+
+(program (batch (statement (set_statement (keyword_set) (object_reference name: (identifier)) (object_reference name: (identifier)) (keyword_off))) (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (object_reference name: (identifier)))) (where (keyword_where) predicate: (invocation (object_reference name: (identifier)) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (identifier))))))))
+
+==================
+expr-forms/static/nullQuoted - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT geometry::[Null];
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (field schema: (object_reference name: (identifier)) name: (object_reference name: (identifier))))))))))
+
+==================
+expr-forms/static/propertyParen - LocalDB 17.0.1000.7 levels 100-170 accepts
+==================
+
+SELECT dbo.t::p(1).x(2).y(3);
+
+---
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (method_call (method_call (invocation (object_reference schema: (object_reference schema: (identifier) name: (identifier)) name: (object_reference name: (identifier))) parameter: (term value: (literal))) method: (identifier) parameter: (term value: (literal))) method: (identifier) parameter: (term value: (literal))))))))))

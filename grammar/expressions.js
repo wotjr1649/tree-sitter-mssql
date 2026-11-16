@@ -13,6 +13,7 @@ export default {
       1,
       choice(
         $.literal,
+        prec(0, alias($._static_reference, $.field)),
         alias($._qualified_field, $.field),
         $.list,
         $.case,
@@ -109,7 +110,7 @@ export default {
       ),
     ),
 
-  // A method call on a parenthesized expression or subquery, which is how
+  // A method call on a parenthesized expression, subquery or call result, applying
   // the XML and CLR methods are applied to a query result:
   //   (SELECT ... FOR XML PATH(''), TYPE).value('.', 'nvarchar(max)')
   // A method on a variable or column (`@x.value(...)`) is an ordinary
@@ -118,7 +119,7 @@ export default {
     prec(
       1,
       seq(
-        choice($.subquery, $.parenthesized_expression),
+        choice($.subquery, $.parenthesized_expression, $.invocation, $.method_call),
         '.',
         field('method', $.identifier),
         paren_list(field('parameter', $.term)),
@@ -266,7 +267,7 @@ export default {
     prec(
       1,
       seq(
-        $.object_reference,
+        choice($.object_reference, alias($._static_reference, $.object_reference)),
         $._invocation_arguments,
         optional(seq($.keyword_within, $.keyword_group, wrapped_in_parenthesis($.order_by))),
       ),
@@ -277,12 +278,29 @@ export default {
     wrapped_in_parenthesis(
       seq(
         comma_list(
-          seq(optional($.keyword_distinct), field('parameter', choice($.term, $.keyword_default))),
+          seq(
+            optional($.keyword_distinct),
+            field(
+              'parameter',
+              choice($.term, $.keyword_default, alias($._fulltext_language, $.term)),
+            ),
+          ),
         ),
         optional($.returning_clause),
         optional($.json_wrapper_clause),
       ),
     ),
+
+  // Match the existing LANGUAGE 'name' term/field/alias tree also for LCIDs and variables.
+  _fulltext_language: ($) =>
+    seq(
+      field('value', alias($._fulltext_language_field, $.field)),
+      field('alias', choice($.literal, $.identifier)),
+    ),
+  _fulltext_language_field: ($) => field('name', alias($.keyword_language, $.identifier)),
+
+  _static_reference: ($) =>
+    seq(field('schema', $.object_reference), '::', field('name', $.object_reference)),
 
   parenthesized_expression: ($) => prec(2, wrapped_in_parenthesis($._expression)),
 

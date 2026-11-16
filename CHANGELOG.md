@@ -39,6 +39,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Parse full-text LANGUAGE arguments and general static references with method chaining; add the optional schema field to static field nodes, with no node kind or field removed.
+
 - Add `restore_statement` and 7 keyword node kinds (`keyword_restore`, `keyword_mirror`, `keyword_filelistonly`, `keyword_headeronly`, `keyword_labelonly`, `keyword_verifyonly`, `keyword_rewindonly`); `backup_statement` and `option` gain child kinds (`option` also takes a `unary_expression` value). No node kind or field is removed, and the existing BACKUP trees keep their shape.
 - Add 666 backup-restore probes (LocalDB 17.0.1000.7, levels 100-170) and 262 corpus cases.
 - Add 174 query-form probes/corpus cases, local statement constraints and incremental edit coverage; existing node kinds and fields remain.
