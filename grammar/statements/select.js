@@ -13,30 +13,16 @@ import {
 // never trail an individual `query_specification` branch of a union — that
 // is the ARCH-4 defect this file's `set_operation`/`query_specification`
 // split exists to close, so don't attach a future trailing clause to
-// `query_specification` on the strength of this comment. A plain function
-// rather than a shared named rule, matching event_session_body() in
-// create.js: every segment here is optional, and a named rule that can
-// match the empty string is rejected by tree-sitter unless it is the
-// grammar's start rule.
+// `query_specification` on the strength of this comment. A shared nonempty
+// suffix avoids expanding every optional combination in each caller.
 function trailing_sort_and_hint_clauses($) {
-  return seq(
-    optional($.order_by),
-    optional($.offset_fetch),
-    optional($.option_clause),
-    optional($.for_clause),
-  );
+  return optional($._trailing_sort_and_hint_clauses);
 }
 
 // FROM/WHERE/GROUP BY/HAVING/WINDOW — shared by every query body.
 // SQL Server accepts WHERE, GROUP BY and HAVING independently of FROM.
 function query_specification_rest($) {
-  return seq(
-    optional($.from),
-    optional($.where),
-    optional($.group_by),
-    optional($.having),
-    optional($.window_clause),
-  );
+  return optional($._query_specification_rest);
 }
 
 // SELECT [INTO] plus that rest. PARSEONLY accepts INTO on every set branch;
@@ -50,6 +36,28 @@ function query_specification_body($) {
 }
 
 export default {
+  _query_specification_rest: ($) =>
+    choice(
+      seq(
+        $.from,
+        optional($.where),
+        optional($.group_by),
+        optional($.having),
+        optional($.window_clause),
+      ),
+      seq($.where, optional($.group_by), optional($.having), optional($.window_clause)),
+      seq($.group_by, optional($.having), optional($.window_clause)),
+      seq($.having, optional($.window_clause)),
+      $.window_clause,
+    ),
+  _trailing_sort_and_hint_clauses: ($) =>
+    choice(
+      seq($.order_by, optional($.offset_fetch), optional($.option_clause), optional($.for_clause)),
+      seq($.offset_fetch, optional($.option_clause), optional($.for_clause)),
+      seq($.option_clause, optional($.for_clause)),
+      $.for_clause,
+    ),
+
   // WITH [XMLNAMESPACES (...) ,] cte [, ...] — the namespace declaration
   // goes first, where a CTE list starts, and may be followed by CTEs.
   _cte: ($) =>

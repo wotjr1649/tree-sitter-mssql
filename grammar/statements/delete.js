@@ -1,5 +1,3 @@
-import { write_target } from '../helpers.js';
-
 // T-SQL DELETE:
 //
 //   DELETE [TOP (n)] [FROM] target [WITH (hints)] [OUTPUT ...] [FROM ... joins]
@@ -18,11 +16,8 @@ export default {
         $.keyword_delete,
         optional($.top_clause),
         optional($.keyword_from),
-        write_target($, { allowRowsetFunction: true }),
-        optional($.output_clause),
-        optional($.from),
-        optional($.where),
-        optional($.option_clause),
+        $._rowset_write_target,
+        optional($._dml_write_tail),
       ),
     ),
 };
