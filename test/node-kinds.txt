@@ -200,7 +200,7 @@ external_cpu_range
 external_file_spec
 external_name{method}
 fetch_cursor_statement
-field{name}
+field{name,schema}
 float{precision}
 for_clause
 for_option

@@ -1,0 +1,164 @@
+{"id":"expr-forms/language/contains-integer","sha256":"f9e14d68374f8c653957521a7f3659634ae4747b124b5661d399218cacfb9391","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE 1033);\n"}
+{"id":"expr-forms/language/contains-hex","sha256":"845152e1a6fe422ee817ee5310e042ebf77894bae3d1738cd4b2b3a58d174cff","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE 0x409);\n"}
+{"id":"expr-forms/language/contains-name","sha256":"efc87bf19d8a0b29b65dbd05bf9bfe32c486354a836e789abae790b8c3b21eeb","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE 'English');\n"}
+{"id":"expr-forms/language/contains-unicode","sha256":"2b02414b3f86115c495fe19b2031437ff9fe411f5f3e825283649dc37857ec9a","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE N'English');\n"}
+{"id":"expr-forms/language/contains-quoted","sha256":"fc6d34eec4c5f37463f9152ce977b94b8262e3d812a520822a658160f03f13b6","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE \"English\");\n"}
+{"id":"expr-forms/language/contains-variable","sha256":"77e2f78821f1adea50bc95fc4ccea7af460587f71cac2709f8d1a69b905721ac","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE @lang);\n"}
+{"id":"expr-forms/language/contains-identifier","sha256":"ceaf1ae45ecc665e26688053aa7494c088e5ce060042dfe65c6608de285af2b6","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE English);\n"}
+{"id":"expr-forms/language/contains-negative","sha256":"ea6f2712ff0f602ed23b7dd2f7979969bd7a80d6bd078cd6b5d01ddf0310ccd3","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE -1);\n"}
+{"id":"expr-forms/language/contains-float","sha256":"4ecf80fe8e28d34668e70e9f80b3bfd9d40c8c8688dfcb7ba1649c9c57042545","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE 1033.0);\n"}
+{"id":"expr-forms/language/contains-expression","sha256":"0acca2088a2a03fe31d70b2826e94987de49fcf55a7a8ca4ef9d729bbf0dc48e","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE 1000+33);\n"}
+{"id":"expr-forms/language/contains-null","sha256":"5b457526218c1e0c19a126fb39c0d0adbbff84ad57a30c9d83287a1aae63c19f","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE NULL);\n"}
+{"id":"expr-forms/language/contains-default","sha256":"601aba1b8b504decd184e3a19a1669bd42041c9969a1f53740361d30f49507e0","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE DEFAULT);\n"}
+{"id":"expr-forms/language/contains-empty","sha256":"104c37f3192d3e160c1b5b081dced20bee5d541261eeef70a5d8fd872fb7a60b","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE '');\n"}
+{"id":"expr-forms/language/contains-zero","sha256":"80df403c726758c03bd9610fac738d3079319a8a7da4bc2a324ecbe74e50c042","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE 0);\n"}
+{"id":"expr-forms/language/contains-large","sha256":"bc7e8696f4a9cbe366f8dfeceae72be1bbecccc5f8872142bbac2c47b6ad480c","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE 999999);\n"}
+{"id":"expr-forms/language/contains-paren","sha256":"609efaf04711ee84703c4601218f3b342d78eae358ca19e3ad3bbd3063476f42","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE (1033));\n"}
+{"id":"expr-forms/language/contains-missing","sha256":"22ba84b5544822df785165bd718f9f344c337d75a9c6c710af289557522334bc","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE);\n"}
+{"id":"expr-forms/language/contains-repeat","sha256":"00cc201939639b7a63f223ce567bcd550f70d5f1d4d094597a90e85a7de551c7","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple', LANGUAGE 1033, LANGUAGE 1033);\n"}
+{"id":"expr-forms/language/contains-no-comma","sha256":"98d245a45d0a68eacd943bc3ffe0f649056cff7d47d91e506ccabe23d40177a5","source":"SELECT * FROM dbo.t WHERE CONTAINS(c,'apple' LANGUAGE 1033);\n"}
+{"id":"expr-forms/language/freetext-integer","sha256":"b18dd4db3ca1b6655f1a17c15a9cb707fdfa911ee776b8afb0a043dd82e5f491","source":"SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE 1033);\n"}
+{"id":"expr-forms/language/freetext-hex","sha256":"894ee1543308b4afb81bfa4322e469e5be0addf9c23e36b1e54c73e7bde32ae0","source":"SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE 0x409);\n"}
+{"id":"expr-forms/language/freetext-name","sha256":"c2ad2f5f6902f1f215e47a2ffc893455363e4999c0c23ef66e4187fb5c0383ab","source":"SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE 'English');\n"}
+{"id":"expr-forms/language/freetext-unicode","sha256":"f4fa11fd262805a906c847eaf9aafc9e47c792b6ed84a3c61333a620cb0f236f","source":"SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE N'English');\n"}
+{"id":"expr-forms/language/freetext-quoted","sha256":"b745a8255ea797114feb0013ebf56f3aeb494929897574f6ea9397611a1903cb","source":"SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE \"English\");\n"}
+{"id":"expr-forms/language/freetext-variable","sha256":"27006f284c9b51fa7a651f7c0b8a8e6ed6657e5c4a8127857db91a6d1ebb4aa3","source":"SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE @lang);\n"}
+{"id":"expr-forms/language/freetext-identifier","sha256":"b680b5e10769e6d3fabb9be60c2779b54e401fa0895e2e6b684beee4e9f3a30c","source":"SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE English);\n"}
+{"id":"expr-forms/language/freetext-negative","sha256":"7cacb35b8dacc8f31da81b4d553e31dd8004e54570b684291c44ccced6074cc2","source":"SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE -1);\n"}
+{"id":"expr-forms/language/freetext-float","sha256":"e93ef5c0076c0681d2fc083482920a295e677f30c2a4d4408be94ae6ccec6641","source":"SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE 1033.0);\n"}
+{"id":"expr-forms/language/freetext-expression","sha256":"e06633b582a149ef8b067b18e3b2c6a14eb85181a5203cff9418fcef88f468ce","source":"SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE 1000+33);\n"}
+{"id":"expr-forms/language/freetext-null","sha256":"5ce569ad41fa2154e4cd7bc46ca750c4b24fa2d9aa28459a59d85b59546ace52","source":"SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE NULL);\n"}
+{"id":"expr-forms/language/freetext-default","sha256":"64bc96acc09aac22b6176a83d6d93ca23e5fa29bfd8994cf3e11a1a08407bbae","source":"SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE DEFAULT);\n"}
+{"id":"expr-forms/language/freetext-empty","sha256":"e70a24e7e89a8b1d9eee15cc16369e5b932a0615f7e4f04b44e8170acc4ea2e3","source":"SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE '');\n"}
+{"id":"expr-forms/language/freetext-zero","sha256":"4e25bcc9ec4d27e98378723ba0053b37438dfcf160657003c57848f79e98bdaf","source":"SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE 0);\n"}
+{"id":"expr-forms/language/freetext-large","sha256":"c60bf9b27ba7567302274471692a186d6117af4217c0e86b7d133992e0592cb5","source":"SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE 999999);\n"}
+{"id":"expr-forms/language/freetext-paren","sha256":"b4cf40699c7c30d07405a79214ce50cbb2f6dd07f49782923e3c10581b380575","source":"SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE (1033));\n"}
+{"id":"expr-forms/language/freetext-missing","sha256":"55ac52439d629950ad419640356491c09d5851e6f60626a99399725251b58aa2","source":"SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE);\n"}
+{"id":"expr-forms/language/freetext-repeat","sha256":"fc8969f28dd07815eff4daacbd7e4d040ae1d382982d844cbcf2d7360b77e244","source":"SELECT * FROM dbo.t WHERE FREETEXT(c,'apple', LANGUAGE 1033, LANGUAGE 1033);\n"}
+{"id":"expr-forms/language/freetext-no-comma","sha256":"8f481b271834c28e8440febeb3cdd2563f2e001aed84f39e019296edb7613965","source":"SELECT * FROM dbo.t WHERE FREETEXT(c,'apple' LANGUAGE 1033);\n"}
+{"id":"expr-forms/language/containstable-integer","sha256":"156741d690e153ee2ecd6cd2454976147dc4c80784aa7164b493e05b6be4728d","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE 1033);\n"}
+{"id":"expr-forms/language/containstable-hex","sha256":"fa0888ceaed0f1eaefc9ba047521a7514692182072e7a8f34bf318653d1b6610","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE 0x409);\n"}
+{"id":"expr-forms/language/containstable-name","sha256":"979fd4e5e07b6963fce86231b77da3d161891c9abedac42c01653b34d86533dc","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE 'English');\n"}
+{"id":"expr-forms/language/containstable-unicode","sha256":"02728cbac1cfe8f96a6c23f721db8ee9a811af34bc166a978440b8f3f0293459","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE N'English');\n"}
+{"id":"expr-forms/language/containstable-quoted","sha256":"17aa50fcb28fee6d082aefa6a5f6a86c184aa34f0cce3a5c72eee6ed290323f1","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE \"English\");\n"}
+{"id":"expr-forms/language/containstable-variable","sha256":"ccaa0129cfa66c2f6cdfef0a12cf8fa61ff23d194c6ec997463ac79cf6fc7583","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE @lang);\n"}
+{"id":"expr-forms/language/containstable-identifier","sha256":"6a3bd618bd92985acc39e0e3de99d68c4cd96ba380c44040c19a9e9abc2d9b56","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE English);\n"}
+{"id":"expr-forms/language/containstable-negative","sha256":"9a281c55047b7987336a52b40c13c1b65672dd266cdac73f264261eb4cbb4021","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE -1);\n"}
+{"id":"expr-forms/language/containstable-float","sha256":"1b108b449c4296a69e24a1acc5f5eef0e30f9bf9c43063da6f3c2b9ccc95236e","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE 1033.0);\n"}
+{"id":"expr-forms/language/containstable-expression","sha256":"ccd246198a612e8a7368b857c197df56230cd71bc5ca7a83752b795cb45c21a5","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE 1000+33);\n"}
+{"id":"expr-forms/language/containstable-null","sha256":"afd8d6154faef00a1a0d59b6be809c01029d5f52a2881834422fc612f273a692","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE NULL);\n"}
+{"id":"expr-forms/language/containstable-default","sha256":"6e9e5496bd6b4eb04f4a3da2ba72d54b479b10485aa1c3f68e2f6917951235d2","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE DEFAULT);\n"}
+{"id":"expr-forms/language/containstable-empty","sha256":"ecd9ebdc871c539e7b9b9bdecb0d4338f1399070b4d9258dc7a64c0f3c38a762","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE '');\n"}
+{"id":"expr-forms/language/containstable-zero","sha256":"0d30b28136082ff30b93698876b742df2d03b010de2b5f9621cacacfbc9ed30c","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE 0);\n"}
+{"id":"expr-forms/language/containstable-large","sha256":"fa5f7572fe5b11de59ab7b28393e646d1f0f2f57780a7fa93def9ed64e4ff18a","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE 999999);\n"}
+{"id":"expr-forms/language/containstable-paren","sha256":"2a5345747b8971ca26b0c426cc32d5dfdf24d7edefe4e5cda6e80023aec1ad64","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE (1033));\n"}
+{"id":"expr-forms/language/containstable-missing","sha256":"11e61a0c4f9e423e7df54a2ed63637f2ff0c776423bdb31fbf26b775a05f1436","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE);\n"}
+{"id":"expr-forms/language/containstable-repeat","sha256":"8f22a80e845455c369ac53a97987835d594c78db526a29f6392aa41981dfe54d","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE 1033, LANGUAGE 1033);\n"}
+{"id":"expr-forms/language/containstable-no-comma","sha256":"bb8458e6d5cc6b6c2855649cfa3683676f940dbf2fdaae9c2306e2bd533cec38","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple' LANGUAGE 1033);\n"}
+{"id":"expr-forms/language/containstable-top","sha256":"4ea18a480ee36c7e3702f4ec5253a99376feed4fbbb240cdb03c3eefdfb6416a","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE 1033, 10);\n"}
+{"id":"expr-forms/language/containstable-top-before","sha256":"34850c5ae4756d3e01a5c4fc2ae6c70d02a80fe93fd01421c0584341e4f668bb","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', 10, LANGUAGE 1033);\n"}
+{"id":"expr-forms/language/containstable-top-var","sha256":"c757923aa713461e8caa700715dc9757bcd5eb297218372f7a0aed2127fc5ed4","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'apple', LANGUAGE 1033, @n);\n"}
+{"id":"expr-forms/language/freetexttable-integer","sha256":"4ab6d138f2598444364ac6739e071d6a1b8b7bbe292523952b52d94e99d03823","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE 1033);\n"}
+{"id":"expr-forms/language/freetexttable-hex","sha256":"7e2cae5c0f4764dbdd02595e1810d65088368957d1cd8392f65281eab3a116a6","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE 0x409);\n"}
+{"id":"expr-forms/language/freetexttable-name","sha256":"1d77ebc68e01d2690cc10e774ef06995b5b207bae1a0b41246f6363547ce665c","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE 'English');\n"}
+{"id":"expr-forms/language/freetexttable-unicode","sha256":"2ad5ba568e961c9bbe40f5bed59dd402e6e255782711bb7b52d059b2bb8b186a","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE N'English');\n"}
+{"id":"expr-forms/language/freetexttable-quoted","sha256":"2c7e2d02936748da504e023a2c8f3320d9b6722a92cab36d90fc74470474b62e","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE \"English\");\n"}
+{"id":"expr-forms/language/freetexttable-variable","sha256":"1a3c5d8de048b3cb8d30d48316ee08a6dd0b8b9ef3377dc7e139f01aa46e94d7","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE @lang);\n"}
+{"id":"expr-forms/language/freetexttable-identifier","sha256":"79a9f93e239b9d5001b250168d697199eab8f55496da224c410230e07d61352c","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE English);\n"}
+{"id":"expr-forms/language/freetexttable-negative","sha256":"8da713e2e80aafc6148bc08a9f8ee4a8c538eeb8bf09ccc4657c36c70814401f","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE -1);\n"}
+{"id":"expr-forms/language/freetexttable-float","sha256":"98557ecd79b77d8ec1896795dc2f9f579c6c1be092cc309862e3f4b8b3da8441","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE 1033.0);\n"}
+{"id":"expr-forms/language/freetexttable-expression","sha256":"14c147df98116a62405b9ac1d9cc61bc74e2f107ca5367bc92e822bae3cb2e0b","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE 1000+33);\n"}
+{"id":"expr-forms/language/freetexttable-null","sha256":"bf5bc173e1dddfcdfc0c9e385b3e36b287a7583df2285c094d2ff51d03737f15","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE NULL);\n"}
+{"id":"expr-forms/language/freetexttable-default","sha256":"fda479f9a068a3445c539f453d9b20308b7fd93ba9eed643ac111aeeccaefb3f","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE DEFAULT);\n"}
+{"id":"expr-forms/language/freetexttable-empty","sha256":"1e0b3e0c35de7509e713dd6dcb4b2b419e90dd4da7ae305969c154147e1ab278","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE '');\n"}
+{"id":"expr-forms/language/freetexttable-zero","sha256":"9415f482d43860d83f7e8bc295e68478be9286bf0398763b272faa6ffcb20c5f","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE 0);\n"}
+{"id":"expr-forms/language/freetexttable-large","sha256":"82d94c8543a6167b461d8ea7def8876335200144d19575654f9c3ede65b252a1","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE 999999);\n"}
+{"id":"expr-forms/language/freetexttable-paren","sha256":"3aca852431d858113d23b43adb3081558797a4ba89557e39805f7c86d0608a33","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE (1033));\n"}
+{"id":"expr-forms/language/freetexttable-missing","sha256":"b6508f2721006fcb756de18d1fd035b68332e51b28182d55040c411152c6fec1","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE);\n"}
+{"id":"expr-forms/language/freetexttable-repeat","sha256":"004c79f330cc1851874eab782c27b65359ad6c826245f0722c412fba38677696","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE 1033, LANGUAGE 1033);\n"}
+{"id":"expr-forms/language/freetexttable-no-comma","sha256":"15b358ad98fced0320d314699194dcf8916779e5b3d92bfcd6fd7f393f08196f","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple' LANGUAGE 1033);\n"}
+{"id":"expr-forms/language/freetexttable-top","sha256":"c208fbf12a2a167de84e57358ead87c457b2e3a2eba19d4191cbf756c8a301da","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE 1033, 10);\n"}
+{"id":"expr-forms/language/freetexttable-top-before","sha256":"68b21be9dae65e9728d4ded0826844cfafb2cb9d47c274bf0e774330b748cb6d","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', 10, LANGUAGE 1033);\n"}
+{"id":"expr-forms/language/freetexttable-top-var","sha256":"116fc8b7fe7974e765d24adb67cda582aa81603a481a7b47e98ed9f1db1aebc4","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'apple', LANGUAGE 1033, @n);\n"}
+{"id":"expr-forms/language/ordinary","sha256":"9821d70d97e01b50219b8e261af342cb0b218b11f4f5835aeda1b81b2c31b328","source":"SELECT dbo.f(1, LANGUAGE 1033);\n"}
+{"id":"expr-forms/language/qualified","sha256":"ab6bd248e9336455f701a0453375943b9efa09733e38828a1d5e789eb959296b","source":"SELECT dbo.CONTAINS(c,'x',LANGUAGE 1033);\n"}
+{"id":"expr-forms/language/quoted","sha256":"b5f6163fdba0cb245ee48d43bd07a6fb4a524a5efa2eb5e46fea981baf187c55","source":"SELECT [CONTAINS](c,'x',LANGUAGE 1033);\n"}
+{"id":"expr-forms/language/star","sha256":"c32d2308de37414a8e1657898bc754c57b1bab6f2272bb47da97a3e155ebaedf","source":"SELECT * FROM t WHERE CONTAINS(*,'x',LANGUAGE 1033);\n"}
+{"id":"expr-forms/language/columns","sha256":"973b036b9c48bdfde6c608377e9fc3893e8c0536f811260f1c590925105f5fca","source":"SELECT * FROM t WHERE FREETEXT((a,b),'x',LANGUAGE 1033);\n"}
+{"id":"expr-forms/language/property","sha256":"34991fd31038d3d284a93973551bbe31a3391e17bf5dfe9ead3d4f9611d35a02","source":"SELECT * FROM t WHERE CONTAINS(PROPERTY(c,'title'),'x',LANGUAGE 1033);\n"}
+{"id":"expr-forms/language/four","sha256":"1647bdcf32669412fb1fade5614d655dad6d5653c44af3dbebcc41e06f9aacc9","source":"SELECT * FROM t WHERE CONTAINS(c,'x',LANGUAGE 1033,1);\n"}
+{"id":"expr-forms/language/late","sha256":"70d4a3cfd76b973e24eb2c9bf3c6b7fda816a96b082362c02bd787638c1ce51c","source":"SELECT * FROM t WHERE CONTAINS(c,LANGUAGE 1033,'x');\n"}
+{"id":"expr-forms/static/hierarchy","sha256":"49f8379ba4b44bc7b12e86af8c80fa2ad3296fb9552549acf5f7bd41886d5d46","source":"SELECT hierarchyid::GetRoot();\n"}
+{"id":"expr-forms/static/geometry","sha256":"7515bf559fc24994670ba686546d62515fde7cfe099dae4a7bb09e898e21c448","source":"SELECT geometry::Point(1,2,0);\n"}
+{"id":"expr-forms/static/schema","sha256":"9cd5850d007347602155555a062f7d6d90e770cde3f680ce00e7a6dbe390b91f","source":"SELECT dbo.t::f(1);\n"}
+{"id":"expr-forms/static/database","sha256":"28d37c1ee482e18f1df93c17e6472095da30cdf8ecd07b19927dd7ee8399a35a","source":"SELECT db.dbo.t::f(1);\n"}
+{"id":"expr-forms/static/server","sha256":"6765631af8a8186ebf128b359ec7f4cdacd9f78f4653fa55b4227989f425ce44","source":"SELECT srv.db.dbo.t::f(1);\n"}
+{"id":"expr-forms/static/defaultSchema","sha256":"5a26ef598993268ba5e103c795c56636e08aacb90d5be5a195f69f41b3d2556a","source":"SELECT db..t::f(1);\n"}
+{"id":"expr-forms/static/bracket","sha256":"cfc2d5c2331d293f77d8072091cf8fb42133aa75e1fa213bb5d875efc90e12ab","source":"SELECT [dbo].[Type]::[Method](1);\n"}
+{"id":"expr-forms/static/property","sha256":"ece1b8bdd9c869322145a2fb04e23996c3218a8466ff8da55ff669c3346cbb9e","source":"SELECT dbo.t::p;\n"}
+{"id":"expr-forms/static/unqualifiedProperty","sha256":"2837907895855e2307fc2ab0da41c846e9aa6ec59c0cc122b7c42899b881a132","source":"SELECT geometry::Null;\n"}
+{"id":"expr-forms/static/variable","sha256":"080aff5e4460a2e7663a3be9b8738d67428c8c8233333f47d11c62f7176cad0b","source":"SELECT @t::f(1);\n"}
+{"id":"expr-forms/static/whitespace","sha256":"f6ab083c910a890705492b6237e8fd378e9f4ddc271afea90887c0c5b9ba4629","source":"SELECT dbo.t : : f(1);\n"}
+{"id":"expr-forms/static/comments","sha256":"bd3d32e19beddeb7f7c780dd3f47ec6ef0014bd788b7531599b13b4d1d7609a7","source":"SELECT dbo.t/*a*/::/*b*/f(1);\n"}
+{"id":"expr-forms/static/split","sha256":"e050548616a27b5638eaa3782707138387d41bcc003ed7389e491492c4c6fe99","source":"SELECT dbo.t:/*a*/:f(1);\n"}
+{"id":"expr-forms/static/methodQualified","sha256":"1cc32d3b6cdaa1fdaa41f6261cc68e7000922978819f6cef63bc079a3d60db3c","source":"SELECT dbo.t::dbo.f(1);\n"}
+{"id":"expr-forms/static/typeMissing","sha256":"2365dcf687a838ae586408efcf6b1a8800a32e3af09bb34883845ffdc85f2730","source":"SELECT ::f(1);\n"}
+{"id":"expr-forms/static/methodMissing","sha256":"ce26a7a54d2ae00e78f079e0179c80db4de288e7ad56499dc1578c5422085a15","source":"SELECT dbo.t::(1);\n"}
+{"id":"expr-forms/static/triple","sha256":"bd0c5f47f63fe8fbcfb6acb01d6e24348c8be2cbfd7f1bfd111d0d9805ced614","source":"SELECT dbo.t:::f(1);\n"}
+{"id":"expr-forms/static/chain","sha256":"63eeb62ffcde614ae8ed04f4f71c394958e085fc181c081f674168373e62a855","source":"SELECT dbo.t::f(1).g(2);\n"}
+{"id":"expr-forms/static/callArgs","sha256":"db20a744e5c2bb2ab1f9e584d3e2510322d97e0c597dc5edcec80cd47d8bfad4","source":"SELECT ABS(dbo.t::f(1));\n"}
+{"id":"expr-forms/static/comparison","sha256":"376e0292733e315aadad91cc1cf7ff7394b8e2f8bdbc7c5c1754968efbd6570a","source":"SELECT dbo.t::f(1) = 1;\n"}
+{"id":"expr-forms/static/binary","sha256":"911291c8c0f6391e0d06cc6125bb35d9f50fb7f2cb8ebe07c7d68e165d72817e","source":"SELECT 1 + dbo.t::f(1);\n"}
+{"id":"expr-forms/static/cast","sha256":"65736a5c8be1806d5cfc1a3d19c4312bcbaa4021fbbed9f2657881cd506852fb","source":"SELECT CAST(dbo.t::f(1) AS int);\n"}
+{"id":"expr-forms/language/contains-declared","sha256":"18eaf364080354f79544aa03015093415118646812720a39b25c4043a627cedf","source":"DECLARE @lang int; SELECT * FROM t WHERE CONTAINS(c,'x', LANGUAGE @lang);\n"}
+{"id":"expr-forms/language/contains-quoted-off","sha256":"49d2f3a709962ca4ec2ebb9e0bdbb5a238fa586de28fadcfc4384d7688b5c24a","source":"SET QUOTED_IDENTIFIER OFF; SELECT * FROM t WHERE CONTAINS(c,'x', LANGUAGE \"English\");\n"}
+{"id":"expr-forms/language/contains-system","sha256":"450d6e8249a1bab5abe237ddfd46ccfd08cea7812d22ec432b90c740286f7c6c","source":"SELECT * FROM t WHERE CONTAINS(c,'x', LANGUAGE @@LANGID);\n"}
+{"id":"expr-forms/language/contains-alias","sha256":"63160f7021c3338e97a1262914aabffb174f200075d5cbb2e31f8e382bff04c4","source":"SELECT * FROM t WHERE CONTAINS(c,'x', LANGUAGE 1033 AS x);\n"}
+{"id":"expr-forms/language/freetext-declared","sha256":"0421fee89429ee8a1f9b1f93ab516e938c4752d71e04baedfc4bcffe301908ba","source":"DECLARE @lang int; SELECT * FROM t WHERE FREETEXT(c,'x', LANGUAGE @lang);\n"}
+{"id":"expr-forms/language/freetext-quoted-off","sha256":"2b23f6416c965bf8a73f72b3f63c780c8597ad09d7c3ccd12ac3deee0bd88180","source":"SET QUOTED_IDENTIFIER OFF; SELECT * FROM t WHERE FREETEXT(c,'x', LANGUAGE \"English\");\n"}
+{"id":"expr-forms/language/freetext-system","sha256":"ba41b33c461f881c66633267ef057f10bd32af2dd3b56322c87cb148bbcb1aca","source":"SELECT * FROM t WHERE FREETEXT(c,'x', LANGUAGE @@LANGID);\n"}
+{"id":"expr-forms/language/freetext-alias","sha256":"2315c9757f17c2c637f75fdaa87d19d340cdb5fd9f7a25a187cc15deacd7e1c6","source":"SELECT * FROM t WHERE FREETEXT(c,'x', LANGUAGE 1033 AS x);\n"}
+{"id":"expr-forms/language/containstable-declared","sha256":"8fa73cc12e24a0830f9e84c19ffeb3230c8cfc19621239f21504cc292f31829e","source":"DECLARE @lang int; SELECT * FROM CONTAINSTABLE(dbo.t,c,'x', LANGUAGE @lang);\n"}
+{"id":"expr-forms/language/containstable-quoted-off","sha256":"d4e87d753f737df68cf87bcb0a563b40edbfb096875e5e76ce726e59a5306d1b","source":"SET QUOTED_IDENTIFIER OFF; SELECT * FROM CONTAINSTABLE(dbo.t,c,'x', LANGUAGE \"English\");\n"}
+{"id":"expr-forms/language/containstable-system","sha256":"6f0a416ea032e3cd6e4d26b4eb0d713c2cdb16075bf0d64c21a82474026a780c","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'x', LANGUAGE @@LANGID);\n"}
+{"id":"expr-forms/language/containstable-alias","sha256":"17332e888b0c99d5916715ad0afcb1e0625c4b79778b8c78b5350457c814097c","source":"SELECT * FROM CONTAINSTABLE(dbo.t,c,'x', LANGUAGE 1033 AS x);\n"}
+{"id":"expr-forms/language/containstable-top-declared","sha256":"3c87e6d971b01ef04327658f7d80645d64cda9ccc3fef880ae53b2b4b1c82901","source":"DECLARE @n int; SELECT * FROM CONTAINSTABLE(dbo.t,c,'x',LANGUAGE 1033,@n);\n"}
+{"id":"expr-forms/language/containstable-top-negative","sha256":"0a0faddfeb205ca050472decca31868eb1545598ae9147dfc26443c9afc99a3d","source":"DECLARE @n int; SELECT * FROM CONTAINSTABLE(dbo.t,c,'x',LANGUAGE 1033,-1);\n"}
+{"id":"expr-forms/language/containstable-top-float","sha256":"2ece49cf2583c173875dce8924600e51f64e056b178c27f49a40372d2c49a8d9","source":"DECLARE @n int; SELECT * FROM CONTAINSTABLE(dbo.t,c,'x',LANGUAGE 1033,1.0);\n"}
+{"id":"expr-forms/language/containstable-top-hex","sha256":"473978eec18a897e429210fbb31e6b31c7a1f7a4580d2dfeef3aa5e05c144675","source":"DECLARE @n int; SELECT * FROM CONTAINSTABLE(dbo.t,c,'x',LANGUAGE 1033,0x10);\n"}
+{"id":"expr-forms/language/containstable-top-string","sha256":"1ea9a6d7e3d506d7a4b72ecbf115bd0bde7f9bde4ddf545e2291403e0aab6ccb","source":"DECLARE @n int; SELECT * FROM CONTAINSTABLE(dbo.t,c,'x',LANGUAGE 1033,'10');\n"}
+{"id":"expr-forms/language/containstable-top-expr","sha256":"705653c595df15533c7b60205061115812861be89b7fa9eb3b864ad85d88a9d0","source":"DECLARE @n int; SELECT * FROM CONTAINSTABLE(dbo.t,c,'x',LANGUAGE 1033,1+1);\n"}
+{"id":"expr-forms/language/containstable-top-zero","sha256":"f99d0468cb05f710f5bf66c7524b0246e068e9258a4849c2e946a9af071fc7cf","source":"DECLARE @n int; SELECT * FROM CONTAINSTABLE(dbo.t,c,'x',LANGUAGE 1033,0);\n"}
+{"id":"expr-forms/language/containstable-top-null","sha256":"fa1b710b6f7ff8221b42b8135e716aad31bd4c8f06285155c15a4aca2472897c","source":"DECLARE @n int; SELECT * FROM CONTAINSTABLE(dbo.t,c,'x',LANGUAGE 1033,NULL);\n"}
+{"id":"expr-forms/language/freetexttable-declared","sha256":"dbc6887a205cbdee00a4e03584b7dd9687ea3881381624c71b24c6406bf96dc1","source":"DECLARE @lang int; SELECT * FROM FREETEXTTABLE(dbo.t,c,'x', LANGUAGE @lang);\n"}
+{"id":"expr-forms/language/freetexttable-quoted-off","sha256":"11bb888de4ba22664cacd12a063a3b76885f34500a26a0cd071d65754e2698e4","source":"SET QUOTED_IDENTIFIER OFF; SELECT * FROM FREETEXTTABLE(dbo.t,c,'x', LANGUAGE \"English\");\n"}
+{"id":"expr-forms/language/freetexttable-system","sha256":"0d0f2891148e8c1cd689cb02cd7e177696febcfcb7d4cc17df4d64c471aea159","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'x', LANGUAGE @@LANGID);\n"}
+{"id":"expr-forms/language/freetexttable-alias","sha256":"87ae61b3689e8963790eb0a3add640e02c0780d2164fa6f596d08c24ceaf9268","source":"SELECT * FROM FREETEXTTABLE(dbo.t,c,'x', LANGUAGE 1033 AS x);\n"}
+{"id":"expr-forms/language/freetexttable-top-declared","sha256":"1608ab80a971636de60ad80bca0e4313832d504cdf9c68585fa5953516a3830d","source":"DECLARE @n int; SELECT * FROM FREETEXTTABLE(dbo.t,c,'x',LANGUAGE 1033,@n);\n"}
+{"id":"expr-forms/language/freetexttable-top-negative","sha256":"27c288fba701c189ff5d50c76ec7e44ce4fed1678cb60f08f4a41ef36c6350c9","source":"DECLARE @n int; SELECT * FROM FREETEXTTABLE(dbo.t,c,'x',LANGUAGE 1033,-1);\n"}
+{"id":"expr-forms/language/freetexttable-top-float","sha256":"0dcd80b3727239c74ae7fcd55d6efea900e2f10dbe39060e776ac082dd476185","source":"DECLARE @n int; SELECT * FROM FREETEXTTABLE(dbo.t,c,'x',LANGUAGE 1033,1.0);\n"}
+{"id":"expr-forms/language/freetexttable-top-hex","sha256":"d6bed2a5bebe116d52ffc71ba6fe0e3e0c28784f5a8dbf759573365bc8af7784","source":"DECLARE @n int; SELECT * FROM FREETEXTTABLE(dbo.t,c,'x',LANGUAGE 1033,0x10);\n"}
+{"id":"expr-forms/language/freetexttable-top-string","sha256":"a60dc4ecc31957b93a44a76149f54e298f844c3468fcfe0a14014f4a2e46a7e2","source":"DECLARE @n int; SELECT * FROM FREETEXTTABLE(dbo.t,c,'x',LANGUAGE 1033,'10');\n"}
+{"id":"expr-forms/language/freetexttable-top-expr","sha256":"3423356373f15bf492b7357d006aceeea50cbe9fcedfe3b39e7241afc81b07c9","source":"DECLARE @n int; SELECT * FROM FREETEXTTABLE(dbo.t,c,'x',LANGUAGE 1033,1+1);\n"}
+{"id":"expr-forms/language/freetexttable-top-zero","sha256":"eb6751806ad0d6c8729afd85ea00cd51ef7f8ca655e0e8cde2650c295a107696","source":"DECLARE @n int; SELECT * FROM FREETEXTTABLE(dbo.t,c,'x',LANGUAGE 1033,0);\n"}
+{"id":"expr-forms/language/freetexttable-top-null","sha256":"b2591109864cd7a2859a97b15e6220a0700a541f7bf7b70e71874a14b9a0c2ef","source":"DECLARE @n int; SELECT * FROM FREETEXTTABLE(dbo.t,c,'x',LANGUAGE 1033,NULL);\n"}
+{"id":"expr-forms/static/extra-qualifiedMethod","sha256":"d110cba6c5b5702b62e1c22305c999a56e022093134f5b30794fa22669cd2096","source":"SELECT t::s.f();\n"}
+{"id":"expr-forms/static/extra-threeMethod","sha256":"6c92d82b18aa16661e4d1764aaa0fca0875525392fdc1aba4912b75a7ba55bd4","source":"SELECT t::db.s.f();\n"}
+{"id":"expr-forms/static/extra-fourMethod","sha256":"66ad4ac48ba257fadc4bf61db42700a2419c6e008ff449572791e109f51cb329","source":"SELECT t::srv.db.s.f();\n"}
+{"id":"expr-forms/static/extra-schemaMethod","sha256":"116ef83d496755b143e8008016cc4754fc6477aa7f1bd91db8d163ead5d58925","source":"SELECT s.t::s.f();\n"}
+{"id":"expr-forms/static/extra-bareProperty","sha256":"2eca5d1d8ed900455e022a5718938f223ef79f83ea11aa949156d8e05cf55576","source":"SELECT t::p;\n"}
+{"id":"expr-forms/static/extra-qualifiedProperty","sha256":"d227c73a7e033deea8bb53b547418e0c3f4c70e643b91c332f21dafea088548b","source":"SELECT t::s.p;\n"}
+{"id":"expr-forms/static/extra-propertyChain","sha256":"05f9ba30dcefec9836b1cd43e17ebaa60686b3f03087d1ddf4bc2893185259bd","source":"SELECT t::p.x;\n"}
+{"id":"expr-forms/static/extra-methodVariable","sha256":"13c17af06401e2c48e90cb8ab4936a41c08ab5ff5a185a753fe62004f6d73deb","source":"SELECT t::@m();\n"}
+{"id":"expr-forms/static/extra-typeVariable","sha256":"20a446988ba25eec4ed68c934da27f0e7e2180d433e605fdaba4e0219faab132","source":"SELECT @t::f();\n"}
+{"id":"expr-forms/static/extra-systemType","sha256":"1bdd27f8aa1ff797dc121985b59afb9a207bce540e4ccffa11563f46760fb487","source":"SELECT int::f();\n"}
+{"id":"expr-forms/static/extra-quotedType","sha256":"2de658b8754d9b18a8c0b260bbeb4bd42c9932fa8450525f678bb36c8f07d592","source":"SELECT [geometry]::[Null];\n"}
+{"id":"expr-forms/static/extra-dotted","sha256":"1e7281dc976f0c9bc3fbaf855f6585267d9dbed941d4e5496fa9d1b613173182","source":"SELECT geometry::Point(1,2,0).STAsText();\n"}
+{"id":"expr-forms/language/qi-comment","sha256":"e4ae9399324ddfbf436c00956da0a17dda380fc21b9c0764721a68f70283985c","source":"SET/*a*/QUOTED_IDENTIFIER/*b*/OFF; SELECT * FROM t WHERE CONTAINS(c,'x',LANGUAGE \"English\");\n"}
+{"id":"expr-forms/language/qi-options","sha256":"4ce75a71dfd4697d497850713ae92ce1d33824cca14dd53c0138cbf42289192c","source":"SET ANSI_NULLS, QUOTED_IDENTIFIER OFF; SELECT * FROM t WHERE CONTAINS(c,'x',LANGUAGE \"English\");\n"}
+{"id":"expr-forms/language/qi-reset","sha256":"2387d45808065f26ea4401a45323d5d6ad59e35c6c30ce400c006f457b2ac2e4","source":"SET QUOTED_IDENTIFIER OFF; SET QUOTED_IDENTIFIER ON; SELECT * FROM t WHERE CONTAINS(c,'x',LANGUAGE \"English\");\n"}
+{"id":"expr-forms/static/nullCall","sha256":"4de8e254b0be1e1f1869861246c26ae71ebe3b2d3327f9a50ea207e32074e6e6","source":"SELECT geometry::Null();\n"}
+{"id":"expr-forms/static/nullQuoted","sha256":"5de833c75f102f4f0434fb277d575a2a08451d68bf86c1301cee8d6e1ad58736","source":"SELECT geometry::[Null];\n"}
+{"id":"expr-forms/static/nullQualified","sha256":"8d3f650db6f499970d9c0b8d5b67fa02339905dfa040e348d5e59ddcf533ce9d","source":"SELECT dbo.t::Null;\n"}
+{"id":"expr-forms/static/propertyParen","sha256":"cda21bc0f9d614830023f5143f4bf669f2673b5a775c862a67e7068a23a13800","source":"SELECT dbo.t::p(1).x(2).y(3);\n"}
+{"id":"expr-forms/static/ordinaryChain","sha256":"89d9eded3fbad1515cab03943ccd341889fd1b119e12c90d4339f0a20b62c086","source":"SELECT dbo.f(1).x(2);\n"}

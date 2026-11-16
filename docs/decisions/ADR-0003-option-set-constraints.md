@@ -110,3 +110,12 @@ add small per-node checks rather than enumerating permutations in the grammar:
 Each check has a unit test in constraints.rs. Accepted top-level database SET repeats are preserved
 (extra-database-set/case-001/002); ALTER ADD file NAME and MODIFY file NAME are not required by PARSEONLY
 (files/negative-suspected-002/006). Engine evidence takes precedence over assumed restrictions.
+
+## Expression evidence (R15)
+
+LocalDB 17.0.1000.7, compatibility levels 100–170, `expr-forms/*` probes.
+
+| Rule | Tree-decidable restriction |
+| --- | --- |
+| expression-fulltext-language | CONTAINS/FREETEXT argument 3 or TABLE argument 4; one LANGUAGE; name, LCID or local variable; optional TABLE top value follows LANGUAGE |
+| expression-static-reference | Type at most schema.name; no variable type/member or unquoted NULL member |

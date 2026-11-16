@@ -1160,7 +1160,7 @@ SELECT hierarchyid::GetRoot(), geometry::Point(1,2,0);
 
 ---
 
-(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (field (identifier)) (ERROR) (identifier)))))) (ERROR (ERROR (keyword_geometry)) (literal) (literal) (literal))))
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (invocation (object_reference schema: (object_reference name: (identifier)) name: (object_reference name: (identifier))))) (term value: (invocation (object_reference schema: (object_reference name: (identifier)) name: (object_reference name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (literal)) parameter: (term value: (literal))))))))))
 
 ==================
 query-forms/open-json-arrayagg - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
@@ -1230,7 +1230,7 @@ SELECT * FROM dbo.t WHERE CONTAINS(c,'apple',LANGUAGE 1033);
 
 ---
 
-(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))) (where (keyword_where) (invocation (object_reference (identifier)) (term (field (identifier))) (term (literal)) (term (field (identifier))) (ERROR)))))))
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (object_reference schema: (identifier) name: (identifier)))) (where (keyword_where) predicate: (invocation (object_reference name: (identifier)) parameter: (term value: (field name: (identifier))) parameter: (term value: (literal)) parameter: (term value: (field name: (identifier)) alias: (literal))))))))
 
 ==================
 query-forms/open-graph-columns - LocalDB 17.0.1000.7 levels 100-170 - engine accepts
@@ -1301,20 +1301,7 @@ ADD SIGNATURE TO OBJECT::dbo.p BY CERTIFICATE c;
 
 ---
 
-(program
-  (batch
-    (statement
-      (label_statement
-        (identifier)
-        (ERROR
-          (keyword_to)
-          (keyword_object)))))
-  (ERROR
-    (identifier)
-    (identifier)
-    (keyword_by)
-    (keyword_certificate)
-    (identifier)))
+(program (ERROR (identifier) (keyword_to) (keyword_object) (keyword_by) (keyword_certificate)) (batch))
 
 ==================
 query-forms/open-spaced-comparison - LocalDB 17.0.1000.7 levels 100-170 - engine accepts

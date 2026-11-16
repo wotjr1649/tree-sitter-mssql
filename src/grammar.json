@@ -6528,6 +6528,19 @@
             "name": "literal"
           },
           {
+            "type": "PREC",
+            "value": 0,
+            "content": {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_static_reference"
+              },
+              "named": true,
+              "value": "field"
+            }
+          },
+          {
             "type": "ALIAS",
             "content": {
               "type": "SYMBOL",
@@ -7058,6 +7071,14 @@
               {
                 "type": "SYMBOL",
                 "name": "parenthesized_expression"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "invocation"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "method_call"
               }
             ]
           },
@@ -7938,8 +7959,22 @@
         "type": "SEQ",
         "members": [
           {
-            "type": "SYMBOL",
-            "name": "object_reference"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "object_reference"
+              },
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_static_reference"
+                },
+                "named": true,
+                "value": "object_reference"
+              }
+            ]
           },
           {
             "type": "SYMBOL",
@@ -8030,6 +8065,15 @@
                               {
                                 "type": "SYMBOL",
                                 "name": "keyword_default"
+                              },
+                              {
+                                "type": "ALIAS",
+                                "content": {
+                                  "type": "SYMBOL",
+                                  "name": "_fulltext_language"
+                                },
+                                "named": true,
+                                "value": "term"
                               }
                             ]
                           }
@@ -8073,6 +8117,15 @@
                                     {
                                       "type": "SYMBOL",
                                       "name": "keyword_default"
+                                    },
+                                    {
+                                      "type": "ALIAS",
+                                      "content": {
+                                        "type": "SYMBOL",
+                                        "name": "_fulltext_language"
+                                      },
+                                      "named": true,
+                                      "value": "term"
                                     }
                                   ]
                                 }
@@ -8118,6 +8171,79 @@
         {
           "type": "STRING",
           "value": ")"
+        }
+      ]
+    },
+    "_fulltext_language": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "value",
+          "content": {
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_fulltext_language_field"
+            },
+            "named": true,
+            "value": "field"
+          }
+        },
+        {
+          "type": "FIELD",
+          "name": "alias",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "literal"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "identifier"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "_fulltext_language_field": {
+      "type": "FIELD",
+      "name": "name",
+      "content": {
+        "type": "ALIAS",
+        "content": {
+          "type": "SYMBOL",
+          "name": "keyword_language"
+        },
+        "named": true,
+        "value": "identifier"
+      }
+    },
+    "_static_reference": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "schema",
+          "content": {
+            "type": "SYMBOL",
+            "name": "object_reference"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "::"
+        },
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "object_reference"
+          }
         }
       ]
     },
