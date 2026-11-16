@@ -282,7 +282,12 @@ export default {
             optional($.keyword_distinct),
             field(
               'parameter',
-              choice($.term, $.keyword_default, alias($._fulltext_language, $.term)),
+              choice(
+                $.term,
+                alias($._rowset_connection, $.term),
+                $.keyword_default,
+                alias($._fulltext_language, $.term),
+              ),
             ),
           ),
         ),
@@ -301,6 +306,9 @@ export default {
 
   _static_reference: ($) =>
     seq(field('schema', $.object_reference), '::', field('name', $.object_reference)),
+
+  _rowset_connection: ($) =>
+    seq(field('value', $.literal), ';', optional($.literal), ';', optional($.literal)),
 
   parenthesized_expression: ($) => prec(2, wrapped_in_parenthesis($._expression)),
 

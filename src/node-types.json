@@ -22154,11 +22154,15 @@
       }
     },
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": false,
       "types": [
         {
           "type": "keyword_as",
+          "named": true
+        },
+        {
+          "type": "literal",
           "named": true
         }
       ]

@@ -8063,6 +8063,15 @@
                                 "name": "term"
                               },
                               {
+                                "type": "ALIAS",
+                                "content": {
+                                  "type": "SYMBOL",
+                                  "name": "_rowset_connection"
+                                },
+                                "named": true,
+                                "value": "term"
+                              },
+                              {
                                 "type": "SYMBOL",
                                 "name": "keyword_default"
                               },
@@ -8113,6 +8122,15 @@
                                     {
                                       "type": "SYMBOL",
                                       "name": "term"
+                                    },
+                                    {
+                                      "type": "ALIAS",
+                                      "content": {
+                                        "type": "SYMBOL",
+                                        "name": "_rowset_connection"
+                                      },
+                                      "named": true,
+                                      "value": "term"
                                     },
                                     {
                                       "type": "SYMBOL",
@@ -8244,6 +8262,51 @@
             "type": "SYMBOL",
             "name": "object_reference"
           }
+        }
+      ]
+    },
+    "_rowset_connection": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "value",
+          "content": {
+            "type": "SYMBOL",
+            "name": "literal"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": ";"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "literal"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": ";"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "literal"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         }
       ]
     },

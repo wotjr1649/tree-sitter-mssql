@@ -1200,7 +1200,7 @@ SELECT * FROM OPENROWSET('MSOLEDBSQL','srv';'user';'dummy','SELECT 1') AS t;
 
 ---
 
-(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (invocation (object_reference (identifier)) (term (literal)) (term (literal) (ERROR) (literal)) (ERROR) (term (literal))) (keyword_as) (identifier)))))))
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term value: (all_fields)))) (from (keyword_from) (relation (invocation (object_reference name: (identifier)) parameter: (term value: (literal)) parameter: (term value: (literal) (literal) (literal)) parameter: (term value: (literal))) (keyword_as) alias: (identifier)))))))
 
 ==================
 query-forms/open-xml-table - LocalDB 17.0.1000.7 levels 100-170 - engine accepts

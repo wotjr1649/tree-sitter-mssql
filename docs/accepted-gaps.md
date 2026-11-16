@@ -171,7 +171,6 @@ change is needed or that every shape has had a full alternate implementation att
 | --- | --- |
 | open-like-escape | LIKE ... ESCAPE |
 | open-json-arrayagg, open-json-objectagg | JSON aggregates with ORDER BY, NULL handling and key:value |
-| open-rowset-semicolon | OPENROWSET provider connection with semicolon-separated credentials |
 | open-graph-columns, open-graph-path | Graph pseudo-columns, FOR PATH and recursive MATCH patterns |
 | open-kill-query | KILL QUERY NOTIFICATION/SUBSCRIPTION (also KILL STATS JOB in kit routes) |
 | open-stats-partitions | UPDATE STATISTICS ... RESAMPLE ON PARTITIONS |
@@ -186,7 +185,7 @@ corpus, existing tree shapes and its constraint rules remain gates.
 
 ## Expression forms (R15)
 
-Recovered forms: language, static, comparison, set. Engine evidence: `oracle/probes/expr-forms.jsonl`,
+Recovered forms: language, static, comparison, set, provider. Engine evidence: `oracle/probes/expr-forms.jsonl`,
 LocalDB 17.0.1000.7 PARSEONLY, compatibility levels 100–170. The term/field/alias structure
 of existing LANGUAGE string arguments is retained. No existing clean tree changes.
 

@@ -120,3 +120,4 @@ LocalDB 17.0.1000.7, compatibility levels 100–170, `expr-forms/*` probes.
 | expression-fulltext-language | CONTAINS/FREETEXT argument 3 or TABLE argument 4; one LANGUAGE; name, LCID or local variable; optional TABLE top value follows LANGUAGE |
 | expression-static-reference | Type at most schema.name; no variable type/member or unquoted NULL member |
 | expression-nested-set-clause | A parenthesized set operand has no local ORDER BY/OFFSET/OPTION/FOR clause |
+| expression-rowset-provider | OPENROWSET second argument is server;[user];[password], all connection components are strings; provider and query/table occupy their own slots |

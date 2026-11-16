@@ -21,5 +21,7 @@
 {"id":"expr-forms/language-quoted","source":"-- 한글 경로 C:\\임시\nSET/*a*/QUOTED_IDENTIFIER/*b*/OFF; SELECT * FROM t WHERE CONTAINS(c,'x',LANGUAGE \"English\");\n","edits":[{"find":"OFF","replace":"ON"},{"find":"ON","replace":"OFF"}]}
 {"id":"expr-forms/set-right","source":"-- 한글 경로 C:\\임시\nSELECT 1 UNION (SELECT 2 EXCEPT SELECT 3);\n","edits":[{"find":"EXCEPT SELECT 3","replace":"EXCEPT"},{"find":"EXCEPT","replace":"EXCEPT SELECT 3"}]}
 {"id":"expr-forms/set-both","source":"-- 한글 경로 C:\\임시\n(SELECT 1 UNION SELECT 2) EXCEPT (SELECT 3 INTERSECT SELECT 4);\n","edits":[{"find":"(SELECT 3 INTERSECT SELECT 4)","replace":"((SELECT 3 INTERSECT SELECT 4))"},{"find":"((SELECT 3 INTERSECT SELECT 4))","replace":"(SELECT 3 INTERSECT SELECT 4)"}]}
+{"id":"expr-forms/provider-empty","source":"-- 한글 경로 C:\\임시\nSELECT * FROM OPENROWSET('p','d';'u';'pw','SELECT 1') AS t;\n","edits":[{"find":"'u';'pw'","replace":";"},{"find":";","replace":"'u';'pw'"}]}
+{"id":"expr-forms/provider-broken","source":"-- 한글 경로 C:\\임시\nSELECT * FROM OPENROWSET('p','d';'u';'pw','SELECT 1') AS t;\n","edits":[{"find":"'d';'u';'pw'","replace":"'d';'u'"},{"find":"'d';'u'","replace":"'d';'u';'pw'"}]}
 {"id":"expr-forms/static-type","source":"-- 한글 경로 C:\\임시\nSELECT dbo.t::f(1);\n","edits":[{"find":"dbo.t","replace":"db.dbo.t"},{"find":"db.dbo.t","replace":"dbo.t"}]}
 {"id":"expr-forms/static-member","source":"-- 한글 경로 C:\\임시\nSELECT geometry::Point(1,2,0).STAsText();\n","edits":[{"find":"STAsText()","replace":"STAsText("},{"find":"STAsText(","replace":"STAsText()"}]}
