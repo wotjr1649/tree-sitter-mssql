@@ -48,7 +48,9 @@ test('the host refreshes memory views after growth and releases input/result buf
     memory,
     tc_alloc: () => 8,
     tc_free: (ptr, len) => freed.push(['input', ptr, len]),
-    tc_check: () => {
+    tc_check: () => 7,
+    tc_check_v2: (_ptr, _len, quotedIdentifier) => {
+      assert.equal(quotedIdentifier, 0);
       memory.grow(1);
       new Uint8Array(memory.buffer, 100, result.length).set(result);
       return 7;
@@ -66,6 +68,26 @@ test('the host refreshes memory views after growth and releases input/result buf
   new Uint8Array(memory.buffer, 100, result.length).fill(0);
   assert.throws(() => checker.result(7), SyntaxError);
   assert.deepEqual(freed.at(-1), ['result', 7]);
+  assert.throws(() => checker.check('SELECT 1;', 'unknown'), /quoted_identifier must be on or off/);
+});
+
+test('the host sends OFF as the versioned ABI session field', () => {
+  const memory = new WebAssembly.Memory({ initial: 1 });
+  const checker = new Checker({
+    memory,
+    tc_alloc: () => 8,
+    tc_free() {},
+    tc_check() {},
+    tc_check_v2: (ptr, len, setting) => {
+      assert.deepEqual([ptr, len, setting], [8, 9, 1]);
+      return 7;
+    },
+    tc_result_ptr() {},
+    tc_result_len() {},
+    tc_result_free() {},
+    tc_identity() {},
+  });
+  assert.equal(checker.handle('SELECT 1;', 'off'), 7);
 });
 
 test('the gate covers the full recorded oracle and all fixture/history states', () => {

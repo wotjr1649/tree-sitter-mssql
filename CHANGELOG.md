@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- QUOTED_IDENTIFIER OFF is checked too (ADR-0006). The oracle runner, ScriptDOM and tree-check take `--quoted-identifier on|off` (default on); the wasm module adds `tc_check_v2` with the session (ABI 2, `tc_check` unchanged). The tree stays the same in both sessions; tree-check judges `"text"` as a string under OFF, follows `SET QUOTED_IDENTIFIER` inside the source and the setting a module was created with. Every oracle set is judged under both settings (`.qi-off.json` verdicts, LocalDB 17.0.1000.7, levels 100-170), plus a `quoted-identifier` probe set (122 cases); Verify replays and mutates both sessions. Found on the way: `BULK INSERT ... FROM "path"`, any string as a filegroup name in ON/FILESTREAM_ON/MOVE positions, and string-only positions under ON (RAISERROR message, WAITFOR DELAY, parenthesized dynamic EXEC, COLLATE, CONVERT style type).
+
 ### Changed
 
 - A parenthesized `IF`, `WHILE`, `MERGE ... ON` or `WHEN [NOT] MATCHED ... AND` condition is now one `parenthesized_expression` in the `condition`/`predicate` field (for example `IF (a = 1)` gives `condition: (parenthesized_expression (binary_expression ...))`), instead of the statement owning the parentheses. No node kind or field is added or removed. This removes a duplicated copy of the expression grammar: `parser.c` -11 %, parse states -8.5 %, large states -15 %.

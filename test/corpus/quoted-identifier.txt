@@ -1,0 +1,19 @@
+================================================================================
+BULK INSERT double-quoted path — LocalDB 17.0.1000.7 levels 100-170, QI ON/OFF accepted
+================================================================================
+
+BULK INSERT dbo.t FROM "probe.csv";
+
+---
+
+(program (batch (statement (bulk_insert_statement (keyword_bulk) (keyword_insert) (object_reference (identifier) (identifier)) (keyword_from) (literal)))))
+
+================================================================================
+BULK INSERT escaped double quote — LocalDB 17.0.1000.7 levels 100-170, QI ON/OFF accepted
+================================================================================
+
+BULK INSERT dbo.t FROM "a""b.csv";
+
+---
+
+(program (batch (statement (bulk_insert_statement (keyword_bulk) (keyword_insert) (object_reference (identifier) (identifier)) (keyword_from) (literal)))))

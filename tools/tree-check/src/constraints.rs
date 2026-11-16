@@ -95,11 +95,84 @@ fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
         scalar_predicate(node, source, &mut out);
         surface_shapes(node, source, &mut out);
         match node.kind() {
+            "raiserror_statement" | "waitfor_statement" | "execute_statement" => {
+                let string_slot = match node.kind() {
+                    "execute_statement" => node.child_by_field_name("procedure").is_none(),
+                    "waitfor_statement" => {
+                        has_child(node, "keyword_delay") || has_child(node, "keyword_time")
+                    }
+                    _ => true,
+                };
+                if string_slot
+                    && let Some(value) = node
+                        .syntax_named_children(&mut node.walk())
+                        .find(|n| !n.kind().starts_with("keyword_"))
+                    && source.get(value.start_byte()) == Some(&b'"')
+                {
+                    out.push(violation(
+                        "quoted-identifier-string",
+                        "this argument requires a string, not a double-quoted identifier".into(),
+                        value,
+                    ));
+                }
+            }
+            "keyword_collate" => {
+                if let Some(name) = node.syntax_next_named_sibling()
+                    && matches!(source.get(name.start_byte()), Some(b'\'' | b'"' | b'['))
+                {
+                    out.push(violation(
+                        "collation-name",
+                        "COLLATE requires an unquoted collation name".into(),
+                        name,
+                    ));
+                }
+            }
+            "bulk_insert_statement" => {
+                if let Some(path) = node
+                    .syntax_named_children(&mut node.walk())
+                    .find(|n| n.kind() == "literal")
+                    && empty_string(path, source)
+                {
+                    out.push(violation(
+                        "bulk-path-empty",
+                        "BULK INSERT requires a nonempty path".into(),
+                        path,
+                    ));
+                }
+            }
+            "on_filegroup" => {
+                if let Some(name) = node
+                    .syntax_named_children(&mut node.walk())
+                    .find(|n| empty_string(*n, source))
+                {
+                    out.push(violation(
+                        "filegroup-name-empty",
+                        "this filegroup placement requires a nonempty name".into(),
+                        name,
+                    ));
+                }
+            }
             "invocation" => gap_invocation(node, source, &mut out),
             "binary_expression" | "term" | "exec_argument" => gap_scalar(node, source, &mut out),
             "identifier" | "object_reference" => gap_name(node, source, &mut out),
             "option" | "with_options" | "constraint" | "query_hint" | "table_hint" => {
-                gap_options(node, source, &mut out)
+                gap_options(node, source, &mut out);
+                if node.kind() == "option"
+                    && (ancestor(node, "drop_index").is_some()
+                        || ancestor(node, "alter_table").is_some())
+                    && node.child_by_field_name("name").is_some_and(|n| {
+                        matches!(upper_text(n, source).as_str(), "MOVE" | "FILESTREAM_ON")
+                    })
+                    && let Some(value) = node
+                        .child_by_field_name("value")
+                        .filter(|n| empty_string(*n, source))
+                {
+                    out.push(violation(
+                        "filegroup-name-empty",
+                        "this filegroup placement requires a nonempty name".into(),
+                        value,
+                    ));
+                }
             }
             "block"
             | "try_block"
@@ -827,6 +900,13 @@ fn string_literal(node: Node, source: &[u8]) -> bool {
     let text = &source[node.byte_range()];
     node.kind() == "literal"
         && (text.starts_with(b"'") || text.starts_with(b"N'") || text.starts_with(b"n'"))
+}
+
+fn empty_string(node: Node, source: &[u8]) -> bool {
+    matches!(
+        &source[node.byte_range()],
+        b"''" | b"N''" | b"n''" | b"\"\""
+    )
 }
 
 fn integer_literal(node: Node, source: &[u8]) -> bool {
@@ -4121,6 +4201,9 @@ fn gap_invocation(node: Node, source: &[u8], out: &mut Vec<Violation>) {
         .parent()
         .is_some_and(|p| matches!(p.kind(), "delete" | "update"));
     let invalid = match name.as_str() {
+        "CONVERT" => args
+            .first()
+            .is_some_and(|a| string_literal(a.child_by_field_name("value").unwrap_or(*a), source)),
         "[COUNT]" | "\"COUNT\"" | "[COALESCE]" | "\"COALESCE\"" => true,
         "COALESCE" => args.len() < 2,
         "DATENAME" => args.first().is_some_and(|a| {

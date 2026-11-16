@@ -1,0 +1,6 @@
+{
+"meta": {"mode":"PARSEONLY","engine":{"product_version":"17.0.1000.7","product_level":"RTM","edition":"Express Edition (64-bit)","platform":"Windows","collation":"SQL_Latin1_General_CP1_CI_AS"},"session_set":{"quoted_identifier":0,"ansi_nulls":1,"ansi_padding":1,"ansi_warnings":1,"arithabort":0,"concat_null_yields_null":1},"levels":[100,110,120,130,140,150,160,170],"cases_sha256":"1ecf99f77d596fc8f224f29de6981a644076f7f135d9bd72aa71543b5d00ffb7","runner":"oracle/runner/ParseOnly (C#, Microsoft.Data.SqlClient)","runner_sha256":"965b8cfe9b6b25c9c2d5cb11345c10de532a6b95305da1e41c40babbb810b587","observed_utc":"2026-11-16"},
+"verdicts": {
+  "kit-dynamic-sql/tsql-dynamic": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]}
+}
+}

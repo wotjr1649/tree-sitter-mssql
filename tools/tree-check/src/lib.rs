@@ -2,11 +2,19 @@
 
 mod constraints;
 pub mod edits;
+mod session;
 #[cfg(any(target_arch = "wasm32", test))]
 mod wasm;
 
 use std::fmt::Write as _;
 use tree_sitter::{Parser, Tree};
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub enum QuotedIdentifier {
+    #[default]
+    On,
+    Off,
+}
 
 #[derive(Debug, Default, PartialEq)]
 pub struct Report {
@@ -41,6 +49,53 @@ pub fn parse(parser: &mut Parser, source: &[u8]) -> Result<Tree, String> {
 }
 
 pub fn inspect(tree: &Tree, source: &[u8]) -> Report {
+    inspect_with_quoted_identifier(tree, source, QuotedIdentifier::On)
+}
+
+pub fn inspect_with_quoted_identifier(
+    tree: &Tree,
+    source: &[u8],
+    quoted_identifier: QuotedIdentifier,
+) -> Report {
+    if !source.contains(&b'"') {
+        return inspect_tree(tree, source);
+    }
+    let (projected, origins) =
+        session::project(source, quoted_identifier, &session::module_ranges(tree));
+    if projected == source {
+        return inspect_tree(tree, source);
+    }
+    // The public tree is untouched; only the checker parses the session's string spelling.
+    let mut parser = grammar_parser().expect("the public tree uses this grammar");
+    let projected_tree =
+        parse(&mut parser, &projected).expect("tree-sitter returned a tree before");
+    let mut report = inspect_tree(&projected_tree, &projected);
+    let position = |row: usize, column: usize| {
+        let start: usize = projected
+            .split_inclusive(|b| *b == b'\n')
+            .take(row)
+            .map(<[u8]>::len)
+            .sum();
+        let at = origins[start + column];
+        let row = source[..at].iter().filter(|b| **b == b'\n').count();
+        let column = source[..at]
+            .iter()
+            .rposition(|b| *b == b'\n')
+            .map_or(at, |p| at - p - 1);
+        (row, column)
+    };
+    if let Some((_, row, column)) = &mut report.first_problem {
+        (*row, *column) = position(*row, *column);
+    }
+    for violation in &mut report.violations {
+        (violation.row, violation.column) = position(violation.row, violation.column);
+    }
+    report.root_end = origins[report.root_end];
+    report.len = source.len();
+    report
+}
+
+fn inspect_tree(tree: &Tree, source: &[u8]) -> Report {
     let len = source.len();
     let root = tree.root_node();
     let mut report = Report {
@@ -159,6 +214,208 @@ mod tests {
         let r = check("SELECT a FROM dbo.t WHERE a > 1;\n");
         assert!(r.ok(), "{r:?}");
         assert_eq!(r.first_problem, None);
+    }
+
+    #[test]
+    fn quoted_identifier_changes_validation_without_changing_the_public_tree() {
+        for sql in [
+            "SELECT 1 WHERE 'a' LIKE \"a%\";",
+            "SELECT 1 WHERE 'a' IN (\"a\", \"b\");",
+            "EXEC p \"a'b\"\"c\";",
+            "SELECT \"\";",
+        ] {
+            let mut parser = grammar_parser().unwrap();
+            let tree = parse(&mut parser, sql.as_bytes()).unwrap();
+            let before = tree.root_node().to_sexp();
+            let off = inspect_with_quoted_identifier(&tree, sql.as_bytes(), QuotedIdentifier::Off);
+            assert!(off.ok(), "{sql}: {off:?}");
+            assert_eq!(tree.root_node().to_sexp(), before);
+        }
+        for sql in [
+            "SELECT * FROM \"t\";",
+            "CREATE TABLE \"t\" (id int);",
+            "SELECT \"t\".id FROM t;",
+            "SELECT \"open",
+        ] {
+            let mut parser = grammar_parser().unwrap();
+            let tree = parse(&mut parser, sql.as_bytes()).unwrap();
+            assert!(
+                !inspect_with_quoted_identifier(&tree, sql.as_bytes(), QuotedIdentifier::Off).ok(),
+                "{sql}"
+            );
+        }
+    }
+
+    #[test]
+    fn inline_setting_overrides_initial_setting_and_maps_diagnostics() {
+        let sql = "SET QUOTED_IDENTIFIER OFF; SELECT \"한'글\";\nSELECT * FROM \"bad\";";
+        let mut parser = grammar_parser().unwrap();
+        let tree = parse(&mut parser, sql.as_bytes()).unwrap();
+        let report = inspect(&tree, sql.as_bytes());
+        assert!(!report.ok(), "{report:?}");
+        assert_eq!(report.len, sql.len());
+        assert_eq!(report.root_end, sql.len());
+        assert_eq!(report.first_problem.unwrap().1, 1);
+        let sql = "SET QUOTED_IDENTIFIER ON; SELECT * FROM \"t\";";
+        let tree = parse(&mut parser, sql.as_bytes()).unwrap();
+        assert!(inspect_with_quoted_identifier(&tree, sql.as_bytes(), QuotedIdentifier::Off).ok());
+        let sql = "SELECT \"한'글\"; CREATE FULLTEXT INDEX ON dbo.t(c) KEY INDEX i WITH (CHANGE_TRACKING = AUTO, CHANGE_TRACKING = OFF);";
+        let tree = parse(&mut parser, sql.as_bytes()).unwrap();
+        let report = inspect_with_quoted_identifier(&tree, sql.as_bytes(), QuotedIdentifier::Off);
+        assert_eq!(report.violations.len(), 1);
+        assert_eq!(report.violations[0].row, 0);
+        assert_eq!(
+            report.violations[0].column,
+            sql.rfind("CHANGE_TRACKING").unwrap()
+        );
+    }
+
+    #[test]
+    fn module_setting_is_captured_and_dynamic_sql_does_not_change_the_outer_batch() {
+        for sql in [
+            "CREATE PROCEDURE dbo.p AS SET QUOTED_IDENTIFIER OFF; SELECT * FROM \"t\";",
+            "CREATE PROCEDURE dbo.p AS SET QUOTED_IDENTIFIER ON; SELECT * FROM \"t\";",
+            "EXEC ('SET QUOTED_IDENTIFIER OFF;'); SELECT * FROM \"t\";",
+            "EXEC ('SET QUOTED_IDENTIFIER ON;'); SELECT * FROM \"t\";",
+        ] {
+            let mut parser = grammar_parser().unwrap();
+            let tree = parse(&mut parser, sql.as_bytes()).unwrap();
+            assert!(inspect(&tree, sql.as_bytes()).ok(), "{sql}");
+            assert!(
+                !inspect_with_quoted_identifier(&tree, sql.as_bytes(), QuotedIdentifier::Off).ok(),
+                "{sql}"
+            );
+        }
+    }
+
+    #[test]
+    fn off_strings_cannot_be_convert_types_or_empty_bulk_paths() {
+        for (sql, expected) in [
+            ("SELECT CONVERT(\"int\", 1);", "gap-call-shape"),
+            ("BULK INSERT dbo.t FROM \"\";", "bulk-path-empty"),
+        ] {
+            let mut parser = grammar_parser().unwrap();
+            let tree = parse(&mut parser, sql.as_bytes()).unwrap();
+            let report =
+                inspect_with_quoted_identifier(&tree, sql.as_bytes(), QuotedIdentifier::Off);
+            assert_eq!(
+                report.violations.iter().map(|v| v.rule).collect::<Vec<_>>(),
+                [expected],
+                "{sql}: {report:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn string_only_statement_arguments_follow_the_session_setting() {
+        for sql in [
+            "RAISERROR(\"message\",16,1);",
+            "WAITFOR DELAY \"00:00:01\";",
+            "EXEC (\"SELECT 1\");",
+        ] {
+            let mut parser = grammar_parser().unwrap();
+            let tree = parse(&mut parser, sql.as_bytes()).unwrap();
+            assert_eq!(
+                inspect(&tree, sql.as_bytes())
+                    .violations
+                    .iter()
+                    .map(|v| v.rule)
+                    .collect::<Vec<_>>(),
+                ["quoted-identifier-string"],
+                "{sql}"
+            );
+            assert!(
+                inspect_with_quoted_identifier(&tree, sql.as_bytes(), QuotedIdentifier::Off).ok(),
+                "{sql}"
+            );
+        }
+        assert!(check("EXEC p \"value\";").ok());
+    }
+
+    #[test]
+    fn collation_names_are_unquoted_under_both_settings() {
+        for name in [
+            "\"Latin1_General_CI_AS\"",
+            "[Latin1_General_CI_AS]",
+            "'Latin1_General_CI_AS'",
+        ] {
+            let sql = format!("SELECT 'a' COLLATE {name};");
+            let mut parser = grammar_parser().unwrap();
+            let tree = parse(&mut parser, sql.as_bytes()).unwrap();
+            for setting in [QuotedIdentifier::On, QuotedIdentifier::Off] {
+                let report = inspect_with_quoted_identifier(&tree, sql.as_bytes(), setting);
+                assert!(!report.ok(), "{sql}: {report:?}");
+                assert_eq!(
+                    report.violations.iter().map(|v| v.rule).collect::<Vec<_>>(),
+                    ["collation-name"]
+                );
+            }
+        }
+        assert!(check("SELECT 'a' COLLATE Latin1_General_CI_AS;").ok());
+    }
+
+    #[test]
+    fn quoted_filegroup_strings_keep_the_engine_accepted_placement_slots() {
+        for value in [
+            "\"default\"",
+            "\"DEFAULT\"",
+            "\"PRIMARY\"",
+            "\"fg\"",
+            "\"NULL\"",
+            "\"null\"",
+            "'default'",
+            "'NULL'",
+        ] {
+            for sql in [
+                format!("CREATE INDEX i ON dbo.t(c) ON {value};"),
+                format!("CREATE INDEX i ON dbo.t(c) FILESTREAM_ON {value};"),
+                format!("DROP INDEX i ON dbo.t WITH (MOVE TO {value});"),
+                format!("DROP INDEX i ON dbo.t WITH (FILESTREAM_ON {value});"),
+                format!("ALTER TABLE dbo.t DROP CONSTRAINT c WITH (MOVE TO {value});"),
+                format!("CREATE TABLE dbo.t (c int INDEX i NONCLUSTERED FILESTREAM_ON {value});"),
+            ] {
+                let mut parser = grammar_parser().unwrap();
+                let tree = parse(&mut parser, sql.as_bytes()).unwrap();
+                for setting in [QuotedIdentifier::On, QuotedIdentifier::Off] {
+                    let report = inspect_with_quoted_identifier(&tree, sql.as_bytes(), setting);
+                    assert!(report.ok(), "{sql} ({setting:?}): {report:?}");
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn empty_filegroup_names_follow_the_placement_context() {
+        for value in ["''", "\"\""] {
+            for sql in [
+                format!("CREATE INDEX i ON dbo.t(c) ON {value};"),
+                format!("DROP INDEX i ON dbo.t WITH (MOVE TO {value});"),
+                format!("DROP INDEX i ON dbo.t WITH (FILESTREAM_ON {value});"),
+                format!("ALTER TABLE dbo.t DROP CONSTRAINT c WITH (MOVE TO {value});"),
+            ] {
+                let mut parser = grammar_parser().unwrap();
+                let tree = parse(&mut parser, sql.as_bytes()).unwrap();
+                for setting in [QuotedIdentifier::On, QuotedIdentifier::Off] {
+                    assert!(
+                        !inspect_with_quoted_identifier(&tree, sql.as_bytes(), setting).ok(),
+                        "{sql} ({setting:?})"
+                    );
+                }
+            }
+            for sql in [
+                format!("CREATE INDEX i ON dbo.t(c) FILESTREAM_ON {value};"),
+                format!("CREATE TABLE dbo.t (c int INDEX i NONCLUSTERED FILESTREAM_ON {value});"),
+            ] {
+                let mut parser = grammar_parser().unwrap();
+                let tree = parse(&mut parser, sql.as_bytes()).unwrap();
+                assert!(
+                    inspect_with_quoted_identifier(&tree, sql.as_bytes(), QuotedIdentifier::Off)
+                        .ok(),
+                    "{sql}"
+                );
+                assert_eq!(inspect(&tree, sql.as_bytes()).ok(), value == "''", "{sql}");
+            }
+        }
     }
 
     #[test]

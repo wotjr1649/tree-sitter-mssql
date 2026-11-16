@@ -29,7 +29,7 @@ The matching constraints and their engine evidence live in tools/tree-check/src/
 
 - A case is **positive** when SQL Server accepts it at any verified level. A case is a **negative** only when every level rejects it.
 - Rejections include context errors that a grammar cannot and should not catch (conflicting hints, boolean versus scalar, permissions). Agreement is therefore never expected to reach 100 %. Classifying the rejections as syntax or context is a later step.
-- The replay merges every verdict file; each file is bound by its `meta.cases_sha256` to the one case set (kit or a probe set) it was made from. A case is positive when any engine at any level accepts it.
+- The replay merges every verdict file; each file is bound by its `meta.cases_sha256` to the one case set (kit or a probe set) it was made from. A case is positive when any engine at any level accepts it **under the same session setting**.
 
 | Verdict file | Engine | Platform | Levels | Cases that differ from LocalDB at a shared level |
 | --- | --- | --- | --- | ---: |
@@ -51,13 +51,15 @@ cargo build --locked --manifest-path tools/tree-check/Cargo.toml
 node tools/oracle-replay.mjs --tree-check target/debug/tree-check   # with CARGO_TARGET_DIR=target
 ```
 
+The replay sends `--quoted-identifier on|off` to `tree-check` for the session recorded in each verdict. Existing ON cases keep their IDs; OFF cases use `<id>@qi-off` in `expected.json` and `rejected-clean.json`. Missing session metadata means the historical ON default. ON and OFF acceptance are never merged. Every case set must have engine verdicts under both settings; missing ON or OFF coverage fails the replay. Edit histories compare the shared, session-independent grammar tree once.
+
 The replay judges every case with `tree-check` (through the tree-sitter API) and prints the agreement table. It replays the edit histories and compares the results with `expected.json`. Exit codes:
 
 - **0:** the results equal the baseline.
 - **1:** the results differ from the baseline. Review the listed changes, then rerun with `--update` in the same pull request.
 - **2:** the inputs are inconsistent, for example a hash mismatch or verdicts made from different cases.
 
-`--update` refuses to record an engine-accepted case that turned from `clean` into `error`. Such a regression needs `--allow-regression=ID,...` and a reason in the pull request.
+`--update` refuses to record any engine-accepted case with an error, including a newly added case. The replay also refuses a baseline with any accepted-and-error case.
 
 ## Producing verdicts
 
@@ -67,12 +69,12 @@ dotnet oracle/runner/ParseOnly/bin/Release/net10.0/ParseOnly.dll --self-test
 dotnet oracle/runner/ParseOnly/bin/Release/net10.0/ParseOnly.dll --cases oracle/kit/cases.jsonl --out oracle/verdicts/<engine>.json
 ```
 
-Without `--server` the runner uses SQL Server LocalDB with Windows authentication. With `--server HOST,PORT` it uses SQL authentication: the user comes from `MSSQL_USER` (default `sa`) and the password from `MSSQL_PASSWORD`. `--levels` restricts the compatibility levels.
+Without `--server` the runner uses SQL Server LocalDB with Windows authentication. With `--server HOST,PORT` it uses SQL authentication: the user comes from `MSSQL_USER` (default `sa`) and the password from `MSSQL_PASSWORD`. `--levels` restricts the compatibility levels. `--quoted-identifier on|off` selects the initial session setting (default `on`); the runner sets it in its own control batch before `SET PARSEONLY ON` and before sending the case text unchanged. `meta.session_set.quoted_identifier` records the verified numeric `SESSIONPROPERTY` value (`1` for ON, `0` for OFF).
 
 What the runner does:
 
 - It creates a temporary database per level and drops it at the end.
-- Each case gets a new unpooled connection. `SET PARSEONLY ON` is sent as its own batch, then the case text unchanged.
+- Each case gets a new unpooled connection. `SET QUOTED_IDENTIFIER ON|OFF` and `SET PARSEONLY ON` are sent as separate control batches, then the case text unchanged.
 - It records every error number the engine returns, and `[]` when the engine accepts the case.
 - It never sends a case that mentions `PARSEONLY` (recorded as `UNSUPPORTED_CONTROL`).
 - Connection failures, timeouts and fatal errors stop the run with exit 2. They are never recorded as rejections.
@@ -81,6 +83,7 @@ What the runner does:
 `--self-test` checks the runner against a live engine and exits 1 on any failure:
 
 - a valid statement is accepted;
+- a double-quoted table name is accepted under ON and rejected under OFF;
 - a syntax error is rejected with 102;
 - the batch-first rule for `CREATE PROCEDURE` holds;
 - Unicode text is accepted;
@@ -97,3 +100,28 @@ The `Oracle engine` workflow runs the self-test and every case on real engines i
 | SQL Server 2025 CU11 | 100–170 |
 
 It runs on pull requests that touch the oracle, and weekly. It compares each engine's verdicts with the committed LocalDB verdicts (`tools/verdict-diff.mjs`) and uploads them. Differences between engines are observations to classify; they do not fail the job. SQL Server 2008 to 2016 run only on Windows and are not verified.
+
+
+## QUOTED_IDENTIFIER sessions
+
+The `metamorphic-whitespace` set adds 110 cases for 55 code points in two unambiguous token-gap positions, engine-checked under both settings at levels 100–170. SQL Server accepts the 53 separators represented by U+0000–0020, U+0085, U+00A0, U+1680, U+2000–200B, U+2028–2029, U+202F, U+205F and U+3000; U+180E and U+FEFF are rejected.
+
+The 122-case `probes/quoted-identifier.jsonl` set covers quoted names, expression values, LIKE/IN,
+EXEC arguments and dynamic SQL, DDL, defaults, XML methods, indexed views, computed-column and
+filtered indexes, inline SET switches across GO, stored-procedure capture and dynamic-SQL isolation. LocalDB verdicts cover levels 100–170 under both settings. Session-specific files
+use `<engine>[.<set>].qi-on.json` and `<engine>[.<set>].qi-off.json` (the kit omits `<set>`);
+legacy files without a session suffix retain their recorded ON setting. The new quoted-identifier set
+uses explicit suffixes for both sessions; other sets retain their legacy ON filename. For example:
+
+```sh
+dotnet oracle/runner/ParseOnly/bin/Release/net10.0/ParseOnly.dll --cases oracle/probes/quoted-identifier.jsonl --out oracle/verdicts/localdb-17.0.1000.7.quoted-identifier.qi-off.json --quoted-identifier off
+```
+
+The engine workflow measures every set under both settings and compares each with the matching
+LocalDB session file. The other committed case sets also have LocalDB OFF verdicts at levels 100–170.
+The replay judges every source under both settings using separate engine observations.
+
+The ON requirements for indexed views, filtered indexes, computed-column indexes and XML methods
+are checked when SQL Server compiles or executes the relevant operation. `SET PARSEONLY ON` accepts
+these probes under OFF as well. These observations do not establish that the operations execute
+under OFF, and the syntax replay must not reject them solely for that execution requirement.

@@ -128,7 +128,10 @@ export default {
     ),
 
   _drop_index_filestream: ($) =>
-    seq(field('name', alias($.keyword_filestream_on, $.identifier)), field('value', $.identifier)),
+    seq(
+      field('name', alias($.keyword_filestream_on, $.identifier)),
+      field('value', $._filegroup_name),
+    ),
 
   drop_procedure: ($) =>
     seq(

@@ -6,11 +6,14 @@ DacFx use. It is not the engine. SQL Server's `SET PARSEONLY ON` verdicts in `or
 
 - `ScriptDomCheck/` is a .NET 10 tool, pinned by `packages.lock.json` (Microsoft.SqlServer.TransactSql.ScriptDom
   180.154.0). It parses every case of a set at each level with the matching parser (`TSql100Parser` …
-  `TSql170Parser`, QUOTED_IDENTIFIER ON) and writes the parse error numbers in the shape of the engine verdict files.
+  `TSql170Parser`, selected initial QUOTED_IDENTIFIER setting) and writes the parse error numbers in the shape of the engine verdict files.
   These files carry `"mode": "SCRIPTDOM"`, so the replay never reads them as engine verdicts.
-- `verdicts/<set>.json` are its results for the kit cases and every probe set.
+- `verdicts/<set>.json` retain the historical ON observations. The new quoted-identifier set uses
+  `verdicts/quoted-identifier.qi-on.json`; `verdicts/<set>.qi-off.json` hold OFF observations for every set.
+  `--quoted-identifier on|off` selects the session (default ON); metadata records numeric `quoted_identifier`.
 - `node tools/scriptdom-compare.mjs` counts each engine/ScriptDOM/tree cell. It lists the cases where both parsers
   reject but the tree is clean, and fails if one of them has no class in `oracle/rejected-clean.json`.
+  It keeps ON and OFF acceptance separate and prints a table per session, using the replay's `@qi-off` IDs.
 
 To refresh after the case sets change:
 

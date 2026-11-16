@@ -1,5 +1,5 @@
 // Equivalent comments, keyword case and token-gap whitespace must preserve every verdict, even for invalid input.
-// Usage: node tools/comment-mutate.mjs --tree-check <exe> [--axes comment,case,whitespace] [inputs.jsonl | sql-directory ...]
+// Usage: node tools/comment-mutate.mjs --tree-check <exe> [--axes comment,case,whitespace] [--quoted-identifier on|off] [inputs.jsonl | sql-directory ...]
 // Defaults: every oracle case and SQL fixture. GO/sqlcmd lines are client directives, not token gaps.
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
@@ -197,7 +197,8 @@ export function compare(inputs, verdicts, kinds = AXES.comment) {
   return { changes, rules, parseChanges };
 }
 
-export function checkCases(checker, inputs, axes = Object.keys(AXES)) {
+export function checkCases(checker, inputs, axes = Object.keys(AXES), quotedIdentifier = 'on') {
+  assert(['on', 'off'].includes(quotedIdentifier), 'quoted_identifier must be on or off');
   assert(inputs.length > 0, 'no mutation inputs');
   assert.equal(
     new Set(inputs.map((c) => c.id)).size,
@@ -214,11 +215,15 @@ export function checkCases(checker, inputs, axes = Object.keys(AXES)) {
     });
     const run = (paths, args = []) => {
       writeFileSync(list, paths.join('\n'));
-      return spawnSync(checker, [...args, '--paths', list], {
-        encoding: 'utf8',
-        maxBuffer: 1 << 28,
-        timeout: 180000,
-      });
+      return spawnSync(
+        checker,
+        ['--quoted-identifier', quotedIdentifier, ...args, '--paths', list],
+        {
+          encoding: 'utf8',
+          maxBuffer: 1 << 28,
+          timeout: 180000,
+        },
+      );
     };
     const originals = run(originalPaths, ['--keyword-ranges']);
     readVerdicts(originals, originalPaths);
@@ -237,17 +242,26 @@ export function checkCases(checker, inputs, axes = Object.keys(AXES)) {
       assert(AXES[axis], `unknown mutation axis: ${axis}`);
       return AXES[axis];
     });
-    const paths = inputs.flatMap((c, i) => {
+    const paths = [];
+    const seen = new Map();
+    const indices = inputs.flatMap((c, i) => {
       const all = variants(c.source, ranges[i].keyword_ranges, ranges[i].token_ranges);
       return ['orig', ...kinds].map((kind) => {
         const source = all[kind];
+        if (seen.has(source)) return seen.get(source);
         const path = join(dir, `${i}.${kind}.sql`);
-        writeFileSync(path, source);
-        return path;
+        if (kind !== 'orig') writeFileSync(path, source);
+        seen.set(source, paths.length);
+        paths.push(path);
+        return paths.length - 1;
       });
     });
-    const verdicts = readVerdicts(run(paths), paths);
-    const result = compare(inputs, verdicts, kinds);
+    const uniqueVerdicts = readVerdicts(run(paths), paths);
+    const result = compare(
+      inputs,
+      indices.map((i) => uniqueVerdicts[i]),
+      kinds,
+    );
     result.axes = Object.fromEntries(
       axes.map((axis) => [
         axis,
@@ -271,11 +285,17 @@ function main(argv) {
   );
   assert(argv[1], '--tree-check needs an executable');
   let axes = Object.keys(AXES);
+  let quotedIdentifier = 'on';
   let sources = argv.slice(2);
-  if (sources[0] === '--axes') {
-    assert(sources[1], '--axes needs comma-separated axis names');
-    axes = sources[1].split(',');
-    assert.equal(new Set(axes).size, axes.length, 'duplicate mutation axes');
+  while (sources[0]?.startsWith('--')) {
+    const [flag, value] = sources;
+    assert(value, `${flag} needs a value`);
+    if (flag === '--axes') {
+      axes = value.split(',');
+      assert.equal(new Set(axes).size, axes.length, 'duplicate mutation axes');
+    } else if (flag === '--quoted-identifier') {
+      quotedIdentifier = value;
+    } else throw new Error(`unknown option: ${flag}`);
     sources = sources.slice(2);
   }
   sources = sources.length
@@ -297,8 +317,8 @@ function main(argv) {
       : readCases(readFileSync(source, 'utf8')),
   );
   const started = performance.now();
-  const result = checkCases(resolve(argv[1]), inputs, axes);
-  const summary = `Mutation: ${inputs.length} inputs, ${result.changes.length} changed verdicts, ${result.parseChanges} parse changes (${((performance.now() - started) / 1000).toFixed(2)} s)`;
+  const result = checkCases(resolve(argv[1]), inputs, axes, quotedIdentifier);
+  const summary = `Mutation (QUOTED_IDENTIFIER ${quotedIdentifier.toUpperCase()}): ${inputs.length} inputs, ${result.changes.length} changed verdicts, ${result.parseChanges} parse changes (${((performance.now() - started) / 1000).toFixed(2)} s)`;
   console.log(summary);
   for (const [axis, counts] of Object.entries(result.axes))
     console.log(`${axis}: ${counts.variants} variants, ${counts.changes} changed verdicts`);

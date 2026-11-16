@@ -7,7 +7,7 @@
 // failures, timeouts and fatal errors stop the run (exit 2): they are never recorded as rejections.
 //
 // Usage:
-//   ParseOnly --cases oracle/kit/cases.jsonl --out verdicts.json [--server S] [--levels 100,...]
+//   ParseOnly --cases oracle/kit/cases.jsonl --out verdicts.json [--server S] [--levels 100,...] [--quoted-identifier on|off]
 //   ParseOnly --self-test [--server S]
 // Without --server the runner uses (localdb)\MSSQLLocalDB with Windows authentication. With a server,
 // it uses SQL authentication: user from MSSQL_USER (default "sa"), password from MSSQL_PASSWORD.
@@ -30,9 +30,10 @@ static class Program
         try
         {
             var opts = ParseArgs(args);
+            _ = QuotedIdentifier(opts);
             if (opts.ContainsKey("--self-test")) return SelfTest(opts);
             if (!opts.TryGetValue("--cases", out var cases) || !opts.TryGetValue("--out", out var output))
-                throw new ArgumentException("usage: ParseOnly --cases FILE --out FILE [--server S] [--levels L,...] | --self-test");
+                throw new ArgumentException("usage: ParseOnly --cases FILE --out FILE [--server S] [--levels L,...] [--quoted-identifier on|off] | --self-test");
             Sweep(opts, cases!, output!);
             return 0;
         }
@@ -53,6 +54,12 @@ static class Program
             opts[args[i]] = args[++i];
         }
         return opts;
+    }
+
+    static string QuotedIdentifier(Dictionary<string, string?> opts)
+    {
+        var value = opts.GetValueOrDefault("--quoted-identifier", "on")?.ToUpperInvariant();
+        return value is "ON" or "OFF" ? value : throw new ArgumentException("--quoted-identifier must be on or off");
     }
 
     static string ConnectionString(Dictionary<string, string?> opts, string database)
@@ -107,6 +114,7 @@ static class Program
         using var conn = Open(opts, database);
         if (Convert.ToInt32(Scalar(conn, "SELECT compatibility_level FROM sys.databases WHERE name = DB_NAME()")) != level)
             throw new InfraException($"compatibility level of {database} is not {level}");
+        Control(conn, $"SET QUOTED_IDENTIFIER {QuotedIdentifier(opts)};");
         Control(conn, "SET PARSEONLY ON;");
         var errors = new JsonArray();
         // A client splits a script at GO lines and sends each batch on its own; so does the runner.
@@ -199,6 +207,7 @@ static class Program
                     if (i == 0)
                     {
                         using var probe = Open(opts, db);
+                        Control(probe, $"SET QUOTED_IDENTIFIER {QuotedIdentifier(opts)};");
                         var set = new JsonObject();
                         foreach (var p in new[] { "QUOTED_IDENTIFIER", "ANSI_NULLS", "ANSI_PADDING", "ANSI_WARNINGS", "ARITHABORT", "CONCAT_NULL_YIELDS_NULL" })
                             set[p.ToLowerInvariant()] = Convert.ToInt32(Scalar(probe, $"SELECT SESSIONPROPERTY('{p}')"));
@@ -263,6 +272,8 @@ static class Program
             }
 
             Expect("accepts a valid statement", "SELECT 1;", Accepted);
+            Expect("uses the requested quoted identifier mode", "CREATE TABLE \"oracle_qi\" (a int);",
+                QuotedIdentifier(opts) == "ON" ? Accepted : Rejected);
             Expect("rejects a syntax error with 102", "SELECT 1 FROM;", v => v is JsonArray a && a.Any(n => (int)n! == 102));
             Expect("keeps the batch-first rule for CREATE PROCEDURE", "CREATE PROCEDURE dbo.oracle_p AS SELECT 1;", Accepted);
             Expect("rejects CREATE PROCEDURE after another statement", "SELECT 1;\nCREATE PROCEDURE dbo.oracle_p AS SELECT 1;", Rejected);

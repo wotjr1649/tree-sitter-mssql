@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { compare } from './scriptdom-compare.mjs';
+import { compare, observations } from './scriptdom-compare.mjs';
 
 test('counts each engine/ScriptDOM/tree cell and lists the both-reject-but-clean cases', () => {
   const { cells, bothRejectClean } = compare(
@@ -15,4 +15,24 @@ test('counts each engine/ScriptDOM/tree cell and lists the both-reject-but-clean
     'engine rejects, ScriptDOM rejects, tree error': 1,
   });
   assert.deepEqual(bothRejectClean, ['b']);
+});
+
+test('engine and ScriptDOM acceptance stay bound to their initial session', () => {
+  const engine = observations([
+    { meta: { session_set: { quoted_identifier: 1 } }, verdicts: { a: { 170: [] } } },
+    { meta: { session_set: { quoted_identifier: 0 } }, verdicts: { a: { 170: [102] } } },
+  ]);
+  const scriptdom = observations(
+    [
+      { meta: { quoted_identifier: 1 }, verdicts: { a: { 170: [] } } },
+      { meta: { quoted_identifier: 0 }, verdicts: { a: { 170: [46010] } } },
+    ],
+    true,
+  );
+  assert.deepEqual(engine, { a: true, 'a@qi-off': false });
+  assert.deepEqual(scriptdom, engine);
+  assert.deepEqual(
+    compare(engine, scriptdom, { a: 'clean', 'a@qi-off': 'clean' }).bothRejectClean,
+    ['a@qi-off'],
+  );
 });

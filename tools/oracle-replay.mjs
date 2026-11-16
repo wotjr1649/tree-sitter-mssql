@@ -5,7 +5,7 @@
 // incremental and fresh parses. Engine verdicts (oracle/verdicts/*.json) give each case's class: a case
 // is positive when SQL Server accepts it at any verified compatibility level.
 //
-// Usage: node tools/oracle-replay.mjs --tree-check <exe> [--update [--allow-regression=ID,...]]
+// Usage: node tools/oracle-replay.mjs --tree-check <exe> [--update]
 // Exit 0: results equal the baseline (or the baseline was updated); 1: results differ, or an update
 // would turn an engine-accepted case from clean into an error; 2: inputs are inconsistent.
 import assert from 'node:assert/strict';
@@ -39,6 +39,52 @@ export function readCases(text) {
 // A case is positive when any verified level accepts it; UNSUPPORTED_CONTROL never counts as accepted.
 export function isPositive(levels) {
   return Object.values(levels).some((errors) => Array.isArray(errors) && errors.length === 0);
+}
+
+// Historical verdicts record SESSIONPROPERTY as 1/0; accept explicit names as well.
+export function quotedIdentifier(meta) {
+  const value = meta.session_set?.quoted_identifier ?? 1;
+  if (value === 1 || String(value).toLowerCase() === 'on') return 'on';
+  if (value === 0 || String(value).toLowerCase() === 'off') return 'off';
+  throw new Error(`unknown quoted_identifier session setting: ${value}`);
+}
+
+export const sessionId = (id, mode) => (mode === 'on' ? id : `${id}@qi-off`);
+
+// A positive ON verdict must never hide an OFF rejection of the same source.
+export function mergeVerdicts(sets, observations) {
+  const verdicts = {};
+  const covered = new Set();
+  for (const { file, data: v } of observations) {
+    assert.equal(v.meta.mode, 'PARSEONLY', `${file}: only PARSEONLY verdicts count`);
+    const set = sets.find((s) => s.sha === v.meta.cases_sha256);
+    assert(set, `${file}: verdicts were made from cases that are not in the repository`);
+    const session = quotedIdentifier(v.meta);
+    covered.add(`${set.file}@${session}`);
+    for (const c of set.cases) {
+      assert(v.verdicts[c.id], `${file}: no verdict for ${c.id}`);
+      const id = sessionId(c.id, session);
+      verdicts[id] ??= {};
+      for (const [level, errors] of Object.entries(v.verdicts[c.id])) {
+        const key = `${v.meta.engine.product_version}@${level}`;
+        verdicts[id][key] = errors;
+      }
+    }
+  }
+  for (const s of sets)
+    for (const session of ['on', 'off'])
+      assert(
+        covered.has(`${s.file}@${session}`),
+        `${s.file}: no ${session.toUpperCase()} verdict file`,
+      );
+  const cases = sets.flatMap((s) =>
+    s.cases.flatMap((c) =>
+      ['on', 'off']
+        .filter((mode) => verdicts[sessionId(c.id, mode)])
+        .map((session) => ({ ...c, id: sessionId(c.id, session), session })),
+    ),
+  );
+  return { cases, verdicts };
 }
 
 // Changes between the baseline and the current results; a regression is an engine-accepted case that
@@ -79,7 +125,7 @@ export function classify(rejectedClean, classification) {
   };
 }
 
-function matrix(cases, verdicts, current, level) {
+export function matrix(cases, verdicts, current, level) {
   const m = { acceptedClean: 0, acceptedError: 0, rejectedError: 0, rejectedClean: 0 };
   // A per-level table counts only the cases that engine and level judged.
   const judged = level ? cases.filter((c) => Array.isArray(verdicts[c.id][level])) : cases;
@@ -101,15 +147,10 @@ function matrix(cases, verdicts, current, level) {
 }
 
 function main(argv) {
-  const arg = (name) => argv.find((a) => a.startsWith(`${name}=`))?.slice(name.length + 1);
   const exeIndex = argv.indexOf('--tree-check');
   const exe = exeIndex >= 0 ? argv[exeIndex + 1] : undefined;
-  if (!exe)
-    throw new Error(
-      'usage: oracle-replay.mjs --tree-check <exe> [--update [--allow-regression=ID,...]]',
-    );
+  if (!exe) throw new Error('usage: oracle-replay.mjs --tree-check <exe> [--update]');
   const update = argv.includes('--update');
-  const allowed = new Set((arg('--allow-regression') ?? '').split(',').filter(Boolean));
 
   // Case sets: grammar-kit's cases plus the probes measured while fixing defects (oracle/probes).
   const setFiles = [
@@ -123,34 +164,23 @@ function main(argv) {
     const text = readFileSync(file);
     return { file, sha: sha256(text), cases: readCases(text.toString('utf8')) };
   });
-  const cases = sets.flatMap((s) => s.cases);
+  const sourceCases = sets.flatMap((s) => s.cases);
   assert.equal(
-    new Set(cases.map((c) => c.id)).size,
-    cases.length,
+    new Set(sourceCases.map((c) => c.id)).size,
+    sourceCases.length,
     'case IDs must be unique across sets',
   );
   const verdictFiles = readdirSync('oracle/verdicts')
     .filter((f) => f.endsWith('.json'))
     .sort();
-  // Verdicts from every observation file are merged per level. Each file is bound by hash to the one
-  // case set it was made from, and every case set needs at least one file.
-  const verdicts = Object.fromEntries(cases.map((c) => [c.id, {}]));
-  const covered = new Set();
-  for (const file of verdictFiles) {
-    const v = JSON.parse(readFileSync(join('oracle/verdicts', file), 'utf8'));
-    assert.equal(v.meta.mode, 'PARSEONLY', `${file}: only PARSEONLY verdicts count`);
-    const set = sets.find((s) => s.sha === v.meta.cases_sha256);
-    assert(set, `${file}: verdicts were made from cases that are not in the repository`);
-    covered.add(set.file);
-    for (const c of set.cases) {
-      assert(v.verdicts[c.id], `${file}: no verdict for ${c.id}`);
-      for (const [level, errors] of Object.entries(v.verdicts[c.id])) {
-        const key = `${v.meta.engine.product_version}@${level}`;
-        verdicts[c.id][key] = errors;
-      }
-    }
-  }
-  for (const s of sets) assert(covered.has(s.file), `${s.file}: no verdict file`);
+  // Engine observations merge only within the same session setting.
+  const { cases, verdicts } = mergeVerdicts(
+    sets,
+    verdictFiles.map((file) => ({
+      file,
+      data: JSON.parse(readFileSync(join('oracle/verdicts', file), 'utf8')),
+    })),
+  );
   const positive = Object.fromEntries(cases.map((c) => [c.id, isPositive(verdicts[c.id])]));
 
   const dir = mkdtempSync(join(tmpdir(), 'oracle-replay-'));
@@ -161,14 +191,25 @@ function main(argv) {
       writeFileSync(file, c.source);
       return file;
     });
-    writeFileSync(join(dir, 'paths.txt'), paths.join('\n'));
-    const rows = runTreeCheck(exe, ['--paths', join(dir, 'paths.txt')])
-      .stdout.trim()
-      .split('\n')
-      .map((l) => JSON.parse(l));
-    assert.equal(rows.length, cases.length, 'tree-check returned a different number of results');
-    current = Object.fromEntries(cases.map((c, i) => [c.id, rows[i].ok ? 'clean' : 'error']));
-    // Every edit-history file in oracle/kit (grammar-kit's gap histories and its route histories).
+    current = {};
+    for (const session of ['on', 'off']) {
+      const indices = cases.flatMap((c, i) => (c.session === session ? [i] : []));
+      if (!indices.length) continue;
+      const pathList = join(dir, `paths-${session}.txt`);
+      writeFileSync(pathList, indices.map((i) => paths[i]).join('\n'));
+      const rows = runTreeCheck(exe, ['--quoted-identifier', session, '--paths', pathList])
+        .stdout.trim()
+        .split('\n')
+        .map((l) => JSON.parse(l));
+      assert.equal(
+        rows.length,
+        indices.length,
+        'tree-check returned a different number of results',
+      );
+      for (const [i, row] of rows.entries())
+        current[cases[indices[i]].id] = row.ok ? 'clean' : 'error';
+    }
+    // Session settings do not change the grammar tree; edit histories compare that shared tree once.
     const edits = readdirSync('oracle/kit')
       .filter((f) => f.endsWith('edits.jsonl'))
       .sort()
@@ -191,7 +232,6 @@ function main(argv) {
   const changes = compare(expected.cases, current, positive);
   const incrementalChanged =
     JSON.stringify(expected.incremental_differences) !== JSON.stringify(incremental);
-  const regressions = changes.filter((c) => c.regression && !allowed.has(c.id));
 
   const levels = [...new Set(Object.values(verdicts).flatMap((v) => Object.keys(v)))].sort();
   const union = matrix(cases, verdicts, current);
@@ -204,8 +244,16 @@ function main(argv) {
   for (const id of rejectedClean) if (classification[id]) byClass[classification[id].class]++;
   const summary = [
     '### SQL Server oracle replay',
-    `- Cases: ${cases.length}; engine-accepted at some level: ${Object.values(positive).filter(Boolean).length}`,
+    `- Cases: ${cases.length} session/case pairs (${sourceCases.length} sources); engine-accepted at some level: ${Object.values(positive).filter(Boolean).length}`,
     `- Agreement over all levels: ${union.agree}/${union.total} (${union.percent} %): accepted&clean ${union.acceptedClean}, accepted&error ${union.acceptedError}, rejected&error ${union.rejectedError}, rejected&clean ${union.rejectedClean}`,
+    ...['on', 'off'].map((session) => {
+      const m = matrix(
+        cases.filter((c) => c.session === session),
+        verdicts,
+        current,
+      );
+      return `- QUOTED_IDENTIFIER ${session.toUpperCase()}: ${m.total} cases, accepted&error ${m.acceptedError}, rejected&clean ${m.rejectedClean}`;
+    }),
     ...levels.map((l) => {
       const m = matrix(cases, verdicts, current, l);
       return `- ${l}: ${m.agree}/${m.total} (${m.percent} %), accepted&error ${m.acceptedError}`;
@@ -227,6 +275,12 @@ function main(argv) {
   if (process.env.GITHUB_STEP_SUMMARY)
     appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary + '\n');
 
+  if (union.acceptedError) {
+    console.error(
+      'Engine-accepted cases must be clean under their recorded session; refusing the replay or baseline update.',
+    );
+    return 1;
+  }
   if (unclassified.length || stale.length) {
     console.error(
       'oracle/rejected-clean.json does not match the rejected-but-clean cases (see UNCLASSIFIED/STALE above).',
@@ -234,12 +288,6 @@ function main(argv) {
     return 1;
   }
   if (update) {
-    if (regressions.length) {
-      console.error(
-        `Refusing to update: engine-accepted cases would become errors: ${regressions.map((c) => c.id).join(', ')}. Pass --allow-regression=ID,... only with a stated reason.`,
-      );
-      return 1;
-    }
     const sorted = Object.fromEntries(
       Object.entries(current).sort(([a], [b]) => a.localeCompare(b)),
     );

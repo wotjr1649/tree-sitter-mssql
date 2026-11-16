@@ -182,7 +182,7 @@ export default {
   _fillfactor_option: ($) =>
     seq(field('name', alias($.keyword_fillfactor, $.identifier)), '=', field('value', $.literal)),
 
-  _index_filestream: ($) => seq(alias($.keyword_filestream_on, $.identifier), $.identifier),
+  _index_filestream: ($) => seq(alias($.keyword_filestream_on, $.identifier), $._filegroup_name),
 
   masked_with: ($) => seq($.keyword_masked, $.with_options),
 
@@ -274,9 +274,14 @@ export default {
 
   ordered_column: ($) => seq(field('name', $._column), optional($.direction)),
 
+  // Filegroup strings are accepted with either QUOTED_IDENTIFIER setting (levels 100-170).
+  _filegroup_name: ($) => choice($.identifier, alias($._single_quote_string, $.literal)),
+
   // ON filegroup | ON partition_scheme (column) | ON "default"
   on_filegroup: ($) =>
-    prec.right(seq($.keyword_on, $.identifier, optional(wrapped_in_parenthesis($.identifier)))),
+    prec.right(
+      seq($.keyword_on, $._filegroup_name, optional(wrapped_in_parenthesis($.identifier))),
+    ),
 
   // The option list most DDL statements take: `WITH (PAD_INDEX = OFF,
   // FILLFACTOR = 90)`. Option names are identifiers — there are hundreds
@@ -309,7 +314,7 @@ export default {
     seq(
       field('name', alias($.keyword_move, $.identifier)),
       $.keyword_to,
-      field('value', $.identifier),
+      field('value', $._filegroup_name),
       optional(wrapped_in_parenthesis($.identifier)),
     ),
 

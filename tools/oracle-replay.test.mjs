@@ -1,7 +1,15 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
-import { classify, compare, isPositive, readCases } from './oracle-replay.mjs';
+import {
+  classify,
+  compare,
+  isPositive,
+  matrix,
+  mergeVerdicts,
+  quotedIdentifier,
+  readCases,
+} from './oracle-replay.mjs';
 
 const line = (id, source, sha = createHash('sha256').update(source).digest('hex')) =>
   JSON.stringify({ id, sha256: sha, source });
@@ -44,4 +52,46 @@ test('every rejected-but-clean case needs a known class, and no entry may outliv
     unclassified: [],
     stale: [],
   });
+});
+
+test('quoted identifier sessions remain separate when observations share a source and engine', () => {
+  const sets = [{ file: 'cases', sha: 'hash', cases: [{ id: 'a', source: 'SELECT "a";' }] }];
+  const observation = (value, errors) => ({
+    file: `qi-${value}`,
+    data: {
+      meta: {
+        mode: 'PARSEONLY',
+        session_set: { quoted_identifier: value },
+        cases_sha256: 'hash',
+        engine: { product_version: '17' },
+      },
+      verdicts: { a: { 170: errors } },
+    },
+  });
+  assert.throws(() => mergeVerdicts(sets, [observation(1, [])]), /no OFF verdict file/);
+  assert.throws(() => mergeVerdicts(sets, [observation(0, [102])]), /no ON verdict file/);
+  const { cases, verdicts } = mergeVerdicts(sets, [observation(1, []), observation(0, [102])]);
+  assert.deepEqual(
+    cases.map((c) => [c.id, c.session]),
+    [
+      ['a', 'on'],
+      ['a@qi-off', 'off'],
+    ],
+  );
+  assert.equal(isPositive(verdicts.a), true);
+  assert.equal(isPositive(verdicts['a@qi-off']), false);
+  assert.equal(quotedIdentifier({}), 'on');
+  assert.equal(quotedIdentifier({ session_set: { quoted_identifier: 'OFF' } }), 'off');
+  assert.throws(() => quotedIdentifier({ session_set: { quoted_identifier: 'guess' } }), /unknown/);
+});
+
+test('the acceptance matrix counts an accepted error separately from rejected clean in another session', () => {
+  const result = matrix(
+    [{ id: 'a' }, { id: 'a@qi-off' }],
+    { a: { 170: [] }, 'a@qi-off': { 170: [102] } },
+    { a: 'error', 'a@qi-off': 'clean' },
+  );
+  assert.equal(result.acceptedError, 1);
+  assert.equal(result.rejectedClean, 1);
+  assert.equal(result.total, 2);
 });

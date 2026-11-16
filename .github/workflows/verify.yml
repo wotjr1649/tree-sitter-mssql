@@ -235,7 +235,9 @@ jobs:
         run: node tools/oracle-replay.mjs --tree-check target/debug/tree-check
 
       - name: Comments, keyword case and whitespace must preserve every oracle and fixture verdict
-        run: node tools/comment-mutate.mjs --tree-check target/debug/tree-check --axes comment,case,whitespace
+        run: |
+          node tools/comment-mutate.mjs --tree-check target/debug/tree-check --axes comment,case,whitespace --quoted-identifier on
+          node tools/comment-mutate.mjs --tree-check target/debug/tree-check --axes comment,case,whitespace --quoted-identifier off
 
       - name: Build the pinned WASM reactor and check all oracle/fixture verdicts
         env:

@@ -6,10 +6,13 @@
 // Usage: node tools/verdict-diff.mjs <base.json> <other.json>
 import { appendFileSync, readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
+import { quotedIdentifier } from './oracle-replay.mjs';
 
 export function diff(base, other) {
   if (base.meta.mode !== 'PARSEONLY' || other.meta.mode !== 'PARSEONLY')
     throw new Error('only PARSEONLY verdicts compare');
+  if (quotedIdentifier(base.meta) !== quotedIdentifier(other.meta))
+    throw new Error('the verdicts were made with different QUOTED_IDENTIFIER sessions');
   if (base.meta.cases_sha256 !== other.meta.cases_sha256)
     throw new Error('the verdicts were made from different cases');
   const levels = base.meta.levels.filter((l) => other.meta.levels.includes(l)).map(String);

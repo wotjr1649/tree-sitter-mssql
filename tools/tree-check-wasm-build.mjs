@@ -84,6 +84,7 @@ export function build() {
   for (const file of [
     'tools/tree-check/src/constraints.rs',
     'tools/tree-check/src/lib.rs',
+    'tools/tree-check/src/session.rs',
     'tools/tree-check/src/wasm.rs',
   ]) {
     rulesHash

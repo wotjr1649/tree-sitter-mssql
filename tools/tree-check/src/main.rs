@@ -5,7 +5,7 @@
 //! (`constraints.rs`), which SQL Server enforces while parsing. The CLI's parse summary is not used: it can report success for trees that
 //! contain `ERROR` or only zero-width nodes.
 //!
-//! Usage: `tree-check [--keyword-ranges] [--paths LIST] [FILE...]`. Exit code 0: every tree passes; 1: some tree has a
+//! Usage: `tree-check [--quoted-identifier on|off] [--keyword-ranges] [--paths LIST] [FILE...]`. Exit code 0: every tree passes; 1: some tree has a
 //! problem; 2: a file could not be read or parsed, so nothing is judged.
 //!
 //! `tree-check --edits HISTORIES.jsonl` instead replays edit histories and compares every
@@ -13,7 +13,10 @@
 
 use std::process::ExitCode;
 use std::{env, fs};
-use tree_check::{edits, grammar_parser, inspect, json_line, json_string, parse};
+use tree_check::{
+    QuotedIdentifier, edits, grammar_parser, inspect_with_quoted_identifier, json_line,
+    json_string, parse,
+};
 
 fn run_edits(file: &str) -> Result<bool, String> {
     let text = fs::read_to_string(file).map_err(|e| format!("{file}: {e}"))?;
@@ -113,9 +116,16 @@ fn run(args: &[String]) -> Result<bool, String> {
     }
     let mut paths = Vec::new();
     let mut include_keyword_ranges = false;
+    let mut quoted_identifier = QuotedIdentifier::On;
     let mut it = args.iter();
     while let Some(arg) = it.next() {
-        if arg == "--keyword-ranges" {
+        if arg == "--quoted-identifier" {
+            quoted_identifier = match it.next().map(String::as_str) {
+                Some("on") => QuotedIdentifier::On,
+                Some("off") => QuotedIdentifier::Off,
+                _ => return Err("--quoted-identifier needs on or off".into()),
+            };
+        } else if arg == "--keyword-ranges" {
             include_keyword_ranges = true;
         } else if arg == "--paths" {
             let list = it.next().ok_or("--paths needs a file")?;
@@ -132,7 +142,7 @@ fn run(args: &[String]) -> Result<bool, String> {
     }
     if paths.is_empty() {
         return Err(
-            "usage: tree-check [--keyword-ranges] [--paths LIST] [FILE...] | tree-check --edits HISTORIES".into(),
+            "usage: tree-check [--quoted-identifier on|off] [--keyword-ranges] [--paths LIST] [FILE...] | tree-check --edits HISTORIES".into(),
         );
     }
     let mut parser = grammar_parser()?;
@@ -140,7 +150,7 @@ fn run(args: &[String]) -> Result<bool, String> {
     for path in &paths {
         let source = fs::read(path).map_err(|e| format!("{path}: {e}"))?;
         let tree = parse(&mut parser, &source).map_err(|e| format!("{path}: {e}"))?;
-        let report = inspect(&tree, &source);
+        let report = inspect_with_quoted_identifier(&tree, &source, quoted_identifier);
         all_ok &= report.ok();
         let mut line = json_line(path, &report);
         if include_keyword_ranges {
@@ -204,5 +214,19 @@ mod tests {
             .collect();
         assert!(tokens.contains(&"FOR SYSTEM_TIME"), "{tokens:?}");
         assert!(tokens.contains(&"! /* 기밀 */ ="), "{tokens:?}");
+    }
+
+    #[test]
+    fn quoted_identifier_rejects_unknown_or_missing_values() {
+        for args in [
+            vec!["--quoted-identifier"],
+            vec!["--quoted-identifier", "maybe"],
+        ] {
+            assert!(
+                run(&args.into_iter().map(String::from).collect::<Vec<_>>())
+                    .unwrap_err()
+                    .contains("on or off")
+            );
+        }
     }
 }
