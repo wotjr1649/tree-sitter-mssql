@@ -118,36 +118,29 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p verdicts
-          dotnet oracle/runners/ParseOnly/bin/Release/net10.0/ParseOnly.dll \
-            --server localhost,1433 --levels "$LEVELS" \
-            --cases oracle/data/kit/cases.jsonl --out verdicts/kit.json
-          dotnet oracle/runners/ParseOnly/bin/Release/net10.0/ParseOnly.dll \
-            --server localhost,1433 --levels "$LEVELS" --quoted-identifier off \
-            --cases oracle/data/kit/cases.jsonl --out verdicts/kit.qi-off.json
-          for set in oracle/data/probes/*.jsonl; do
+          # One verdict file per set and session; the compare step reads the same plan.
+          for set in oracle/data/kit/cases.jsonl oracle/data/probes/*.jsonl; do
             name="$(basename "$set" .jsonl)"
+            if [ "$set" = oracle/data/kit/cases.jsonl ]; then name=kit; fi
             for mode in on off; do
               suffix=""
               if [ "$name" = quoted-identifier ] || [ "$mode" = off ]; then suffix=".qi-${mode}"; fi
               dotnet oracle/runners/ParseOnly/bin/Release/net10.0/ParseOnly.dll \
                 --server localhost,1433 --levels "$LEVELS" --quoted-identifier "$mode" \
                 --cases "$set" --out "verdicts/${name}${suffix}.json"
+              echo "${name}${suffix}" >> "$RUNNER_TEMP/verdict-plan.txt"
             done
           done
 
       - name: Compare with the committed LocalDB verdicts
         run: |
           set -euo pipefail
-          node scripts/verdict-diff.mjs oracle/data/verdicts/localdb-17.0.1000.7.json verdicts/kit.json
-          node scripts/verdict-diff.mjs oracle/data/verdicts/localdb-17.0.1000.7.qi-off.json verdicts/kit.qi-off.json
-          for set in oracle/data/probes/*.jsonl; do
-            name="$(basename "$set" .jsonl)"
-            for mode in on off; do
-              suffix=""
-              if [ "$name" = quoted-identifier ] || [ "$mode" = off ]; then suffix=".qi-${mode}"; fi
-              node scripts/verdict-diff.mjs "oracle/data/verdicts/localdb-17.0.1000.7.${name}${suffix}.json" "verdicts/${name}${suffix}.json"
-            done
-          done
+          # The committed LocalDB file drops the set name for the kit cases (localdb-17.0.1000.7[.qi-off].json).
+          while read -r out; do
+            committed=".${out}"
+            if [ "${out%%.*}" = kit ]; then committed="${out#kit}"; fi
+            node scripts/verdict-diff.mjs "oracle/data/verdicts/localdb-17.0.1000.7${committed}.json" "verdicts/${out}.json"
+          done < "$RUNNER_TEMP/verdict-plan.txt"
 
       - name: Upload the verdicts
         if: always()

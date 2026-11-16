@@ -128,6 +128,9 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
+    env:
+      # One target directory for the grammar crate and crates/tree-check, so the Rust cache holds both.
+      CARGO_TARGET_DIR: target
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -137,7 +140,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24.x'
+          node-version-file: .nvmrc
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@4360b52568e2003a75bf9bc1d59f33a8e3fc893c # v1.97.0 rustc stable as of 2026-08-17 (action itself publishes no version tags)
@@ -222,16 +225,11 @@ jobs:
       - name: Parse every fixture and fail on any tree problem
         # crates/tree-check judges each tree through the tree-sitter API (root has_error,
         # ERROR, MISSING, zero-width nodes, root range); the CLI summary can miss these.
-        # The shared target directory keeps its build in the Rust cache.
-        env:
-          CARGO_TARGET_DIR: target
         run: cargo run --quiet --locked --manifest-path crates/tree-check/Cargo.toml -- test/fixtures/*.sql
 
       - name: Replay the SQL Server oracle against the committed baseline
         # Judges oracle/data/kit cases with tree-check, compares incremental and fresh parses over the
         # edit histories, and fails on any change from oracle/data/expected.json (see oracle/README.md).
-        env:
-          CARGO_TARGET_DIR: target
         run: node scripts/oracle-replay.mjs --tree-check target/debug/tree-check
 
       - name: Comments, keyword case and whitespace must preserve every oracle and fixture verdict
@@ -241,7 +239,6 @@ jobs:
 
       - name: Build the pinned WASM reactor and check all oracle/fixture verdicts
         env:
-          CARGO_TARGET_DIR: target
           WASI_SDK_PATH: ${{ runner.temp }}/wasi-sdk-34.0-x86_64-linux
         run: |
           node scripts/tree-check-wasm-build.mjs
@@ -281,8 +278,6 @@ jobs:
         run: cargo test
 
       - name: tree-check format, clippy and tests
-        env:
-          CARGO_TARGET_DIR: target
         run: |
           cargo fmt --check --manifest-path crates/tree-check/Cargo.toml
           cargo clippy --locked --all-targets --manifest-path crates/tree-check/Cargo.toml -- -D warnings
@@ -302,7 +297,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24.x'
+          node-version-file: .nvmrc
 
       - name: Install dependencies and build the native addon
         run: npm install
