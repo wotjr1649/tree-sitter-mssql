@@ -45,8 +45,23 @@ export default {
       $.alter_partition_function,
       $.alter_partition_scheme,
       $.alter_route,
+      $.alter_application_role,
+      $.alter_credential,
+
+      $.alter_service_master_key,
+      $.alter_cryptographic_provider,
     ),
 
+  alter_cryptographic_provider: ($) =>
+    seq(
+      $.keyword_alter,
+      $.keyword_cryptographic,
+      $.keyword_provider,
+      $.identifier,
+      choice($.keyword_enable, $.keyword_disable, $.with_clause),
+    ),
+
+  // ALTER XML SCHEMA COLLECTION name ADD expression
   alter_xml_schema_collection: ($) =>
     seq(
       $.keyword_alter,
@@ -348,7 +363,8 @@ export default {
     ),
 
   // ALTER USER name WITH option [, ...]
-  alter_user: ($) => seq($.keyword_alter, $.keyword_user, $.identifier, $.with_clause),
+  alter_user: ($) =>
+    seq($.keyword_alter, $.keyword_user, $.identifier, alias($._login_with_clause, $.with_clause)),
 
   // ALTER LOGIN name { ENABLE | DISABLE | WITH option [, ...] | ADD/DROP CREDENTIAL name }
   alter_login: ($) =>
@@ -359,7 +375,7 @@ export default {
       choice(
         $.keyword_enable,
         $.keyword_disable,
-        $.with_clause,
+        alias($._login_with_clause, $.with_clause),
         seq(choice($.keyword_add, $.keyword_drop), $.identifier, $.identifier),
       ),
     ),
@@ -579,4 +595,69 @@ export default {
   // ambiguity `alter_fulltext_catalog` documents; see the `[$.alter_route]`
   // conflicts entry in grammar.js.
   alter_route: ($) => seq($.keyword_alter, $.keyword_route, $.identifier, optional($.with_clause)),
+  _login_with_clause: ($) =>
+    prec.right(
+      seq(
+        $.keyword_with,
+        comma_list(
+          choice(
+            $.option,
+            alias($._principal_password_option, $.option),
+            alias($._principal_null_option, $.option),
+            alias($._principal_no_credential, $.option),
+          ),
+          true,
+        ),
+      ),
+    ),
+
+  _principal_password_option: ($) =>
+    choice(
+      seq(
+        field('name', $.identifier),
+        '=',
+        field('value', $.literal),
+        alias($.keyword_old_password, $.identifier),
+        '=',
+        $.literal,
+      ),
+      seq(
+        field('name', $.identifier),
+        '=',
+        field('value', seq($.literal, alias($.keyword_must_change, $.identifier))),
+        optional(alias($.keyword_unlock, $.identifier)),
+      ),
+      seq(
+        field('name', $.identifier),
+        '=',
+        field('value', seq($.literal, alias($.keyword_unlock, $.identifier))),
+      ),
+    ),
+
+  _principal_null_option: ($) =>
+    seq(field('name', $.identifier), '=', field('value', choice($.keyword_null, $.keyword_none))),
+
+  _principal_no_credential: ($) =>
+    seq(
+      field('name', alias($.keyword_no, $.identifier)),
+      field('value', alias($.keyword_credential, $.identifier)),
+    ),
+
+  alter_application_role: ($) =>
+    seq(
+      $.keyword_alter,
+      $.keyword_application,
+      $.keyword_role,
+      field('name', $.identifier),
+      $.with_clause,
+    ),
+
+  alter_credential: ($) =>
+    seq(
+      $.keyword_alter,
+      optional(seq($.keyword_database, $.keyword_scoped)),
+      $.keyword_credential,
+      field('name', $.identifier),
+      $.with_clause,
+    ),
 };

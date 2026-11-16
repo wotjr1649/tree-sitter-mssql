@@ -51,6 +51,7 @@ export default {
         seq($.keyword_assembly, $.identifier),
         seq($.keyword_provider, $.identifier),
         $.option,
+        seq($.keyword_executable, $.keyword_file, '=', $.literal),
       ),
     ),
 
@@ -193,6 +194,7 @@ export default {
       field('name', $.identifier),
       choice($.keyword_add, $.keyword_drop),
       $.encryption_mechanism,
+      repeat(seq(',', $._key_encryptor_continuation)),
     ),
 
   // DROP SYMMETRIC KEY name [REMOVE PROVIDER KEY]
@@ -398,5 +400,25 @@ export default {
           ),
         ),
       ),
+    ),
+  create_cryptographic_provider: ($) =>
+    seq(
+      $.keyword_create,
+      $.keyword_cryptographic,
+      $.keyword_provider,
+      field('name', $.identifier),
+      $.keyword_from,
+      $.keyword_file,
+      '=',
+      choice($.literal, alias($._double_quote_string, $.literal)),
+    ),
+
+  alter_service_master_key: ($) =>
+    seq(
+      $.keyword_alter,
+      $.keyword_service,
+      $.keyword_master,
+      $.keyword_key,
+      choice(seq(optional($.keyword_force), $.keyword_regenerate), $.with_clause),
     ),
 };

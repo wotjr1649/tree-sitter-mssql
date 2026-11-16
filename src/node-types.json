@@ -256,6 +256,44 @@
     }
   },
   {
+    "type": "alter_application_role",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_alter",
+          "named": true
+        },
+        {
+          "type": "keyword_application",
+          "named": true
+        },
+        {
+          "type": "keyword_role",
+          "named": true
+        },
+        {
+          "type": "with_clause",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "alter_assembly",
     "named": true,
     "fields": {},
@@ -648,6 +686,87 @@
         },
         {
           "type": "keyword_value",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "alter_credential",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_alter",
+          "named": true
+        },
+        {
+          "type": "keyword_credential",
+          "named": true
+        },
+        {
+          "type": "keyword_database",
+          "named": true
+        },
+        {
+          "type": "keyword_scoped",
+          "named": true
+        },
+        {
+          "type": "with_clause",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "alter_cryptographic_provider",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_alter",
+          "named": true
+        },
+        {
+          "type": "keyword_cryptographic",
+          "named": true
+        },
+        {
+          "type": "keyword_disable",
+          "named": true
+        },
+        {
+          "type": "keyword_enable",
+          "named": true
+        },
+        {
+          "type": "keyword_provider",
+          "named": true
+        },
+        {
+          "type": "with_clause",
           "named": true
         }
       ]
@@ -2649,6 +2768,45 @@
     }
   },
   {
+    "type": "alter_service_master_key",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_alter",
+          "named": true
+        },
+        {
+          "type": "keyword_force",
+          "named": true
+        },
+        {
+          "type": "keyword_key",
+          "named": true
+        },
+        {
+          "type": "keyword_master",
+          "named": true
+        },
+        {
+          "type": "keyword_regenerate",
+          "named": true
+        },
+        {
+          "type": "keyword_service",
+          "named": true
+        },
+        {
+          "type": "with_clause",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "alter_symmetric_key",
     "named": true,
     "fields": {
@@ -2669,6 +2827,10 @@
       "types": [
         {
           "type": "encryption_mechanism",
+          "named": true
+        },
+        {
+          "type": "key_encryptor",
           "named": true
         },
         {
@@ -6977,6 +7139,44 @@
     }
   },
   {
+    "type": "create_application_role",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_application",
+          "named": true
+        },
+        {
+          "type": "keyword_create",
+          "named": true
+        },
+        {
+          "type": "keyword_role",
+          "named": true
+        },
+        {
+          "type": "with_clause",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "create_assembly",
     "named": true,
     "fields": {
@@ -7070,6 +7270,14 @@
           "named": true
         },
         {
+          "type": "keyword_executable",
+          "named": true
+        },
+        {
+          "type": "keyword_file",
+          "named": true
+        },
+        {
           "type": "keyword_from",
           "named": true
         },
@@ -7079,6 +7287,10 @@
         },
         {
           "type": "keyword_provider",
+          "named": true
+        },
+        {
+          "type": "literal",
           "named": true
         },
         {
@@ -7214,11 +7426,23 @@
           "named": true
         },
         {
+          "type": "keyword_executable",
+          "named": true
+        },
+        {
+          "type": "keyword_file",
+          "named": true
+        },
+        {
           "type": "keyword_from",
           "named": true
         },
         {
           "type": "keyword_provider",
+          "named": true
+        },
+        {
+          "type": "literal",
           "named": true
         },
         {
@@ -7357,6 +7581,110 @@
         },
         {
           "type": "keyword_create",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "create_credential",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword_create",
+          "named": true
+        },
+        {
+          "type": "keyword_credential",
+          "named": true
+        },
+        {
+          "type": "keyword_cryptographic",
+          "named": true
+        },
+        {
+          "type": "keyword_database",
+          "named": true
+        },
+        {
+          "type": "keyword_for",
+          "named": true
+        },
+        {
+          "type": "keyword_provider",
+          "named": true
+        },
+        {
+          "type": "keyword_scoped",
+          "named": true
+        },
+        {
+          "type": "with_clause",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "create_cryptographic_provider",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_create",
+          "named": true
+        },
+        {
+          "type": "keyword_cryptographic",
+          "named": true
+        },
+        {
+          "type": "keyword_file",
+          "named": true
+        },
+        {
+          "type": "keyword_from",
+          "named": true
+        },
+        {
+          "type": "keyword_provider",
+          "named": true
+        },
+        {
+          "type": "literal",
           "named": true
         }
       ]
@@ -10022,7 +10350,19 @@
           "named": true
         },
         {
+          "type": "keyword_asymmetric",
+          "named": true
+        },
+        {
+          "type": "keyword_certificate",
+          "named": true
+        },
+        {
           "type": "keyword_create",
+          "named": true
+        },
+        {
+          "type": "keyword_external",
           "named": true
         },
         {
@@ -10034,7 +10374,15 @@
           "named": true
         },
         {
+          "type": "keyword_key",
+          "named": true
+        },
+        {
           "type": "keyword_login",
+          "named": true
+        },
+        {
+          "type": "keyword_provider",
           "named": true
         },
         {
@@ -18399,6 +18747,14 @@
             "named": true
           },
           {
+            "type": "keyword_none",
+            "named": true
+          },
+          {
+            "type": "keyword_null",
+            "named": true
+          },
+          {
             "type": "keyword_off",
             "named": true
           },
@@ -21663,6 +22019,10 @@
       "required": false,
       "types": [
         {
+          "type": "alter_application_role",
+          "named": true
+        },
+        {
           "type": "alter_assembly",
           "named": true
         },
@@ -21684,6 +22044,14 @@
         },
         {
           "type": "alter_column_encryption_key",
+          "named": true
+        },
+        {
+          "type": "alter_credential",
+          "named": true
+        },
+        {
+          "type": "alter_cryptographic_provider",
           "named": true
         },
         {
@@ -21803,6 +22171,10 @@
           "named": true
         },
         {
+          "type": "alter_service_master_key",
+          "named": true
+        },
+        {
           "type": "alter_symmetric_key",
           "named": true
         },
@@ -21871,6 +22243,10 @@
           "named": true
         },
         {
+          "type": "create_application_role",
+          "named": true
+        },
+        {
           "type": "create_assembly",
           "named": true
         },
@@ -21896,6 +22272,14 @@
         },
         {
           "type": "create_contract",
+          "named": true
+        },
+        {
+          "type": "create_credential",
+          "named": true
+        },
+        {
+          "type": "create_cryptographic_provider",
           "named": true
         },
         {
@@ -25873,6 +26257,10 @@
   },
   {
     "type": "keyword_exec",
+    "named": true
+  },
+  {
+    "type": "keyword_executable",
     "named": true
   },
   {

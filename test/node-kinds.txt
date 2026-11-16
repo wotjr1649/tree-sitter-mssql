@@ -1,12 +1,15 @@
 active_for_clause
 ai_generate_embeddings{model,parameter,parameters}
 all_fields
+alter_application_role{name}
 alter_assembly
 alter_asymmetric_key{name}
 alter_authorization
 alter_availability_group{name}
 alter_certificate{name}
 alter_column_encryption_key{name}
+alter_credential{name}
+alter_cryptographic_provider
 alter_database{name,seconds}
 alter_database_audit_specification{name}
 alter_database_encryption_key
@@ -36,6 +39,7 @@ alter_sequence
 alter_server_audit{name}
 alter_server_audit_specification{name}
 alter_server_configuration
+alter_service_master_key
 alter_symmetric_key{name}
 alter_table{from_partition,name,target,to_partition,type}
 alter_trigger{body,name,target}
@@ -79,6 +83,7 @@ continue_statement
 contract_message
 conversation_timer_statement
 covering_columns
+create_application_role{name}
 create_assembly{name}
 create_asymmetric_key{name}
 create_availability_group{name}
@@ -86,6 +91,8 @@ create_certificate{name}
 create_column_encryption_key{name}
 create_column_master_key{name}
 create_contract{name}
+create_credential{name}
+create_cryptographic_provider{name}
 create_database{name}
 create_database_audit_specification{name}
 create_database_encryption_key
@@ -393,6 +400,7 @@ keyword_error
 keyword_event
 keyword_except
 keyword_exec
+keyword_executable
 keyword_execute
 keyword_exists
 keyword_exit

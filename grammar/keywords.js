@@ -8,6 +8,10 @@ import { make_keyword } from './helpers.js';
 // names (SET options, index options, DBCC commands, query and table hints)
 // are deliberately not keywords; they are identifiers.
 export default {
+  keyword_unlock: (_) => make_keyword('unlock'),
+  keyword_old_password: (_) => make_keyword('old_password'),
+  keyword_must_change: (_) => make_keyword('must_change'),
+  keyword_executable: (_) => make_keyword('executable'),
   keyword_workload: (_) => make_keyword('workload'),
   keyword_priority: (_) => make_keyword('priority'),
   keyword_broker: (_) => make_keyword('broker'),

@@ -2909,6 +2909,514 @@ GRANT NONEXISTENT PERMISSION TO u;
         (identifier)))))
 
 ==================
+ddl-rest/create-route-alt-tsql-B03-r126 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER MASTER KEY DROP ENCRYPTION BY PASSWORD = 'Mk!Passw0rd2';
+ALTER MASTER KEY DROP ENCRYPTION BY SERVICE MASTER KEY;
+ALTER SERVICE MASTER KEY FORCE REGENERATE;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_master_key
+        (keyword_alter)
+        (keyword_master)
+        (keyword_key)
+        (keyword_drop)
+        (encryption_mechanism
+          (keyword_encryption)
+          (keyword_by)
+          (option
+            name: (identifier)
+            value: (literal)))))
+    (statement
+      (alter_master_key
+        (keyword_alter)
+        (keyword_master)
+        (keyword_key)
+        (keyword_drop)
+        (encryption_mechanism
+          (keyword_encryption)
+          (keyword_by)
+          (keyword_service)
+          (keyword_master)
+          (keyword_key))))
+    (statement
+      (alter_service_master_key
+        (keyword_alter)
+        (keyword_service)
+        (keyword_master)
+        (keyword_key)
+        (keyword_force)
+        (keyword_regenerate)))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r127 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER SERVICE MASTER KEY WITH OLD_ACCOUNT = 'CONTOSO\svc_old', OLD_PASSWORD = 'Old!Passw0rd';
+ALTER SERVICE MASTER KEY WITH NEW_ACCOUNT = 'CONTOSO\svc_new', NEW_PASSWORD = 'N3w!Passw0rd';
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_service_master_key
+        (keyword_alter)
+        (keyword_service)
+        (keyword_master)
+        (keyword_key)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal)))))
+    (statement
+      (alter_service_master_key
+        (keyword_alter)
+        (keyword_service)
+        (keyword_master)
+        (keyword_key)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r128 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER SYMMETRIC KEY sk1 ADD ENCRYPTION BY CERTIFICATE cert1, PASSWORD = 'Sk!Passw0rd1', SYMMETRIC KEY sk2, ASYMMETRIC KEY ak1;
+ALTER SYMMETRIC KEY sk1 DROP ENCRYPTION BY CERTIFICATE cert1, ASYMMETRIC KEY ak1;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_symmetric_key
+        (keyword_alter)
+        (keyword_symmetric)
+        (keyword_key)
+        name: (identifier)
+        (keyword_add)
+        (encryption_mechanism
+          (keyword_encryption)
+          (keyword_by)
+          (keyword_certificate)
+          (identifier))
+        (key_encryptor
+          (option
+            name: (identifier)
+            value: (literal)))
+        (key_encryptor
+          (keyword_symmetric)
+          (keyword_key)
+          (identifier))
+        (key_encryptor
+          (keyword_asymmetric)
+          (keyword_key)
+          (identifier))))
+    (statement
+      (alter_symmetric_key
+        (keyword_alter)
+        (keyword_symmetric)
+        (keyword_key)
+        name: (identifier)
+        (keyword_drop)
+        (encryption_mechanism
+          (keyword_encryption)
+          (keyword_by)
+          (keyword_certificate)
+          (identifier))
+        (key_encryptor
+          (keyword_asymmetric)
+          (keyword_key)
+          (identifier))))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r198 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE ASYMMETRIC KEY ak_file AUTHORIZATION dbo FROM FILE = 'C:\keys\signing.snk' ENCRYPTION BY PASSWORD = 'K3y!pass';
+CREATE ASYMMETRIC KEY ak_exe FROM EXECUTABLE FILE = 'C:\bin\tool.dll';
+CREATE ASYMMETRIC KEY ak_asm FROM ASSEMBLY HelloAsm;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_asymmetric_key
+        (keyword_create)
+        (keyword_asymmetric)
+        (keyword_key)
+        name: (identifier)
+        (keyword_authorization)
+        (identifier)
+        (keyword_from)
+        (option
+          name: (identifier)
+          value: (literal))
+        (encryption_mechanism
+          (keyword_encryption)
+          (keyword_by)
+          (option
+            name: (identifier)
+            value: (literal)))))
+    (statement
+      (create_asymmetric_key
+        (keyword_create)
+        (keyword_asymmetric)
+        (keyword_key)
+        name: (identifier)
+        (keyword_from)
+        (keyword_executable)
+        (keyword_file)
+        (literal)))
+    (statement
+      (create_asymmetric_key
+        (keyword_create)
+        (keyword_asymmetric)
+        (keyword_key)
+        name: (identifier)
+        (keyword_from)
+        (keyword_assembly)
+        (identifier)))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r212 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE CREDENTIAL cred_ekm WITH IDENTITY = 'ekm_user', SECRET = 'S3cret!' FOR CRYPTOGRAPHIC PROVIDER ekm_prov;
+CREATE DATABASE SCOPED CREDENTIAL dsc_blob WITH IDENTITY = 'SHARED ACCESS SIGNATURE', SECRET = 'sv=2022-11-02&ss=b';
+CREATE CRYPTOGRAPHIC PROVIDER ekm_prov FROM FILE = 'C:\EKM\ekm_provider.dll';
+
+---
+
+(program
+  (batch
+    (statement
+      (create_credential
+        (keyword_create)
+        (keyword_credential)
+        name: (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal)))
+        (keyword_for)
+        (keyword_cryptographic)
+        (keyword_provider)
+        (identifier)))
+    (statement
+      (create_credential
+        (keyword_create)
+        (keyword_database)
+        (keyword_scoped)
+        (keyword_credential)
+        name: (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal)))))
+    (statement
+      (create_cryptographic_provider
+        (keyword_create)
+        (keyword_cryptographic)
+        (keyword_provider)
+        name: (identifier)
+        (keyword_from)
+        (keyword_file)
+        (literal)))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r289 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE USER [ann@contoso.com] FROM EXTERNAL PROVIDER WITH OBJECT_ID = '6d9a3c1e-0000-4000-8000-000000000001';
+CREATE USER [CONTOSO\Eve] WITH DEFAULT_LANGUAGE = English;
+CREATE USER [CONTOSO\Ann] FOR LOGIN [CONTOSO\Ann] WITH DEFAULT_LANGUAGE = us_english;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_user
+        (keyword_create)
+        (keyword_user)
+        name: (identifier)
+        (keyword_from)
+        (keyword_external)
+        (keyword_provider)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)))))
+    (statement
+      (create_user
+        (keyword_create)
+        (keyword_user)
+        name: (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier)))))
+    (statement
+      (create_user
+        (keyword_create)
+        (keyword_user)
+        name: (identifier)
+        (keyword_for)
+        (keyword_login)
+        (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier)))))))
+
+==================
+ddl-rest/create-route-alt-tsql-B03-r291 — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE USER u11 FOR CERTIFICATE cert_sign;
+CREATE USER u12 FROM CERTIFICATE cert_audit;
+CREATE USER u13 FOR ASYMMETRIC KEY ak_sign;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_user
+        (keyword_create)
+        (keyword_user)
+        name: (identifier)
+        (keyword_for)
+        (keyword_certificate)
+        (identifier)))
+    (statement
+      (create_user
+        (keyword_create)
+        (keyword_user)
+        name: (identifier)
+        (keyword_from)
+        (keyword_certificate)
+        (identifier)))
+    (statement
+      (create_user
+        (keyword_create)
+        (keyword_user)
+        name: (identifier)
+        (keyword_for)
+        (keyword_asymmetric)
+        (keyword_key)
+        (identifier)))))
+
+==================
+ddl-rest/create-application-role — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE APPLICATION ROLE a WITH PASSWORD = 'dummy', DEFAULT_SCHEMA = dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_application_role
+        (keyword_create)
+        (keyword_application)
+        (keyword_role)
+        name: (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (identifier)))))))
+
+==================
+ddl-rest/create-application-role-no-password — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE APPLICATION ROLE a WITH DEFAULT_SCHEMA = dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_application_role
+        (keyword_create)
+        (keyword_application)
+        (keyword_role)
+        name: (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier)))))))
+
+==================
+ddl-rest/create-credential — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE CREDENTIAL c WITH IDENTITY = 'dummy', SECRET = 'placeholder';
+
+---
+
+(program
+  (batch
+    (statement
+      (create_credential
+        (keyword_create)
+        (keyword_credential)
+        name: (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
+ddl-rest/create-credential-scoped — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE DATABASE SCOPED CREDENTIAL c WITH IDENTITY = 'dummy';
+
+---
+
+(program
+  (batch
+    (statement
+      (create_credential
+        (keyword_create)
+        (keyword_database)
+        (keyword_scoped)
+        (keyword_credential)
+        name: (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
+ddl-rest/create-credential-provider — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE CREDENTIAL c WITH IDENTITY = 'dummy' FOR CRYPTOGRAPHIC PROVIDER p;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_credential
+        (keyword_create)
+        (keyword_credential)
+        name: (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)))
+        (keyword_for)
+        (keyword_cryptographic)
+        (keyword_provider)
+        (identifier)))))
+
+==================
+ddl-rest/create-credential-no-identity — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+CREATE CREDENTIAL c WITH SECRET = 'placeholder';
+
+---
+
+(program
+  (batch
+    (statement
+      (create_credential
+        (keyword_create)
+        (keyword_credential)
+        name: (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
+ddl-rest/create-provider — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE CRYPTOGRAPHIC PROVIDER p FROM FILE = N'C:\provider.dll';
+
+---
+
+(program
+  (batch
+    (statement
+      (create_cryptographic_provider
+        (keyword_create)
+        (keyword_cryptographic)
+        (keyword_provider)
+        name: (identifier)
+        (keyword_from)
+        (keyword_file)
+        (literal)))))
+
+==================
+ddl-rest/create-provider-binary — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+CREATE CRYPTOGRAPHIC PROVIDER p FROM FILE = 0x1234;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_cryptographic_provider
+        (keyword_create)
+        (keyword_cryptographic)
+        (keyword_provider)
+        name: (identifier)
+        (keyword_from)
+        (keyword_file)
+        (literal)))))
+
+==================
 ddl-rest/create-event-session-server — LocalDB 17.0.1000.7 levels 100-170: accepts
 ==================
 
@@ -2953,10 +3461,10 @@ CREATE EVENT SESSION e ON SERVER;
         (keyword_server)))))
 
 ==================
-ddl-rest/create-key-executable-no-file — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+ddl-rest/create-key-executable — LocalDB 17.0.1000.7 levels 100-170: accepts
 ==================
 
-CREATE ASYMMETRIC KEY k FROM EXECUTABLE = 'C:\a.dll';
+CREATE ASYMMETRIC KEY k FROM EXECUTABLE FILE = 'C:\a.dll';
 
 ---
 
@@ -2969,9 +3477,147 @@ CREATE ASYMMETRIC KEY k FROM EXECUTABLE = 'C:\a.dll';
         (keyword_key)
         name: (identifier)
         (keyword_from)
-        (option
-          name: (identifier)
-          value: (literal))))))
+        (keyword_executable)
+        (keyword_file)
+        (literal)))))
+
+==================
+ddl-rest/create-key-add-many — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER SYMMETRIC KEY k ADD ENCRYPTION BY CERTIFICATE c, PASSWORD = 'dummy', ASYMMETRIC KEY a;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_symmetric_key
+        (keyword_alter)
+        (keyword_symmetric)
+        (keyword_key)
+        name: (identifier)
+        (keyword_add)
+        (encryption_mechanism
+          (keyword_encryption)
+          (keyword_by)
+          (keyword_certificate)
+          (identifier))
+        (key_encryptor
+          (option
+            name: (identifier)
+            value: (literal)))
+        (key_encryptor
+          (keyword_asymmetric)
+          (keyword_key)
+          (identifier))))))
+
+==================
+ddl-rest/create-service-master-key — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER SERVICE MASTER KEY FORCE REGENERATE;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_service_master_key
+        (keyword_alter)
+        (keyword_service)
+        (keyword_master)
+        (keyword_key)
+        (keyword_force)
+        (keyword_regenerate)))))
+
+==================
+ddl-rest/create-service-master-with — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER SERVICE MASTER KEY WITH OLD_ACCOUNT = 'user', OLD_PASSWORD = 'dummy';
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_service_master_key
+        (keyword_alter)
+        (keyword_service)
+        (keyword_master)
+        (keyword_key)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
+ddl-rest/create-user-certificate — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE USER u FROM CERTIFICATE c;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_user
+        (keyword_create)
+        (keyword_user)
+        name: (identifier)
+        (keyword_from)
+        (keyword_certificate)
+        (identifier)))))
+
+==================
+ddl-rest/create-user-asymmetric — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE USER u FOR ASYMMETRIC KEY k;
+
+---
+
+(program
+  (batch
+    (statement
+      (create_user
+        (keyword_create)
+        (keyword_user)
+        name: (identifier)
+        (keyword_for)
+        (keyword_asymmetric)
+        (keyword_key)
+        (identifier)))))
+
+==================
+ddl-rest/create-user-external — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+CREATE USER u FROM EXTERNAL PROVIDER WITH OBJECT_ID = '00000000-0000-4000-8000-000000000001';
+
+---
+
+(program
+  (batch
+    (statement
+      (create_user
+        (keyword_create)
+        (keyword_user)
+        name: (identifier)
+        (keyword_from)
+        (keyword_external)
+        (keyword_provider)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)))))))
 
 ==================
 ddl-rest/create-login-hashed — LocalDB 17.0.1000.7 levels 100-170: accepts
@@ -3022,6 +3668,29 @@ CREATE LOGIN l WITH PASSWORD = 'dummy' MUST_CHANGE, CHECK_POLICY = ON;
           (option
             name: (identifier)
             value: (keyword_on)))))))
+
+==================
+ddl-rest/create-login-old-password — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+CREATE LOGIN l WITH PASSWORD = 'dummy' OLD_PASSWORD = 'other';
+
+---
+
+(program
+  (batch
+    (statement
+      (create_login
+        (keyword_create)
+        (keyword_login)
+        name: (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)
+            (identifier)
+            (literal)))))))
 
 ==================
 ddl-rest/create-index-json-multiple-columns — LocalDB 17.0.1000.7 levels 100-170: rejects 102
@@ -3149,6 +3818,84 @@ CREATE UNIQUE JSON INDEX i ON dbo.t(j);
             name: (identifier)))))))
 
 ==================
+ddl-rest/alter-application-role — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER APPLICATION ROLE ar WITH NAME = ar2, PASSWORD = 'placeholder', DEFAULT_SCHEMA = dbo;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_application_role
+        (keyword_alter)
+        (keyword_application)
+        (keyword_role)
+        name: (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (identifier))
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (identifier)))))))
+
+==================
+ddl-rest/alter-credential — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER CREDENTIAL c WITH IDENTITY = 'name', SECRET = 'placeholder';
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_credential
+        (keyword_alter)
+        (keyword_credential)
+        name: (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
+ddl-rest/alter-scoped-credential — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER DATABASE SCOPED CREDENTIAL c WITH IDENTITY = 'SHARED ACCESS SIGNATURE', SECRET = 'placeholder';
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_credential
+        (keyword_alter)
+        (keyword_database)
+        (keyword_scoped)
+        (keyword_credential)
+        name: (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal))
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
 ddl-rest/alter-assembly-drop-all — LocalDB 17.0.1000.7 levels 100-170: accepts
 ==================
 
@@ -3213,6 +3960,55 @@ ALTER AUTHORIZATION ON ASYMMETRIC KEY::k TO dbo;
           name: (identifier))
         (keyword_to)
         (identifier)))))
+
+==================
+ddl-rest/alter-login-old-password — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER LOGIN l WITH PASSWORD = 'placeholder-new' OLD_PASSWORD = 'placeholder-old';
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_login
+        (keyword_alter)
+        (keyword_login)
+        (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)
+            (identifier)
+            (literal)))))))
+
+==================
+ddl-rest/alter-login-must-unlock — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER LOGIN l WITH PASSWORD = 'placeholder' MUST_CHANGE UNLOCK, CHECK_EXPIRATION = ON;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_login
+        (keyword_alter)
+        (keyword_login)
+        (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)
+            value: (identifier)
+            (identifier))
+          (option
+            name: (identifier)
+            value: (keyword_on)))))))
 
 ==================
 ddl-rest/alter-login-must — LocalDB 17.0.1000.7 levels 100-170: accepts
@@ -3287,6 +4083,32 @@ ALTER LOGIN l WITH PASSWORD = 0x02000A1B HASHED, CHECK_POLICY = OFF, NO CREDENTI
             value: (identifier)))))))
 
 ==================
+ddl-rest/alter-user-old-password — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+ALTER USER u WITH PASSWORD = 'placeholder-new' OLD_PASSWORD = 'placeholder-old', DEFAULT_LANGUAGE = NONE;
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_user
+        (keyword_alter)
+        (keyword_user)
+        (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)
+            (identifier)
+            (literal))
+          (option
+            name: (identifier)
+            value: (keyword_none)))))))
+
+==================
 ddl-rest/alter-user-null — LocalDB 17.0.1000.7 levels 100-170: accepts
 ==================
 
@@ -3357,28 +4179,6 @@ ALTER SCHEMA s TRANSFER XML SCHEMA COLLECTION::dbo.x;
         (object_reference
           schema: (identifier)
           name: (identifier))))))
-
-==================
-ddl-rest/alter-bad-login-old-bare — LocalDB 17.0.1000.7 levels 100-170: rejects 102
-==================
-
-ALTER LOGIN l WITH PASSWORD = 'placeholder' OLD_PASSWORD;
-
----
-
-(program
-  (batch
-    (statement
-      (alter_login
-        (keyword_alter)
-        (keyword_login)
-        (identifier)
-        (with_clause
-          (keyword_with)
-          (option
-            name: (identifier)
-            value: (literal)
-            value: (identifier)))))))
 
 ==================
 ddl-rest/drop-aggregate — LocalDB 17.0.1000.7 levels 100-170: accepts
@@ -4154,6 +4954,102 @@ UPDATE STATISTICS dbo.t WITH WHATEVER = 1;
           (option
             name: (identifier)
             value: (literal)))))))
+
+==================
+ddl-rest/extra-credential-alter-secret — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+ALTER CREDENTIAL c WITH SECRET = 'x';
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_credential
+        (keyword_alter)
+        (keyword_credential)
+        name: (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
+ddl-rest/extra-credential-scoped-alter-secret — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+ALTER DATABASE SCOPED CREDENTIAL c WITH SECRET = 'x';
+
+---
+
+(program
+  (batch
+    (statement
+      (alter_credential
+        (keyword_alter)
+        (keyword_database)
+        (keyword_scoped)
+        (keyword_credential)
+        name: (identifier)
+        (with_clause
+          (keyword_with)
+          (option
+            name: (identifier)
+            value: (literal)))))))
+
+==================
+ddl-rest/extra-provider-qi-off — LocalDB 17.0.1000.7 levels 100-170: accepts
+==================
+
+SET QUOTED_IDENTIFIER OFF; CREATE CRYPTOGRAPHIC PROVIDER p FROM FILE = "provider.dll";
+
+---
+
+(program
+  (batch
+    (statement
+      (set_statement
+        (keyword_set)
+        (object_reference
+          name: (identifier))
+        (keyword_off)))
+    (statement
+      (create_cryptographic_provider
+        (keyword_create)
+        (keyword_cryptographic)
+        (keyword_provider)
+        name: (identifier)
+        (keyword_from)
+        (keyword_file)
+        (literal)))))
+
+==================
+ddl-rest/extra-provider-qi-on — LocalDB 17.0.1000.7 levels 100-170: rejects 102
+==================
+
+SET QUOTED_IDENTIFIER ON; CREATE CRYPTOGRAPHIC PROVIDER p FROM FILE = "provider.dll";
+
+---
+
+(program
+  (batch
+    (statement
+      (set_statement
+        (keyword_set)
+        (object_reference
+          name: (identifier))
+        (keyword_on)))
+    (statement
+      (create_cryptographic_provider
+        (keyword_create)
+        (keyword_cryptographic)
+        (keyword_provider)
+        name: (identifier)
+        (keyword_from)
+        (keyword_file)
+        (literal)))))
 
 ==================
 ddl-rest/fixture-graph-before — LocalDB 17.0.1000.7 levels 100-170: rejects 102,102
