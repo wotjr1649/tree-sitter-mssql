@@ -184,25 +184,38 @@ static class Program
             ["platform"] = (string)Scalar(admin, "SELECT host_platform FROM sys.dm_os_host_info")!,
             ["collation"] = (string)Scalar(admin, "SELECT CAST(SERVERPROPERTY('Collation') AS nvarchar(128))")!,
         };
-        var verdicts = cases.ToDictionary(c => c.Id, _ => new JsonObject());
+        // Levels run in parallel: each has its own database, admin connection and per-case connections, and
+        // writes only its own result array; results are merged in level order, so the output does not depend
+        // on scheduling. Connections are not shared across threads.
+        var results = new JsonNode[levels.Length][];
         JsonObject? sessionSet = null;
-        foreach (var level in levels)
+        try
         {
-            var db = NewDatabase(admin, level);
-            try
+            Parallel.For(0, levels.Length, i =>
             {
-                if (sessionSet is null)
+                var level = levels[i];
+                using var levelAdmin = Open(opts, "master");
+                var db = NewDatabase(levelAdmin, level);
+                try
                 {
-                    using var probe = Open(opts, db);
-                    sessionSet = new JsonObject();
-                    foreach (var p in new[] { "QUOTED_IDENTIFIER", "ANSI_NULLS", "ANSI_PADDING", "ANSI_WARNINGS", "ARITHABORT", "CONCAT_NULL_YIELDS_NULL" })
-                        sessionSet[p.ToLowerInvariant()] = Convert.ToInt32(Scalar(probe, $"SELECT SESSIONPROPERTY('{p}')"));
+                    if (i == 0)
+                    {
+                        using var probe = Open(opts, db);
+                        var set = new JsonObject();
+                        foreach (var p in new[] { "QUOTED_IDENTIFIER", "ANSI_NULLS", "ANSI_PADDING", "ANSI_WARNINGS", "ARITHABORT", "CONCAT_NULL_YIELDS_NULL" })
+                            set[p.ToLowerInvariant()] = Convert.ToInt32(Scalar(probe, $"SELECT SESSIONPROPERTY('{p}')"));
+                        sessionSet = set;
+                    }
+                    results[i] = cases.Select(c => Judge(opts, db, level, c.Source)).ToArray();
                 }
-                foreach (var c in cases) verdicts[c.Id][level.ToString()] = Judge(opts, db, level, c.Source);
-            }
-            finally { DropDatabase(admin, db); }
-            Console.Error.WriteLine($"level {level} done");
+                finally { DropDatabase(levelAdmin, db); }
+                Console.Error.WriteLine($"level {level} done");
+            });
         }
+        catch (AggregateException e) { throw e.InnerExceptions[0]; }
+        var verdicts = cases.ToDictionary(c => c.Id, _ => new JsonObject());
+        for (var i = 0; i < levels.Length; i++)
+            for (var k = 0; k < cases.Count; k++) verdicts[cases[k].Id][levels[i].ToString()] = results[i][k];
         var meta = new JsonObject
         {
             ["mode"] = "PARSEONLY",
