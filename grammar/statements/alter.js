@@ -45,6 +45,27 @@ export default {
       $.alter_partition_function,
       $.alter_partition_scheme,
       $.alter_route,
+      $.alter_application_role,
+      $.alter_credential,
+      $.alter_broker_priority,
+      $.alter_message_type,
+      $.alter_service,
+      $.alter_remote_service_binding,
+      $.alter_resource_governor,
+      $.alter_resource_pool,
+      $.alter_workload_group,
+      $.alter_search_property_list,
+      $.alter_service_master_key,
+      $.alter_cryptographic_provider,
+    ),
+
+  alter_cryptographic_provider: ($) =>
+    seq(
+      $.keyword_alter,
+      $.keyword_cryptographic,
+      $.keyword_provider,
+      $.identifier,
+      choice($.keyword_enable, $.keyword_disable, $.with_clause),
     ),
 
   // ALTER XML SCHEMA COLLECTION name ADD expression
@@ -330,7 +351,7 @@ export default {
       $.keyword_schema,
       $.identifier,
       $.keyword_transfer,
-      optional(seq($.identifier, '::')),
+      optional(seq($._securable_class, '::')),
       $.object_reference,
     ),
 
@@ -349,7 +370,8 @@ export default {
     ),
 
   // ALTER USER name WITH option [, ...]
-  alter_user: ($) => seq($.keyword_alter, $.keyword_user, $.identifier, $.with_clause),
+  alter_user: ($) =>
+    seq($.keyword_alter, $.keyword_user, $.identifier, alias($._login_with_clause, $.with_clause)),
 
   // ALTER LOGIN name { ENABLE | DISABLE | WITH option [, ...] | ADD/DROP CREDENTIAL name }
   alter_login: ($) =>
@@ -360,7 +382,7 @@ export default {
       choice(
         $.keyword_enable,
         $.keyword_disable,
-        $.with_clause,
+        alias($._login_with_clause, $.with_clause),
         seq(choice($.keyword_add, $.keyword_drop), $.identifier, $.identifier),
       ),
     ),
@@ -373,14 +395,22 @@ export default {
 
   // ALTER AUTHORIZATION ON [class::] object TO { principal | SCHEMA OWNER }
   alter_authorization: ($) =>
-    seq(
-      $.keyword_alter,
-      $.keyword_authorization,
-      $.keyword_on,
-      optional(seq(choice($.identifier, seq($.keyword_availability, $.keyword_group)), '::')),
-      $.object_reference,
-      $.keyword_to,
-      choice(seq($.keyword_schema, $.keyword_owner), $.identifier),
+    prec(
+      1,
+      seq(
+        $.keyword_alter,
+        $.keyword_authorization,
+        $.keyword_on,
+        optional(
+          seq(
+            choice($._securable_class, prec(1, seq($.keyword_availability, $.keyword_group))),
+            '::',
+          ),
+        ),
+        $.object_reference,
+        $.keyword_to,
+        choice(seq($.keyword_schema, $.keyword_owner), $.identifier),
+      ),
     ),
 
   // ALTER EVENT SESSION name ON SERVER
@@ -400,7 +430,7 @@ export default {
         $.keyword_session,
         field('name', $.identifier),
         $.keyword_on,
-        $.keyword_server,
+        choice($.keyword_server, $.keyword_database),
         choice(event_session_body($), $.option),
       ),
     ),
@@ -409,9 +439,6 @@ export default {
   // No prec.right, for the same trailing-WITH-vs-following-CTE reason
   // `truncate_statement` documents — see the `[$.alter_queue]` conflicts
   // entry in grammar.js.
-  // REBUILD's option list is parenthesized (`WITH (option = value, ...)`);
-  // REORGANIZE only ever takes the single bare `WITH LOB_COMPACTION = value`
-  // form, with no parentheses — the two are not interchangeable.
   alter_queue: ($) =>
     seq(
       $.keyword_alter,
@@ -420,7 +447,8 @@ export default {
       choice(
         alias($._alter_queue_with_clause, $.with_clause),
         seq($.keyword_rebuild, optional($._rebuild_partition), optional($.with_options)),
-        seq($.keyword_reorganize, optional($.with_clause)),
+        seq($.keyword_reorganize, optional(choice($.with_clause, $.with_options))),
+        seq($.keyword_move, $.keyword_to, $.identifier),
       ),
     ),
 
@@ -438,17 +466,29 @@ export default {
       $.keyword_alter,
       $.keyword_assembly,
       $.identifier,
-      optional(seq($.keyword_from, comma_list($.literal, true))),
-      optional($.with_clause),
       optional(
-        seq($.keyword_drop, $.keyword_file, choice($.keyword_all, comma_list($.identifier, true))),
+        seq(
+          $.keyword_from,
+          comma_list(choice($.literal, alias($._tsql_parameter, $.identifier)), true),
+        ),
+      ),
+      optional(alias($._alter_assembly_with_clause, $.with_clause)),
+      optional(
+        seq(
+          $.keyword_drop,
+          $.keyword_file,
+          choice($.keyword_all, comma_list(choice($.identifier, $.literal), true)),
+        ),
       ),
       optional(
         seq(
           $.keyword_add,
           $.keyword_file,
           $.keyword_from,
-          comma_list(seq($.literal, optional(seq($.keyword_as, $.identifier))), true),
+          comma_list(
+            seq($.literal, optional(seq($.keyword_as, choice($.identifier, $.literal)))),
+            true,
+          ),
         ),
       ),
     ),
@@ -572,4 +612,182 @@ export default {
   // ambiguity `alter_fulltext_catalog` documents; see the `[$.alter_route]`
   // conflicts entry in grammar.js.
   alter_route: ($) => seq($.keyword_alter, $.keyword_route, $.identifier, optional($.with_clause)),
+  _login_with_clause: ($) =>
+    prec.right(
+      seq(
+        $.keyword_with,
+        comma_list(
+          choice(
+            $.option,
+            alias($._principal_password_option, $.option),
+            alias($._principal_null_option, $.option),
+            alias($._principal_no_credential, $.option),
+          ),
+          true,
+        ),
+      ),
+    ),
+
+  _principal_password_option: ($) =>
+    choice(
+      seq(
+        field('name', $.identifier),
+        '=',
+        field('value', $.literal),
+        alias($.keyword_old_password, $.identifier),
+        '=',
+        $.literal,
+      ),
+      seq(
+        field('name', $.identifier),
+        '=',
+        field('value', seq($.literal, alias($.keyword_must_change, $.identifier))),
+        optional(alias($.keyword_unlock, $.identifier)),
+      ),
+      seq(
+        field('name', $.identifier),
+        '=',
+        field('value', seq($.literal, alias($.keyword_unlock, $.identifier))),
+      ),
+    ),
+
+  _principal_null_option: ($) =>
+    seq(field('name', $.identifier), '=', field('value', choice($.keyword_null, $.keyword_none))),
+
+  _principal_no_credential: ($) =>
+    seq(
+      field('name', alias($.keyword_no, $.identifier)),
+      field('value', alias($.keyword_credential, $.identifier)),
+    ),
+
+  _alter_assembly_with_clause: ($) =>
+    prec.right(
+      seq(
+        $.keyword_with,
+        comma_list(choice($.option, alias($._assembly_unchecked_data, $.option)), true),
+      ),
+    ),
+
+  _assembly_unchecked_data: ($) =>
+    seq(
+      field('name', alias($.keyword_unchecked, $.identifier)),
+      field('value', alias($.keyword_data, $.identifier)),
+    ),
+
+  alter_application_role: ($) =>
+    seq(
+      $.keyword_alter,
+      $.keyword_application,
+      $.keyword_role,
+      field('name', $.identifier),
+      $.with_clause,
+    ),
+
+  alter_credential: ($) =>
+    seq(
+      $.keyword_alter,
+      optional(seq($.keyword_database, $.keyword_scoped)),
+      $.keyword_credential,
+      field('name', $.identifier),
+      $.with_clause,
+    ),
+
+  alter_broker_priority: ($) => seq($.keyword_alter, $._broker_priority_body),
+
+  alter_message_type: ($) =>
+    seq(
+      $.keyword_alter,
+      $.keyword_message,
+      $.keyword_type,
+      field('name', $.identifier),
+      $.identifier,
+      '=',
+      $.identifier,
+      optional(
+        seq(
+          $.keyword_with,
+          $.keyword_schema,
+          $.keyword_collection,
+          field('name', $.object_reference),
+        ),
+      ),
+    ),
+
+  alter_service: ($) =>
+    seq(
+      $.keyword_alter,
+      $.keyword_service,
+      field('name', $.identifier),
+      choice(
+        seq(
+          $.keyword_on,
+          $.keyword_queue,
+          $.object_reference,
+          optional($._alter_service_contracts),
+        ),
+        $._alter_service_contracts,
+      ),
+    ),
+
+  _alter_service_contracts: ($) =>
+    paren_list(seq(choice($.keyword_add, $.keyword_drop), $.keyword_contract, $.identifier), true),
+
+  alter_remote_service_binding: ($) =>
+    seq(
+      $.keyword_alter,
+      $.keyword_remote,
+      $.keyword_service,
+      $.keyword_binding,
+      field('name', $.identifier),
+      alias($._remote_binding_with_clause, $.with_clause),
+    ),
+
+  alter_resource_governor: ($) =>
+    seq(
+      $.keyword_alter,
+      $.keyword_resource,
+      $.keyword_governor,
+      choice(
+        $.keyword_reconfigure,
+        $.keyword_disable,
+        seq($.keyword_reset, $.keyword_statistics),
+        alias($._resource_governor_options, $.with_options),
+      ),
+    ),
+
+  _resource_governor_options: ($) =>
+    seq(
+      $.keyword_with,
+      paren_list(choice($.option, alias($._principal_null_option, $.option)), true),
+    ),
+
+  alter_resource_pool: ($) =>
+    seq(
+      $.keyword_alter,
+      $.keyword_resource,
+      $.keyword_pool,
+      field('name', $.identifier),
+      alias($._resource_pool_options, $.with_options),
+    ),
+
+  alter_workload_group: ($) =>
+    prec.right(
+      seq(
+        $.keyword_alter,
+        $.keyword_workload,
+        $.keyword_group,
+        field('name', $.identifier),
+        $._workload_group_tail,
+      ),
+    ),
+
+  alter_search_property_list: ($) =>
+    seq(
+      $.keyword_alter,
+      $.keyword_search,
+      $.keyword_property,
+      $.keyword_list,
+      field('name', $.identifier),
+      choice(seq($.keyword_add, $.literal, $.with_options), seq($.keyword_drop, $.literal)),
+    ),
 };
