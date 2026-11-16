@@ -2968,7 +2968,7 @@ fn encryption_algorithm(statement: Node, source: &[u8], out: &mut Vec<Violation>
 
 /// BACKUP and RESTORE option names, shapes and values that SQL Server checks while parsing; the
 /// grammar reads every name as an identifier. Evidence: LocalDB 17.0.1000.7, levels 100-170,
-/// oracle/probes/backup-restore.jsonl: `opt-*` (every option name bare, `= 1` and `= 'x'` in
+/// oracle/data/probes/backup-restore.jsonl: `opt-*` (every option name bare, `= 1` and `= 'x'` in
 /// BACKUP and RESTORE: unknown or other-statement names Msg 155, a flag given a value or a value
 /// option without one Msg 153), `device-*` (DISK, TAPE, URL, DATABASE_SNAPSHOT, VIRTUAL_DEVICE
 /// accepted; FILE 156, PIPE 155), `value-*` (a string, an integer or a variable; identifiers,
@@ -5079,10 +5079,12 @@ mod tests {
     #[test]
     fn surface_constraint_neighbours_match_the_engine() {
         let verdict: serde_json::Value = serde_json::from_str(include_str!(
-            "../../../oracle/verdicts/localdb-17.0.1000.7.surface-fix-constraints.json"
+            "../../../oracle/data/verdicts/localdb-17.0.1000.7.surface-fix-constraints.json"
         ))
         .unwrap();
-        for line in include_str!("../../../oracle/probes/surface-fix-constraints.jsonl").lines() {
+        for line in
+            include_str!("../../../oracle/data/probes/surface-fix-constraints.jsonl").lines()
+        {
             let case: serde_json::Value = serde_json::from_str(line).unwrap();
             let id = case["id"].as_str().unwrap();
             let sql = case["source"].as_str().unwrap();
@@ -5098,10 +5100,10 @@ mod tests {
     #[test]
     fn surface_gap_neighbours_match_the_engine() {
         let verdict: serde_json::Value = serde_json::from_str(include_str!(
-            "../../../oracle/verdicts/localdb-17.0.1000.7.surface-fix-gaps.json"
+            "../../../oracle/data/verdicts/localdb-17.0.1000.7.surface-fix-gaps.json"
         ))
         .unwrap();
-        for line in include_str!("../../../oracle/probes/surface-fix-gaps.jsonl").lines() {
+        for line in include_str!("../../../oracle/data/probes/surface-fix-gaps.jsonl").lines() {
             let case: serde_json::Value = serde_json::from_str(line).unwrap();
             let id = case["id"].as_str().unwrap();
             let sql = case["source"].as_str().unwrap();
@@ -5123,11 +5125,11 @@ mod tests {
     #[test]
     fn surface_ddl_classification_neighbours_match_the_engine() {
         let verdict: serde_json::Value = serde_json::from_str(include_str!(
-            "../../../oracle/verdicts/localdb-17.0.1000.7.surface-fix-ddl-classification.json"
+            "../../../oracle/data/verdicts/localdb-17.0.1000.7.surface-fix-ddl-classification.json"
         ))
         .unwrap();
         for line in
-            include_str!("../../../oracle/probes/surface-fix-ddl-classification.jsonl").lines()
+            include_str!("../../../oracle/data/probes/surface-fix-ddl-classification.jsonl").lines()
         {
             let case: serde_json::Value = serde_json::from_str(line).unwrap();
             let id = case["id"].as_str().unwrap();
@@ -5173,10 +5175,12 @@ mod tests {
     #[test]
     fn cetas_options_preserve_documented_platform_shapes() {
         let verdict: serde_json::Value = serde_json::from_str(include_str!(
-            "../../../oracle/verdicts/localdb-17.0.1000.7.surface-fix-cetas-options.json"
+            "../../../oracle/data/verdicts/localdb-17.0.1000.7.surface-fix-cetas-options.json"
         ))
         .unwrap();
-        for line in include_str!("../../../oracle/probes/surface-fix-cetas-options.jsonl").lines() {
+        for line in
+            include_str!("../../../oracle/data/probes/surface-fix-cetas-options.jsonl").lines()
+        {
             let case: serde_json::Value = serde_json::from_str(line).unwrap();
             let id = case["id"].as_str().unwrap();
             let sql = case["source"].as_str().unwrap();
@@ -5210,10 +5214,10 @@ mod tests {
     #[test]
     fn gap_forms_match_engine_evidence() {
         let verdict: serde_json::Value = serde_json::from_str(include_str!(
-            "../../../oracle/verdicts/localdb-17.0.1000.7.gap-forms.json"
+            "../../../oracle/data/verdicts/localdb-17.0.1000.7.gap-forms.json"
         ))
         .unwrap();
-        for line in include_str!("../../../oracle/probes/gap-forms.jsonl").lines() {
+        for line in include_str!("../../../oracle/data/probes/gap-forms.jsonl").lines() {
             let case: serde_json::Value = serde_json::from_str(line).unwrap();
             let id = case["id"].as_str().unwrap();
             let sql = case["source"].as_str().unwrap();
@@ -5243,10 +5247,10 @@ mod tests {
     #[test]
     fn last_forms_match_engine_evidence() {
         let verdict: serde_json::Value = serde_json::from_str(include_str!(
-            "../../../oracle/verdicts/localdb-17.0.1000.7.last-forms.json"
+            "../../../oracle/data/verdicts/localdb-17.0.1000.7.last-forms.json"
         ))
         .unwrap();
-        for line in include_str!("../../../oracle/probes/last-forms.jsonl").lines() {
+        for line in include_str!("../../../oracle/data/probes/last-forms.jsonl").lines() {
             let case: serde_json::Value = serde_json::from_str(line).unwrap();
             let id = case["id"].as_str().unwrap();
             let sql = case["source"].as_str().unwrap();
@@ -5547,10 +5551,11 @@ mod tests {
 
     #[test]
     fn expression_constraints_match_engine_neighbours() {
-        let cases: Vec<serde_json::Value> = include_str!("../../../oracle/probes/expr-forms.jsonl")
-            .lines()
-            .map(|line| serde_json::from_str(line).unwrap())
-            .collect();
+        let cases: Vec<serde_json::Value> =
+            include_str!("../../../oracle/data/probes/expr-forms.jsonl")
+                .lines()
+                .map(|line| serde_json::from_str(line).unwrap())
+                .collect();
         for (id, expected) in [
             ("language/contains-float", "expression-fulltext-language"),
             ("language/contains-repeat", "expression-fulltext-language"),
@@ -6529,7 +6534,7 @@ mod tests {
     #[test]
     fn query_forms_constraints_match_engine_boundaries() {
         let cases: Vec<serde_json::Value> =
-            include_str!("../../../oracle/probes/query-forms.jsonl")
+            include_str!("../../../oracle/data/probes/query-forms.jsonl")
                 .lines()
                 .map(|line| serde_json::from_str(line).unwrap())
                 .collect();

@@ -1,42 +1,21 @@
-## Custom
+## Build output
 
-tmp/
+# Rust
+target/
 Cargo.lock
 # The checker is a binary: its lock file pins the runtime it judges with.
-!/tools/tree-check/Cargo.lock
-node_modules
-.node-version
-build
-*.log
-/test.js
-/examples/npm
-/target/
-/.build/
+!/crates/tree-check/Cargo.lock
 
-## Generated Entries
-
-# Rust artifacts
-target/
-
-# Node artifacts
+# Node
+node_modules/
 build/
 prebuilds/
-node_modules/
 
-# Swift artifacts
-.build/
+# .NET (oracle runners)
+bin/
+obj/
 
-# Go artifacts
-_obj/
-
-# Python artifacts
-.venv/
-dist/
-*.egg-info
-*.whl
-__pycache__/
-
-# C artifacts
+# C and wasm artifacts
 *.a
 *.so
 *.so.*
@@ -45,32 +24,18 @@ __pycache__/
 *.pc
 *.exp
 *.lib
-
-# Zig artifacts
-.zig-cache/
-zig-cache/
-zig-out/
-
-# Example dirs
-/examples/*/
-
-# Grammar volatiles
-*.wasm
 *.obj
 *.o
+*.wasm
 
-# Archives
+# Logs and archives
+*.log
 *.tar.gz
 *.tgz
 *.zip
 
 ## Local work
 
-_ref/
 .scratch/
 fuzz/artifacts/
 oracle/out/
-
-# .NET build output (oracle runner)
-bin/
-obj/

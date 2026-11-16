@@ -1,5 +1,5 @@
 // Equivalent comments, keyword case and token-gap whitespace must preserve every verdict, even for invalid input.
-// Usage: node tools/comment-mutate.mjs --tree-check <exe> [--axes comment,case,whitespace] [--quoted-identifier on|off] [inputs.jsonl | sql-directory ...]
+// Usage: node scripts/comment-mutate.mjs --tree-check <exe> [--axes comment,case,whitespace] [--quoted-identifier on|off] [inputs.jsonl | sql-directory ...]
 // Defaults: every oracle case and SQL fixture. GO/sqlcmd lines are client directives, not token gaps.
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
@@ -18,8 +18,10 @@ import { performance } from 'node:perf_hooks';
 import { pathToFileURL } from 'node:url';
 import { readCases } from './oracle-replay.mjs';
 
-// LocalDB 17.0.1000.7, levels 100-170: oracle/probes/metamorphic-whitespace.jsonl.
+// LocalDB 17.0.1000.7, levels 100-170: oracle/data/probes/metamorphic-whitespace.jsonl.
+// The engine takes control characters U+0000-0020 as separators too, so the class names them on purpose.
 const SQL_WHITESPACE =
+  // eslint-disable-next-line no-control-regex
   /[\u0000-\u0020\u0085\u00a0\u1680\u2000-\u200b\u2028\u2029\u202f\u205f\u3000]/;
 
 export const AXES = {
@@ -301,11 +303,11 @@ function main(argv) {
   sources = sources.length
     ? sources
     : [
-        'oracle/kit/cases.jsonl',
-        ...readdirSync('oracle/probes')
+        'oracle/data/kit/cases.jsonl',
+        ...readdirSync('oracle/data/probes')
           .filter((f) => f.endsWith('.jsonl'))
           .sort()
-          .map((f) => join('oracle/probes', f)),
+          .map((f) => join('oracle/data/probes', f)),
         'test/fixtures',
       ];
   const inputs = sources.flatMap((source) =>

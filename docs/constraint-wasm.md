@@ -7,16 +7,16 @@ grammar and the tree-sitter 0.27.2 runtime, so its input is SQL source bytes, no
 ## Pinned build and identity
 
 Use a checkout with full Git history, Rust **1.100.0** with the `wasm32-wasip1` target, and **wasi-sdk 34.0** with its
-archive SHA-256 verified. The SDK URL and checksum are in [`wasm-pins.json`](../tools/tree-check/wasm-pins.json). The
+archive SHA-256 verified. The SDK URL and checksum are in [`wasm-pins.json`](../crates/tree-check/wasm-pins.json). The
 Linux SDK is the same pin as go-treesitter; Verify checks the checksum before extraction and caches it. The build
 script does not download tools. On Windows, use the GNU Rust host toolchain.
 
 ```sh
 export WASI_SDK_PATH=/absolute/path/to/wasi-sdk-34.0-x86_64-linux
 export CARGO_TARGET_DIR=target
-node tools/tree-check-wasm-build.mjs
-cargo build --locked --manifest-path tools/tree-check/Cargo.toml --bin tree-check
-node tools/tree-check-wasm-parity.mjs \
+node scripts/tree-check-wasm-build.mjs
+cargo build --locked --manifest-path crates/tree-check/Cargo.toml --bin tree-check
+node scripts/tree-check-wasm-parity.mjs \
   --wasm target/wasm32-wasip1/release/tree_check.reactor.wasm \
   --tree-check target/debug/tree-check
 ```
@@ -36,7 +36,7 @@ recipe or host toolchain; rebuild from the same pinned inputs to check.
 
 `grammar_commit` is the last commit that changed the grammar source, the generated parser or the scanner. The script
 rejects uncommitted grammar changes and shallow clones. `rules_sha256` is the SHA-256 of a concatenation, in this
-order, of `tools/tree-check/src/constraints.rs` and then `lib.rs`, `session.rs` and `wasm.rs` from the same directory.
+order, of `crates/tree-check/src/constraints.rs` and then `lib.rs`, `session.rs` and `wasm.rs` from the same directory.
 For each file it concatenates the full relative path, NUL, the UTF-8 content with CRLF normalized to LF, and NUL. It
 also identifies rule changes that are not yet committed. Keep the repository commit together with the module SHA-256.
 The identity is not a signature of the artifact and not a means of authenticating it.
@@ -114,13 +114,13 @@ length is mapped back to original bytes. For how the module captures settings an
 
 A verdict from the grammar plus the constraint layer must pass every case the engine accepted in the committed SQL
 Server oracle. It must reject every case the engine rejected, except the **explicitly classified exceptions** in
-[`oracle/rejected-clean.json`](../oracle/rejected-clean.json). The exceptions are tree-constraint gaps, context, engine
+[`oracle/data/rejected-clean.json`](../oracle/data/rejected-clean.json). The exceptions are tree-constraint gaps, context, engine
 version, environment and runner limits. This is a guarantee measured on the recorded oracle and compatibility levels,
-not a guarantee for all possible T-SQL. For the exact baseline, see `oracle/expected.json` and the engine verdicts.
+not a guarantee for all possible T-SQL. For the exact baseline, see `oracle/data/expected.json` and the engine verdicts.
 Adding WASM preserves that baseline and does not update it.
 
 Verify checks incremental edits and the exception classification with the existing native oracle replay. It also
-checks every input, in both ON and OFF, from `oracle/kit/cases.jsonl`, `oracle/probes/*.jsonl`, `test/fixtures/*.sql`,
+checks every input, in both ON and OFF, from `oracle/data/kit/cases.jsonl`, `oracle/data/probes/*.jsonl`, `test/fixtures/*.sql`,
 the initial and intermediate sources of each edit history, and all ABI boundary cases, and compares every field of the
 WASM and native JSON. Only the caller-managed path differs. A missing or extra case, a missing result and any JSON
 difference are all failures. It also checks invalid pointers and handles, holding results at the same time, empty
@@ -139,7 +139,7 @@ With **wasm2go**, convert the same reactor with the fixed translation pipeline o
 remaining WASI imports. The result must preserve the growable linear memory, the exported functions and the reactor
 initialization. This module contains Rust, the constraint rules, the tree-sitter C runtime and the allocator, so a
 grammar-only WASM loader cannot replace it. On the converted Go host too, compare with the same inputs and JSON
-baseline as `tools/tree-check-wasm-parity.mjs`. This change does not implement or verify the Go-side connection.
+baseline as `scripts/tree-check-wasm-parity.mjs`. This change does not implement or verify the Go-side connection.
 
 ## Remaining WASI imports
 

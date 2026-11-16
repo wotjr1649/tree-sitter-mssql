@@ -7,7 +7,7 @@
 // failures, timeouts and fatal errors stop the run (exit 2): they are never recorded as rejections.
 //
 // Usage:
-//   ParseOnly --cases oracle/kit/cases.jsonl --out verdicts.json [--server S] [--levels 100,...] [--quoted-identifier on|off]
+//   ParseOnly --cases oracle/data/kit/cases.jsonl --out verdicts.json [--server S] [--levels 100,...] [--quoted-identifier on|off]
 //   ParseOnly --self-test [--server S]
 // Without --server the runner uses (localdb)\MSSQLLocalDB with Windows authentication. With a server,
 // it uses SQL authentication: user from MSSQL_USER (default "sa"), password from MSSQL_PASSWORD.
@@ -82,12 +82,24 @@ static class Program
         return b.ConnectionString;
     }
 
+    // Every case gets a fresh, unpooled session, so a run makes tens of thousands of logins; an engine under that
+    // load occasionally drops one during the pre-login handshake. A failed Open ran no SQL, so retrying is safe.
+    const int OpenAttempts = 5;
+
     static SqlConnection Open(Dictionary<string, string?> opts, string database)
     {
-        var conn = new SqlConnection(ConnectionString(opts, database));
-        try { conn.Open(); }
-        catch (SqlException e) { conn.Dispose(); throw new InfraException($"cannot connect to {database}: {e.Message}"); }
-        return conn;
+        for (var attempt = 1; ; attempt++)
+        {
+            var conn = new SqlConnection(ConnectionString(opts, database));
+            try { conn.Open(); return conn; }
+            catch (SqlException e)
+            {
+                conn.Dispose();
+                if (attempt == OpenAttempts)
+                    throw new InfraException($"cannot connect to {database} after {OpenAttempts} attempts: {e.Message}");
+                Thread.Sleep(500 * attempt);
+            }
+        }
     }
 
     static object? Scalar(SqlConnection conn, string sql)
@@ -230,7 +242,7 @@ static class Program
             ["session_set"] = sessionSet,
             ["levels"] = new JsonArray(levels.Select(x => (JsonNode)x).ToArray()),
             ["cases_sha256"] = Convert.ToHexStringLower(SHA256.HashData(casesBytes)),
-            ["runner"] = "oracle/runner/ParseOnly (C#, Microsoft.Data.SqlClient)",
+            ["runner"] = "oracle/runners/ParseOnly (C#, Microsoft.Data.SqlClient)",
             ["runner_sha256"] = RunnerSha256(),
             ["observed_utc"] = DateTime.UtcNow.ToString("yyyy-MM-dd"),
         };

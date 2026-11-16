@@ -24,7 +24,7 @@ ADR-0002 and ADR-0003 left context errors to grammar-kit. The owner has stopped 
    - Go-library concerns belong to `go-treesitter`.
    - grammar-kit is no longer the home of any T-SQL check.
 2. **The constraint layer becomes the check layer for every rejection decidable from the tree.**
-   - `tools/tree-check` (ADR-0003) covers option sets and every engine rejection that the parse tree alone decides, without names, types or catalog state.
+   - `crates/tree-check` (ADR-0003) covers option sets and every engine rejection that the parse tree alone decides, without names, types or catalog state.
    - This includes the conditions `CheckTSQLContext` diagnosed: hint conflicts and argument rules, DML-target hints, column permissions, trigger name, owner and event scope, window-frame rules, COUNT arity, value-less RETURN in scalar functions, CTE without a table source, OUTPUT values, and scalar-versus-predicate positions as far as the tree shows them.
    - Each rule is re-implemented with its engine evidence from the oracle. grammar-kit's code is not copied.
    - What still needs names, types or the catalog stays undecided and is classified `contextual` in the oracle. Examples are an undeclared variable and a non-updatable function as a write target.
@@ -38,6 +38,6 @@ ADR-0002 and ADR-0003 left context errors to grammar-kit. The owner has stopped 
 
 ## Consequences
 
-- "Zero defects" is measured against the grammar plus one check layer in one repository. A consumer applies `tools/tree-check`'s rules to get the same guarantee.
+- "Zero defects" is measured against the grammar plus one check layer in one repository. A consumer applies `crates/tree-check`'s rules to get the same guarantee.
 - The check layer grows with many small rules. Each cites oracle cases and keeps its own unit tests.
 - Consumers that used grammar-kit's Go API need another home for it. That is a go-treesitter decision, outside this repository.

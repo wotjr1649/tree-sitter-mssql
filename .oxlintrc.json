@@ -17,7 +17,7 @@
   // field, alias, prec, optional, repeat, repeat1, token, ...) as implicit
   // globals — the tree-sitter CLI evaluates grammar.js in a context that
   // provides them, so they are declared read-only globals here rather than
-  // imported. test/*.mjs, tools/*.mjs and bindings/node/*.js run under Node (console,
+  // imported. test/*.mjs, scripts/*.mjs and bindings/node/*.js run under Node (console,
   // process, URL), which `env` provides.
   "globals": {
     "grammar": "readonly",

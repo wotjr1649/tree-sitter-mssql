@@ -8,7 +8,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const pins = JSON.parse(readFileSync(join(root, 'tools/tree-check/wasm-pins.json'), 'utf8'));
+const pins = JSON.parse(readFileSync(join(root, 'crates/tree-check/wasm-pins.json'), 'utf8'));
 
 export function validateVersions(rust, sdk, clang, optimizer) {
   if (!rust.startsWith(`rustc ${pins.rust} `))
@@ -82,10 +82,10 @@ export function build() {
   if (!/^[a-f0-9]{40}$/.test(grammarCommit)) throw new Error('cannot identify grammar commit');
   const rulesHash = createHash('sha256');
   for (const file of [
-    'tools/tree-check/src/constraints.rs',
-    'tools/tree-check/src/lib.rs',
-    'tools/tree-check/src/session.rs',
-    'tools/tree-check/src/wasm.rs',
+    'crates/tree-check/src/constraints.rs',
+    'crates/tree-check/src/lib.rs',
+    'crates/tree-check/src/session.rs',
+    'crates/tree-check/src/wasm.rs',
   ]) {
     rulesHash
       .update(file)
@@ -124,7 +124,7 @@ export function build() {
       '--target',
       pins.target,
       '--manifest-path',
-      'tools/tree-check/Cargo.toml',
+      'crates/tree-check/Cargo.toml',
     ],
     {
       env,
@@ -133,7 +133,7 @@ export function build() {
   );
   const target = process.env.CARGO_TARGET_DIR
     ? resolve(root, process.env.CARGO_TARGET_DIR)
-    : join(root, 'tools/tree-check/target');
+    : join(root, 'crates/tree-check/target');
   const raw = join(target, pins.target, 'release/tree_check.wasm');
   const output = join(target, pins.target, 'release/tree_check.reactor.wasm');
   if (optimizer) run(optimizer, [raw, '-O3', '-o', output]);

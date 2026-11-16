@@ -28,23 +28,23 @@ On a machine without MSVC, point the CLI at another C compiler, and run Cargo wi
 CC=gcc CXX=g++ npx --yes --package=tree-sitter-cli@0.27.2 -- tree-sitter test
 ```
 
-`test/corpus/` holds the per-construct tree assertions. `test/corpus/errors.txt` deliberately pins error recovery on invalid input and is hand-written — `tree-sitter test --update` refuses to touch it. Every file under `test/fixtures/*.sql` must also parse cleanly. `tools/tree-check` judges each tree through the tree-sitter API — root `has_error`, `ERROR`, `MISSING` and zero-width nodes, and whether the root spans the whole input — and prints one JSON line per file. It also applies the option-set constraint layer of [ADR-0003](decisions/ADR-0003-option-set-constraints.md) (`tools/tree-check/src/constraints.rs`): rules such as "each QUEUE activation setting at most once", which SQL Server enforces while parsing and the grammar deliberately does not encode. Violations make a tree fail like an `ERROR` node, and are listed under `constraint_violations`. The CLI's parse summary is not enough: it can report success for a tree that contains `ERROR` or only zero-width nodes.
+`test/corpus/` holds the per-construct tree assertions. `test/corpus/errors.txt` deliberately pins error recovery on invalid input and is hand-written — `tree-sitter test --update` refuses to touch it. Every file under `test/fixtures/*.sql` must also parse cleanly. `crates/tree-check` judges each tree through the tree-sitter API — root `has_error`, `ERROR`, `MISSING` and zero-width nodes, and whether the root spans the whole input — and prints one JSON line per file. It also applies the option-set constraint layer of [ADR-0003](decisions/ADR-0003-option-set-constraints.md) (`crates/tree-check/src/constraints.rs`): rules such as "each QUEUE activation setting at most once", which SQL Server enforces while parsing and the grammar deliberately does not encode. Violations make a tree fail like an `ERROR` node, and are listed under `constraint_violations`. The CLI's parse summary is not enough: it can report success for a tree that contains `ERROR` or only zero-width nodes.
 
 ```sh
-cargo run --manifest-path tools/tree-check/Cargo.toml -- test/fixtures/*.sql
+cargo run --manifest-path crates/tree-check/Cargo.toml -- test/fixtures/*.sql
 # exit 0: every tree is clean; 1: some tree has a problem; 2: a file could not be read or parsed (no verdict)
 ```
 
 Regenerate `test/node-kinds.txt` after any change to a node kind or field name:
 
 ```sh
-node test/generate-node-kinds.mjs
+node scripts/generate-node-kinds.mjs
 ```
 
 Check that every `create_*`/`alter_*`/`drop_*` rule is registered in its statement's `choice()`:
 
 ```sh
-node test/check-registries.mjs
+node scripts/check-registries.mjs
 ```
 
 ## Lint and format
@@ -57,11 +57,11 @@ npm run lint
 npm run format:check
 ```
 
-`npm run format` applies fixes. `lint` runs against `grammar.js`, `grammar/`, `test/`, and `bindings/node/`; `format` and `format:check` cover `grammar.js`, `grammar/**/*.js`, `test/*.mjs`, `tools/*.mjs`, and `bindings/node/*.js`. `src/**` is generated and excluded.
+`npm run format` applies fixes. `lint` runs against `grammar.js`, `grammar/`, `test/`, and `bindings/node/`; `format` and `format:check` cover `grammar.js`, `grammar/**/*.js`, `test/*.mjs`, `scripts/*.mjs`, and `bindings/node/*.js`. `src/**` is generated and excluded.
 
 ## Performance and fuzzing
 
-`node tools/parser-cost.mjs` compares the generated parser with `test/parser-cost.json`: the size of `src/parser.c`, the state, symbol, token, field and production counts, and the field-map entries (all and inherited; inherited entries make field lookups costlier for consumers). Any difference fails `Verify`. After a grammar change, run it with `--update` in the same pull request. Growth above 5 % warns, and growth above 10 % is refused unless `--approve-budget` is passed and the pull request names the cells the growth adds (ADR-0002 §6).
+`node scripts/parser-cost.mjs` compares the generated parser with `test/parser-cost.json`: the size of `src/parser.c`, the state, symbol, token, field and production counts, and the field-map entries (all and inherited; inherited entries make field lookups costlier for consumers). Any difference fails `Verify`. After a grammar change, run it with `--update` in the same pull request. Growth above 5 % warns, and growth above 10 % is refused unless `--approve-budget` is passed and the pull request names the cells the growth adds (ADR-0002 §6).
 
 Every `Verify` run's job summary reports the fixture set's parse throughput (bytes/ms) and the current `src/parser.c` size, so a change's effect on either is visible without a separate benchmark step. The `cargo-fuzz` target in `fuzz/` fuzzes the parser and `src/scanner.c` against arbitrary input. It is run locally rather than in CI, on Linux or macOS with a nightly Rust toolchain, `clang`, and `cargo-fuzz` installed (`cargo install cargo-fuzz --locked`). Seed the corpus from the fixtures and run it from the repository root:
 

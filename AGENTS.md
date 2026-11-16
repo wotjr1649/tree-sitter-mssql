@@ -3,7 +3,7 @@
 Owner-maintained tree-sitter grammar for T-SQL (Microsoft SQL Server), continued from
 `alfpricot/tree-sitter-mssql` v1.0.0 (`852cbd2`) to keep it correct and fix defects fast. Intended consumer:
 `go-treesitter`, which would pin a commit here and regenerate `src/parser.c` with tree-sitter CLI 0.27.2.
-Why and design: `README.md`, `docs/`. `_ref/` is a read-only reference clone of upstream.
+Why and design: `README.md`, `docs/`. Upstream v1.0.0 is commit `852cbd2` in this repository's history.
 
 ## Rules
 

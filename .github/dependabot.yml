@@ -33,7 +33,7 @@ updates:
   # The checker's runtime stays at the CLI's version (0.27.2); it moves only in a
   # deliberate change together with the CLI and go-treesitter. Security updates still apply.
   - package-ecosystem: cargo
-    directory: /tools/tree-check
+    directory: /crates/tree-check
     schedule:
       interval: weekly
       day: monday

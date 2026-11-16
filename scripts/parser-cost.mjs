@@ -6,7 +6,7 @@
 // --update records the current values: growth above 5 % in any metric warns, and growth above 10 %
 // is refused unless --approve-budget is given (the pull request must say which cells it adds).
 //
-// Usage: node tools/parser-cost.mjs [--update [--approve-budget]]
+// Usage: node scripts/parser-cost.mjs [--update [--approve-budget]]
 import { appendFileSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 

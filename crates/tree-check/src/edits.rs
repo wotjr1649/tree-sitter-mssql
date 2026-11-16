@@ -244,7 +244,7 @@ mod tests {
     }
     #[test]
     fn ddl_table_boundaries_recover_incrementally() {
-        let cases: Vec<Value> = include_str!("../../../oracle/probes/ddl-table.jsonl")
+        let cases: Vec<Value> = include_str!("../../../oracle/data/probes/ddl-table.jsonl")
             .lines()
             .map(|line| serde_json::from_str(line).unwrap())
             .collect();
@@ -317,7 +317,7 @@ mod tests {
 
     #[test]
     fn database_ddl_boundaries_recover_incrementally() {
-        let cases: Vec<Value> = include_str!("../../../oracle/probes/ddl-database.jsonl")
+        let cases: Vec<Value> = include_str!("../../../oracle/data/probes/ddl-database.jsonl")
             .lines()
             .map(|line| serde_json::from_str(line).unwrap())
             .collect();
@@ -457,7 +457,7 @@ mod tests {
 
     #[test]
     fn query_form_boundaries_recover_incrementally() {
-        let cases: Vec<Value> = include_str!("../../../oracle/probes/query-forms.jsonl")
+        let cases: Vec<Value> = include_str!("../../../oracle/data/probes/query-forms.jsonl")
             .lines()
             .map(|line| serde_json::from_str(line).unwrap())
             .collect();

@@ -325,7 +325,7 @@ export default {
   // (`FILE = 'x'`, `FILEGROUP = @g`, `PAGE = 'f:p'`, READ_WRITE_FILEGROUPS)
   // have the `name [= value]` shape of an option, so they are options.
   // Names, value shapes and which statement takes which option are checked
-  // by tree-check (`backup-restore-*`, oracle/probes/backup-restore.jsonl):
+  // by tree-check (`backup-restore-*`, oracle/data/probes/backup-restore.jsonl):
   // SQL Server rejects them while parsing, but they are all identifiers here.
   backup_statement: ($) =>
     prec.right(

@@ -1,8 +1,8 @@
 // Second opinion for the oracle: parse every case with Microsoft's ScriptDOM parser at each compatibility level and
 // record its parse errors, in the shape of the engine verdict files. ScriptDOM is not the engine: these files are kept
-// apart from oracle/verdicts and only used to find cases where ScriptDOM and the engine disagree.
+// apart from oracle/data/verdicts and only used to find cases where ScriptDOM and the engine disagree.
 //
-//   ScriptDomCheck --cases oracle/probes/x.jsonl --out oracle/scriptdom/verdicts/x.json [--levels 100,...] [--quoted-identifier on|off]
+//   ScriptDomCheck --cases oracle/data/probes/x.jsonl --out oracle/data/scriptdom-verdicts/x.json [--levels 100,...] [--quoted-identifier on|off]
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Nodes;

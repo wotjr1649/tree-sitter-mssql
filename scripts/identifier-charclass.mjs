@@ -1,8 +1,8 @@
-// Identifier character classes from the measured engine verdicts (oracle/unicode/identifier-chars.json).
+// Identifier character classes from the measured engine verdicts (oracle/data/unicode/identifier-chars.json).
 //
 // The grammar's IDENTIFIER_START and IDENTIFIER_CONTINUE (grammar/helpers.js) must equal the classes
 // derived here: `--check` fails when they drift, `--print` prints the two strings to paste.
-// Usage: node tools/identifier-charclass.mjs --check | --print
+// Usage: node scripts/identifier-charclass.mjs --check | --print
 import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 
@@ -41,7 +41,7 @@ export function grammarConstant(source, name) {
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
-  const data = JSON.parse(readFileSync('oracle/unicode/identifier-chars.json', 'utf8'));
+  const data = JSON.parse(readFileSync('oracle/data/unicode/identifier-chars.json', 'utf8'));
   const want = classes(data);
   if (process.argv.includes('--print')) {
     console.log(
@@ -55,7 +55,7 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
     );
     if (drift.length) {
       console.error(
-        `grammar/helpers.js differs from oracle/unicode/identifier-chars.json: ${drift.join(', ')}`,
+        `grammar/helpers.js differs from oracle/data/unicode/identifier-chars.json: ${drift.join(', ')}`,
       );
       process.exitCode = 1;
     } else {

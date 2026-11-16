@@ -43,7 +43,7 @@ every gate within the cost budget.
 
 ## M2.5: Absorb grammar-kit's T-SQL work (ADR-0004)
 
-- Port the tree-decidable checks of grammar-kit's `CheckTSQLContext` into `tools/tree-check`, one rule family per pull request, each with oracle evidence: hint conflicts and arguments, DML-target hints, column permissions, trigger name/owner/event scope, window frames, COUNT arity, RETURN in scalar functions, CTE without a table source, scalar versus predicate.
+- Port the tree-decidable checks of grammar-kit's `CheckTSQLContext` into `crates/tree-check`, one rule family per pull request, each with oracle evidence: hint conflicts and arguments, DML-target hints, column permissions, trigger name/owner/event scope, window frames, COUNT arity, RETURN in scalar functions, CTE without a table source, scalar versus predicate.
 - Import grammar-kit's 640 route cases as an oracle probe set with fresh verdicts on every verified engine, and its T-SQL queries.
 - Record the decisions in grammar-kit's reports where they apply.
 

@@ -1,8 +1,8 @@
 // Query regression check (ADR-0004): grammar-kit's T-SQL queries in test/queries/kit/*.scm, run on the oracle
-// sources named in test/queries/kit-cases.json (after `step` edits from oracle/kit/route-edits.jsonl), must give
+// sources named in test/queries/kit-cases.json (after `step` edits from oracle/data/kit/route-edits.jsonl), must give
 // the recorded captures. The recorded captures were measured on this grammar, not copied from grammar-kit.
 //
-// Usage: node tools/query-check.mjs --tree-sitter <cli> [--update]
+// Usage: node scripts/query-check.mjs --tree-sitter <cli> [--update]
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -45,10 +45,10 @@ function main() {
   const update = argv.includes('--update');
   const cases = JSON.parse(readFileSync(CASES, 'utf8'));
   const sources = Object.fromEntries(
-    jsonl('oracle/probes/kit-routes.jsonl').map((c) => [c.id, c.source]),
+    jsonl('oracle/data/probes/kit-routes.jsonl').map((c) => [c.id, c.source]),
   );
   const edits = Object.fromEntries(
-    jsonl('oracle/kit/route-edits.jsonl').map((h) => [h.id, h.edits]),
+    jsonl('oracle/data/kit/route-edits.jsonl').map((h) => [h.id, h.edits]),
   );
   const dir = mkdtempSync(join(tmpdir(), 'query-check-'));
   let failed = 0;

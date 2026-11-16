@@ -3,7 +3,7 @@
 // error numbers differ. Differences are observations to classify, not failures: exit 0 when the files
 // are comparable, 2 when they are not (different cases, or not PARSEONLY verdicts).
 //
-// Usage: node tools/verdict-diff.mjs <base.json> <other.json>
+// Usage: node scripts/verdict-diff.mjs <base.json> <other.json>
 import { appendFileSync, readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { quotedIdentifier } from './oracle-replay.mjs';

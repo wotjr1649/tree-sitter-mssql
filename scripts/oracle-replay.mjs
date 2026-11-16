@@ -1,11 +1,11 @@
 // Replays the SQL Server oracle against the current grammar (ADR-0002).
 //
-// For every case in oracle/kit/cases.jsonl and oracle/probes/*.jsonl the parse tree is judged by tree-check (clean or error) and
-// compared with the committed baseline oracle/expected.json; edit histories are replayed to compare
-// incremental and fresh parses. Engine verdicts (oracle/verdicts/*.json) give each case's class: a case
+// For every case in oracle/data/kit/cases.jsonl and oracle/data/probes/*.jsonl the parse tree is judged by tree-check (clean or error) and
+// compared with the committed baseline oracle/data/expected.json; edit histories are replayed to compare
+// incremental and fresh parses. Engine verdicts (oracle/data/verdicts/*.json) give each case's class: a case
 // is positive when SQL Server accepts it at any verified compatibility level.
 //
-// Usage: node tools/oracle-replay.mjs --tree-check <exe> [--update]
+// Usage: node scripts/oracle-replay.mjs --tree-check <exe> [--update]
 // Exit 0: results equal the baseline (or the baseline was updated); 1: results differ, or an update
 // would turn an engine-accepted case from clean into an error; 2: inputs are inconsistent.
 import assert from 'node:assert/strict';
@@ -112,7 +112,7 @@ function runTreeCheck(exe, args) {
   }
 }
 
-// The classes a rejected-but-clean case may have (oracle/rejected-clean.json, ADR-0004): every one of
+// The classes a rejected-but-clean case may have (oracle/data/rejected-clean.json, ADR-0004): every one of
 // these cases is either a recorded gap or a rejection the parse tree cannot decide.
 export const CLASSES = ['gap', 'context', 'version', 'environment', 'runner'];
 
@@ -152,13 +152,13 @@ function main(argv) {
   if (!exe) throw new Error('usage: oracle-replay.mjs --tree-check <exe> [--update]');
   const update = argv.includes('--update');
 
-  // Case sets: grammar-kit's cases plus the probes measured while fixing defects (oracle/probes).
+  // Case sets: grammar-kit's cases plus the probes measured while fixing defects (oracle/data/probes).
   const setFiles = [
-    'oracle/kit/cases.jsonl',
-    ...readdirSync('oracle/probes')
+    'oracle/data/kit/cases.jsonl',
+    ...readdirSync('oracle/data/probes')
       .filter((f) => f.endsWith('.jsonl'))
       .sort()
-      .map((f) => join('oracle/probes', f)),
+      .map((f) => join('oracle/data/probes', f)),
   ];
   const sets = setFiles.map((file) => {
     const text = readFileSync(file);
@@ -170,7 +170,7 @@ function main(argv) {
     sourceCases.length,
     'case IDs must be unique across sets',
   );
-  const verdictFiles = readdirSync('oracle/verdicts')
+  const verdictFiles = readdirSync('oracle/data/verdicts')
     .filter((f) => f.endsWith('.json'))
     .sort();
   // Engine observations merge only within the same session setting.
@@ -178,7 +178,7 @@ function main(argv) {
     sets,
     verdictFiles.map((file) => ({
       file,
-      data: JSON.parse(readFileSync(join('oracle/verdicts', file), 'utf8')),
+      data: JSON.parse(readFileSync(join('oracle/data/verdicts', file), 'utf8')),
     })),
   );
   const positive = Object.fromEntries(cases.map((c) => [c.id, isPositive(verdicts[c.id])]));
@@ -210,11 +210,11 @@ function main(argv) {
         current[cases[indices[i]].id] = row.ok ? 'clean' : 'error';
     }
     // Session settings do not change the grammar tree; edit histories compare that shared tree once.
-    const edits = readdirSync('oracle/kit')
+    const edits = readdirSync('oracle/data/kit')
       .filter((f) => f.endsWith('edits.jsonl'))
       .sort()
       .flatMap((f) =>
-        runTreeCheck(exe, ['--edits', join('oracle/kit', f)])
+        runTreeCheck(exe, ['--edits', join('oracle/data/kit', f)])
           .stdout.trim()
           .split('\n')
           .map((l) => JSON.parse(l)),
@@ -228,14 +228,14 @@ function main(argv) {
     rmSync(dir, { recursive: true, force: true });
   }
 
-  const expected = JSON.parse(readFileSync('oracle/expected.json', 'utf8'));
+  const expected = JSON.parse(readFileSync('oracle/data/expected.json', 'utf8'));
   const changes = compare(expected.cases, current, positive);
   const incrementalChanged =
     JSON.stringify(expected.incremental_differences) !== JSON.stringify(incremental);
 
   const levels = [...new Set(Object.values(verdicts).flatMap((v) => Object.keys(v)))].sort();
   const union = matrix(cases, verdicts, current);
-  const classification = JSON.parse(readFileSync('oracle/rejected-clean.json', 'utf8')).cases;
+  const classification = JSON.parse(readFileSync('oracle/data/rejected-clean.json', 'utf8')).cases;
   const rejectedClean = cases
     .map((c) => c.id)
     .filter((id) => !positive[id] && current[id] === 'clean');
@@ -258,17 +258,17 @@ function main(argv) {
       const m = matrix(cases, verdicts, current, l);
       return `- ${l}: ${m.agree}/${m.total} (${m.percent} %), accepted&error ${m.acceptedError}`;
     }),
-    `- Rejected but clean by class (oracle/rejected-clean.json): ${CLASSES.map((k) => `${k} ${byClass[k]}`).join(', ')}`,
+    `- Rejected but clean by class (oracle/data/rejected-clean.json): ${CLASSES.map((k) => `${k} ${byClass[k]}`).join(', ')}`,
     ...unclassified.map(
       (id) =>
-        `  - UNCLASSIFIED ${id}: rejected by every engine but clean; classify it in oracle/rejected-clean.json`,
+        `  - UNCLASSIFIED ${id}: rejected by every engine but clean; classify it in oracle/data/rejected-clean.json`,
     ),
     ...stale.map(
       (id) =>
-        `  - STALE ${id}: classified but no longer rejected-and-clean; remove it from oracle/rejected-clean.json`,
+        `  - STALE ${id}: classified but no longer rejected-and-clean; remove it from oracle/data/rejected-clean.json`,
     ),
     `- Edit histories with incremental differences: ${Object.keys(incremental).length}`,
-    `- Changes against oracle/expected.json: ${changes.length}${incrementalChanged ? ' (+ incremental differences changed)' : ''}`,
+    `- Changes against oracle/data/expected.json: ${changes.length}${incrementalChanged ? ' (+ incremental differences changed)' : ''}`,
     ...changes.map((c) => `  - ${c.regression ? 'REGRESSION ' : ''}${c.id}: ${c.from} -> ${c.to}`),
   ].join('\n');
   console.log(summary);
@@ -283,7 +283,7 @@ function main(argv) {
   }
   if (unclassified.length || stale.length) {
     console.error(
-      'oracle/rejected-clean.json does not match the rejected-but-clean cases (see UNCLASSIFIED/STALE above).',
+      'oracle/data/rejected-clean.json does not match the rejected-but-clean cases (see UNCLASSIFIED/STALE above).',
     );
     return 1;
   }
@@ -295,15 +295,15 @@ function main(argv) {
       ([id, v]) => `    ${JSON.stringify(id)}: ${JSON.stringify(v)}`,
     );
     writeFileSync(
-      'oracle/expected.json',
+      'oracle/data/expected.json',
       `{\n  "cases": {\n${lines.join(',\n')}\n  },\n  "incremental_differences": ${JSON.stringify(incremental)}\n}\n`,
     );
-    console.log('Updated oracle/expected.json');
+    console.log('Updated oracle/data/expected.json');
     return 0;
   }
   if (changes.length || incrementalChanged) {
     console.error(
-      'Results differ from oracle/expected.json. Review the changes, then run with --update in the same pull request.',
+      'Results differ from oracle/data/expected.json. Review the changes, then run with --update in the same pull request.',
     );
     return 1;
   }
