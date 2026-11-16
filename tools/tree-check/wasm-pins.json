@@ -1,0 +1,19 @@
+{
+  "rust": "1.100.0",
+  "target": "wasm32-wasip1",
+  "wasi-sdk": "34.0",
+  "clang": "23.1.0",
+  "llvmCommit": "895aa2c896ada719451be2e3673c83da8ddf1141",
+  "binaryen": "133",
+  "source": "https://github.com/wotjr1649/go-treesitter/blob/a6391abf7746aa216d9f4fdc86151bc6948d1dcf/tools/gen/pins.json",
+  "wasiSDKArchives": {
+    "linux-x64": {
+      "url": "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-34/wasi-sdk-34.0-x86_64-linux.tar.gz",
+      "sha256": "b761e3a0721dbae9c09a0059e5fdb2bf917d1b4a8a7b430fb3b5aafb0984b2c4"
+    },
+    "win32-x64": {
+      "url": "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-34/wasi-sdk-34.0-x86_64-windows.tar.gz",
+      "sha256": "cccb5c323a9b34f0349a9b09e8804a0a7632c68c3310f4b5f437ed57d7e71d8f"
+    }
+  }
+}

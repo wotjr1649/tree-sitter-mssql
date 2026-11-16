@@ -7,6 +7,9 @@ rust-version = "1.90"
 license = "MIT"
 publish = false
 
+[lib]
+crate-type = ["rlib", "cdylib"]
+
 [dependencies]
 # Exact: the checker must run the same runtime as the pinned CLI (0.27.2) and go-treesitter.
 tree-sitter = "=0.27.2"

@@ -1484,7 +1484,7 @@ fn endpoint_options(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
             (_, "DATABASE_MIRRORING") => &["AUTHENTICATION", "ENCRYPTION", "ROLE"],
             _ => &[],
         };
-        let mut seen = std::collections::HashSet::new();
+        let mut seen = std::collections::BTreeSet::new();
         let mut child_cursor = clause.walk();
         for option in clause
             .named_children(&mut child_cursor)
@@ -1550,7 +1550,7 @@ fn endpoint_options(statement: Node, source: &[u8], out: &mut Vec<Violation>) {
             let algorithms: Vec<Node> = option
                 .children_by_field_name("algorithm", &mut algorithm_cursor)
                 .collect();
-            let mut seen_algorithms = std::collections::HashSet::new();
+            let mut seen_algorithms = std::collections::BTreeSet::new();
             for algorithm in &algorithms {
                 let text = upper_text(*algorithm, source);
                 if !matches!(text.as_str(), "AES" | "RC4") || !seen_algorithms.insert(text) {
