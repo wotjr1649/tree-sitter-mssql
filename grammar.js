@@ -41,6 +41,7 @@ export default grammar({
     $._spaced_not_equal_alt,
     $._spaced_not_less,
     $._spaced_not_greater,
+    $._else_semicolon,
   ],
 
   // Every entry arbitrates a real fork the parser must carry a few tokens
@@ -94,9 +95,6 @@ export default grammar({
     [$.term],
     // A cursor variable starts with a parameter token, like table variables and named cursors.
     [$.identifier, $.var_declaration],
-    // `IF cond stmt ;` — the `;` may start a `; ELSE` clause or end the IF;
-    // see else_clause.
-    [$.if_statement],
     // Keep an empty AS body open as a fork until a leading semicolon is disambiguated.
     [$.procedure_body],
   ],
@@ -125,6 +123,7 @@ export default grammar({
 
   // Aliased helpers stay factored to preserve their trees and fields.
   inline: ($) => [
+    $._semicolon,
     $._alter_database_file,
     $._alter_service_contracts,
     $._alter_statement,
@@ -211,9 +210,15 @@ export default grammar({
         $.go_statement,
       ),
 
+    // A statement terminator. The scanner lexes a `;` that is followed by ELSE as
+    // `_else_semicolon` (see else_clause); every other place that accepts `;`
+    // after a statement accepts it too, so one token kind never narrows a
+    // lookahead set and the parse table does not split its states.
+    _semicolon: ($) => choice(';', alias($._else_semicolon, ';')),
+
     _batch_item: ($) =>
       choice(
-        prec.right(seq(choice($.statement, $.block), optional(';'))),
+        prec.right(seq(choice($.statement, $.block), optional($._semicolon))),
         ';',
         $.sqlcmd_setvar,
         $.sqlcmd_include,

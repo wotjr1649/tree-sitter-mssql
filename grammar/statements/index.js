@@ -100,29 +100,25 @@ export default {
 
   // IF condition { statement | BEGIN ... END } [ ELSE { statement | BEGIN ... END } ]
   if_statement: ($) =>
-    seq(
-      $.keyword_if,
-      field('condition', $._expression),
-      field('consequence', choice($.statement, $.block)),
-      optional(field('alternative', $.else_clause)),
+    prec.right(
+      seq(
+        $.keyword_if,
+        field('condition', $._expression),
+        field('consequence', choice($.statement, $.block)),
+        optional(field('alternative', $.else_clause)),
+      ),
     ),
 
-  // Two alternatives with different precedence on purpose:
-  //
-  // - The plain `ELSE ...` form carries prec 1 so a dangling ELSE binds to
-  //   the nearest IF (the usual shift-over-reduce resolution).
-  // - T-SQL also allows `IF x stmt;; ELSE stmt` — terminators on the
-  //   consequence before ELSE. That form is prec 0, the same as
-  //   if_statement, so the parser cannot resolve "is this `;` the start of
-  //   an ELSE clause or the end of the IF" by precedence and instead forks
-  //   (see the if_statement entry in `conflicts`). The fork dies one token
-  //   later. Resolving it by precedence instead would make every IF
-  //   without an ELSE swallow the `;` that ends it.
+  // T-SQL also allows `IF x stmt;; ELSE stmt`: terminators between the
+  // consequence and ELSE belong to the clause. Whether a `;` is one of them
+  // depends on what follows the semicolons, and the parser cannot see that
+  // without forking at every `;` of every enclosing IF. The external scanner
+  // decides instead: `_else_semicolon` is one `;` whose next token, past
+  // spaces, comments and further `;`, is ELSE. Any other `;` is the ordinary
+  // terminator. A dangling ELSE binds to the nearest IF because `if_statement`
+  // is right-associative: the parser shifts ELSE instead of reducing the IF.
   else_clause: ($) =>
-    choice(
-      prec(1, seq($.keyword_else, choice($.statement, $.block))),
-      seq(repeat1(';'), $.keyword_else, choice($.statement, $.block)),
-    ),
+    seq(repeat(alias($._else_semicolon, ';')), $.keyword_else, choice($.statement, $.block)),
 
   try_catch_statement: ($) => seq($.try_block, $.catch_block),
   try_block: ($) =>

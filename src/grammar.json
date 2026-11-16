@@ -73,6 +73,24 @@
         }
       ]
     },
+    "_semicolon": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "STRING",
+          "value": ";"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_else_semicolon"
+          },
+          "named": false,
+          "value": ";"
+        }
+      ]
+    },
     "_batch_item": {
       "type": "CHOICE",
       "members": [
@@ -99,8 +117,8 @@
                 "type": "CHOICE",
                 "members": [
                   {
-                    "type": "STRING",
-                    "value": ";"
+                    "type": "SYMBOL",
+                    "name": "_semicolon"
                   },
                   {
                     "type": "BLANK"
@@ -11345,99 +11363,27 @@
       ]
     },
     "if_statement": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "keyword_if"
-        },
-        {
-          "type": "FIELD",
-          "name": "condition",
-          "content": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
             "type": "SYMBOL",
-            "name": "_expression"
-          }
-        },
-        {
-          "type": "FIELD",
-          "name": "consequence",
-          "content": {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "statement"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "block"
-              }
-            ]
-          }
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "FIELD",
-              "name": "alternative",
-              "content": {
-                "type": "SYMBOL",
-                "name": "else_clause"
-              }
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        }
-      ]
-    },
-    "else_clause": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "PREC",
-          "value": 1,
-          "content": {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "keyword_else"
-              },
-              {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "statement"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "block"
-                  }
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "REPEAT1",
-              "content": {
-                "type": "STRING",
-                "value": ";"
-              }
-            },
-            {
+            "name": "keyword_if"
+          },
+          {
+            "type": "FIELD",
+            "name": "condition",
+            "content": {
               "type": "SYMBOL",
-              "name": "keyword_else"
-            },
-            {
+              "name": "_expression"
+            }
+          },
+          {
+            "type": "FIELD",
+            "name": "consequence",
+            "content": {
               "type": "CHOICE",
               "members": [
                 {
@@ -11449,6 +11395,56 @@
                   "name": "block"
                 }
               ]
+            }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "alternative",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "else_clause"
+                }
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "else_clause": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_else_semicolon"
+            },
+            "named": false,
+            "value": ";"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "keyword_else"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "statement"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "block"
             }
           ]
         }
@@ -20059,8 +20055,8 @@
                 "type": "CHOICE",
                 "members": [
                   {
-                    "type": "STRING",
-                    "value": ";"
+                    "type": "SYMBOL",
+                    "name": "_semicolon"
                   },
                   {
                     "type": "BLANK"
@@ -46086,9 +46082,6 @@
       "var_declaration"
     ],
     [
-      "if_statement"
-    ],
-    [
       "procedure_body"
     ]
   ],
@@ -46208,9 +46201,14 @@
     {
       "type": "SYMBOL",
       "name": "_spaced_not_greater"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_else_semicolon"
     }
   ],
   "inline": [
+    "_semicolon",
     "_alter_database_file",
     "_alter_service_contracts",
     "_alter_statement",

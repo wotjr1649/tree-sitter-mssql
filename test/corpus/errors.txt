@@ -736,7 +736,8 @@ FROM top_cte;
         (identifier)
         (keyword_as)
         (ERROR
-          (keyword_as)
+          (keyword_as))
+        (statement
           (query_specification
             (select
               (keyword_select)
@@ -749,22 +750,8 @@ FROM top_cte;
                   (literal)
                   (keyword_as)
                   (identifier))))))
-        (statement
-          (query_specification
-            (select
-              (keyword_select)
-              (select_expression
-                (term
-                  (field
-                    (identifier)))
-                (term
-                  (field
-                    (identifier)))))
-            (from
-              (keyword_from)
-              (relation
-                (object_reference
-                  (identifier)))))))
+        (ERROR
+          (keyword_from)))
       (query_specification
         (select
           (keyword_select)
