@@ -16,7 +16,7 @@ behavior is untested in general — see the note on each such row.
 
 `test/fixtures/README.md`'s "Not parsed on purpose" table already pins three of these: the
 physical join hint with no join type (`HASH JOIN`/`LOOP JOIN`/`MERGE JOIN`/`REMOTE JOIN`), the rare
-sub-forms of deprecated or console statements (`WRITETEXT BULK ...`, `BACKUP ... MIRROR TO`,
+sub-forms of deprecated or console statements (`WRITETEXT BULK ...`,
 `KILL STATS JOB`/`KILL QUERY NOTIFICATION`), and the parenthesized union branch with its own
 `ORDER BY` alongside `TOP`/`OFFSET`/`FETCH`. See that file rather than duplicating the rows here.
 That same table also lists `COMPUTE`, the `*=`/`=*` outer-join operators, and

@@ -374,6 +374,7 @@ keyword_failover
 keyword_fetch
 keyword_file
 keyword_filegroup
+keyword_filelistonly
 keyword_filestream
 keyword_filetable
 keyword_filetable_namespace
@@ -405,6 +406,7 @@ keyword_grouping
 keyword_hadr
 keyword_hash
 keyword_having
+keyword_headeronly
 keyword_hidden
 keyword_hierarchyid
 keyword_holdlock
@@ -436,6 +438,7 @@ keyword_json_object
 keyword_key
 keyword_keys
 keyword_kill
+keyword_labelonly
 keyword_language
 keyword_last
 keyword_leading
@@ -463,6 +466,7 @@ keyword_memory_optimized_data
 keyword_merge
 keyword_message
 keyword_minvalue
+keyword_mirror
 keyword_model
 keyword_modify
 keyword_money
@@ -555,6 +559,7 @@ keyword_replicate
 keyword_replication
 keyword_resource
 keyword_restart
+keyword_restore
 keyword_result
 keyword_resume
 keyword_return
@@ -562,6 +567,7 @@ keyword_returning
 keyword_returns
 keyword_revert
 keyword_revoke
+keyword_rewindonly
 keyword_right
 keyword_role
 keyword_rollback
@@ -665,6 +671,7 @@ keyword_values
 keyword_varbinary
 keyword_varchar
 keyword_varying
+keyword_verifyonly
 keyword_version
 keyword_view
 keyword_waitfor
@@ -739,6 +746,7 @@ receive_statement{into,queue}
 reconfigure_statement
 referential_action
 relation{alias}
+restore_statement
 return_statement
 returning_clause
 revert_statement

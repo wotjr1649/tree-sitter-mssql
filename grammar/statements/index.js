@@ -68,6 +68,7 @@ export default {
       $.shutdown_statement,
       $.conversation_timer_statement,
       $.backup_statement,
+      $.restore_statement,
       $.setuser_statement,
       $.readtext_statement,
       $.writetext_statement,
@@ -294,21 +295,220 @@ export default {
       ),
     ),
 
-  // BACKUP { DATABASE | LOG } name TO device [, ...] [WITH option [, ...]]
-  // A device is `DISK = 'path'`, `TAPE = 'path'`, `URL = 'path'` or a
-  // logical backup device name — the same `name [= value]` shape as an
-  // option, so that is what it is. The file/filegroup list and MIRROR TO
-  // are not modeled.
+  // BACKUP { DATABASE name [file, ...] | LOG name | SERVER | GROUP name, ... }
+  //   [TO device, ... [MIRROR TO device, ...] ...] [WITH option, ...]
+  // BACKUP CERTIFICATE name TO FILE = 'path' [WITH { FORMAT = 'x' | PRIVATE KEY (...) }, ...]
+  // BACKUP [SERVICE] MASTER KEY | SYMMETRIC KEY name TO FILE|URL = 'path' ENCRYPTION BY PASSWORD = 'x'
+  // A device (`DISK = 'path'`, a logical device name or variable) and a file
+  // (`FILE = 'x'`, `FILEGROUP = @g`, `PAGE = 'f:p'`, READ_WRITE_FILEGROUPS)
+  // have the `name [= value]` shape of an option, so they are options.
+  // Names, value shapes and which statement takes which option are checked
+  // by tree-check (`backup-restore-*`, oracle/probes/backup-restore.jsonl):
+  // SQL Server rejects them while parsing, but they are all identifiers here.
   backup_statement: ($) =>
     prec.right(
       seq(
         $.keyword_backup,
-        choice($.keyword_database, $.keyword_log),
-        $.identifier,
-        $.keyword_to,
-        comma_list($.option, true),
-        optional($.with_clause),
+        choice(
+          seq(
+            choice(
+              seq($.keyword_database, $.identifier, optional(comma_list($.option, true))),
+              seq($.keyword_log, $.identifier),
+              $.keyword_server,
+              seq($.keyword_group, comma_list($.identifier, true)),
+            ),
+            optional(
+              seq(
+                $.keyword_to,
+                comma_list($.option, true),
+                repeat(seq($.keyword_mirror, $.keyword_to, comma_list($.option, true))),
+              ),
+            ),
+            optional(alias($._backup_with_clause, $.with_clause)),
+          ),
+          seq(
+            $.keyword_certificate,
+            $.identifier,
+            $.keyword_to,
+            alias($._key_file, $.option),
+            optional(seq($.keyword_with, comma_list(choice($.option, $._private_key), true))),
+          ),
+          seq(
+            choice(
+              seq(
+                $.keyword_service,
+                $.keyword_master,
+                $.keyword_key,
+                $.keyword_to,
+                alias($._key_file, $.option),
+              ),
+              seq(
+                choice(
+                  seq($.keyword_master, $.keyword_key),
+                  seq($.keyword_symmetric, $.keyword_key, $.identifier),
+                ),
+                $.keyword_to,
+                alias($._key_file_or_url, $.option),
+              ),
+            ),
+            alias($._encryption_by_password, $.encryption_mechanism),
+          ),
+        ),
       ),
+    ),
+
+  // RESTORE { DATABASE | LOG } name [file, ...] [FROM device, ...] [WITH option, ...]
+  // RESTORE { FILELISTONLY | HEADERONLY | LABELONLY | VERIFYONLY | REWINDONLY }
+  //   FROM device, ... [WITH option, ...]
+  // RESTORE { MASTER KEY | SYMMETRIC KEY name } FROM FILE|URL = 'path'
+  //   DECRYPTION BY PASSWORD = 'x' ENCRYPTION BY PASSWORD = 'y' [FORCE]
+  // RESTORE SERVICE MASTER KEY FROM FILE = 'path' DECRYPTION BY PASSWORD = 'x' [FORCE]
+  restore_statement: ($) =>
+    prec.right(
+      seq(
+        $.keyword_restore,
+        choice(
+          seq(
+            choice($.keyword_database, $.keyword_log),
+            $.identifier,
+            optional(comma_list($.option, true)),
+            optional(seq($.keyword_from, comma_list($.option, true))),
+            optional(alias($._backup_with_clause, $.with_clause)),
+          ),
+          seq(
+            choice(
+              $.keyword_filelistonly,
+              $.keyword_headeronly,
+              $.keyword_labelonly,
+              $.keyword_verifyonly,
+              $.keyword_rewindonly,
+            ),
+            $.keyword_from,
+            comma_list($.option, true),
+            optional(alias($._backup_with_clause, $.with_clause)),
+          ),
+          seq(
+            choice(
+              seq(
+                $.keyword_service,
+                $.keyword_master,
+                $.keyword_key,
+                $.keyword_from,
+                alias($._key_file, $.option),
+                alias($._decryption_by_password, $.encryption_mechanism),
+              ),
+              seq(
+                choice(
+                  seq($.keyword_master, $.keyword_key),
+                  seq($.keyword_symmetric, $.keyword_key, $.identifier),
+                ),
+                $.keyword_from,
+                alias($._key_file_or_url, $.option),
+                alias($._decryption_by_password, $.encryption_mechanism),
+                alias($._encryption_by_password, $.encryption_mechanism),
+              ),
+            ),
+            optional($.keyword_force),
+          ),
+        ),
+      ),
+    ),
+
+  // The WITH list BACKUP and RESTORE share. Beyond the `name [= value]`
+  // option it takes a signed number, `STOPATMARK = 'mark' AFTER 'datetime'`,
+  // `MOVE 'logical' TO 'path'`, a parenthesized list (COMPRESSION (...),
+  // FILESTREAM (...)) and ENCRYPTION (ALGORITHM = x, SERVER CERTIFICATE = c).
+  _backup_with_clause: ($) =>
+    prec.right(
+      seq(
+        $.keyword_with,
+        comma_list(
+          choice(
+            alias($._backup_option, $.option),
+            alias($._backup_move_option, $.option),
+            alias($._backup_encryption_option, $.option),
+          ),
+          true,
+        ),
+      ),
+    ),
+
+  _backup_option: ($) =>
+    prec.right(
+      seq(
+        field('name', $.identifier),
+        optional(
+          choice(
+            seq(
+              '=',
+              field('value', $._backup_value),
+              optional(seq($.keyword_after, $._backup_value)),
+            ),
+            paren_list($.option, true),
+          ),
+        ),
+      ),
+    ),
+
+  _backup_move_option: ($) =>
+    seq(
+      field('name', alias($.keyword_move, $.identifier)),
+      field('value', $._backup_value),
+      $.keyword_to,
+      $._backup_value,
+    ),
+
+  _backup_encryption_option: ($) =>
+    seq(
+      field('name', alias($.keyword_encryption, $.identifier)),
+      '(',
+      $.option,
+      ',',
+      alias($._backup_server_encryptor, $.option),
+      ')',
+    ),
+
+  // SERVER CERTIFICATE = name | SERVER ASYMMETRIC KEY = name
+  _backup_server_encryptor: ($) =>
+    seq(
+      field('name', alias($.keyword_server, $.identifier)),
+      choice($.keyword_certificate, seq($.keyword_asymmetric, $.keyword_key)),
+      '=',
+      field('value', $.identifier),
+    ),
+
+  _backup_value: ($) =>
+    choice($.literal, $.identifier, alias($._signed_literal, $.unary_expression)),
+
+  // FILE = 'path' (certificates and the service master key take no URL)
+  _key_file: ($) =>
+    seq(
+      field('name', alias($.keyword_file, $.identifier)),
+      '=',
+      field('value', alias($._single_quote_string, $.literal)),
+    ),
+
+  _key_file_or_url: ($) =>
+    seq(
+      field(
+        'name',
+        choice(alias($.keyword_file, $.identifier), alias($.keyword_url, $.identifier)),
+      ),
+      '=',
+      field('value', alias($._single_quote_string, $.literal)),
+    ),
+
+  _encryption_by_password: ($) =>
+    seq($.keyword_encryption, $.keyword_by, alias($._password_option, $.option)),
+
+  _decryption_by_password: ($) =>
+    seq($.keyword_decryption, $.keyword_by, alias($._password_option, $.option)),
+
+  _password_option: ($) =>
+    seq(
+      field('name', alias($.keyword_password, $.identifier)),
+      '=',
+      field('value', alias($._single_quote_string, $.literal)),
     ),
 
   // SETUSER ['user' [WITH NORESET]] — deprecated impersonation; a bare

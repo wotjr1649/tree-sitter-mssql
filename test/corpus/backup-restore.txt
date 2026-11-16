@@ -1,0 +1,2651 @@
+================================================================================
+backup-restore/backup-db-minimal — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a.bak';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/backup-db-var-device — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+DECLARE @db nvarchar(260) = N'x', @dev nvarchar(260) = N'x';
+BACKUP DATABASE @db TO @dev;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier))))))
+
+================================================================================
+backup-restore/backup-db-string-name — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE 'd' TO DISK = 'a.bak';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (ERROR (keyword_to)) (identifier))) (ERROR)))
+
+================================================================================
+backup-restore/backup-db-no-to — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier)))))
+
+================================================================================
+backup-restore/backup-db-to-empty — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier))) (ERROR (keyword_to))))
+
+================================================================================
+backup-restore/backup-mirror-two — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' MIRROR TO DISK = 'b' MIRROR TO DISK = 'c' WITH FORMAT;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_mirror) (keyword_to) (option name: (identifier) value: (literal)) (keyword_mirror) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/backup-mirror-no-format — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' MIRROR TO DISK = 'b';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_mirror) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/backup-mirror-empty — LocalDB 17.0.1000.7 levels 100-170: rejected 156, 319
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' MIRROR TO WITH FORMAT;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_mirror) (keyword_to) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+backup-restore/backup-mirror-no-to — LocalDB 17.0.1000.7 levels 100-170: rejected 102, 319
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' MIRROR DISK = 'b' WITH FORMAT;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (ERROR (keyword_mirror)) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/backup-log-files — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+BACKUP LOG d FILE = 'f' TO DISK = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_log) (identifier))) (ERROR (identifier) (keyword_to))))
+
+================================================================================
+backup-restore/backup-db-page — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d PAGE = '1:57' TO DISK = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (option name: (identifier) value: (literal)) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/backup-db-file-bare — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+BACKUP DATABASE d FILE TO DISK = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (option name: (identifier)) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/backup-db-unknown-file-item — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d FOO = 'f' TO DISK = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (option name: (identifier) value: (literal)) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/backup-db-rwfg-value — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d READ_WRITE_FILEGROUPS = 'x' TO DISK = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (option name: (identifier) value: (literal)) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/backup-device-no-equals — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/backup-device-unknown-type — LocalDB 17.0.1000.7 levels 100-170: rejected 155
+================================================================================
+
+BACKUP DATABASE d TO FOO = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/backup-device-expression — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' + 'b';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)))) (ERROR)))
+
+================================================================================
+backup-restore/backup-stats-bare — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH STATS;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/backup-stats-var — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+DECLARE @s int = 1, @t nvarchar(260) = N'x';
+BACKUP DATABASE d TO DISK = 'a' WITH STATS = @s, DESCRIPTION = @t;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int) (literal)) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+backup-restore/backup-stats-expression — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH STATS = 5 + 5;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (ERROR (literal)) value: (unary_expression operand: (literal))))))))
+
+================================================================================
+backup-restore/backup-unknown-option — LocalDB 17.0.1000.7 levels 100-170: rejected 155
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH FOO;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/backup-unknown-option-value — LocalDB 17.0.1000.7 levels 100-170: rejected 155
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH FOO = 1;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/backup-flag-with-value — LocalDB 17.0.1000.7 levels 100-170: rejected 153
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH INIT = 1;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/backup-name-bare — LocalDB 17.0.1000.7 levels 100-170: rejected 153
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH NAME;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/backup-credential-bare — LocalDB 17.0.1000.7 levels 100-170: rejected 153
+================================================================================
+
+BACKUP DATABASE d TO URL = 'https://x/y.bak' WITH CREDENTIAL;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/backup-credential-value — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO URL = 'https://x/y.bak' WITH CREDENTIAL = 'c';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/backup-duplicate-flag — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH INIT, INIT;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/backup-duplicate-value — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH NAME = 'a', NAME = 'b';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/backup-init-noinit — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH INIT, NOINIT;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/backup-compression-bare-list — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (ALGORITHM = ZSTD);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier))))))))
+
+================================================================================
+backup-restore/backup-compression-unknown-key — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (FOO = 1);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+backup-restore/backup-compression-equals — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION = ON;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+backup-restore/backup-encryption-bare — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)))) (ERROR (keyword_with) (keyword_encryption))))
+
+================================================================================
+backup-restore/backup-encryption-no-server — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_256, CERTIFICATE = c);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)))) (ERROR (keyword_with) (keyword_encryption) (option name: (identifier) value: (identifier)))))
+
+================================================================================
+backup-restore/backup-encryption-algorithm-only — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_256);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)))) (ERROR (keyword_with) (keyword_encryption) (option name: (identifier) value: (identifier)))))
+
+================================================================================
+backup-restore/backup-encryption-server-only — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (SERVER CERTIFICATE = c);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)))) (ERROR (keyword_with) (keyword_encryption) (option name: (identifier) value: (identifier)))))
+
+================================================================================
+backup-restore/backup-encryption-both-servers — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_256, SERVER CERTIFICATE = c, SERVER ASYMMETRIC KEY = k);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier)) (ERROR (option name: (identifier) (keyword_certificate) value: (identifier))) (option name: (identifier) (keyword_asymmetric) (keyword_key) value: (identifier))))))))
+
+================================================================================
+backup-restore/backup-encryption-server-first — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (SERVER CERTIFICATE = c, ALGORITHM = AES_256);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)))) (ERROR (keyword_with) (keyword_encryption) (option name: (identifier) value: (identifier)) (ERROR))))
+
+================================================================================
+backup-restore/backup-encryption-server-string — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_256, SERVER CERTIFICATE = 'c');
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)))) (ERROR (keyword_with) (keyword_encryption) (option name: (identifier) value: (identifier)) (keyword_server) (keyword_certificate))))
+
+================================================================================
+backup-restore/backup-encryption-server-symmetric — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_256, SERVER SYMMETRIC KEY = k);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)))) (ERROR (keyword_with) (keyword_encryption) (option name: (identifier) value: (identifier)) (keyword_server) (keyword_key))))
+
+================================================================================
+backup-restore/backup-move — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH MOVE 'x' TO 'y';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal) (keyword_to) (literal)))))))
+
+================================================================================
+backup-restore/backup-stopat — LocalDB 17.0.1000.7 levels 100-170: rejected 155
+================================================================================
+
+BACKUP LOG d TO DISK = 'a' WITH STOPAT = '2024-01-01';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_log) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/backup-standby-var — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+DECLARE @u nvarchar(260) = N'x';
+BACKUP LOG d TO DISK = 'a' WITH STANDBY = @u;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (statement (backup_statement (keyword_backup) (keyword_log) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+backup-restore/backup-password — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+DECLARE @m nvarchar(260) = N'x';
+BACKUP DATABASE d TO DISK = 'a' WITH PASSWORD = 'p', MEDIAPASSWORD = @m;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+backup-restore/backup-filestream-option — LocalDB 17.0.1000.7 levels 100-170: rejected 155
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH FILESTREAM (DIRECTORY_NAME = 'x');
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+backup-restore/backup-server-minimal — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP SERVER TO DISK = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_server) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/backup-server-name — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP SERVER s TO DISK = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_server))) (ERROR (identifier) (keyword_to))))
+
+================================================================================
+backup-restore/backup-server-files — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+BACKUP SERVER FILE = 'x' TO DISK = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_server))) (ERROR (identifier) (keyword_to))))
+
+================================================================================
+backup-restore/backup-group-single — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP GROUP d TO DISK = 'a' WITH METADATA_ONLY;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_group) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/backup-group-empty — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+BACKUP GROUP TO DISK = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_group) (identifier))) (ERROR (identifier))))
+
+================================================================================
+backup-restore/backup-group-var — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+DECLARE @a nvarchar(260) = N'x', @b nvarchar(260) = N'x';
+BACKUP GROUP @a, @b TO DISK = 'a';
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (statement (backup_statement (keyword_backup) (keyword_group) (identifier) (identifier) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/backup-group-mirror — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP GROUP a, b TO DISK = 'a' MIRROR TO DISK = 'b' WITH FORMAT;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_group) (identifier) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_mirror) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/backup-group-files — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+BACKUP GROUP a FILE = 'f' TO DISK = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_group) (identifier))) (ERROR (identifier) (keyword_to))))
+
+================================================================================
+backup-restore/backup-cert-plain — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/backup-cert-private-key — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (FILE = 'b', ENCRYPTION BY PASSWORD = 'p');
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (keyword_private) (keyword_key) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/backup-cert-private-key-decryption — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (DECRYPTION BY PASSWORD = 'q', FILE = 'b', ENCRYPTION BY PASSWORD = 'p');
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (keyword_private) (keyword_key) (encryption_mechanism (keyword_decryption) (keyword_by) (option name: (identifier) value: (literal))) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/backup-cert-pfx-only — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' WITH FORMAT = 'PFX';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/backup-cert-pk-then-format — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (FILE = 'b', ENCRYPTION BY PASSWORD = 'p'), FORMAT = 'PFX';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (keyword_private) (keyword_key) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal))) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/backup-cert-format-var — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+DECLARE @f nvarchar(260) = N'x';
+BACKUP CERTIFICATE c TO FILE = 'a' WITH FORMAT = @f, PRIVATE KEY (ENCRYPTION BY PASSWORD = 'p');
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (option name: (identifier) value: (identifier)) (keyword_private) (keyword_key) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/backup-cert-other-option — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' WITH FOO = 'x', PRIVATE KEY (ENCRYPTION BY PASSWORD = 'p');
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (option name: (identifier) value: (literal)) (keyword_private) (keyword_key) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/backup-cert-url — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP CERTIFICATE c TO URL = 'https://x/c.cer';
+
+---
+
+(program (ERROR (keyword_backup) (keyword_certificate) (identifier) (keyword_to)) (batch))
+
+================================================================================
+backup-restore/backup-cert-disk — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP CERTIFICATE c TO DISK = 'a';
+
+---
+
+(program (ERROR (keyword_backup) (keyword_certificate) (identifier) (keyword_to)) (batch))
+
+================================================================================
+backup-restore/backup-cert-var-file — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+DECLARE @f nvarchar(260) = N'x';
+BACKUP CERTIFICATE c TO FILE = @f;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (ERROR (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (keyword_file))))
+
+================================================================================
+backup-restore/backup-cert-encryption — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' ENCRYPTION BY PASSWORD = 'p';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)))) (ERROR (identifier) (keyword_by) (identifier))))
+
+================================================================================
+backup-restore/backup-master-key-no-encryption — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP MASTER KEY TO FILE = 'a';
+
+---
+
+(program (ERROR (keyword_backup) (keyword_master) (keyword_key) (keyword_to) (option name: (identifier) value: (literal))) (batch))
+
+================================================================================
+backup-restore/backup-master-key-disk — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP MASTER KEY TO DISK = 'a' ENCRYPTION BY PASSWORD = 'p';
+
+---
+
+(program (ERROR (keyword_backup) (keyword_master) (keyword_key) (keyword_to) (keyword_encryption) (keyword_by) (identifier)) (batch))
+
+================================================================================
+backup-restore/backup-master-key-decryption — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP MASTER KEY TO FILE = 'a' DECRYPTION BY PASSWORD = 'p';
+
+---
+
+(program (ERROR (keyword_backup) (keyword_master) (keyword_key) (keyword_to) (option name: (identifier) value: (literal)) (keyword_decryption) (keyword_by) (identifier)) (batch))
+
+================================================================================
+backup-restore/backup-master-key-var — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+DECLARE @f nvarchar(260) = N'x', @p nvarchar(260) = N'x';
+BACKUP MASTER KEY TO FILE = @f ENCRYPTION BY PASSWORD = @p;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (ERROR (keyword_backup) (keyword_master) (keyword_key) (keyword_to) (keyword_file) (keyword_encryption) (keyword_by) (identifier))))
+
+================================================================================
+backup-restore/backup-master-key-certificate — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP MASTER KEY TO FILE = 'a' ENCRYPTION BY CERTIFICATE c;
+
+---
+
+(program (ERROR (keyword_backup) (keyword_master) (keyword_key) (keyword_to) (option name: (identifier) value: (literal)) (keyword_encryption) (keyword_by)) (batch))
+
+================================================================================
+backup-restore/backup-master-key-force — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP MASTER KEY TO FILE = 'a' ENCRYPTION BY PASSWORD = 'p' FORCE;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_master) (keyword_key) (keyword_to) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal))))) (statement (label_statement (identifier) (MISSING ":")))))
+
+================================================================================
+backup-restore/backup-service-master-key-url — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP SERVICE MASTER KEY TO URL = 'https://x/k' ENCRYPTION BY PASSWORD = 'p';
+
+---
+
+(program (ERROR (keyword_backup) (keyword_service) (keyword_master) (keyword_key) (keyword_to) (keyword_encryption) (keyword_by) (identifier)) (batch))
+
+================================================================================
+backup-restore/backup-symmetric-key-decryption — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP SYMMETRIC KEY k TO FILE = 'a' DECRYPTION BY PASSWORD = 'p';
+
+---
+
+(program (ERROR (keyword_backup) (keyword_symmetric) (keyword_key) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_decryption) (keyword_by) (identifier)) (batch))
+
+================================================================================
+backup-restore/backup-symmetric-key-no-name — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+BACKUP SYMMETRIC KEY TO FILE = 'a' ENCRYPTION BY PASSWORD = 'p';
+
+---
+
+(program (ERROR (keyword_backup) (keyword_symmetric) (keyword_key) (identifier) (keyword_encryption) (keyword_by) (identifier)) (batch))
+
+================================================================================
+backup-restore/backup-asymmetric-key — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP ASYMMETRIC KEY k TO FILE = 'a' ENCRYPTION BY PASSWORD = 'p';
+
+---
+
+(program (ERROR (keyword_backup) (keyword_key) (keyword_to) (keyword_file) (keyword_encryption) (keyword_by) (identifier)) (batch))
+
+================================================================================
+backup-restore/backup-master-key-two-encryptions — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP MASTER KEY TO FILE = 'a' ENCRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_master) (keyword_key) (keyword_to) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal))))) (ERROR (identifier) (keyword_by) (identifier))))
+
+================================================================================
+backup-restore/restore-db-bare — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE DATABASE d;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier)))))
+
+================================================================================
+backup-restore/restore-db-with-recovery — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE DATABASE d WITH RECOVERY;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/restore-log-bare-with — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE LOG d WITH RECOVERY;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_log) (identifier) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/restore-log-files — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE LOG d FILE = 'f' FROM DISK = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_log) (identifier) (option name: (identifier) value: (literal)) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/restore-log-page — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE LOG d PAGE = '1:1' FROM DISK = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_log) (identifier) (option name: (identifier) value: (literal)) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/restore-db-files-no-from — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE DATABASE d FILE = 'f' WITH RECOVERY;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/restore-db-string-name — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE DATABASE 'd' FROM DISK = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (ERROR (keyword_from)) (identifier))) (ERROR)))
+
+================================================================================
+backup-restore/restore-from-empty — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE DATABASE d FROM;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier))) (ERROR (keyword_from))))
+
+================================================================================
+backup-restore/restore-from-no-equals — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE DATABASE d FROM DISK 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/restore-from-unknown-type — LocalDB 17.0.1000.7 levels 100-170: rejected 155
+================================================================================
+
+RESTORE DATABASE d FROM FOO = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/restore-db-unknown-file-item — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE DATABASE d FOO = 'f' FROM DISK = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (option name: (identifier) value: (literal)) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/restore-db-mirror — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE DATABASE d FROM DISK = 'a' MIRROR TO DISK = 'b';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)))) (ERROR (identifier) (keyword_to))))
+
+================================================================================
+backup-restore/restore-db-to — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+RESTORE DATABASE d TO DISK = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (option name: (identifier) (ERROR (identifier)) value: (literal))))))
+
+================================================================================
+backup-restore/restore-db-snapshot-with — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE DATABASE d FROM DATABASE_SNAPSHOT = 's' WITH RECOVERY;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/restore-db-snapshot-var — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+DECLARE @s int = 1;
+RESTORE DATABASE d FROM DATABASE_SNAPSHOT = @s;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_int) (literal)))) (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+backup-restore/restore-move-vars — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+DECLARE @a nvarchar(260) = N'x', @b nvarchar(260) = N'x';
+RESTORE DATABASE d FROM DISK = 'a' WITH MOVE @a TO @b;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (identifier) (keyword_to) (identifier)))))))
+
+================================================================================
+backup-restore/restore-move-no-to — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE DATABASE d FROM DISK = 'a' WITH MOVE 'a' 'b';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)))) (ERROR (keyword_with) (keyword_move) (literal))))
+
+================================================================================
+backup-restore/restore-move-equals — LocalDB 17.0.1000.7 levels 100-170: rejected 155
+================================================================================
+
+RESTORE DATABASE d FROM DISK = 'a' WITH MOVE = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)))) (ERROR (keyword_with) (keyword_move) (ERROR) (literal))))
+
+================================================================================
+backup-restore/restore-move-identifier — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE DATABASE d FROM DISK = 'a' WITH MOVE a TO b;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (identifier) (keyword_to) (identifier)))))))
+
+================================================================================
+backup-restore/restore-stopatmark-var-after — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+DECLARE @m nvarchar(260) = N'x', @t nvarchar(260) = N'x';
+RESTORE LOG d FROM DISK = 'a' WITH STOPATMARK = @m AFTER @t;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (statement (restore_statement (keyword_restore) (keyword_log) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (identifier) (keyword_after) (identifier)))))))
+
+================================================================================
+backup-restore/restore-stopbeforemark-after — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE LOG d FROM DISK = 'a' WITH STOPBEFOREMARK = 'm' AFTER '2024-01-01';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_log) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal) (keyword_after) (literal)))))))
+
+================================================================================
+backup-restore/restore-stopat-after — LocalDB 17.0.1000.7 levels 100-170: rejected 155
+================================================================================
+
+RESTORE LOG d FROM DISK = 'a' WITH STOPAT = '2024-01-01' AFTER '2024-01-02';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_log) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal) (keyword_after) (literal)))))))
+
+================================================================================
+backup-restore/restore-stopatmark-after-missing — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE LOG d FROM DISK = 'a' WITH STOPATMARK = 'm' AFTER;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_log) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal))))) (ERROR (keyword_after))))
+
+================================================================================
+backup-restore/restore-credential-bare — LocalDB 17.0.1000.7 levels 100-170: rejected 153
+================================================================================
+
+RESTORE DATABASE d FROM URL = 'https://x/y.bak' WITH CREDENTIAL;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/restore-credential-value — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE DATABASE d FROM URL = 'https://x/y.bak' WITH CREDENTIAL = 'c', NORECOVERY;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/restore-unknown-option — LocalDB 17.0.1000.7 levels 100-170: rejected 155
+================================================================================
+
+RESTORE DATABASE d FROM DISK = 'a' WITH FOO;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/restore-flag-with-value — LocalDB 17.0.1000.7 levels 100-170: rejected 153
+================================================================================
+
+RESTORE DATABASE d FROM DISK = 'a' WITH REPLACE = 1;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/restore-duplicate-flag — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE DATABASE d FROM DISK = 'a' WITH REPLACE, REPLACE;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/restore-recovery-norecovery — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE DATABASE d FROM DISK = 'a' WITH RECOVERY, NORECOVERY;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/restore-file-bare — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE DATABASE d FROM DISK = 'a' WITH FILE;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/restore-stats-bare — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE DATABASE d FROM DISK = 'a' WITH STATS;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/restore-filestream-bare — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE DATABASE d FROM DISK = 'a' WITH FILESTREAM;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/restore-encryption — LocalDB 17.0.1000.7 levels 100-170: rejected 155
+================================================================================
+
+RESTORE DATABASE d FROM DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_256, SERVER CERTIFICATE = c);
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) (keyword_certificate) value: (identifier))))))))
+
+================================================================================
+backup-restore/restore-compression — LocalDB 17.0.1000.7 levels 100-170: rejected 155
+================================================================================
+
+RESTORE DATABASE d FROM DISK = 'a' WITH COMPRESSION;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/restore-partial-page — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE DATABASE d PAGE = '1:1', PAGE = '1:2' FROM DISK = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/restore-filelistonly-no-from — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE FILELISTONLY;
+
+---
+
+(program (ERROR (keyword_restore) (keyword_filelistonly)) (batch))
+
+================================================================================
+backup-restore/restore-filelistonly-with-no-from — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+RESTORE FILELISTONLY WITH FILE = 1;
+
+---
+
+(program (ERROR (keyword_restore) (keyword_filelistonly) (keyword_file) (literal)) (batch))
+
+================================================================================
+backup-restore/restore-headeronly-files — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+RESTORE HEADERONLY FILE = 'f' FROM DISK = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_headeronly) (ERROR) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/restore-labelonly-name — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE LABELONLY d FROM DISK = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_labelonly) (ERROR) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/restore-verifyonly-stopat — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE VERIFYONLY FROM DISK = 'a' WITH STOPAT = '2024-01-01';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_verifyonly) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/restore-rewindonly-file — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE REWINDONLY FROM TAPE = 't' WITH FILE = 1;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_rewindonly) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/restore-rewindonly-disk — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE REWINDONLY FROM DISK = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_rewindonly) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/restore-headeronly-unknown-option — LocalDB 17.0.1000.7 levels 100-170: rejected 155
+================================================================================
+
+RESTORE HEADERONLY FROM DISK = 'a' WITH FOO;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_headeronly) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/restore-headeronly-move — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE HEADERONLY FROM DISK = 'a' WITH MOVE 'a' TO 'b';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_headeronly) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal) (keyword_to) (literal)))))))
+
+================================================================================
+backup-restore/restore-verifyonly-mirror — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE VERIFYONLY FROM DISK = 'a' MIRROR TO DISK = 'b';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_verifyonly) (keyword_from) (option name: (identifier) value: (literal)))) (ERROR (identifier) (keyword_to))))
+
+================================================================================
+backup-restore/restore-master-key-no-encryption — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE MASTER KEY FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p';
+
+---
+
+(program (ERROR (keyword_restore) (keyword_master) (keyword_key) (keyword_from) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_decryption) (keyword_by) (option name: (identifier) value: (literal)))) (batch))
+
+================================================================================
+backup-restore/restore-master-key-no-decryption — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE MASTER KEY FROM FILE = 'a' ENCRYPTION BY PASSWORD = 'p';
+
+---
+
+(program (ERROR (keyword_restore) (keyword_master) (keyword_key) (keyword_from) (option name: (identifier) value: (literal)) (keyword_encryption) (keyword_by) (identifier)) (batch))
+
+================================================================================
+backup-restore/restore-master-key-reversed — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE MASTER KEY FROM FILE = 'a' ENCRYPTION BY PASSWORD = 'q' DECRYPTION BY PASSWORD = 'p';
+
+---
+
+(program (ERROR (keyword_restore) (keyword_master) (keyword_key) (keyword_from) (option name: (identifier) value: (literal)) (ERROR (keyword_encryption) (keyword_by) (identifier)) (encryption_mechanism (keyword_decryption) (keyword_by) (option name: (identifier) value: (literal)))) (batch))
+
+================================================================================
+backup-restore/restore-master-key-force-first — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE MASTER KEY FROM FILE = 'a' FORCE DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_master) (keyword_key) (keyword_from) (option name: (identifier) value: (literal)) (ERROR) (encryption_mechanism (keyword_decryption) (keyword_by) (option name: (identifier) value: (literal))) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/restore-master-key-disk — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE MASTER KEY FROM DISK = 'a' DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q';
+
+---
+
+(program (ERROR (keyword_restore) (keyword_master) (keyword_key) (keyword_from) (keyword_decryption) (keyword_by) (identifier) (keyword_encryption) (keyword_by) (identifier)) (batch))
+
+================================================================================
+backup-restore/restore-master-key-var — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+DECLARE @f nvarchar(260) = N'x', @p nvarchar(260) = N'x', @q nvarchar(260) = N'x';
+RESTORE MASTER KEY FROM FILE = @f DECRYPTION BY PASSWORD = @p ENCRYPTION BY PASSWORD = @q;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (ERROR (keyword_restore) (keyword_master) (keyword_key) (keyword_from) (keyword_file) (keyword_decryption) (keyword_by) (identifier) (keyword_encryption) (keyword_by) (identifier))))
+
+================================================================================
+backup-restore/restore-master-key-certificate — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE MASTER KEY FROM FILE = 'a' DECRYPTION BY CERTIFICATE c ENCRYPTION BY PASSWORD = 'q';
+
+---
+
+(program (ERROR (keyword_restore) (keyword_master) (keyword_key) (keyword_from) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_decryption) (keyword_by) (ERROR (keyword_encryption) (keyword_by)) (option name: (identifier) value: (literal)))) (batch))
+
+================================================================================
+backup-restore/restore-service-master-key-encryption — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE SERVICE MASTER KEY FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_service) (keyword_master) (keyword_key) (keyword_from) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_decryption) (keyword_by) (option name: (identifier) value: (literal))))) (ERROR (identifier) (keyword_by) (identifier))))
+
+================================================================================
+backup-restore/restore-service-master-key-url — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE SERVICE MASTER KEY FROM URL = 'https://x/k' DECRYPTION BY PASSWORD = 'p';
+
+---
+
+(program (ERROR (keyword_restore) (keyword_service) (keyword_master) (keyword_key) (keyword_from) (keyword_decryption) (keyword_by) (identifier)) (batch))
+
+================================================================================
+backup-restore/restore-symmetric-key-force — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE SYMMETRIC KEY k FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q' FORCE;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_symmetric) (keyword_key) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_decryption) (keyword_by) (option name: (identifier) value: (literal))) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal))) (keyword_force)))))
+
+================================================================================
+backup-restore/restore-symmetric-key-no-encryption — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE SYMMETRIC KEY k FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p';
+
+---
+
+(program (ERROR (keyword_restore) (keyword_symmetric) (keyword_key) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_decryption) (keyword_by) (option name: (identifier) value: (literal)))) (batch))
+
+================================================================================
+backup-restore/restore-certificate — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE CERTIFICATE c FROM FILE = 'a';
+
+---
+
+(program (ERROR (keyword_restore) (keyword_from) (keyword_file)) (batch))
+
+================================================================================
+backup-restore/restore-asymmetric-key — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE ASYMMETRIC KEY k FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q';
+
+---
+
+(program (ERROR (keyword_restore) (keyword_key) (keyword_from) (keyword_file) (keyword_decryption) (keyword_by) (identifier) (keyword_encryption) (keyword_by) (identifier)) (batch))
+
+================================================================================
+backup-restore/restore-then-cte — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+;WITH c AS (SELECT 1 AS x) SELECT x FROM c;
+RESTORE DATABASE d FROM DISK = 'a'
+;WITH c AS (SELECT 1 AS x) SELECT x FROM c;
+
+---
+
+(program (batch (statement (keyword_with) (cte name: (identifier) (keyword_as) (statement (query_specification (select (keyword_select) (select_expression (term value: (literal) (keyword_as) alias: (identifier))))))) (query_specification (select (keyword_select) (select_expression (term value: (field name: (identifier))))) (from (keyword_from) (relation (object_reference name: (identifier)))))) (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)))) (statement (keyword_with) (cte name: (identifier) (keyword_as) (statement (query_specification (select (keyword_select) (select_expression (term value: (literal) (keyword_as) alias: (identifier))))))) (query_specification (select (keyword_select) (select_expression (term value: (field name: (identifier))))) (from (keyword_from) (relation (object_reference name: (identifier))))))))
+
+================================================================================
+backup-restore/backup-in-procedure — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE PROCEDURE p AS
+BACKUP DATABASE d TO DISK = 'a' WITH INIT;
+RESTORE DATABASE d FROM DISK = 'a' WITH REPLACE;
+
+---
+
+(program (batch (statement (create_procedure (keyword_create) (keyword_procedure) name: (object_reference name: (identifier)) body: (procedure_body (keyword_as) (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier))))) (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier))))))))))
+
+================================================================================
+backup-restore/restore-label — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+restore: PRINT 1;
+
+---
+
+(program (ERROR (keyword_restore)) (batch (statement (print_statement (keyword_print) (literal)))))
+
+================================================================================
+backup-restore/device-backup-disk — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/device-backup-tape — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO TAPE = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/device-backup-url — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO URL = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/device-backup-database-snapshot — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DATABASE_SNAPSHOT = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/device-backup-file — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+BACKUP DATABASE d TO FILE = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/device-backup-virtual-device — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO VIRTUAL_DEVICE = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/device-backup-pipe — LocalDB 17.0.1000.7 levels 100-170: rejected 155
+================================================================================
+
+BACKUP DATABASE d TO PIPE = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/device-restore-disk — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE DATABASE d FROM DISK = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/device-restore-tape — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE DATABASE d FROM TAPE = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/device-restore-url — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE DATABASE d FROM URL = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/device-restore-database-snapshot — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE DATABASE d FROM DATABASE_SNAPSHOT = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/device-restore-file — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+RESTORE DATABASE d FROM FILE = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/device-restore-virtual-device — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE DATABASE d FROM VIRTUAL_DEVICE = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/device-restore-pipe — LocalDB 17.0.1000.7 levels 100-170: rejected 155
+================================================================================
+
+RESTORE DATABASE d FROM PIPE = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/backup-log-differential — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP LOG d TO DISK = 'a' WITH DIFFERENTIAL;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_log) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/backup-server-differential — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP SERVER TO DISK = 'a' WITH DIFFERENTIAL, NAME = 'n';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_server) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/backup-server-move — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP SERVER TO DISK = 'a' WITH MOVE 'a' TO 'b';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_server) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal) (keyword_to) (literal)))))))
+
+================================================================================
+backup-restore/backup-server-with-only — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP SERVER WITH METADATA_ONLY;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_server) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/backup-log-no-to — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP LOG d;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_log) (identifier)))))
+
+================================================================================
+backup-restore/backup-log-with-only — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP LOG d WITH NO_TRUNCATE;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_log) (identifier) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/backup-group-no-to — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP GROUP a, b;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_group) (identifier) (identifier)))))
+
+================================================================================
+backup-restore/backup-group-bracketed — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP GROUP [a], b TO DISK = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_group) (identifier) (identifier) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/restore-labelonly-partial — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE LABELONLY FROM DISK = 'a' WITH PARTIAL;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_labelonly) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/restore-rewindonly-stopatmark — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE REWINDONLY FROM DISK = 'a' WITH STOPATMARK = 'm' AFTER 'x';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_rewindonly) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal) (keyword_after) (literal)))))))
+
+================================================================================
+backup-restore/restore-filelistonly-unknown — LocalDB 17.0.1000.7 levels 100-170: rejected 155
+================================================================================
+
+RESTORE FILELISTONLY FROM DISK = 'a' WITH FOO;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_filelistonly) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)))))))
+
+================================================================================
+backup-restore/restore-headeronly-name — LocalDB 17.0.1000.7 levels 100-170: rejected 155
+================================================================================
+
+RESTORE HEADERONLY FROM DISK = 'a' WITH NAME = 'x';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_headeronly) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/restore-log-move — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE LOG d FROM DISK = 'a' WITH MOVE 'a' TO 'b';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_log) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal) (keyword_to) (literal)))))))
+
+================================================================================
+backup-restore/restore-db-rwfg — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE DATABASE d READ_WRITE_FILEGROUPS FROM DISK = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (option name: (identifier)) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/restore-db-rwfg-filegroup — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE DATABASE d READ_WRITE_FILEGROUPS, FILEGROUP = 'g' FROM DISK = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (option name: (identifier)) (option name: (identifier) value: (literal)) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/restore-log-rwfg — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE LOG d READ_WRITE_FILEGROUPS FROM DISK = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_log) (identifier) (option name: (identifier)) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/restore-db-file-var — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+DECLARE @v nvarchar(260) = N'x', @p nvarchar(260) = N'x', @w nvarchar(260) = N'x';
+RESTORE DATABASE d FILE = @v, PAGE = @p FROM DISK = @w;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier)) (keyword_from) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+backup-restore/restore-db-file-number — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE DATABASE d FILE = 1 FROM DISK = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (option name: (identifier) value: (literal)) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/restore-db-filegroup-identifier — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE DATABASE d FILEGROUP = g FROM DISK = 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (option name: (identifier) value: (identifier)) (keyword_from) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/backup-db-file-identifier — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d FILE = f TO DISK = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (option name: (identifier) value: (identifier)) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/backup-db-filegroup-number — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d FILEGROUP = 1 TO DISK = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (option name: (identifier) value: (literal)) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/backup-db-rwfg-first-only — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d FILEGROUP = 'g', READ_WRITE_FILEGROUPS TO DISK = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (option name: (identifier) value: (literal)) (option name: (identifier)) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/backup-db-page-var — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+DECLARE @p nvarchar(260) = N'x', @w nvarchar(260) = N'x';
+BACKUP DATABASE d PAGE = @p TO DISK = @w;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (option name: (identifier) value: (identifier)) (keyword_to) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+backup-restore/device-backup-number — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 1;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/device-backup-identifier — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = foo;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+backup-restore/device-backup-mixed — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+DECLARE @v nvarchar(260) = N'x';
+BACKUP DATABASE d TO DISK = 'a', TAPE = 'b', dev1, @v;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)) (option name: (identifier)) (option name: (identifier))))))
+
+================================================================================
+backup-restore/device-backup-bracketed — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO [dev 1];
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier))))))
+
+================================================================================
+backup-restore/device-backup-string — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier))) (ERROR (keyword_to))))
+
+================================================================================
+backup-restore/device-restore-identifier — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE DATABASE d FROM DISK = foo;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+backup-restore/device-restore-string — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE DATABASE d FROM 'a';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier))) (ERROR (keyword_from))))
+
+================================================================================
+backup-restore/value-name-identifier — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH NAME = foo;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+backup-restore/value-stats-negative — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH STATS = -1;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (unary_expression operand: (literal))))))))
+
+================================================================================
+backup-restore/value-file-null — LocalDB 17.0.1000.7 levels 100-170: rejected 156
+================================================================================
+
+RESTORE DATABASE d FROM DISK = 'a' WITH FILE = NULL;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal (keyword_null))))))))
+
+================================================================================
+backup-restore/value-expiredate-number — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH EXPIREDATE = 20240101;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/value-description-unicode — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH DESCRIPTION = N'x';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/value-blocksize-hex — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH BLOCKSIZE = 0x10;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/value-stats-decimal — LocalDB 17.0.1000.7 levels 100-170: rejected 1080
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH STATS = 1.5;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/value-name-function — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH NAME = DB_NAME();
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (identifier))))) (ERROR)))
+
+================================================================================
+backup-restore/value-stats-unit — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH MAXTRANSFERSIZE = 4 MB;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal))))) (statement (label_statement (identifier) (MISSING ":")))))
+
+================================================================================
+backup-restore/encryption-cert — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_256, SERVER CERTIFICATE = c);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) (keyword_certificate) value: (identifier))))))))
+
+================================================================================
+backup-restore/encryption-asym — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_128, SERVER ASYMMETRIC KEY = k);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) (keyword_asymmetric) (keyword_key) value: (identifier))))))))
+
+================================================================================
+backup-restore/encryption-bracketed — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_256, SERVER CERTIFICATE = [c 1]);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) (keyword_certificate) value: (identifier))))))))
+
+================================================================================
+backup-restore/encryption-var — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+DECLARE @c nvarchar(260) = N'x';
+BACKUP DATABASE d TO DISK = N'a' WITH ENCRYPTION (ALGORITHM = AES_256, SERVER CERTIFICATE = @c);
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) (keyword_certificate) value: (identifier))))))))
+
+================================================================================
+backup-restore/encryption-algorithm-string — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = 'AES_256', SERVER CERTIFICATE = c);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (literal)) (option name: (identifier) (keyword_certificate) value: (identifier))))))))
+
+================================================================================
+backup-restore/encryption-algorithm-unknown — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = FOO, SERVER CERTIFICATE = c);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) (keyword_certificate) value: (identifier))))))))
+
+================================================================================
+backup-restore/encryption-algorithm-other-key — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (FOO = AES_256, SERVER CERTIFICATE = c);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) (keyword_certificate) value: (identifier))))))))
+
+================================================================================
+backup-restore/encryption-algorithm-var — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+DECLARE @a nvarchar(260) = N'x';
+BACKUP DATABASE d TO DISK = N'a' WITH ENCRYPTION (ALGORITHM = @a, SERVER CERTIFICATE = c);
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) (keyword_certificate) value: (identifier))))))))
+
+================================================================================
+backup-restore/encryption-no-comma — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_256 SERVER CERTIFICATE = c);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)))) (ERROR (keyword_with) (keyword_encryption) (option name: (identifier) value: (identifier)) (keyword_certificate))))
+
+================================================================================
+backup-restore/encryption-triple-des — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = TRIPLE_DES_3KEY, SERVER CERTIFICATE = c);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) (keyword_certificate) value: (identifier))))))))
+
+================================================================================
+backup-restore/encryption-twice — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH ENCRYPTION (ALGORITHM = AES_256, SERVER CERTIFICATE = c), ENCRYPTION (ALGORITHM = AES_256, SERVER CERTIFICATE = c);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) (keyword_certificate) value: (identifier))) (option name: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) (keyword_certificate) value: (identifier))))))))
+
+================================================================================
+backup-restore/compression-level-only — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (LEVEL = LOW);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier))))))))
+
+================================================================================
+backup-restore/compression-level-first — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (LEVEL = LOW, ALGORITHM = ZSTD);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier))))))))
+
+================================================================================
+backup-restore/compression-algorithm-unknown — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (ALGORITHM = FOO);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier))))))))
+
+================================================================================
+backup-restore/compression-algorithm-string — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (ALGORITHM = 'ZSTD');
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+backup-restore/compression-algorithm-var — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+DECLARE @a nvarchar(260) = N'x';
+BACKUP DATABASE d TO DISK = N'a' WITH COMPRESSION (ALGORITHM = @a);
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier))))))))
+
+================================================================================
+backup-restore/compression-algorithm-twice — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (ALGORITHM = ZSTD, ALGORITHM = ZSTD);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier))))))))
+
+================================================================================
+backup-restore/compression-level-unknown — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (ALGORITHM = ZSTD, LEVEL = FOO);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier))))))))
+
+================================================================================
+backup-restore/compression-level-number — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (ALGORITHM = ZSTD, LEVEL = 1);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+backup-restore/compression-empty — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION ();
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier (MISSING _identifier)))))))))
+
+================================================================================
+backup-restore/compression-and-flag — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION, COMPRESSION (ALGORITHM = ZSTD);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier)) (option name: (identifier) (option name: (identifier) value: (identifier))))))))
+
+================================================================================
+backup-restore/filestream-unknown-key — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE DATABASE d FROM DISK = 'a' WITH FILESTREAM (FOO = 'x');
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (literal))))))))
+
+================================================================================
+backup-restore/filestream-var — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+DECLARE @v nvarchar(260) = N'x';
+RESTORE DATABASE d FROM DISK = N'a' WITH FILESTREAM (DIRECTORY_NAME = @v);
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier))))))))
+
+================================================================================
+backup-restore/filestream-identifier — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE DATABASE d FROM DISK = 'a' WITH FILESTREAM (DIRECTORY_NAME = x);
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier))))))))
+
+================================================================================
+backup-restore/move-mixed — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+DECLARE @b nvarchar(260) = N'x', @c nvarchar(260) = N'x';
+RESTORE DATABASE d FROM DISK = N'a' WITH MOVE N'a' TO @b, MOVE @c TO 'x';
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal) (keyword_to) (identifier)) (option name: (identifier) value: (identifier) (keyword_to) (literal)))))))
+
+================================================================================
+backup-restore/move-number — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE DATABASE d FROM DISK = 'a' WITH MOVE 1 TO 2;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal) (keyword_to) (literal)))))))
+
+================================================================================
+backup-restore/move-filegroup-paren — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE DATABASE d FROM DISK = 'a' WITH MOVE 'a' TO 'b' (c);
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal) (keyword_to) (literal))))) (ERROR)))
+
+================================================================================
+backup-restore/mark-plain — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE LOG d FROM DISK = 'a' WITH STOPATMARK = 'm';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_log) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/mark-after-number — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE LOG d FROM DISK = 'a' WITH STOPATMARK = 'm' AFTER 1;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_log) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal) (keyword_after) (literal)))))))
+
+================================================================================
+backup-restore/mark-identifier — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE LOG d FROM DISK = 'a' WITH STOPATMARK = m;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_log) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+backup-restore/stopat-var — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+DECLARE @t nvarchar(260) = N'x';
+RESTORE LOG d FROM DISK = N'a' WITH STOPAT = @t;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (statement (restore_statement (keyword_restore) (keyword_log) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (identifier)))))))
+
+================================================================================
+backup-restore/key-backup-master-file-var — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+DECLARE @f nvarchar(260) = N'x';
+BACKUP MASTER KEY TO FILE = @f ENCRYPTION BY PASSWORD = 'p';
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (ERROR (keyword_backup) (keyword_master) (keyword_key) (keyword_to) (option name: (identifier) (ERROR (keyword_encryption) (keyword_by) (identifier)) value: (literal)))))
+
+================================================================================
+backup-restore/key-backup-master-password-var — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+DECLARE @p nvarchar(260) = N'x';
+BACKUP MASTER KEY TO FILE = 'a' ENCRYPTION BY PASSWORD = @p;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (ERROR (keyword_backup) (keyword_master) (keyword_key) (keyword_to) (option name: (identifier) value: (literal)) (keyword_encryption) (keyword_by) (identifier))))
+
+================================================================================
+backup-restore/key-backup-master-unicode — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP MASTER KEY TO FILE = N'a' ENCRYPTION BY PASSWORD = N'p';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_master) (keyword_key) (keyword_to) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/key-backup-master-number — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP MASTER KEY TO FILE = 1 ENCRYPTION BY PASSWORD = 'p';
+
+---
+
+(program (ERROR (keyword_backup) (keyword_master) (keyword_key) (keyword_to) (option name: (identifier) (ERROR (literal) (keyword_encryption) (keyword_by) (identifier)) value: (literal))) (batch))
+
+================================================================================
+backup-restore/key-backup-service-master-force — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP SERVICE MASTER KEY TO FILE = 'a' ENCRYPTION BY PASSWORD = 'p' FORCE;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_service) (keyword_master) (keyword_key) (keyword_to) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal))))) (statement (label_statement (identifier) (MISSING ":")))))
+
+================================================================================
+backup-restore/key-backup-symmetric-var — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+DECLARE @f nvarchar(260) = N'x';
+BACKUP SYMMETRIC KEY k TO FILE = @f ENCRYPTION BY PASSWORD = 'p';
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (ERROR (keyword_backup) (keyword_symmetric) (keyword_key) (identifier) (keyword_to) (option name: (identifier) (ERROR (keyword_encryption) (keyword_by) (identifier)) value: (literal)))))
+
+================================================================================
+backup-restore/key-backup-symmetric-bracketed — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP SYMMETRIC KEY [k 1] TO FILE = 'a' ENCRYPTION BY PASSWORD = 'p';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_symmetric) (keyword_key) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/key-backup-symmetric-disk — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP SYMMETRIC KEY k TO DISK = 'a' ENCRYPTION BY PASSWORD = 'p';
+
+---
+
+(program (ERROR (keyword_backup) (keyword_symmetric) (keyword_key) (identifier) (keyword_to) (keyword_encryption) (keyword_by) (identifier)) (batch))
+
+================================================================================
+backup-restore/key-restore-master-plain — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE MASTER KEY FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_master) (keyword_key) (keyword_from) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_decryption) (keyword_by) (option name: (identifier) value: (literal))) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/key-restore-master-file-var — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+DECLARE @f nvarchar(260) = N'x';
+RESTORE MASTER KEY FROM FILE = @f DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q';
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (ERROR (keyword_restore) (keyword_master) (keyword_key) (keyword_from) (option name: (identifier) (ERROR (keyword_decryption) (keyword_by) (identifier)) value: (literal)) (keyword_encryption) (keyword_by) (identifier))))
+
+================================================================================
+backup-restore/key-restore-master-password-var — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+DECLARE @p nvarchar(260) = N'x';
+RESTORE MASTER KEY FROM FILE = 'a' DECRYPTION BY PASSWORD = @p ENCRYPTION BY PASSWORD = 'q';
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (ERROR (keyword_restore) (keyword_master) (keyword_key) (keyword_from) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_decryption) (keyword_by) (ERROR (identifier) (keyword_encryption) (keyword_by)) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/key-restore-service-plain — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE SERVICE MASTER KEY FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_service) (keyword_master) (keyword_key) (keyword_from) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_decryption) (keyword_by) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/key-restore-service-var — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+DECLARE @p nvarchar(260) = N'x';
+RESTORE SERVICE MASTER KEY FROM FILE = 'a' DECRYPTION BY PASSWORD = @p;
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (ERROR (keyword_restore) (keyword_service) (keyword_master) (keyword_key) (keyword_from) (option name: (identifier) value: (literal)) (keyword_decryption) (keyword_by) (identifier))))
+
+================================================================================
+backup-restore/key-restore-symmetric-plain — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE SYMMETRIC KEY k FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q';
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_symmetric) (keyword_key) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_decryption) (keyword_by) (option name: (identifier) value: (literal))) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/key-restore-symmetric-url-force — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE SYMMETRIC KEY k FROM URL = 'a' DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q' FORCE;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_symmetric) (keyword_key) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_decryption) (keyword_by) (option name: (identifier) value: (literal))) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal))) (keyword_force)))))
+
+================================================================================
+backup-restore/key-restore-symmetric-reversed — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE SYMMETRIC KEY k FROM FILE = 'a' ENCRYPTION BY PASSWORD = 'q' DECRYPTION BY PASSWORD = 'p';
+
+---
+
+(program (ERROR (keyword_restore) (keyword_symmetric) (keyword_key) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (ERROR (keyword_encryption) (keyword_by) (identifier)) (encryption_mechanism (keyword_decryption) (keyword_by) (option name: (identifier) value: (literal)))) (batch))
+
+================================================================================
+backup-restore/key-restore-master-force-twice — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE MASTER KEY FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p' ENCRYPTION BY PASSWORD = 'q' FORCE FORCE;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_master) (keyword_key) (keyword_from) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_decryption) (keyword_by) (option name: (identifier) value: (literal))) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal))) (keyword_force))) (statement (label_statement (identifier) (MISSING ":")))))
+
+================================================================================
+backup-restore/cert-pfx-der — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' WITH FORMAT = 'DER';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/cert-pfx-unknown — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' WITH FORMAT = 'FOO';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/cert-format-identifier — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' WITH FORMAT = PFX;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+backup-restore/cert-format-twice — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' WITH FORMAT = 'PFX', FORMAT = 'PFX';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/cert-pk-twice — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (ENCRYPTION BY PASSWORD = 'p'), PRIVATE KEY (ENCRYPTION BY PASSWORD = 'p');
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (keyword_private) (keyword_key) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal))) (keyword_private) (keyword_key) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/cert-pk-encryption-only — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (ENCRYPTION BY PASSWORD = 'p');
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (keyword_private) (keyword_key) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/cert-pk-file-only — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (FILE = 'b');
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (keyword_private) (keyword_key) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/cert-pk-unknown — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (FOO = 'b', ENCRYPTION BY PASSWORD = 'p');
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (keyword_private) (keyword_key) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/cert-pk-file-var — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+DECLARE @f nvarchar(260) = N'x';
+BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (FILE = @f, ENCRYPTION BY PASSWORD = 'p');
+
+---
+
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nvarchar (keyword_nvarchar) size: (literal)) (literal)))) (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (keyword_private) (keyword_key) (option name: (identifier) value: (identifier)) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/cert-pk-format-pk — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (ENCRYPTION BY PASSWORD = 'p'), FORMAT = 'PFX', PRIVATE KEY (FILE = 'b');
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (keyword_private) (keyword_key) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal))) (option name: (identifier) value: (literal)) (keyword_private) (keyword_key) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/cert-unicode-file — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = N'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/cert-bracketed — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP CERTIFICATE [c 1] TO FILE = 'a';
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/cert-pk-algorithm — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (FILE = 'b', ENCRYPTION BY PASSWORD = 'p', ALGORITHM = 'AES_256');
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (keyword_private) (keyword_key) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal))) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/cert-pk-algorithm-unknown — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (FILE = 'b', ENCRYPTION BY PASSWORD = 'p', ALGORITHM = 'FOO');
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (keyword_private) (keyword_key) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal))) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/cert-pk-algorithm-identifier — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (FILE = 'b', ENCRYPTION BY PASSWORD = 'p', ALGORITHM = AES_256);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (keyword_private) (keyword_key) (option name: (identifier) value: (literal)) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal))) (option name: (identifier) value: (identifier))))))
+
+================================================================================
+backup-restore/cert-pk-algorithm-twice — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (FILE = 'b', ALGORITHM = 'AES_256', ALGORITHM = 'AES_256');
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (keyword_private) (keyword_key) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/cert-pk-algorithm-no-file — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' WITH PRIVATE KEY (ENCRYPTION BY PASSWORD = 'p', ALGORITHM = 'AES_256');
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (keyword_private) (keyword_key) (encryption_mechanism (keyword_encryption) (keyword_by) (option name: (identifier) value: (literal))) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/cert-pk-algorithm-format — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP CERTIFICATE c TO FILE = 'a' WITH FORMAT = 'PFX', PRIVATE KEY (ALGORITHM = 'AES_256', FILE = 'b');
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_certificate) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (keyword_with) (option name: (identifier) value: (literal)) (keyword_private) (keyword_key) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal))))))
+
+================================================================================
+backup-restore/compression-zstd-level — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (ALGORITHM = ZSTD, LEVEL = HIGH);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier))))))))
+
+================================================================================
+backup-restore/compression-xpress-medium — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO DISK = 'a' WITH COMPRESSION (ALGORITHM = MS_XPRESS, LEVEL = MEDIUM);
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) (option name: (identifier) value: (identifier)) (option name: (identifier) value: (identifier))))))))
+
+================================================================================
+backup-restore/backup-if-body — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+IF 1 = 1 BACKUP LOG d TO DISK = 'a' ELSE RESTORE LOG d FROM DISK = 'a' WITH NORECOVERY;
+
+---
+
+(program (batch (statement (if_statement (keyword_if) condition: (binary_expression left: (literal) right: (literal)) consequence: (statement (backup_statement (keyword_backup) (keyword_log) (identifier) (keyword_to) (option name: (identifier) value: (literal)))) alternative: (else_clause (keyword_else) (statement (restore_statement (keyword_restore) (keyword_log) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier))))))))))
+
+================================================================================
+backup-restore/restore-file-negative — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE DATABASE d FROM DISK = 'a' WITH FILE = -1;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_database) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (unary_expression operand: (literal))))))))
+
+================================================================================
+backup-restore/restore-stopat-number — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+RESTORE LOG d FROM DISK = 'a' WITH STOPAT = 1;
+
+---
+
+(program (batch (statement (restore_statement (keyword_restore) (keyword_log) (identifier) (keyword_from) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/backup-url-credential-options — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+BACKUP DATABASE d TO URL = 'https://x/y.bak' WITH CREDENTIAL = 'c', BACKUP_OPTIONS = '{}', STATS = 5;
+
+---
+
+(program (batch (statement (backup_statement (keyword_backup) (keyword_database) (identifier) (keyword_to) (option name: (identifier) value: (literal)) (with_clause (keyword_with) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)) (option name: (identifier) value: (literal)))))))
+
+================================================================================
+backup-restore/restore-labelonly-no-with-no-from — LocalDB 17.0.1000.7 levels 100-170: rejected 102
+================================================================================
+
+RESTORE LABELONLY;
+
+---
+
+(program (ERROR (keyword_restore) (keyword_labelonly)) (batch))

@@ -31,9 +31,11 @@ export default {
     choice(alias($.encryption_mechanism, $.key_encryptor), alias($._encryptor, $.key_encryptor)),
 
   // WITH PRIVATE KEY ( FILE = 'path' | BINARY = 0x..., { ENCRYPTION | DECRYPTION } BY PASSWORD = 'x' [, ...] )
-  private_key_clause: ($) =>
+  private_key_clause: ($) => seq($.keyword_with, $._private_key),
+
+  // PRIVATE KEY (...) without its WITH; BACKUP CERTIFICATE lists it among other options.
+  _private_key: ($) =>
     seq(
-      $.keyword_with,
       $.keyword_private,
       $.keyword_key,
       paren_list(choice($.option, $.encryption_mechanism), true),
