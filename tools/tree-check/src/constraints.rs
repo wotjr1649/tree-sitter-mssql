@@ -924,18 +924,20 @@ fn scalar_function_return(function: Node, out: &mut Vec<Violation>) {
 /// in the query, subqueries included). A set operation is exempt. Evidence: SQL Server 2025 LocalDB
 /// 17.0.1000.7, levels 100-170, oracle set `context/cte-*` and cte-none: Msg 422 for a FROM-less
 /// SELECT (also with two CTEs); accepted with FROM in the query or a subquery, for UNION, and for
-/// INSERT and UPDATE.
+/// INSERT and UPDATE. A WITH XMLNAMESPACES alone is not a CTE; FOR also permits a FROM-less
+/// query (surface-fix-constraints, LocalDB 17.0.1000.7, levels 100-170).
 fn cte_table_source(statement: Node, out: &mut Vec<Violation>) {
     let mut cursor = statement.walk();
     let children: Vec<Node> = statement.named_children(&mut cursor).collect();
     if children.first().map(|n| n.kind()) != Some("keyword_with")
+        || !children.iter().any(|n| n.kind() == "cte")
         || !children.iter().any(|n| n.kind() == "query_specification")
     {
         return;
     }
     let mut stack: Vec<Node> = children.into_iter().filter(|n| n.kind() != "cte").collect();
     while let Some(n) = stack.pop() {
-        if matches!(n.kind(), "from" | "relation") {
+        if matches!(n.kind(), "from" | "relation" | "for_clause") {
             return;
         }
         let mut c = n.walk();
@@ -2972,14 +2974,16 @@ fn assigned_keyword(option: Option<&Node>, key: &str, words: &[&str], source: &[
 }
 
 /// BACKUP CERTIFICATE ... WITH: one FORMAT = 'string'; the PRIVATE KEY lists together need FILE =
-/// 'string' and take FILE, ALGORITHM = 'string', ENCRYPTION BY and DECRYPTION BY PASSWORD =
-/// 'string' once each (`cert-pk-*`: Msg 102 for a repeat, a variable, an unknown key or no FILE).
+/// 'string' with DER (also the default), and take FILE, ALGORITHM = 'string', ENCRYPTION BY and
+/// DECRYPTION BY PASSWORD = 'string' once each. Any non-DER format permits an inline key at parse
+/// time (surface-fix-constraints, LocalDB 17.0.1000.7, levels 100-170).
 fn backup_certificate(children: &[Node], source: &[u8], out: &mut Vec<Violation>) {
     let Some(with) = children.iter().position(|n| n.kind() == "keyword_with") else {
         return;
     };
     let mut in_key = false;
     let mut any_key = false;
+    let mut inline_key = false;
     let mut seen: Vec<String> = Vec::new();
     for node in &children[with..] {
         let (name, ok) = match node.kind() {
@@ -2993,6 +2997,17 @@ fn backup_certificate(children: &[Node], source: &[u8], out: &mut Vec<Violation>
             }
             "option" => {
                 let name = option_name(*node, source);
+                if !in_key && name == "FORMAT" {
+                    inline_key = node.child_by_field_name("value").is_some_and(|v| {
+                        let text = upper_text(v, source);
+                        let text = text.strip_prefix('N').unwrap_or(&text);
+                        string_literal(v, source)
+                            && text
+                                .strip_prefix('\'')
+                                .and_then(|s| s.strip_suffix('\''))
+                                .is_some_and(|s| s.trim_end_matches(' ') != "DER")
+                    });
+                }
                 let ok = if in_key {
                     matches!(name.as_str(), "FILE" | "ALGORITHM")
                 } else {
@@ -3025,10 +3040,10 @@ fn backup_certificate(children: &[Node], source: &[u8], out: &mut Vec<Violation>
         };
         out.push(violation("backup-certificate-options", problem, *node));
     }
-    if any_key && !seen.iter().any(|n| n == "FILE") {
+    if any_key && !inline_key && !seen.iter().any(|n| n == "FILE") {
         out.push(violation(
             "backup-certificate-options",
-            "PRIVATE KEY needs FILE = 'path'".into(),
+            "DER PRIVATE KEY needs FILE = 'path'".into(),
             children[with],
         ));
     }
@@ -3796,9 +3811,11 @@ fn gap_scalar(node: Node, source: &[u8], out: &mut Vec<Violation>) {
                             && n.child_by_field_name("operator")
                                 .is_some_and(|o| o.kind() == "=")
                             && n.child_by_field_name("left").is_some_and(|l| {
-                                l.kind() == "field"
-                                    && l.named_child_count() == 1
-                                    && l.named_child(0).is_some_and(|id| id.kind() == "identifier")
+                                string_literal(l, source)
+                                    || l.kind() == "field"
+                                        && l.named_child_count() == 1
+                                        && l.named_child(0)
+                                            .is_some_and(|id| id.kind() == "identifier")
                             }))
                 })
         }
@@ -4444,6 +4461,25 @@ mod tests {
             .into_iter()
             .map(|v| v.rule)
             .collect()
+    }
+
+    #[test]
+    fn surface_constraint_neighbours_match_the_engine() {
+        let verdict: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../oracle/verdicts/localdb-17.0.1000.7.surface-fix-constraints.json"
+        ))
+        .unwrap();
+        for line in include_str!("../../../oracle/probes/surface-fix-constraints.jsonl").lines() {
+            let case: serde_json::Value = serde_json::from_str(line).unwrap();
+            let id = case["id"].as_str().unwrap();
+            let sql = case["source"].as_str().unwrap();
+            let accepted = verdict["verdicts"][id]
+                .as_object()
+                .unwrap()
+                .values()
+                .any(|v| v.as_array().is_some_and(|a| a.is_empty()));
+            assert_eq!(rules(sql).is_empty(), accepted, "{id}: {:?}", rules(sql));
+        }
     }
 
     #[test]
