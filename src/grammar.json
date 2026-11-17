@@ -47,6 +47,43 @@
         }
       ]
     },
+    "_graph_identifier": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_identifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_bracketed_identifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_double_quote_string"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_tsql_parameter"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_temporary_table"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_dollar_identifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_dollar_graph"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_sqlcmd_variable"
+        }
+      ]
+    },
     "_create_table_name": {
       "type": "CHOICE",
       "members": [
@@ -2957,6 +2994,14 @@
     "keyword_max": {
       "type": "PATTERN",
       "value": "[mM][aA][xX]"
+    },
+    "keyword_redistribute": {
+      "type": "PATTERN",
+      "value": "[rR][eE][dD][iI][sS][tT][rR][iI][bB][uU][tT][eE]"
+    },
+    "keyword_distributed_agg": {
+      "type": "PATTERN",
+      "value": "[dD][iI][sS][tT][rR][iI][bB][uU][tT][eE][dD][__][aA][gG][gG]"
     },
     "keyword_for_system_time": {
       "type": "TOKEN",
@@ -8709,8 +8754,13 @@
                       "type": "FIELD",
                       "name": "node",
                       "content": {
-                        "type": "SYMBOL",
-                        "name": "identifier"
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "SYMBOL",
+                          "name": "_graph_identifier"
+                        },
+                        "named": true,
+                        "value": "identifier"
                       }
                     },
                     {
@@ -8756,8 +8806,13 @@
                               "type": "FIELD",
                               "name": "node",
                               "content": {
-                                "type": "SYMBOL",
-                                "name": "identifier"
+                                "type": "ALIAS",
+                                "content": {
+                                  "type": "SYMBOL",
+                                  "name": "_graph_identifier"
+                                },
+                                "named": true,
+                                "value": "identifier"
                               }
                             },
                             {
@@ -8783,8 +8838,13 @@
                       "type": "FIELD",
                       "name": "node",
                       "content": {
-                        "type": "SYMBOL",
-                        "name": "identifier"
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "SYMBOL",
+                          "name": "_graph_identifier"
+                        },
+                        "named": true,
+                        "value": "identifier"
                       }
                     }
                   ]
@@ -8883,8 +8943,13 @@
             "type": "CHOICE",
             "members": [
               {
-                "type": "SYMBOL",
-                "name": "identifier"
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_graph_identifier"
+                },
+                "named": true,
+                "value": "identifier"
               },
               {
                 "type": "SYMBOL",
@@ -8977,8 +9042,13 @@
             "type": "CHOICE",
             "members": [
               {
-                "type": "SYMBOL",
-                "name": "identifier"
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_graph_identifier"
+                },
+                "named": true,
+                "value": "identifier"
               },
               {
                 "type": "SYMBOL",
@@ -8996,8 +9066,13 @@
           "type": "FIELD",
           "name": "edge",
           "content": {
-            "type": "SYMBOL",
-            "name": "identifier"
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_graph_identifier"
+            },
+            "named": true,
+            "value": "identifier"
           }
         },
         {
@@ -9013,8 +9088,13 @@
                 "type": "FIELD",
                 "name": "edge",
                 "content": {
-                  "type": "SYMBOL",
-                  "name": "identifier"
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_graph_identifier"
+                  },
+                  "named": true,
+                  "value": "identifier"
                 }
               }
             ]
@@ -15586,34 +15666,38 @@
       }
     },
     "reconfigure_statement": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "keyword_reconfigure"
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SEQ",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "keyword_with"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "keyword_override"
-                }
-              ]
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        }
-      ]
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "keyword_reconfigure"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "keyword_with"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "keyword_override"
+                  }
+                ]
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        ]
+      }
     },
     "enable_trigger_statement": {
       "type": "SEQ",
@@ -36179,14 +36263,6 @@
         }
       ]
     },
-    "keyword_redistribute": {
-      "type": "PATTERN",
-      "value": "[rR][eE][dD][iI][sS][tT][rR][iI][bB][uU][tT][eE]"
-    },
-    "keyword_distributed_agg": {
-      "type": "PATTERN",
-      "value": "[dD][iI][sS][tT][rR][iI][bB][uU][tT][eE][dD][__][aA][gG][gG]"
-    },
     "cross_join": {
       "type": "SEQ",
       "members": [
@@ -37801,30 +37877,6 @@
           ]
         }
       ]
-    },
-    "_queue_activation": {
-      "type": "PATTERN",
-      "value": "[aA][cC][tT][iI][vV][aA][tT][iI][oO][nN]"
-    },
-    "_queue_retention": {
-      "type": "PATTERN",
-      "value": "[rR][eE][tT][eE][nN][tT][iI][oO][nN]"
-    },
-    "_queue_poison": {
-      "type": "PATTERN",
-      "value": "[pP][oO][iI][sS][oO][nN][__][mM][eE][sS][sS][aA][gG][eE][__][hH][aA][nN][dD][lL][iI][nN][gG]"
-    },
-    "_queue_status": {
-      "type": "PATTERN",
-      "value": "[sS][tT][aA][tT][uU][sS]"
-    },
-    "_queue_procedure": {
-      "type": "PATTERN",
-      "value": "[pP][rR][oO][cC][eE][dD][uU][rR][eE][__][nN][aA][mM][eE]"
-    },
-    "_queue_readers": {
-      "type": "PATTERN",
-      "value": "[mM][aA][xX][__][qQ][uU][eE][uU][eE][__][rR][eE][aA][dD][eE][rR][sS]"
     },
     "begin_dialog_statement": {
       "type": "PREC_RIGHT",
@@ -46492,9 +46544,6 @@
       "dbcc_statement"
     ],
     [
-      "reconfigure_statement"
-    ],
-    [
       "raiserror_statement"
     ],
     [
@@ -46670,6 +46719,30 @@
     {
       "type": "SYMBOL",
       "name": "_else_semicolon"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_queue_activation"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_queue_retention"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_queue_poison"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_queue_status"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_queue_procedure"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_queue_readers"
     }
   ],
   "inline": [

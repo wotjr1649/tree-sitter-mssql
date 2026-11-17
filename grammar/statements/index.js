@@ -717,8 +717,9 @@ export default {
     ),
 
   // RECONFIGURE [WITH OVERRIDE]
+  // WITH after RECONFIGURE is always its OVERRIDE option: SQL Server requires a `;` before a CTE (Msg 319).
   reconfigure_statement: ($) =>
-    seq($.keyword_reconfigure, optional(seq($.keyword_with, $.keyword_override))),
+    prec.right(seq($.keyword_reconfigure, optional(seq($.keyword_with, $.keyword_override)))),
 
   // { ENABLE | DISABLE } TRIGGER { ALL | name [, ...] } ON { table | DATABASE | ALL SERVER }
   enable_trigger_statement: ($) =>

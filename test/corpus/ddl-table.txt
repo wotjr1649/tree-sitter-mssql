@@ -1110,9 +1110,7 @@ CREATE TABLE dbo.t (c int,CONSTRAINT ec CONNECTION(dbo.p dbo.q)) AS EDGE;
             (identifier)
             (keyword_connection)
             (object_reference
-              database: (identifier)
               schema: (identifier)
-              (ERROR)
               name: (identifier))))
         (table_data_placement
           option: (identifier)

@@ -1,4 +1,4 @@
-import { comma_list, make_keyword, paren_list, wrapped_in_parenthesis } from '../helpers.js';
+import { comma_list, paren_list, wrapped_in_parenthesis } from '../helpers.js';
 
 // Service Broker DML: the statements that open, use and close a
 // conversation. The DDL half (CREATE QUEUE / CONTRACT / MESSAGE TYPE /
@@ -102,13 +102,6 @@ export default {
       $.keyword_as,
       choice($.keyword_self, $.keyword_owner, alias($._single_quote_string, $.literal)),
     ),
-
-  _queue_activation: (_) => make_keyword('activation'),
-  _queue_retention: (_) => make_keyword('retention'),
-  _queue_poison: (_) => make_keyword('poison_message_handling'),
-  _queue_status: (_) => make_keyword('status'),
-  _queue_procedure: (_) => make_keyword('procedure_name'),
-  _queue_readers: (_) => make_keyword('max_queue_readers'),
 
   // BEGIN DIALOG [CONVERSATION] @handle
   //   FROM SERVICE name TO SERVICE { 'name' | @name } [, { 'broker_instance' | @broker_instance }]

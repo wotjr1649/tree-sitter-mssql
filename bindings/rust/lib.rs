@@ -264,6 +264,24 @@ GO
         assert!(n <= 11, "MERGE joined source relexes too much: {n}");
     }
 
+    /// `tree-sitter generate` compiles the whole `parser.c` without optimization
+    /// (`#pragma GCC optimize ("O0")` and its clang/MSVC forms) once the main
+    /// lex table has more than 300 states; that made 2.0.0 parse about 30 %
+    /// slower than 1.0.0. A keyword-shaped token defined after `_identifier`
+    /// is the usual cause: it cannot be a keyword and keeps others out too.
+    #[test]
+    fn generated_parser_keeps_compiler_optimization() {
+        use std::io::Read;
+        let mut head = [0u8; 4096];
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/src/parser.c");
+        let n = std::fs::File::open(path).unwrap().read(&mut head).unwrap();
+        let head = String::from_utf8_lossy(&head[..n]);
+        assert!(
+            !head.contains("optimize"),
+            "src/parser.c turns optimization off: the main lex table exceeds 300 states"
+        );
+    }
+
     #[test]
     fn incremental_procedure_body_matches_a_fresh_parse() {
         // Each body item can also start a batch item. The body takes it, and a reparse after an edit

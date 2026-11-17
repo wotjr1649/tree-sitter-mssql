@@ -253,14 +253,19 @@ export default {
         choice(
           seq($.graph_path, '+'),
           seq(
-            field('node', $.identifier),
+            field('node', alias($._graph_identifier, $.identifier)),
             wrapped_in_parenthesis(repeat1($.graph_hop)),
             $._graph_quantifier,
           ),
           seq(
-            wrapped_in_parenthesis(seq(field('node', $.identifier), repeat1($._graph_reverse_hop))),
+            wrapped_in_parenthesis(
+              seq(
+                field('node', alias($._graph_identifier, $.identifier)),
+                repeat1($._graph_reverse_hop),
+              ),
+            ),
             $._graph_quantifier,
-            field('node', $.identifier),
+            field('node', alias($._graph_identifier, $.identifier)),
           ),
         ),
       ),
@@ -277,7 +282,10 @@ export default {
   // node -(edge)-> node [ -(edge)-> node ... ], or the reverse <-(edge)-
   // form. Each hop is one edge traversal; a path chains one or more.
   graph_path: ($) =>
-    seq(field('node', choice($.identifier, $.graph_last_node)), repeat1($.graph_hop)),
+    seq(
+      field('node', choice(alias($._graph_identifier, $.identifier), $.graph_last_node)),
+      repeat1($.graph_hop),
+    ),
 
   graph_hop: ($) =>
     seq(
@@ -285,13 +293,16 @@ export default {
         seq('-', wrapped_in_parenthesis($._graph_edge_names), '->'),
         seq('<-', wrapped_in_parenthesis($._graph_edge_names), '-'),
       ),
-      field('node', choice($.identifier, $.graph_last_node)),
+      field('node', choice(alias($._graph_identifier, $.identifier), $.graph_last_node)),
     ),
 
   // One or more `|`-separated edge-table names — a polymorphic edge
   // pattern spanning heterogeneous edge tables, e.g. `-(led_by|reports_to)->`.
   _graph_edge_names: ($) =>
-    seq(field('edge', $.identifier), repeat(seq('|', field('edge', $.identifier)))),
+    seq(
+      field('edge', alias($._graph_identifier, $.identifier)),
+      repeat(seq('|', field('edge', alias($._graph_identifier, $.identifier)))),
+    ),
 
   // name(args). `DEFAULT` is a legal argument to a procedure or function
   // call, and STRING_AGG takes a WITHIN GROUP (ORDER BY ...) suffix. The

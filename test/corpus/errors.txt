@@ -207,7 +207,8 @@ ALTER SECURITY POLICY p;
     (keyword_alter)
     (keyword_security)
     (keyword_policy)
-    (identifier))
+    (object_reference
+      name: (identifier)))
   (batch))
 
 ==================
@@ -772,7 +773,7 @@ SELECT * FROM (WITH c AS (SELECT 1 AS a) SELECT a FROM c) d;
 
 ---
 
-(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (subquery (ERROR (relation (object_reference (identifier)) (identifier) (ERROR) (list (column (identifier)) (ERROR (keyword_as))))) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier)))))) (identifier)))))))
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (all_fields)))) (from (keyword_from) (relation (subquery (ERROR (relation (object_reference (identifier)) (identifier) (ERROR) (list (column (identifier)) (ERROR (literal) (keyword_as))))) (query_specification (select (keyword_select) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier)))))) (identifier)))))))
 
 ================================================================================
 SELECT INTO is legal on a later set-operation branch (LocalDB 17.0.1000.7 levels 100-170)
