@@ -520,6 +520,14 @@ export default {
   keyword_geography: (_) => make_keyword('geography'),
   keyword_max: (_) => make_keyword('max'),
 
+  // Keyword-shaped tokens of later rule files are defined here, before `_identifier`: a token
+  // defined after it loses the same string to it (rule order), cannot be a keyword candidate,
+  // and then blocks the extraction of every keyword it conflicts with, which keeps the main lex
+  // table above the 300 states at which tree-sitter generate compiles the lexer without
+  // optimization (render.rs add_pragmas).
+  keyword_redistribute: (_) => make_keyword('redistribute'),
+  keyword_distributed_agg: (_) => make_keyword('distributed_agg'),
+
   // Temporal tables, AT TIME ZONE, TABLESAMPLE, CHANGETABLE, OPENDATASOURCE
   //
   // Keep atomic multi-word tokens for existing comment-free trees; the corresponding

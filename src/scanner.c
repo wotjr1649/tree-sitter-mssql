@@ -11,6 +11,7 @@
 // Hint numbers also need lookahead so 1ROWLOCK is accepted without splitting
 // a hexadecimal, decimal or exponent literal into a number and a hint.
 #include "tree_sitter/parser.h"
+#include <string.h>
 
 enum TokenType {
   MARGINALIA,
@@ -28,6 +29,17 @@ enum TokenType {
   SPACED_NOT_LESS,
   SPACED_NOT_GREATER,
   ELSE_SEMICOLON,
+  QUEUE_ACTIVATION,
+  QUEUE_RETENTION,
+  QUEUE_POISON,
+  QUEUE_STATUS,
+  QUEUE_PROCEDURE,
+  QUEUE_READERS,
+};
+
+// Service Broker queue option names, in TokenType order from QUEUE_ACTIVATION.
+static const char *const QUEUE_WORDS[] = {
+  "ACTIVATION", "RETENTION", "POISON_MESSAGE_HANDLING", "STATUS", "PROCEDURE_NAME", "MAX_QUEUE_READERS",
 };
 
 void *tree_sitter_mssql_external_scanner_create(void) { return NULL; }
@@ -242,6 +254,35 @@ bool tree_sitter_mssql_external_scanner_scan(void *payload, TSLexer *lexer, cons
   if (valid_symbols[ELSE_SEMICOLON] && !recovering) {
     while (is_space(lexer->lookahead)) lexer->advance(lexer, true);
     if (lexer->lookahead == ';') return scan_else_semicolon(lexer);
+  }
+  // A queue option name is the whole word, case-insensitively, as a keyword would be. Not during error
+  // recovery, where the word stays an identifier.
+  if (!recovering) {
+    bool any = false;
+    for (int k = QUEUE_ACTIVATION; k <= QUEUE_READERS; k++) any |= valid_symbols[k];
+    if (any) {
+      while (is_space(lexer->lookahead)) lexer->advance(lexer, true);
+      int32_t c = lexer->lookahead;
+      if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
+        char word[24];
+        unsigned n = 0;
+        while (!lexer->eof(lexer) && is_identifier_char(lexer->lookahead)) {
+          c = lexer->lookahead;
+          if (n < sizeof word) word[n] = (char)(c >= 'a' && c <= 'z' ? c - 32 : c < 0x80 ? c : '?');
+          n++;
+          lexer->advance(lexer, false);
+        }
+        for (int k = QUEUE_ACTIVATION; k <= QUEUE_READERS; k++) {
+          const char *w = QUEUE_WORDS[k - QUEUE_ACTIVATION];
+          if (valid_symbols[k] && n == strlen(w) && memcmp(word, w, n) == 0) {
+            lexer->mark_end(lexer);
+            lexer->result_symbol = k;
+            return true;
+          }
+        }
+        return false;
+      }
+    }
   }
   if (!valid_symbols[MARGINALIA]) {
     return false;

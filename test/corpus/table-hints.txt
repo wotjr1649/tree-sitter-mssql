@@ -1300,7 +1300,8 @@ SELECT * FROM dbo.t AS a WITH (INDEX(ix 1));
             (table_hint_item
               (keyword_index)
               (identifier)
-              (ERROR))))))))
+              (ERROR
+                (literal)))))))))
 
 ================================================================================
 table-hints/space - LocalDB 17.0.1000.7 levels 100-170 - engine accepted

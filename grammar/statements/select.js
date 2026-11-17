@@ -1,7 +1,6 @@
 import {
   aliased_with_columns,
   comma_list,
-  make_keyword,
   optional_parenthesis,
   paren_list,
   paren_pair,
@@ -577,10 +576,6 @@ export default {
       $.keyword_replicate,
       $.keyword_redistribute,
     ),
-
-  keyword_redistribute: (_) => make_keyword('redistribute'),
-
-  keyword_distributed_agg: (_) => make_keyword('distributed_agg'),
 
   cross_join: ($) => seq($.keyword_cross, $.keyword_join, $._relation_with_hint),
 

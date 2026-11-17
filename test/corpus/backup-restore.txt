@@ -1515,6 +1515,7 @@ RESTORE ASYMMETRIC KEY k FROM FILE = 'a' DECRYPTION BY PASSWORD = 'p' ENCRYPTION
             name: (identifier)))))
     (ERROR
       (identifier)
+      (keyword_from)
       (keyword_file)
       (keyword_decryption)
       (keyword_by)

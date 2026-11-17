@@ -42,6 +42,15 @@ export default grammar({
     $._spaced_not_less,
     $._spaced_not_greater,
     $._else_semicolon,
+    // Service Broker queue option names (aliased to identifier). As scanner tokens they neither block the
+    // keyword extraction of EXEC, EXECUTE and DROP, which are valid beside them, nor add main-lexer states,
+    // and error recovery reads them as plain identifiers.
+    $._queue_activation,
+    $._queue_retention,
+    $._queue_poison,
+    $._queue_status,
+    $._queue_procedure,
+    $._queue_readers,
   ],
 
   // Every entry arbitrates a real fork the parser must carry a few tokens
@@ -64,7 +73,7 @@ export default grammar({
     // `x BETWEEN a AND b` vs. `x BETWEEN (a AND b)`.
     [$.between_expression, $.binary_expression],
     // A `(` after a DBCC command may open its argument list or start the
-    // next statement; a `WITH` after RECONFIGURE, RAISERROR, an
+    // next statement; a `WITH` after RAISERROR, an
     // unterminated CREATE MESSAGE TYPE's VALIDATION clause, TRUNCATE
     // TABLE, CREATE QUEUE (when its ON filegroup is omitted), ALTER QUEUE's
     // REBUILD/REORGANIZE, ALTER ASSEMBLY, ALTER FULLTEXT CATALOG's REBUILD,
@@ -72,7 +81,6 @@ export default grammar({
     // option list (or WITH SCHEMA COLLECTION suffix) or the next
     // statement's CTE.
     [$.dbcc_statement],
-    [$.reconfigure_statement],
     [$.raiserror_statement],
     [$.create_message_type],
     [$.create_queue],
@@ -185,6 +193,9 @@ export default grammar({
     program: ($) => repeat($.batch),
     // Keep table-name reductions separate from the broader identifier follow sets for reuse.
     _create_table_identifier: expression_rules.identifier,
+    // Graph MATCH names: their follow set (`<-`, `|`) stays out of the shared identifier states, whose lex
+    // mode must match the state after a reused name for incremental reuse.
+    _graph_identifier: expression_rules.identifier,
     _create_table_name: ($) =>
       expression_rules.object_reference(
         new Proxy($, {
