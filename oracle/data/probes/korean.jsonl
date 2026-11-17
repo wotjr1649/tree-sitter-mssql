@@ -1,0 +1,60 @@
+{"id":"korean/select-alias-as","sha256":"ddefeeb436018fc5107c57407388e4d3aeda7334a5dcf8ac423bb88f8b62d29b","source":"SELECT 고객번호 AS 번호, 고객명 AS 이름 FROM dbo.고객;"}
+{"id":"korean/select-alias-equals","sha256":"ba1a872b34f349828ac6fb66a69f5c382dbf5da455b025fc3d1703544d444c00","source":"SELECT 합계 = SUM(주문금액), 건수 = COUNT(*) FROM dbo.주문;"}
+{"id":"korean/select-alias-bare","sha256":"cacceddc294700e21648d59802bf42d5b075fad33cfb3dce4f5b621f870c492d","source":"SELECT 고객명 이름 FROM dbo.고객 고;"}
+{"id":"korean/bracket-with-space","sha256":"e63aa3b1ae8442c2d9002d603e0528a31a9f21da9c247335ce7d898f77d4b986","source":"SELECT [주문 금액], [고객 이름] AS [이름 별칭] FROM dbo.[주문 내역];"}
+{"id":"korean/bracket-escaped-close","sha256":"9d1b431ff9843f71916078ed569f7b25daa965d7c6bff4e7783614069e5d7da4","source":"SELECT [주문]]금액] FROM dbo.주문;"}
+{"id":"korean/join-aliases","sha256":"1df3e9a4f822a63b6c9e0f127b1d6afa618c42a81958dd331640856e8c3d962f","source":"SELECT 주.주문번호, 고.고객명 FROM dbo.주문 AS 주 INNER JOIN dbo.고객 AS 고 ON 고.고객번호 = 주.고객번호 WHERE 주.주문일자 >= '20260101';"}
+{"id":"korean/schema-name","sha256":"fae90c1fd3ebc9e76383810a2df290151ceba2a06ddeeb62d73ff9917d5d6f27","source":"SELECT 연도, 매출 FROM 영업.월별매출;"}
+{"id":"korean/four-part-name","sha256":"c9021bb18901ed2d7a4382374c2f42df997e1b998073ea094402a28ce7d7c144","source":"SELECT * FROM 서버1.영업DB.dbo.매출;"}
+{"id":"korean/group-having-order","sha256":"6982a6a4ef6c721887e8801bdcc5bb1b33f64fbedfa06bbd18da623a7f992e16","source":"SELECT 고객번호, COUNT(*) AS 주문수 FROM dbo.주문 GROUP BY 고객번호 HAVING COUNT(*) > 1 ORDER BY 주문수 DESC;"}
+{"id":"korean/window-function","sha256":"bd47a3606fd71d86104601e8dd49e8203d9f260c6cbe50ffae3330c1af29d868","source":"SELECT 고객번호, ROW_NUMBER() OVER (PARTITION BY 고객번호 ORDER BY 주문일자 DESC) AS 순번 FROM dbo.주문;"}
+{"id":"korean/case-expression","sha256":"14285ccb607c2393abcbe877f104bc354bb6cfb225b64294c73813a0ee03e62e","source":"SELECT CASE WHEN 주문금액 >= 100000 THEN N'고액' ELSE N'일반' END AS 구분 FROM dbo.주문;"}
+{"id":"korean/string-literals","sha256":"bb288aa82e75b275edd80d0fbf70a67a84b62aa618695575f4e345f44ae62fac","source":"SELECT N'한글 문자열' AS 설명, '한글' AS 비유니코드, N'홍길동' + N'님' AS 인사;"}
+{"id":"korean/comments","sha256":"8d936a7013cefcd4fbc6d42425ec04134ccc1964c1c964910b8fcceb71bfe7f8","source":"-- 고객 목록을 조회한다\nSELECT 고객명 /* 이름 */ FROM dbo.고객; /* 여러 줄\n주석 */"}
+{"id":"korean/declare-variables","sha256":"64bacb0494a6d452ed48ae2620d125cf7ef92338dc217d58cdfb16594fdb82dc","source":"DECLARE @고객수 int = 0, @기준일 date = GETDATE();"}
+{"id":"korean/assign-variables","sha256":"337e627b7d61a550296f2bc1055488a683faa521805fd6c17417252c394ef951","source":"DECLARE @합계 money; SET @합계 = 0; SELECT @합계 = @합계 + 주문금액 FROM dbo.주문;"}
+{"id":"korean/variable-predicate","sha256":"cd46dc92bd1d40e32064fa33f3c90b2b82ef5f3ba66f98e380e4b1f366f473cf","source":"DECLARE @고객번호 int = 1; SELECT * FROM dbo.고객 WHERE 고객번호 = @고객번호;"}
+{"id":"korean/table-variable","sha256":"95d1a7813fe8934f8c0e21ff1c06021a75edce00b9f9213e7e345c99b9ff17fa","source":"DECLARE @결과 TABLE (번호 int PRIMARY KEY, 이름 nvarchar(50) NOT NULL); INSERT INTO @결과 (번호, 이름) VALUES (1, N'홍길동'); SELECT 번호, 이름 FROM @결과;"}
+{"id":"korean/temp-table","sha256":"376e06bbc1e961d27db2ddef26b2ba5a9523cf1bbbcadb91b4b6c7bfb716e574","source":"CREATE TABLE #임시고객 (고객번호 int NOT NULL, 고객명 nvarchar(100) NULL); INSERT INTO #임시고객 SELECT 고객번호, 고객명 FROM dbo.고객; DROP TABLE #임시고객;"}
+{"id":"korean/global-temp-table","sha256":"ca1531d4c7ea5a5bc991673165b16ef25b6ddcaaecc58ca3770c128edd98a53f","source":"CREATE TABLE ##전역임시 (값 int); SELECT 값 FROM ##전역임시;"}
+{"id":"korean/select-into-temp","sha256":"ebab7c51bdbe7d1b93703b84664c61a9fc91a04a9041e1f1838b94704e8435c7","source":"SELECT 고객번호, SUM(주문금액) AS 합계 INTO #집계 FROM dbo.주문 GROUP BY 고객번호;"}
+{"id":"korean/update-from","sha256":"fe3256327b3632c2e813482672bf00f9f36fc879d4c8723aee0264cedcbede77","source":"UPDATE 고 SET 고.등급 = N'우수' FROM dbo.고객 AS 고 WHERE 고.누적금액 >= 1000000;"}
+{"id":"korean/delete-where","sha256":"0deb1dcd689c42e1c9410ac149fcc37198a6586bdd14ae0051c93b91ba4856ee","source":"DELETE FROM dbo.주문 WHERE 주문일자 < DATEADD(YEAR, -5, GETDATE());"}
+{"id":"korean/merge","sha256":"98cb5a9d7c4cc37d4d1b1baf618326d23a2ab4775f9588febe947bd9f4239f75","source":"MERGE dbo.고객 AS 대상 USING #임시고객 AS 원본 ON 대상.고객번호 = 원본.고객번호 WHEN MATCHED THEN UPDATE SET 대상.고객명 = 원본.고객명 WHEN NOT MATCHED THEN INSERT (고객번호, 고객명) VALUES (원본.고객번호, 원본.고객명);"}
+{"id":"korean/create-table","sha256":"403aab9695bb763674fa5d358299aae5b50b53b6e83edcf35b9a75f61e090d14","source":"CREATE TABLE dbo.고객 (고객번호 int IDENTITY(1, 1) NOT NULL CONSTRAINT PK_고객 PRIMARY KEY, 고객명 nvarchar(100) NOT NULL, 가입일 date NOT NULL CONSTRAINT DF_고객_가입일 DEFAULT (GETDATE()), [전화 번호] varchar(20) NULL);"}
+{"id":"korean/create-table-references","sha256":"c00e749a7f1104ff862580d0d147d9542cd2d5d4ca8f3b3c49d37d1a9919d642","source":"CREATE TABLE dbo.주문 (주문번호 bigint NOT NULL PRIMARY KEY, 고객번호 int NOT NULL CONSTRAINT FK_주문_고객 REFERENCES dbo.고객 (고객번호), 주문금액 decimal(18, 2) NOT NULL CHECK (주문금액 >= 0));"}
+{"id":"korean/create-index","sha256":"907882a8ee6ad6d4561429f787c9634cf77d37ee62487228907c2ef143657a6d","source":"CREATE NONCLUSTERED INDEX IX_주문_고객번호 ON dbo.주문 (고객번호) INCLUDE (주문금액);"}
+{"id":"korean/create-view","sha256":"0a35fee4d226a9e630c8d2734e60c7365e8f54b9778b76493071bb0d486ec732","source":"CREATE VIEW dbo.고객별매출 AS SELECT 고.고객명, SUM(주.주문금액) AS 매출합계 FROM dbo.고객 AS 고 JOIN dbo.주문 AS 주 ON 주.고객번호 = 고.고객번호 GROUP BY 고.고객명;"}
+{"id":"korean/create-procedure","sha256":"6d2348864b4e2ddeb24b2a0bbef2c1c6877f0698a1ed7e0e41516663513e5b9f","source":"CREATE PROCEDURE dbo.주문조회 @고객번호 int, @시작일 date = NULL, @건수 int OUTPUT AS BEGIN SET NOCOUNT ON; SELECT @건수 = COUNT(*) FROM dbo.주문 WHERE 고객번호 = @고객번호 AND (@시작일 IS NULL OR 주문일자 >= @시작일); END;"}
+{"id":"korean/create-scalar-function","sha256":"8464366f4b62f59726769921723994cda28edebd252915cdee9c2607cef93930","source":"CREATE FUNCTION dbo.부가세계산 (@금액 money) RETURNS money AS BEGIN RETURN @금액 * 0.1; END;"}
+{"id":"korean/create-inline-function","sha256":"696e4441dcb8b4fcb9627eed5e6f2dfc1ba0cc0d01f35c82c6d82f3c6fe4cb5d","source":"CREATE FUNCTION dbo.고객주문목록 (@고객번호 int) RETURNS TABLE AS RETURN (SELECT 주문번호, 주문금액 FROM dbo.주문 WHERE 고객번호 = @고객번호);"}
+{"id":"korean/create-trigger","sha256":"634fd8759f9ab071de195fffc46322aa30467c62a096e91960a8538c930206cf","source":"CREATE TRIGGER dbo.주문_변경기록 ON dbo.주문 AFTER UPDATE AS BEGIN INSERT INTO dbo.변경이력 (주문번호, 변경일시) SELECT 주문번호, SYSDATETIME() FROM inserted; END;"}
+{"id":"korean/go-batches","sha256":"be9ceefc3878339758c115a1d237b3af9d0117a0e4fa629ed906e0f24b471038","source":"CREATE TABLE dbo.상품 (상품코드 int NOT NULL, 상품명 nvarchar(50) NULL);\nGO\nCREATE VIEW dbo.상품목록 AS SELECT 상품코드, 상품명 FROM dbo.상품;\nGO\n"}
+{"id":"korean/exec-named-parameters","sha256":"5c9344dc48a827cb33a405502f70803e0369e37debab24d5a7fb273971bc154e","source":"DECLARE @결과건수 int; EXEC dbo.주문조회 @고객번호 = 1, @시작일 = '20260101', @건수 = @결과건수 OUTPUT;"}
+{"id":"korean/exec-positional","sha256":"0815c8135b957159aba1a2c84fb1715d731b316bdbbbaaecb394c9a95544c699","source":"DECLARE @결과건수 int; EXECUTE dbo.주문조회 1, '20260101', @결과건수 OUTPUT;"}
+{"id":"korean/exec-sp-executesql","sha256":"435d69450acba0ab9648b90166b2307775e4f7d3b771a4c5521945b1beef3884","source":"DECLARE @쿼리 nvarchar(max) = N'SELECT * FROM dbo.고객 WHERE 고객번호 = @번호'; EXEC sp_executesql @쿼리, N'@번호 int', @번호 = 1;"}
+{"id":"korean/cte","sha256":"be1143a603a6098d8146ebfb5babf6294e6397de927909ea71807297e5619c97","source":"WITH 월별매출 AS (SELECT YEAR(주문일자) AS 연도, MONTH(주문일자) AS 월, SUM(주문금액) AS 매출 FROM dbo.주문 GROUP BY YEAR(주문일자), MONTH(주문일자)) SELECT 연도, 월, 매출 FROM 월별매출 ORDER BY 연도, 월;"}
+{"id":"korean/cte-recursive-columns","sha256":"a4714c4d72f661dadbef745489ae998ff39e2f59e706bb283fc156837868c4fe","source":"WITH 조직도 (사원번호, 상위사원번호, 단계) AS (SELECT 사원번호, 상위사원번호, 0 FROM dbo.사원 WHERE 상위사원번호 IS NULL UNION ALL SELECT 사.사원번호, 사.상위사원번호, 조.단계 + 1 FROM dbo.사원 AS 사 JOIN 조직도 AS 조 ON 사.상위사원번호 = 조.사원번호) SELECT * FROM 조직도;"}
+{"id":"korean/label-goto","sha256":"8cdb05832f1e4c2579de9bf991bbb34cc190859a8102720f746356494e85d309","source":"DECLARE @재시도 int = 0;\n재시도_지점:\nSET @재시도 += 1;\nIF @재시도 < 3 GOTO 재시도_지점;"}
+{"id":"korean/cursor","sha256":"520d4772baf7b2b4f85e3cb2fc2024d61f58fbc8981a0601a92fc93b1161f624","source":"DECLARE 고객_커서 CURSOR LOCAL FAST_FORWARD FOR SELECT 고객번호 FROM dbo.고객; DECLARE @번호 int; OPEN 고객_커서; FETCH NEXT FROM 고객_커서 INTO @번호; WHILE @@FETCH_STATUS = 0 BEGIN FETCH NEXT FROM 고객_커서 INTO @번호; END; CLOSE 고객_커서; DEALLOCATE 고객_커서;"}
+{"id":"korean/try-catch-throw","sha256":"39f5e392ac1e9408b4f71d7db4267734bb081c89ea2425af9521f02cb554b24c","source":"BEGIN TRY SELECT 1 / 0 AS 결과; END TRY BEGIN CATCH THROW 50001, N'주문 처리 중 오류가 발생했습니다.', 1; END CATCH;"}
+{"id":"korean/quoted-names","sha256":"31a6ab989732115ff5e828cef83b54fc57f9b835d716c0210710b8d1f8727e56","source":"SELECT \"고객명\" FROM \"dbo\".\"고객\" AS \"고\";"}
+{"id":"korean/quoted-alias","sha256":"7cfe485ff5e2a98410b37fa732e7d8076d93996a4045b8e3cad90641fc5466cf","source":"SELECT 1 AS \"번호\";"}
+{"id":"korean/quoted-create-table","sha256":"7bf316b3132b74d8e2c0286478e5f1ebabe4f899204c661c963ebfa25ed41322","source":"CREATE TABLE \"주문 상세\" (\"상품 코드\" int);"}
+{"id":"korean/mixed-ascii-digit-underscore","sha256":"38c7e0dcd9929623190efcf3130951411a985dae724e39aa58ec1df62b1a3568","source":"SELECT 고객_ID, 주문2026, Order번호, _임시값, 값_1 FROM dbo.Tbl_고객2026;"}
+{"id":"korean/ascii-start-hangul-continue","sha256":"cfd693fd6e5650dc8d6ef584dd7e750280cfff386d6792bc45e3580b6e11463d","source":"SELECT a가 FROM t1한글;"}
+{"id":"korean/hangul-start-digit-continue","sha256":"d2b670bd2521711da6ce7237289d4b02cba6e2aeb1861031f55a579d4559db16","source":"SELECT 1 AS 가1;"}
+{"id":"korean/jamo-start","sha256":"b92f9cd2c43d99b098c1958421df57aafa5dd058dd774dff0fca2f11debe7da1","source":"SELECT 1 AS 각;"}
+{"id":"korean/compatibility-jamo-start","sha256":"a757e20baab93b9ccd069f003a316c9ecc1e0bbbb6974ec05ad51b34edae7357","source":"SELECT 1 AS ㄱㄴ;"}
+{"id":"korean/halfwidth-jamo-start","sha256":"3ba2d965fe7e816332bde57083709de4902b12b39d72f33cba8c51b6711e69bf","source":"SELECT 1 AS ﾡￂ;"}
+{"id":"korean/digit-then-hangul-select","sha256":"4f48af1c780eb4f7bf57ee6c217b7f7de2d90dd03965532fba0d54d79f748487","source":"SELECT 2026년 FROM dbo.매출;"}
+{"id":"korean/digit-then-hangul-alias","sha256":"2c3041d5db6957b59b217bd49e256b1e6cac54a45513a64aaeaea76be5f56fa4","source":"SELECT 1 AS 1가;"}
+{"id":"korean/digit-then-hangul-table","sha256":"1f2887a4623b0c6fac7255bfacc7058bd7a3ca0e5d693ee1ee253eb30367d501","source":"CREATE TABLE 1주문 (번호 int);"}
+{"id":"korean/jamo-extended-a-start","sha256":"e6ae7ac7f42a00cbcd7b3f86f0dda058b9a2677c28adad8351eb4ba0adde9209","source":"SELECT 1 AS ꥠ;"}
+{"id":"korean/jamo-extended-b-continue","sha256":"ab808415a1e0d71758f8826d1b60d9e7493e299f93520ddced0293311b14ecff","source":"SELECT 1 AS 가ힰ;"}
+{"id":"korean/jamo-unmeasured-start","sha256":"ecc41598e08c6feca4c94ea3ab4b0e397f10f3533d3e4355e8773921e62f1213","source":"SELECT 1 AS ᅚ;"}
+{"id":"korean/space-in-table-name","sha256":"a2422a0bbae87cd88ac18a116a81c809090deb935b0e2f4afd02d6723430fbbd","source":"CREATE TABLE dbo.주문 내역 (번호 int);"}
+{"id":"korean/space-in-alias","sha256":"a59d0537d31131947d9b95ebb04e2a49a1fea0eca19a0f937109eebcdec33fed","source":"SELECT 1 AS 주문 금액;"}
+{"id":"korean/space-in-variable","sha256":"027bf595f8416ae17444e8d6a7ea3ae352d2330ba2fcbc7c73903bcd94b4e385","source":"DECLARE @주문 금액 int;"}
+{"id":"korean/space-in-procedure-name","sha256":"3fed8474638c69db3af2cf019868fa31705235a58a511f1d47e7b9a0c4e3dfd8","source":"CREATE PROCEDURE dbo.주문 조회 AS SELECT 1;"}
+{"id":"korean/unclosed-bracket","sha256":"eeb4c0339db56c3b163b50a29bf7756aa6329237992f0ebdd7d1e3471ef3302c","source":"SELECT [주문 금액 FROM dbo.주문;"}

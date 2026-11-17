@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - QUOTED_IDENTIFIER OFF is checked too (ADR-0006). The oracle runner, ScriptDOM and tree-check take `--quoted-identifier on|off` (default on); the wasm module adds `tc_check_v2` with the session (ABI 2, `tc_check` unchanged). The tree stays the same in both sessions; tree-check judges `"text"` as a string under OFF, follows `SET QUOTED_IDENTIFIER` inside the source and the setting a module was created with. Every oracle set is judged under both settings (`.qi-off.json` verdicts, LocalDB 17.0.1000.7, levels 100-170), plus a `quoted-identifier` probe set (122 cases); Verify replays and mutates both sessions. Found on the way: `BULK INSERT ... FROM "path"`, any string as a filegroup name in ON/FILESTREAM_ON/MOVE positions, and string-only positions under ON (RAISERROR message, WAITFOR DELAY, parenthesized dynamic EXEC, COLLATE, CONVERT style type).
+- Korean (Hangul) identifier regression set: oracle set `korean` (60 cases; LocalDB 17.0.1000.7, levels 100-170: 50 accepted and 10 rejected under QUOTED_IDENTIFIER ON, 48 and 12 under OFF; the tree agrees with the engine on every case), `test/corpus/korean.txt` (15 cases) and a "Text encoding" section in `docs/consuming.md` (UTF-8/UTF-16 input, BOM, CP949 via transcoding or a custom decoder, accepted Hangul blocks).
 
 ### Changed
 

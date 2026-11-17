@@ -1,0 +1,649 @@
+================================================================================
+korean/select-alias-as — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+SELECT 고객번호 AS 번호, 고객명 AS 이름 FROM dbo.고객;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier))
+              (keyword_as)
+              (identifier))
+            (term
+              (field
+                (identifier))
+              (keyword_as)
+              (identifier))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier)
+              (identifier))))))))
+
+================================================================================
+korean/select-alias-equals — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+SELECT 합계 = SUM(주문금액), 건수 = COUNT(*) FROM dbo.주문;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (binary_expression
+                (field
+                  (identifier))
+                (invocation
+                  (object_reference
+                    (identifier))
+                  (term
+                    (field
+                      (identifier))))))
+            (term
+              (binary_expression
+                (field
+                  (identifier))
+                (invocation
+                  (object_reference
+                    (identifier))
+                  (term
+                    (all_fields)))))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier)
+              (identifier))))))))
+
+================================================================================
+korean/bracket-with-space — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+SELECT [주문 금액], [고객 이름] AS [이름 별칭] FROM dbo.[주문 내역];
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))
+            (term
+              (field
+                (identifier))
+              (keyword_as)
+              (identifier))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier)
+              (identifier))))))))
+
+================================================================================
+korean/join-aliases — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+SELECT 주.주문번호, 고.고객명 FROM dbo.주문 AS 주 INNER JOIN dbo.고객 AS 고 ON 고.고객번호 = 주.고객번호 WHERE 주.주문일자 >= '20260101';
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (object_reference
+                  (identifier))
+                (identifier)))
+            (term
+              (field
+                (object_reference
+                  (identifier))
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier)
+              (identifier))
+            (keyword_as)
+            (identifier))
+          (join
+            (keyword_inner)
+            (keyword_join)
+            (relation
+              (object_reference
+                (identifier)
+                (identifier))
+              (keyword_as)
+              (identifier))
+            (keyword_on)
+            (binary_expression
+              (field
+                (object_reference
+                  (identifier))
+                (identifier))
+              (field
+                (object_reference
+                  (identifier))
+                (identifier)))))
+        (where
+          (keyword_where)
+          (binary_expression
+            (field
+              (object_reference
+                (identifier))
+              (identifier))
+            (literal)))))))
+
+================================================================================
+korean/comments — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+-- 고객 목록을 조회한다
+SELECT 고객명 /* 이름 */ FROM dbo.고객; /* 여러 줄
+주석 */
+
+--------------------------------------------------------------------------------
+
+(program
+  (comment)
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (marginalia)
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier)
+              (identifier)))))))
+  (marginalia))
+
+================================================================================
+korean/table-variable — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+DECLARE @결과 TABLE (번호 int PRIMARY KEY, 이름 nvarchar(50) NOT NULL); INSERT INTO @결과 (번호, 이름) VALUES (1, N'홍길동'); SELECT 번호, 이름 FROM @결과;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (table_var_declaration
+          (identifier)
+          (keyword_table)
+          (column_definitions
+            (column_definition
+              (identifier)
+              (keyword_int)
+              (keyword_primary)
+              (keyword_key))
+            (column_definition
+              (identifier)
+              (nvarchar
+                (keyword_nvarchar)
+                (literal))
+              (keyword_not)
+              (keyword_null))))))
+    (statement
+      (insert
+        (keyword_insert)
+        (keyword_into)
+        (object_reference
+          (identifier))
+        (list
+          (column
+            (identifier))
+          (column
+            (identifier)))
+        (keyword_values)
+        (list
+          (literal)
+          (literal))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+korean/global-temp-table — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE TABLE ##전역임시 (값 int); SELECT 값 FROM ##전역임시;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_table
+        (keyword_create)
+        (keyword_table)
+        (object_reference
+          (identifier))
+        (column_definitions
+          (column_definition
+            (identifier)
+            (keyword_int)))))
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier))))))))
+
+================================================================================
+korean/create-procedure — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+CREATE PROCEDURE dbo.주문조회 @고객번호 int, @시작일 date = NULL, @건수 int OUTPUT AS BEGIN SET NOCOUNT ON; SELECT @건수 = COUNT(*) FROM dbo.주문 WHERE 고객번호 = @고객번호 AND (@시작일 IS NULL OR 주문일자 >= @시작일); END;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (create_procedure
+        (keyword_create)
+        (keyword_procedure)
+        (object_reference
+          (identifier)
+          (identifier))
+        (function_arguments
+          (function_argument
+            (identifier)
+            (keyword_int))
+          (function_argument
+            (identifier)
+            (keyword_date)
+            (literal
+              (keyword_null)))
+          (function_argument
+            (identifier)
+            (keyword_int)
+            (keyword_output)))
+        (procedure_body
+          (keyword_as)
+          (block
+            (keyword_begin)
+            (statement
+              (set_statement
+                (keyword_set)
+                (object_reference
+                  (identifier))
+                (keyword_on)))
+            (statement
+              (query_specification
+                (select
+                  (keyword_select)
+                  (select_expression
+                    (term
+                      (binary_expression
+                        (field
+                          (identifier))
+                        (invocation
+                          (object_reference
+                            (identifier))
+                          (term
+                            (all_fields)))))))
+                (from
+                  (keyword_from)
+                  (relation
+                    (object_reference
+                      (identifier)
+                      (identifier))))
+                (where
+                  (keyword_where)
+                  (binary_expression
+                    (binary_expression
+                      (field
+                        (identifier))
+                      (field
+                        (identifier)))
+                    (keyword_and)
+                    (parenthesized_expression
+                      (binary_expression
+                        (binary_expression
+                          (field
+                            (identifier))
+                          (keyword_is)
+                          (literal
+                            (keyword_null)))
+                        (keyword_or)
+                        (binary_expression
+                          (field
+                            (identifier))
+                          (field
+                            (identifier)))))))))
+            (keyword_end)))))))
+
+================================================================================
+korean/exec-named-parameters — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+DECLARE @결과건수 int; EXEC dbo.주문조회 @고객번호 = 1, @시작일 = '20260101', @건수 = @결과건수 OUTPUT;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (keyword_int))))
+    (statement
+      (execute_statement
+        (keyword_exec)
+        (object_reference
+          (identifier)
+          (identifier))
+        (exec_argument
+          (identifier)
+          (literal))
+        (exec_argument
+          (identifier)
+          (literal))
+        (exec_argument
+          (identifier)
+          (field
+            (identifier))
+          (keyword_output))))))
+
+================================================================================
+korean/cte — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+WITH 월별매출 AS (SELECT YEAR(주문일자) AS 연도, MONTH(주문일자) AS 월, SUM(주문금액) AS 매출 FROM dbo.주문 GROUP BY YEAR(주문일자), MONTH(주문일자)) SELECT 연도, 월, 매출 FROM 월별매출 ORDER BY 연도, 월;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (keyword_with)
+      (cte
+        (identifier)
+        (keyword_as)
+        (statement
+          (query_specification
+            (select
+              (keyword_select)
+              (select_expression
+                (term
+                  (invocation
+                    (object_reference
+                      (identifier))
+                    (term
+                      (field
+                        (identifier))))
+                  (keyword_as)
+                  (identifier))
+                (term
+                  (invocation
+                    (object_reference
+                      (identifier))
+                    (term
+                      (field
+                        (identifier))))
+                  (keyword_as)
+                  (identifier))
+                (term
+                  (invocation
+                    (object_reference
+                      (identifier))
+                    (term
+                      (field
+                        (identifier))))
+                  (keyword_as)
+                  (identifier))))
+            (from
+              (keyword_from)
+              (relation
+                (object_reference
+                  (identifier)
+                  (identifier))))
+            (group_by
+              (keyword_group)
+              (keyword_by)
+              (invocation
+                (object_reference
+                  (identifier))
+                (term
+                  (field
+                    (identifier))))
+              (invocation
+                (object_reference
+                  (identifier))
+                (term
+                  (field
+                    (identifier))))))))
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))
+            (term
+              (field
+                (identifier)))
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier)))))
+      (order_by
+        (keyword_order)
+        (keyword_by)
+        (order_target
+          (field
+            (identifier)))
+        (order_target
+          (field
+            (identifier)))))))
+
+================================================================================
+korean/label-goto — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+DECLARE @재시도 int = 0;
+재시도_지점:
+SET @재시도 += 1;
+IF @재시도 < 3 GOTO 재시도_지점;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (keyword_int)
+          (literal))))
+    (statement
+      (label_statement
+        (identifier)))
+    (statement
+      (set_statement
+        (keyword_set)
+        (object_reference
+          (identifier))
+        (assignment_operator)
+        (literal)))
+    (statement
+      (if_statement
+        (keyword_if)
+        (binary_expression
+          (field
+            (identifier))
+          (literal))
+        (statement
+          (goto_statement
+            (keyword_goto)
+            (identifier)))))))
+
+================================================================================
+korean/quoted-names — LocalDB 17.0.1000.7 levels 100-170: accepted (QUOTED_IDENTIFIER ON; OFF rejects 102)
+================================================================================
+
+SELECT "고객명" FROM "dbo"."고객" AS "고";
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier)
+              (identifier))
+            (keyword_as)
+            (identifier)))))))
+
+================================================================================
+korean/mixed-ascii-digit-underscore — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+SELECT 고객_ID, 주문2026, Order번호, _임시값, 값_1 FROM dbo.Tbl_고객2026;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (field
+                (identifier)))
+            (term
+              (field
+                (identifier)))
+            (term
+              (field
+                (identifier)))
+            (term
+              (field
+                (identifier)))
+            (term
+              (field
+                (identifier)))))
+        (from
+          (keyword_from)
+          (relation
+            (object_reference
+              (identifier)
+              (identifier))))))))
+
+================================================================================
+korean/jamo-start — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+SELECT 1 AS 각;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal)
+              (keyword_as)
+              (identifier))))))))
+
+================================================================================
+korean/compatibility-jamo-start — LocalDB 17.0.1000.7 levels 100-170: accepted
+================================================================================
+
+SELECT 1 AS ㄱㄴ;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (query_specification
+        (select
+          (keyword_select)
+          (select_expression
+            (term
+              (literal)
+              (keyword_as)
+              (identifier))))))))
