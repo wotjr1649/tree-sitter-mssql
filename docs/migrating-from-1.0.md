@@ -88,9 +88,9 @@ Child iteration is unchanged. `ChildByFieldName` now finds them.
   were never a contract. The same holds for an incremental reparse after an edit that leaves invalid text: it can
   place the `ERROR` differently from a fresh parse of that text.
 - **Validation is a separate layer.** The grammar alone rejects 852 of the 2,795 engine-rejected inputs (30.48 %).
-  The constraint layer in `tools/tree-check` rejects 1,755 more. A CGO-free host can use it as a WebAssembly
+  The constraint layer in `crates/tree-check` rejects 1,755 more. A CGO-free host can use it as a WebAssembly
   module ([constraint-wasm.md](constraint-wasm.md)). What remains clean is classified in
-  `oracle/rejected-clean.json`: 189 context, environment, version and runner cases, including the one runner exclusion,
+  `oracle/data/rejected-clean.json`: 189 context, environment, version and runner cases, including the one runner exclusion,
   with no oracle case classified as an open grammar gap.
 - **Highlights.** Every `keyword_*` kind has a highlight.
 - **Size and time.** In the release audit on Windows x64 with gcc 16.2.0 `-O2`, the compiled library was 1.386x

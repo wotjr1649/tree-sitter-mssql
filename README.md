@@ -20,9 +20,9 @@ acceptance by at least one recorded engine/level; the runner excludes one input 
 From 2.0.0:
 
 - every case SQL Server accepts parses without an error;
-- every case SQL Server rejects is rejected by the grammar or by the constraint layer in `tools/tree-check` (also a
+- every case SQL Server rejects is rejected by the grammar or by the constraint layer in `crates/tree-check` (also a
   WebAssembly module for CGO-free hosts, [docs/constraint-wasm.md](docs/constraint-wasm.md)), or is listed with its
-  reason in `oracle/rejected-clean.json` (including runner exclusions). Those reasons are declarations or the catalog,
+  reason in `oracle/data/rejected-clean.json` (including runner exclusions). Those reasons are declarations or the catalog,
   the edition, platform or server configuration, a feature these builds lack, or a limit of the oracle runner;
   no oracle case is classified as an open grammar gap.
 

@@ -10,13 +10,13 @@ go-treesitter, the intended consumer, is a CGO-free Go library. It compiles each
 `scanner.c`) with wasi-sdk to WebAssembly and translates the module to Go with wasm2go. Its `tsql` module is pinned to
 the original upstream, `alfpricot/tree-sitter-mssql` at `2e34d86e`.
 
-This repository's guarantee (ADR-0004) is the grammar plus the constraint layer in `tools/tree-check`, which is Rust.
+This repository's guarantee (ADR-0004) is the grammar plus the constraint layer in `crates/tree-check`, which is Rust.
 On the 2.0.0 oracle (10,300 inputs; acceptance at any recorded engine/level counts):
 - the grammar alone parses all 7,504 engine-accepted cases cleanly;
 - of the 2,795 engine-rejected inputs, the grammar rejects 852 (30.48 %);
 - the constraint layer rejects 1,755 more;
 - the remaining 188, plus one input the runner excludes because it sets PARSEONLY itself, are classified in
-  `oracle/rejected-clean.json` (189 total: context 49, environment 123, version 15, runner 2; no `gap`).
+  `oracle/data/rejected-clean.json` (189 total: context 49, environment 123, version 15, runner 2; no `gap`).
 
 Before this decision, the runtime bound of ADR-0002 §6 was 1.5x of the M2 end (`e8a398e`). After the M3 work
 the compiled library stands at about 1.39x in the release audit below.
@@ -37,7 +37,7 @@ the compiled library stands at about 1.39x in the release audit below.
    - The milestone in `test/runtime-cost.json` moves to the end of M3, the merge of the pull request that completes
      the M3 backlog and its cost rounds (#46).
    - The 1.5x bound then applies to growth from there.
-   - The 2.0.0 release audit on Windows x64, gcc 16.2.0 `-O2`, using `tools/runtime-cost.mjs` with five
+   - The 2.0.0 release audit on Windows x64, gcc 16.2.0 `-O2`, using `scripts/runtime-cost.mjs` with five
      alternating runs, measured M2 library bytes 10,628,283 → 14,730,473 (1.386x) and median parse time
      1,849.3 → 1,755.0 ms (0.949x). Against the new milestone `4ff4c5f`, library size is 1.000x and parse
      time was 0.952x (1,423.4 → 1,354.8 ms). Timing varies by host and run. Peak memory was not measured
