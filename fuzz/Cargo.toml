@@ -7,8 +7,14 @@ edition = "2024"
 [package.metadata]
 cargo-fuzz = true
 
+[features]
+default = ["fuzzing"]
+fuzzing = ["dep:libfuzzer-sys"]
+
 [dependencies]
-libfuzzer-sys = "0.4"
+libfuzzer-sys = { version = "0.4", optional = true }
+serde_json = "1"
+tree-check = { path = "../crates/tree-check" }
 tree-sitter = "~0.27.0"
 
 [dependencies.tree-sitter-mssql]
@@ -16,7 +22,20 @@ path = ".."
 
 [[bin]]
 name = "parse"
+required-features = ["fuzzing"]
 path = "fuzz_targets/parse.rs"
 test = false
 doc = false
 bench = false
+
+[[bin]]
+name = "tree_check"
+path = "fuzz_targets/tree_check.rs"
+required-features = ["fuzzing"]
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "tree-check-driver"
+path = "src/main.rs"
