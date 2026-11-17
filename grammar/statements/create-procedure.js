@@ -69,6 +69,15 @@ export default {
   // this rule, so a body-less trigger (which SQL Server rejects) also
   // parses clean — a knowing over-acceptance rather than a second rule.
   //
+  // The preference is a strict score, never a tie: a body with a first item
+  // scores 2 (an empty one 1) and every later item adds 1, so a parse that ends
+  // the body early and leaves the rest as batch items always scores lower. A tie
+  // would be settled by symbol order in a fresh parse but by version order in an
+  // incremental one, and the two trees would differ. The later-item bonus sits on
+  // `_procedure_body_item`, not `_body_item`: a `BEGIN ... END` block also uses
+  // that rule, and a bonus there would score a body that stops early as high as
+  // one that does not.
+  //
   // A CLR procedure or trigger has `AS EXTERNAL NAME assembly.class.method`
   // in place of the statements.
   procedure_body: ($) =>
@@ -78,7 +87,12 @@ export default {
         $.keyword_as,
         choice(
           $.external_name,
-          optional(seq(repeat(';'), choice($.statement, $.block), repeat($._body_item))),
+          optional(
+            prec.dynamic(
+              2,
+              seq(repeat(';'), choice($.statement, $.block), repeat($._procedure_body_item)),
+            ),
+          ),
         ),
       ),
     ),
@@ -88,7 +102,13 @@ export default {
   // prec.right keeps a real item's trailing `;` bound to the
   // body item it follows rather than to `program`'s own separator —
   // otherwise a bare body would end at its first semicolon.
-  // Keep this helper factored so procedure boundaries can reuse UPDATE terminators.
+  // Keep these helpers factored so procedure boundaries can reuse UPDATE terminators.
+  _procedure_body_item: ($) =>
+    choice(
+      prec.dynamic(1, prec.right(seq(choice($.statement, $.block), optional($._semicolon)))),
+      prec.dynamic(1, $._semicolon),
+    ),
+
   _body_item: ($) =>
     choice(prec.right(seq(choice($.statement, $.block), optional($._semicolon))), $._semicolon),
 };
