@@ -94,16 +94,16 @@ The goal is complete T-SQL support with zero defects (ADR-0001: SQL Server's par
    - Wholesale adoption is considered only if every gate above passes with no node kind removed.
 8. **Workflow.**
    - `main` is the only long-lived branch and stays green. Work happens on short topic branches from the latest
-     `main`, merged by pull request with a merge commit (no squash or rebase: the imported upstream history stays
+     `main`, merged by pull request with a merge commit (no squash or rebase: the imported history stays
      intact).
-   - Commit pins are the release mechanism. If tags are ever needed they use the prefix `fork-v`, because upstream
-     may tag the same version numbers.
+   - Commit pins are the release mechanism. Releases are tagged `vMAJOR.MINOR.PATCH` with a GitHub Release (ADR-0007; this replaced
+     the earlier `fork-v` prefix).
    - Dependabot targets `main`. The tree-sitter CLI is excluded from automatic version updates because consumers
      regenerate with the same pinned version.
 9. **Upstream's deliberate error tests.** `test/corpus/errors.txt` pins `SELECT 1 WHERE 1=1;` and
    `SELECT 1 GROUP BY 1;` as errors, while SQL Server accepts both (measured at levels 110 and 170 on 2026-11-15). They are rewritten as
-   positive cases in the change that fixes the grammar, and the divergence is recorded for upstream merges
-   in [`docs/upstream-divergence.md`](../upstream-divergence.md).
+   positive cases in the change that fixes the grammar, and the divergence is recorded in
+   [`docs/divergence-from-1.0.md`](../divergence-from-1.0.md).
 10. **`docs/accepted-gaps.md`** stays as the ledger, rewritten against engine verdicts. Each row carries a case ID,
     direction, profile and issue, and rows not yet measured are marked `UNVERIFIED`.
 

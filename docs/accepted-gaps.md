@@ -63,7 +63,7 @@ One further under-acceptance surfaced while consolidating this ledger, not yet i
 ## FROM-less clauses: measured residual gaps
 
 WHERE, GROUP BY and HAVING do not require FROM. SQL Server 2025 LocalDB 17.0.1000.7,
-PARSEONLY at levels 100–170, accepts both upstream error tests `SELECT 1 WHERE 1=1;`
+PARSEONLY at levels 100–170, accepts both error tests inherited from 1.0.0 `SELECT 1 WHERE 1=1;`
 and `SELECT 1 GROUP BY 1;`. They are positive cases in
 `test/corpus/select-fromless.txt` (ADR-0002 §9); the other existing error cases are unchanged.
 

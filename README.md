@@ -6,11 +6,11 @@ An owner-maintained [tree-sitter](https://tree-sitter.github.io/tree-sitter/) gr
 
 **Why it exists.** T-SQL has no well-maintained tree-sitter grammar. The only candidate, [`alfpricot/tree-sitter-mssql`](https://github.com/alfpricot/tree-sitter-mssql) (MIT), has one maintainer, changed its owner name twice in two months (`meloncholic` → `meloncholera` → `alfpricot`) and rewrote its Git history, which orphaned the commit a downstream consumer pinned. This repository continues that grammar so defects get fixed quickly and pinned commits stay reachable.
 
-**Upstream relation.** This repository starts from upstream v1.0.0, commit [`852cbd2`](https://github.com/alfpricot/tree-sitter-mssql/commit/852cbd20d7dc8078bdea0ebbcbb621e78c86f0cf), merged with its full history on 2026-11-15. Upstream started as a fork of [`tree-sitter-sql`](https://github.com/DerekStride/tree-sitter-sql) by Derek Stride. Upstream changes are merged when useful; see [docs/decisions/ADR-0001-continue-from-upstream-v1.md](docs/decisions/ADR-0001-continue-from-upstream-v1.md) and [NOTICE](NOTICE).
+**Origin.** This repository is independent (ADR-0007). It started from the original grammar's v1.0.0, commit [`852cbd2`](https://github.com/alfpricot/tree-sitter-mssql/commit/852cbd20d7dc8078bdea0ebbcbb621e78c86f0cf), merged with its full history on 2026-11-15; that grammar started as a fork of [`tree-sitter-sql`](https://github.com/DerekStride/tree-sitter-sql) by Derek Stride. Its later changes are not merged: defects are fixed here. See [ADR-0001](docs/decisions/ADR-0001-continue-from-upstream-v1.md), [ADR-0007](docs/decisions/ADR-0007-independent-repository.md) and [NOTICE](NOTICE).
 
 **Consumer.** The intended first consumer is `go-treesitter`, a CGO-free Go tree-sitter library, which is to pin a commit of this repository and regenerate `src/parser.c` with tree-sitter CLI 0.27.2.
 
-**Correctness reference.** Valid T-SQL means what SQL Server's own parser accepts under `SET PARSEONLY ON` at a stated compatibility level. Where upstream tests or [docs/accepted-gaps.md](docs/accepted-gaps.md) disagree with SQL Server, SQL Server wins. [docs/roadmap.md](docs/roadmap.md) lists the planned work, starting with a SQL Server oracle.
+**Correctness reference.** Valid T-SQL means what SQL Server's own parser accepts under `SET PARSEONLY ON` at a stated compatibility level. Where tests inherited from 1.0.0 or [docs/accepted-gaps.md](docs/accepted-gaps.md) disagree with SQL Server, SQL Server wins. [docs/roadmap.md](docs/roadmap.md) records the milestones.
 
 ## What it guarantees
 
@@ -30,8 +30,8 @@ Scope and known limits:
 
 - both QUOTED_IDENTIFIER settings (the tree is the same; `tree-check --quoted-identifier on|off` judges each, ADR-0006);
   other session settings at their defaults;
-- Azure Synapse and Data Warehouse syntax kept from upstream is accepted although SQL Server rejects it;
-- incremental reparsing needs a tree-sitter runtime with upstream commit
+- Azure Synapse and Data Warehouse syntax kept from 1.0.0 is accepted although SQL Server rejects it;
+- incremental reparsing needs a tree-sitter runtime with tree-sitter commit
   [`f932671a5`](https://github.com/tree-sitter/tree-sitter/commit/f932671a5) (after 0.27.2). With 0.27.2, a reparse after an
   edit can differ from a fresh parse of the same text when a reused node starts with a keyword that has to be read
   as a name there: 160 of 123,094 edit steps over the oracle did, 0 with the fix. After an edit that leaves invalid

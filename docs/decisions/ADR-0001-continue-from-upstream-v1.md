@@ -1,6 +1,7 @@
 # ADR-0001: Continue the grammar from upstream v1.0.0
 
-- Status: accepted (owner decision, 2026-11-15)
+- Status: accepted (owner decision, 2026-11-15); §5 and the merge purpose in §1 superseded by
+  [ADR-0007](ADR-0007-independent-repository.md)
 - Date: 2026-11-15
 
 ## Context

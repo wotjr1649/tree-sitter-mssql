@@ -44,6 +44,5 @@ body:
         - oracle
         - kit
         - user
-        - upstream
     validations:
       required: true

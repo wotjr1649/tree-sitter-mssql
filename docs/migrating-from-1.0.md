@@ -1,7 +1,7 @@
 # Moving from 1.0.0 to 2.0.0
 
-2.0.0 is the first release of this fork. 1.0.0 is upstream
-[`alfpricot/tree-sitter-mssql`](https://github.com/alfpricot/tree-sitter-mssql) v1.0.0; this fork started at
+2.0.0 is the first release of this repository. 1.0.0 is the original grammar
+[`alfpricot/tree-sitter-mssql`](https://github.com/alfpricot/tree-sitter-mssql) v1.0.0; this repository started at
 its release commit `852cbd2`. Measured against it, `src/node-types.json` changes as follows:
 
 | | count |
@@ -61,9 +61,9 @@ The refactor in #32 removed redundant statement-level parentheses from the gramm
 commit, it reduced `parser.c` by 11 %, parse states by 8.5 % and large parse states by 15 %; those figures
 describe the grammar refactor, not a demonstrated tree-shape change from 1.0.0.
 
-## Coming from a commit before upstream 1.0.0
+## Coming from a commit before 1.0.0
 
-A consumer pinned to an earlier upstream commit, such as `2e34d86e`, also meets a change that upstream 1.0.0 made.
+A consumer pinned to an earlier commit of the original grammar, such as `2e34d86e`, also meets a change that 1.0.0 made.
 Seven node kinds list fewer types among their unfielded children. The nodes are still there; they are now under a field:
 
 | node kind | child | now in field |
@@ -81,7 +81,7 @@ Child iteration is unchanged. `ChildByFieldName` now finds them.
   2017, 2019, 2022 and 2025 at compatibility levels 100–170; acceptance at any recorded engine/level counts.
   All 7,504 accepted cases parse cleanly. One runner-controlled input was not submitted to the engines. Inputs that
   1.0.0 parsed with an `ERROR` may now parse cleanly, and their trees are new.
-- **Incremental reparsing.** Use a tree-sitter runtime that contains upstream commit `f932671a5` (released after
+- **Incremental reparsing.** Use a tree-sitter runtime that contains tree-sitter commit `f932671a5` (released after
   0.27.2). Older runtimes can give a reparse that differs from a fresh parse when a reused node starts with a keyword
   that must be read as a name; this is a runtime defect, the same for 1.0.0, and no grammar can avoid it.
 - **Error recovery of invalid input.** Trees of inputs SQL Server rejects may differ inside their `ERROR` nodes. They

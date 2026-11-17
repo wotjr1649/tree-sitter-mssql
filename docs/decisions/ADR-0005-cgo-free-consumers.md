@@ -8,7 +8,7 @@
 
 go-treesitter, the intended consumer, is a CGO-free Go library. It compiles each pinned grammar's C (`parser.c`,
 `scanner.c`) with wasi-sdk to WebAssembly and translates the module to Go with wasm2go. Its `tsql` module is pinned to
-the original upstream, `alfpricot/tree-sitter-mssql` at `2e34d86e`.
+the original grammar, `alfpricot/tree-sitter-mssql` at `2e34d86e`.
 
 This repository's guarantee (ADR-0004) is the grammar plus the constraint layer in `crates/tree-check`, which is Rust.
 On the 2.0.0 oracle (10,300 inputs; acceptance at any recorded engine/level counts):

@@ -36,6 +36,6 @@ Result at its introduction (10,300 cases, with the Linux engine verdicts of #46)
 | engine rejects, ScriptDOM rejects, tree error | 1,883 |
 
 All 21 both-reject-but-clean cases are already classified. They are Azure Synapse and Data Warehouse syntax that the
-grammar keeps from upstream (CTAS distribution, data-warehouse transactions, Azure-only database options), platform
+grammar keeps from 1.0.0 (CTAS distribution, data-warehouse transactions, Azure-only database options), platform
 limits (MEMORY_OPTIMIZED server settings) or features these engine builds lack. ScriptDOM pointed at no new grammar
 defect.
