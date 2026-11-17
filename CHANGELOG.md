@@ -25,6 +25,7 @@ removed. See [docs/migrating-from-1.0.md](docs/migrating-from-1.0.md).
 
 - Restore bounded incremental reuse for semicolon-free statements, CREATE TABLE name edits and procedure headers over UPDATE bodies (#57); preserve valid trees and verdicts (20 rejected-input ERROR trees change).
 - Reuse factored MERGE sources, Service Broker and CTE subtrees after header edits without changing valid trees or verdicts (#59).
+- An incremental reparse equals a fresh parse after any edit in or near a procedure or trigger: the body takes every statement up to GO by a strict dynamic-precedence score instead of a tie that fresh and incremental parsing settled differently (#60). In a fresh parse, a module that follows other text in its batch no longer ends its body early; one rejected-input ERROR tree changes.
 
 - Nested `IF` without `BEGIN` parses at any depth (it was an ERROR from depth 10), and `IF ... ELSE IF ...` chains parse in linear time (252 KB: 15.9 s before, 0.1 s now). The `;` of an `IF x s;; ELSE t` clause is chosen by the external scanner (`_else_semicolon`, aliased to `;`, one per semicolon, only when ELSE follows) instead of a GLR fork per `;`. Oracle set `if-nesting` (39 cases, LocalDB 17.0.1000.7, levels 100-170, both QUOTED_IDENTIFIER settings).
 - Every character SQL Server takes as a token separator is whitespace to the grammar: the 53 code points it accepts between tokens (U+0000-0020, U+0085, U+00A0, U+1680, U+2000-200B, U+2028, U+2029, U+202F, U+205F, U+3000; not U+180E or U+FEFF), oracle set `metamorphic-whitespace` (110 cases, LocalDB 17.0.1000.7, levels 100-170). Keyword case and whitespace no longer change a verdict. tree-check reports no constraint violations on a tree that already has a parse error, instead of re-parsing a normalized copy.
@@ -70,7 +71,7 @@ removed. See [docs/migrating-from-1.0.md](docs/migrating-from-1.0.md).
   unclassified one. ScriptDOM is a second opinion (`oracle/runners/ScriptDomCheck`).
 - `scripts/comment-mutate.mjs --axes comment,case,whitespace` gates in Verify that comments, keyword case and
   whitespace change no verdict, under both QUOTED_IDENTIFIER settings.
-- libFuzzer fuzzing in CI; `scripts/runtime-cost.mjs` bounds library size, parse time and peak memory where the host
+- libFuzzer fuzzing in CI of the parser and scanner, and of tree-check inspection and edit histories under both QUOTED_IDENTIFIER settings (#61); `scripts/runtime-cost.mjs` bounds library size, parse time and peak memory where the host
   can measure it.
 - Layout: `scripts/` (Node tools and gates), `crates/` (Rust), `oracle/data` and `oracle/runners`
   ([ARCHITECTURE.md](ARCHITECTURE.md)).
