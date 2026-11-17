@@ -51,6 +51,47 @@ regression tests for semicolon-free statements, CREATE TABLE names, procedure he
 
 Moving from 1.0.0: [docs/migrating-from-1.0.md](docs/migrating-from-1.0.md).
 
+## How it compares with 1.0.0, and is it production-ready?
+
+This repository is independent and maintained by its owner. 1.0.0 is the original grammar
+(alfpricot/tree-sitter-mssql v1.0.0) this repository started from. The figures below compare 1.0.0 (`852cbd2`) with this
+2.0.0 candidate (`d206c0a`) on one Windows machine, tree-sitter 0.27.2, in alternating A/B runs. Method, per-set tables
+and every limit are in [docs/benchmarks.md](docs/benchmarks.md).
+
+| | 1.0.0 | 2.0.0 |
+| --- | ---: | ---: |
+| SQL Server–accepted oracle cases that parse without an error (15,585) | 10,056 (64.5 %) | 15,585 (100 %) |
+| SQL Server–rejected oracle cases flagged (5,833) | 3,083 (52.9 %) | 5,388 (92.4 %) with tree-check |
+| A private corpus of 6,006 production T-SQL scripts: accepted → clean / rejected → flagged | 5,874 / 5,987 and 8 / 19 | 5,987 / 5,987 and 18 / 19 |
+| `IF … ELSE IF …` chain of 10,000 branches; `IF` nested 10 deep without `BEGIN` | 33.0 s; ERROR tree | 0.06 s; clean tree |
+| Parse throughput on that corpus, clean inputs (B/ms) | 11,438 | 9,958 (−13 %) |
+| Tree bytes per source byte / largest single parse peak | 24.6 / 80 MiB | 25.7 / 88 MiB |
+| Compiled library, gcc `-O2`, stripped | 10.3 MB | 13.4 MB |
+
+2.0.0 parses clean input about 6–20 % slower than 1.0.0 (13 % on the corpus). Most of the earlier 30 % gap was a compiler
+effect: `tree-sitter generate` 0.27.2 compiles the whole `parser.c` without optimization when the main lexer has more than
+300 states, and 2.0.0's had 568; it now has 271. What remains comes from the larger grammar: bigger parse tables, Unicode
+identifier sets and more reductions, not more lexing.
+
+**Assessment.** The criteria are SQL Server's own parser (`SET PARSEONLY ON`) as the reference, and each verdict says
+what was measured.
+
+| Criterion | Verdict | Evidence and limit |
+| --- | --- | --- |
+| Correctness against SQL Server | Meets, with limits | Every engine-accepted oracle case parses cleanly (SQL Server 2017–2025, levels 100–170, both QUOTED_IDENTIFIER settings). The 445 rejected cases not flagged are classified (context, version, environment, runner). The oracle was written by this project, so it is a regression gate more than an independent test. |
+| Real-world agreement | Meets, with limits | 5,987 of 5,987 accepted scripts clean, 18 of 19 rejected flagged; the one miss is a context error (Msg 137). One source, only 19 rejected scripts, and the corpus was also used during development. |
+| Robustness | Meets | No crash, hang or superlinear time on 43 stress inputs (nesting to 50,000, 200,000-term chains, an 8 MB literal) or on 41 synthetic classes (exponents 0.96–1.06). |
+| Performance and memory | Meets, with limits | About 10 MB/s parsing, 5 MB/s with tree-check, about 26 bytes of tree per source byte, a 2.25 MB script peaks at about 102 MiB of process memory; the WASM module starts at 14 MiB. It is about 13 % slower and 4–5 % more memory-hungry than 1.0.0 on clean input. |
+| Incremental editing | Meets, with limits | An incremental tree equals a fresh parse on all 8,063 measured edits (an earlier candidate differed on 24 edits of one file; fixed by a grammar change). Median reparse about 0.5 ms on 100 KB–1 MB files, about 1.9 times 1.0.0's. The edits are four simple kinds, and tree-sitter 0.27.2 has known runtime defects in incremental parsing that 0.27.3 (not released) addresses; 0.27.3 was not tested. Per edit, the reuse repairs cut re-lexed tokens by 8.7 %; 52 edits that leave the text invalid re-lex more than before (by more than 4 tokens, at most +28). |
+| API stability | Meets | 0 node kinds and 0 fields removed or renamed, 244 kinds added; 40 of the 5,379 distinct inputs that 1.0.0 parsed cleanly get a different tree, listed in the migration guide; SemVer major version. |
+| Verification in CI | Meets (read from the workflow files, not re-run for this page) | Oracle replay, corpus, fixtures, comment/case/whitespace mutation and WASM parity gates on every pull request; the oracle runs on SQL Server 2017, 2019, 2022 and 2025 (pull requests that touch it, weekly); a weekly fuzz run covers the parser, the scanner and tree-check. |
+| Maintenance | Meets, with limits | One maintainer; 2.0.0 is the first release of this repository. |
+
+**Known limits.** Errors that need context (undeclared variables, conflicting hints, boolean versus scalar, names,
+permissions) are outside a grammar and are not flagged. Some Azure Synapse syntax kept from 1.0.0 is accepted by the
+grammar but not by SQL Server. Session settings other than QUOTED_IDENTIFIER are at their defaults, SQL Server
+2008–2016 are not verified, and the WASM module is the unoptimised build.
+
 ## Using it
 
 Nothing is published to crates.io, npm or any other registry. Pin a commit of this repository: the generated parser (`src/parser.c`, `src/grammar.json`, `src/node-types.json`) is committed, and `src/scanner.c` must be compiled alongside `src/parser.c`.
