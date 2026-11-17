@@ -265,6 +265,56 @@ GO
     }
 
     #[test]
+    fn incremental_procedure_body_matches_a_fresh_parse() {
+        // Each body item can also start a batch item. The body takes it, and a reparse after an edit
+        // elsewhere reaches the same tree; before, the two competing parses tied and the incremental
+        // one kept whichever version came first.
+        for body in [
+            "SET @a = 1\nDECLARE @b INT;\nBEGIN\nEND\n",
+            "PRINT @a\nEXEC dbo.q @a = 1, @b = 2\n",
+            "SET NOCOUNT ON\nSELECT 1\n",
+            "DECLARE @b INT;\n;\nSELECT 1;\n;\n",
+        ] {
+            let source = format!(
+                "CREATE TABLE t1 (a INT)\nGO\nALTER PROCEDURE dbo.p\nAS\n{body}GO\nALTER TABLE t1 ADD b INT;\nGO\n"
+            );
+            incremental_lexes(source, "CREATE TABLE ".len(), "x");
+        }
+    }
+
+    #[test]
+    fn procedure_body_runs_to_the_next_go() {
+        // The rest of the batch belongs to the body, also after a statement that precedes the
+        // procedure in the same batch.
+        let source =
+            "INSERT INTO t1 (a) VALUES (1)\n/* c */\nCREATE PROCEDURE p AS\nSELECT 1\nGO\n";
+        let mut parser = Parser::new();
+        parser.set_language(&super::LANGUAGE.into()).unwrap();
+        let tree = parser.parse(source, None).unwrap();
+        assert!(!tree.root_node().has_error());
+        let mut cursor = tree.walk();
+        let mut end = None;
+        loop {
+            if cursor.node().kind() == "create_procedure" {
+                end = Some(cursor.node().end_byte());
+                break;
+            }
+            if cursor.goto_first_child() {
+                continue;
+            }
+            while !cursor.goto_next_sibling() {
+                if !cursor.goto_parent() {
+                    break;
+                }
+            }
+            if cursor.node() == tree.root_node() {
+                break;
+            }
+        }
+        assert_eq!(end, Some(source.find("\nGO").unwrap()));
+    }
+
+    #[test]
     fn test_can_load_grammar() {
         let mut parser = tree_sitter::Parser::new();
         parser

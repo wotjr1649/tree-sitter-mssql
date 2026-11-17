@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 - Reuse factored MERGE sources after header edits without changing valid trees or verdicts.
+- Make a procedure or trigger body take every statement up to the next GO by a strict dynamic-precedence score, so an incremental reparse equals a fresh parse; a module that follows another statement in its batch no longer ends its body early in a fresh parse; 1 rejected-input ERROR tree changes.
 
 - Restore bounded incremental reuse for semicolon-free statements, CREATE TABLE name edits, and procedure headers over UPDATE bodies; preserve valid trees and verdicts (20 rejected-input ERROR trees change).
 
