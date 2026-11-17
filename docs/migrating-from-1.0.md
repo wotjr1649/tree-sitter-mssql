@@ -42,7 +42,7 @@ old tree of these forms stops matching:
 | `DECLARE @c AS CURSOR` | `custom_type` | `keyword_cursor` |
 | `IF a IF b s ELSE t` (dangling ELSE) | `else_clause` on the outer `if_statement` | on the nearest `if_statement`, as SQL Server executes it |
 
-No input 1.0.0 parsed cleanly gets an error now, and no other node covers a different span.
+In this comparison, no input 1.0.0 parsed cleanly gets an error now, and no other node covers a different span.
 
 ## Condition trees
 
@@ -77,10 +77,10 @@ Child iteration is unchanged. `ChildByFieldName` now finds them.
 
 ## What else changes for a consumer
 
-- **Every input SQL Server accepts parses without an error.** The oracle holds 10,709 sources (21,418 ON/OFF
+- **Every engine-accepted oracle input passes tree-check.** The oracle holds 10,709 sources (21,418 ON/OFF
   session/case pairs), with recorded SQL Server 2017, 2019, 2022 and 2025 verdicts at supported compatibility
   levels 100–170; acceptance at any recorded engine/level counts. All 7,838 ON and 7,747 OFF accepted cases
-  parse cleanly. LocalDB 2025 covers all sources in both sessions; Linux results cover earlier ON snapshots. One runner-controlled input was not submitted to the engines. Inputs that
+  pass, including session-aware re-parsing under OFF (the grammar alone misses three accepted OFF cases). LocalDB 2025 covers all sources in both sessions; Linux results cover earlier ON snapshots. One runner-controlled input was not submitted to the engines. Inputs that
   1.0.0 parsed with an `ERROR` may now parse cleanly, and their trees are new.
 - **Incremental reparsing.** Use a tree-sitter runtime that contains tree-sitter commit `f932671a5` (released after
   0.27.2). Older runtimes can give a reparse that differs from a fresh parse when a reused node starts with a keyword
@@ -95,6 +95,7 @@ Child iteration is unchanged. `ChildByFieldName` now finds them.
   in each session; context 111, environment 294, version 36 and runner 4, with no open grammar gap.
 - **Highlights.** Every `keyword_*` kind has a highlight.
 - **Size and time.** In the release audit on Windows x64 with gcc 16.2.0 `-O2`, the compiled library was 1.386x
-  the M2 milestone (`e8a398e`), and median parse time over five alternating runs was 0.949x. Against the current
+  the M2 milestone (`e8a398e`), and median parse time over five alternating runs was 0.949x. Against the then-current
   milestone (`4ff4c5f`), the ratios were 1.000x and 0.952x. Timing varies by host and run; peak memory was not
-  measured on Windows (ADR-0005).
+  measured on Windows (ADR-0005). The release runtime milestone is now `d206c0a` (#62); those earlier ratios do
+  not measure against it. The current 1.0.0 comparison is in [benchmarks.md](benchmarks.md).

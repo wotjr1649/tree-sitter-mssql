@@ -18,7 +18,7 @@ Contents: [Summary](#summary) · [Method](#method) · [Accuracy](#accuracy) · [
 | | 1.0.0 | 2.0.0 |
 | --- | ---: | ---: |
 | Engine-accepted oracle cases that parse without an error (15,585) | 10,056 (64.5 %) | 15,585 (100 %) with tree-check; 15,582 grammar alone¹ |
-| Engine-rejected oracle cases flagged (5,833) | 3,083 (52.9 %), grammar error only | 5,388 (92.4 %) with tree-check; 1,749 (30.0 %) grammar alone |
+| Engine-rejected or runner-excluded oracle pairs flagged (5,833) | 3,083 (52.9 %), grammar error only | 5,388 (92.4 %) with tree-check; 1,749 (30.0 %) grammar alone |
 | Private corpus (6,006 production scripts): accepted → clean | 5,874 / 5,987 | 5,987 / 5,987 |
 | Private corpus: rejected → flagged | 8 / 19 | 18 / 19 |
 | Parse throughput, private corpus, inputs both parse cleanly (B/ms, median of 5 rounds) | 11,438 | 9,958 (−13 %) |
@@ -41,7 +41,7 @@ compiled library is about 30 % larger.
 **Host.** Intel Core Ultra 9 285H, 16 logical cores, 31.5 GiB RAM, Windows 11 Pro 10.0.26200. One session. Another
 CPU-heavy job could run on the same machine, so system CPU load varied between 4 % and 47 % (sampled at the end of
 each round or phase; see the table below). That is why every comparison between the two versions is an A/B run in
-alternating rounds (the order flips each round) and every figure is a median. Absolute numbers on an idle machine will
+alternating rounds (the order flips each round) and every figure is a median. Absolute numbers on an idle machine may
 be better; compare the ratios.
 
 | Phase | Rounds | System CPU load at the end of each round or phase |
@@ -104,25 +104,26 @@ gcc -O2 -std=c11 -I src -c src/parser.c src/scanner.c ; gcc -shared -s -o mssql.
 
 ### Oracle
 
-21,418 case/session pairs (10,709 sources under both QUOTED_IDENTIFIER settings): 15,585 accepted, 5,833 rejected.
+21,418 case/session pairs (10,709 sources under both QUOTED_IDENTIFIER settings): 15,585 accepted, 5,831 rejected and 2 runner-excluded. The negative column below follows the replay:
+5,833 not-accepted pairs, including the two exclusions.
 
 | | 1.0.0 | 2.0.0 grammar alone | 2.0.0 grammar + tree-check |
 | --- | ---: | ---: | ---: |
 | Accepted that parse without an error | 10,056 (64.5 %) | 15,582 (99.98 %) | 15,585 (100 %) |
-| Rejected that are flagged | 3,083 (52.9 %) | 1,749 (30.0 %) | 5,388 (92.4 %) |
-| Agreement with the engine, all pairs | 13,139 (61.3 %) | 17,331 (80.9 %) | 20,973 (97.9 %) |
+| Rejected or runner-excluded that are flagged | 3,083 (52.9 %) | 1,749 (30.0 %) | 5,388 (92.4 %) |
+| Accepted clean + rejected/excluded flagged, all pairs | 13,139 (61.3 %) | 17,331 (80.9 %) | 20,973 (97.9 %) |
 
-By session: QUOTED_IDENTIFIER ON has 7,838 accepted and 2,871 rejected cases; OFF has 7,747 and 2,962. 2.0.0 with
-tree-check accepts all of both; its grammar alone misses 3 OFF cases (see the summary note).
+By session: QUOTED_IDENTIFIER ON has 7,838 accepted, 2,870 rejected and 1 runner-excluded case; OFF has 7,747, 2,961 and 1. 2.0.0 with
+tree-check accepts all engine-accepted cases in both sessions; its grammar alone misses 3 OFF cases (see the summary note).
 
-The 445 rejected cases that 2.0.0 does not flag are all classified in `oracle/data/rejected-clean.json`: 111 `context`
+The 445 rejected or runner-excluded pairs that 2.0.0 does not flag are all classified in `oracle/data/rejected-clean.json`: 111 `context`
 (need declarations or the catalog), 36 `version` (a feature these engine builds lack), 294 `environment` (edition,
 platform or server configuration), 4 `runner` (not judgeable), 0 `gap` (decidable from the tree but not enforced).
 
 1.0.0 flags more rejected cases than the grammar alone of 2.0.0 because it also puts errors into many inputs SQL Server
 accepts; its 3,083 flags are not evidence of better rejection.
 
-Per case set (accepted cases that parse cleanly / accepted; rejected flagged / rejected):
+Per case set (accepted cases that parse cleanly / accepted; rejected or runner-excluded flagged / not accepted):
 
 | Set | 1.0.0 clean | 2.0.0 clean | 1.0.0 flagged | 2.0.0 flagged (grammar + tree-check) |
 | --- | ---: | ---: | ---: | ---: |
@@ -219,14 +220,14 @@ Parse throughput, B/ms (median of 5 alternating rounds, per-input median, total 
 | private, 100 KB–1 MB | 56 | 9,950 | 8,847 | 10,118 | 8,883 | 48 |
 | private, >1 MB | 2 | 8,226 | 7,742 | 8,226 | 7,742 | 2 |
 
-- On clean input 2.0.0 parses about 6–20 % slower than 1.0.0 (2.0.0 over 1.0.0: 0.80 below 1 KB, 0.83 at 1–10 KB,
+- On clean private-corpus input 2.0.0 parses about 6–20 % slower than 1.0.0 (2.0.0 over 1.0.0: 0.80 below 1 KB, 0.83 at 1–10 KB,
   0.87 at 10–100 KB, 0.88 at 100 KB–1 MB, 0.94 above 1 MB). Per file (files of 10 KB and more, both clean, 890 files),
   the median ratio of 2.0.0 throughput to 1.0.0 throughput is 0.85 (10th percentile 0.74, 90th percentile 0.96).
 - Cause of the remaining difference. Since pull request #62 the generated `parser.c` is compiled with optimization:
-  `tree-sitter generate` 0.27.2 emits `#pragma GCC optimize ("O0")` for a whole `parser.c` once the main lexer has more
+  `tree-sitter generate` 0.27.2 emits `#pragma GCC optimize ("O0", "jump-tables")` for a whole `parser.c` once the main lexer has more
   than 300 states, and 2.0.0's lexer had 568; it now has 271, and the parse-state count fell from 15,020 to 14,107. Before
-  that change the same measurement gave about 30 % (the corpus ratio was 0.70 against 0.87 now). What is left comes from
-  the larger grammar, not from more lexing or shifting: in a deterministic counter study on inputs both versions parse
+  that change the same measurement gave about 30 % (the corpus ratio was 0.70 against 0.87 now). An earlier counter study attributes the remaining gap to
+  the larger grammar: in a deterministic counter study on inputs both versions parse
   cleanly, lexer calls and shifts per KB were the same, and 2.0.0 was slower on the same work because of larger parse
   tables (4,478 large states over 1,368 symbols instead of 4,969 over 913), Unicode identifier sets (`set_contains`
   ranges, about 3 % of throughput on the corpus), more reductions (+4 to +11 % per KB, from new hidden wrapper

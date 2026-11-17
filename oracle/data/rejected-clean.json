@@ -1,5 +1,5 @@
 {
-  "about": "Every oracle session/case pair that every observed engine rejects but that parses cleanly, with its class: gap (decidable from the tree, not enforced yet), context (needs declarations or the catalog), version (a feature these engine builds lack), environment (edition, platform or server configuration), runner (not judgeable). tools/oracle-replay.mjs fails on an unclassified or stale entry.",
+  "about": "Every oracle session/case pair that every observed engine rejects but that parses cleanly, with its class: gap (decidable from the tree, not enforced yet), context (needs declarations or the catalog), version (a feature these engine builds lack), environment (edition, platform or server configuration), runner (not judgeable). scripts/oracle-replay.mjs fails on an unclassified or stale entry.",
   "cases": {
     "bulk-schema-69@qi-off": {"class":"environment","errors":"5374","reason":"The LocalDB file connector rejects WITH schema for this BULK format (Msg 5374), with identical ON/OFF errors; connector/engine support is outside the grammar."},
     "bulk-schema-apply-70@qi-off": {"class":"environment","errors":"5374","reason":"The LocalDB file connector rejects WITH schema for this BULK format (Msg 5374), with identical ON/OFF errors; connector/engine support is outside the grammar."},

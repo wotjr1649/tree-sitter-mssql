@@ -20,7 +20,7 @@ under QUOTED_IDENTIFIER ON:
   `oracle/data/rejected-clean.json` (ON 190: context 50, environment 123, version 15, runner 2; no `gap`).
 
 Across both sessions the ledger has 445 entries: context 111, environment 294, version 36 and runner 4.
-All 7,747 OFF engine-accepted cases also parse cleanly; LocalDB 2025 covers every source under both settings,
+All 7,747 OFF engine-accepted cases also pass tree-check, including its session-aware re-parsing; LocalDB 2025 covers every source under both settings,
 while Linux engine results cover earlier ON case-set snapshots.
 
 Before this decision, the runtime bound of ADR-0002 §6 was 1.5x of the M2 end (`e8a398e`). After the M3 work
@@ -30,7 +30,8 @@ the compiled library stands at about 1.39x in the release audit below.
 
 1. **Grammar first.**
    - go-treesitter can move its `tsql` pin to this repository. The pin move is go-treesitter's change, under its own rules.
-   - That gives clean parses for every engine-accepted case in this oracle at once.
+   - The grammar alone gives clean parses for all ON engine-accepted cases in this oracle; under OFF, three
+     accepted cases need tree-check's session-aware re-parsing.
 2. **Then the constraint layer, compiled to WebAssembly.**
    - The Rust rules stay the single implementation.
    - This repository builds them, with the parser, into a wasm module that exports a small C ABI. The toolchain is
@@ -44,9 +45,11 @@ the compiled library stands at about 1.39x in the release audit below.
    - The 1.5x bound then applies to growth from there.
    - The 2.0.0 release audit on Windows x64, gcc 16.2.0 `-O2`, using `scripts/runtime-cost.mjs` with five
      alternating runs, measured M2 library bytes 10,628,283 → 14,730,473 (1.386x) and median parse time
-     1,849.3 → 1,755.0 ms (0.949x). Against the new milestone `4ff4c5f`, library size is 1.000x and parse
+     1,849.3 → 1,755.0 ms (0.949x). Against the then-new milestone `4ff4c5f`, library size is 1.000x and parse
      time was 0.952x (1,423.4 → 1,354.8 ms). Timing varies by host and run. Peak memory was not measured
      on Windows; its gate runs only where GNU time is available.
+   - For 2.0.0 the runtime milestone was subsequently advanced to `d206c0a` (#62, parser compilation with
+     optimization). The historical audit above was not measured against that release baseline.
 
 ## Consequences
 

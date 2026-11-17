@@ -20,7 +20,8 @@ source under both settings; the Linux engine observations cover earlier case-set
 acceptance by at least one recorded engine/level; the runner excludes one input that sets PARSEONLY itself.
 From 2.0.0:
 
-- every case SQL Server accepts parses without an error;
+- every engine-accepted oracle case passes tree-check; under QUOTED_IDENTIFIER OFF, tree-check re-parses a
+  session-aware projection when needed (the grammar alone misses three accepted OFF cases);
 - every case SQL Server rejects is rejected by the grammar or by the constraint layer in `crates/tree-check` (also a
   WebAssembly module for CGO-free hosts, [docs/constraint-wasm.md](docs/constraint-wasm.md)), or is listed with its
   reason in `oracle/data/rejected-clean.json` (including runner exclusions). Those reasons are declarations or the catalog,
@@ -36,7 +37,7 @@ Scope and known limits:
   [`f932671a5`](https://github.com/tree-sitter/tree-sitter/commit/f932671a5) (after 0.27.2). With 0.27.2, a reparse after an
   edit can differ from a fresh parse of the same text when a reused node starts with a keyword that has to be read
   as a name there: 160 of 123,094 edit steps over the oracle did, 0 with the fix. After an edit that leaves invalid
-  text, the incremental tree may also place its `ERROR` differently from a fresh parse. A fresh parse is always exact.
+  text, the incremental tree may also place its `ERROR` differently from a fresh parse. A fresh parse avoids reuse-related differences.
 - incremental reparsing re-reads more tokens than needed at some boundaries; the tree is unaffected. The nested block
   comment is an external-scanner token, so tree-sitter 0.27.2 re-reads a token whose lex mode changed instead of
   reusing it. Over 217,563 sampled edits of the test inputs, 314 re-read more than 4 tokens beyond the best earlier
@@ -60,25 +61,25 @@ and every limit are in [docs/benchmarks.md](docs/benchmarks.md).
 
 | | 1.0.0 | 2.0.0 |
 | --- | ---: | ---: |
-| SQL Server–accepted oracle cases that parse without an error (15,585) | 10,056 (64.5 %) | 15,585 (100 %) |
-| SQL Server–rejected oracle cases flagged (5,833) | 3,083 (52.9 %) | 5,388 (92.4 %) with tree-check |
+| SQL Server–accepted oracle cases judged clean (15,585) | 10,056 (64.5 %) | 15,585 (100 %) with tree-check |
+| Engine-rejected or runner-excluded oracle pairs flagged (5,833) | 3,083 (52.9 %) | 5,388 (92.4 %) with tree-check |
 | A private corpus of 6,006 production T-SQL scripts: accepted → clean / rejected → flagged | 5,874 / 5,987 and 8 / 19 | 5,987 / 5,987 and 18 / 19 |
 | `IF … ELSE IF …` chain of 10,000 branches; `IF` nested 10 deep without `BEGIN` | 33.0 s; ERROR tree | 0.06 s; clean tree |
 | Parse throughput on that corpus, clean inputs (B/ms) | 11,438 | 9,958 (−13 %) |
 | Tree bytes per source byte / largest single parse peak | 24.6 / 80 MiB | 25.7 / 88 MiB |
 | Compiled library, gcc `-O2`, stripped | 10.3 MB | 13.4 MB |
 
-2.0.0 parses clean input about 6–20 % slower than 1.0.0 (13 % on the corpus). Most of the earlier 30 % gap was a compiler
+On the private corpus, 2.0.0 parses clean input about 6–20 % slower than 1.0.0 (13 % overall). Most of the earlier 30 % gap was a compiler
 effect: `tree-sitter generate` 0.27.2 compiles the whole `parser.c` without optimization when the main lexer has more than
-300 states, and 2.0.0's had 568; it now has 271. What remains comes from the larger grammar: bigger parse tables, Unicode
-identifier sets and more reductions, not more lexing.
+300 states, and 2.0.0's had 568; it now has 271. An earlier counter study attributes the remaining gap to bigger parse tables, Unicode
+identifier sets and more reductions; its effects were not isolated or re-counted after #62.
 
 **Assessment.** The criteria are SQL Server's own parser (`SET PARSEONLY ON`) as the reference, and each verdict says
 what was measured.
 
 | Criterion | Verdict | Evidence and limit |
 | --- | --- | --- |
-| Correctness against SQL Server | Meets, with limits | Every engine-accepted oracle case parses cleanly (SQL Server 2017–2025, levels 100–170, both QUOTED_IDENTIFIER settings). The 445 rejected cases not flagged are classified (context, version, environment, runner). The oracle was written by this project, so it is a regression gate more than an independent test. |
+| Correctness against SQL Server | Meets, with limits | Every engine-accepted oracle case passes tree-check (SQL Server 2017–2025, levels 100–170, both QUOTED_IDENTIFIER settings); the grammar alone misses three OFF cases. The 445 rejected or runner-excluded pairs not flagged are classified (context, version, environment, runner). The oracle was written by this project, so it is a regression gate more than an independent test. |
 | Real-world agreement | Meets, with limits | 5,987 of 5,987 accepted scripts clean, 18 of 19 rejected flagged; the one miss is a context error (Msg 137). One source, only 19 rejected scripts, and the corpus was also used during development. |
 | Robustness | Meets | No crash, hang or superlinear time on 43 stress inputs (nesting to 50,000, 200,000-term chains, an 8 MB literal) or on 41 synthetic classes (exponents 0.96–1.06). |
 | Performance and memory | Meets, with limits | About 10 MB/s parsing, 5 MB/s with tree-check, about 26 bytes of tree per source byte, a 2.25 MB script peaks at about 102 MiB of process memory; the WASM module starts at 14 MiB. It is about 13 % slower and 4–5 % more memory-hungry than 1.0.0 on clean input. |
