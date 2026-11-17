@@ -39,8 +39,9 @@ Scope and known limits:
   text, the incremental tree may also place its `ERROR` differently from a fresh parse. A fresh parse is always exact.
 - incremental reparsing re-reads more tokens than needed at some boundaries; the tree is unaffected. The nested block
   comment is an external-scanner token, so tree-sitter 0.27.2 re-reads a token whose lex mode changed instead of
-  reusing it. Over 217,563 sampled edits of the test inputs, 320 re-read more than 4 tokens beyond the best earlier
-  build, 74 of them on valid text before and after the edit (worst: 91 tokens in a 1.5 KB `MERGE`).
+  reusing it. Over 217,563 sampled edits of the test inputs, 314 re-read more than 4 tokens beyond the best earlier
+  build, 16 of them on valid text before and after the edit (worst of those: 47 tokens in a 0.5 KB script, at a
+  `GO` after a `SELECT`).
 
 The 2.0.0 regression coverage includes 60 Korean identifier oracle cases (120 ON/OFF session/case pairs).
 The parser accepts UTF-8 and UTF-16; other encodings need transcoding or a custom decoder, and the constraint
