@@ -192,7 +192,7 @@ CREATE SECURITY POLICY p DROP FILTER PREDICATE ON t;
 
 ---
 
-(program (ERROR (keyword_create) (keyword_security) (keyword_policy) (identifier) (keyword_drop) (keyword_filter) (keyword_predicate) (keyword_on) (identifier)) (batch))
+(program (ERROR (keyword_create) (keyword_security) (keyword_policy) (object_reference (identifier)) (keyword_drop) (keyword_filter) (keyword_predicate) (keyword_on) (identifier)) (batch))
 
 ==================
 ALTER SECURITY POLICY needs a clause

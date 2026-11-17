@@ -45,6 +45,160 @@ pub const TAGS_QUERY: &str = include_str!("../../queries/tags.scm");
 mod tests {
     use tree_sitter::{Parser, Query, QueryCursor, StreamingIterator};
 
+    fn incremental_lexes(mut source: String, at: usize) -> usize {
+        use std::sync::{
+            Arc,
+            atomic::{AtomicUsize, Ordering},
+        };
+        use tree_sitter::{InputEdit, Point};
+
+        let mut parser = Parser::new();
+        parser.set_language(&super::LANGUAGE.into()).unwrap();
+        let mut old = parser.parse(&source, None).unwrap();
+        assert!(!old.root_node().has_error());
+        let prefix = &source[..at];
+        let row = prefix.bytes().filter(|&c| c == b'\n').count();
+        let column = prefix.rsplit('\n').next().unwrap().len();
+        source.replace_range(at..at + 1, "x");
+        old.edit(&InputEdit {
+            start_byte: at,
+            old_end_byte: at + 1,
+            new_end_byte: at + 1,
+            start_position: Point::new(row, column),
+            old_end_position: Point::new(row, column + 1),
+            new_end_position: Point::new(row, column + 1),
+        });
+        let lexed = Arc::new(AtomicUsize::new(0));
+        let logger_count = Arc::clone(&lexed);
+        // The public logger counts newly lexed tokens independently of wall-clock time.
+        parser.set_logger(Some(Box::new(move |_, message| {
+            if message.starts_with("lexed_lookahead ") {
+                logger_count.fetch_add(1, Ordering::Relaxed);
+            }
+        })));
+        let incremental = parser.parse(&source, Some(&old)).unwrap();
+        parser.set_logger(None);
+        let fresh = parser.parse(&source, None).unwrap();
+        assert!(!incremental.root_node().has_error());
+        assert_eq!(
+            incremental.root_node().to_sexp(),
+            fresh.root_node().to_sexp()
+        );
+        let mut a = incremental.walk();
+        let mut b = fresh.walk();
+        loop {
+            assert_eq!(a.node().kind_id(), b.node().kind_id());
+            assert_eq!(a.node().range(), b.node().range());
+            assert_eq!(a.node().is_missing(), b.node().is_missing());
+            assert_eq!(a.node().is_extra(), b.node().is_extra());
+            assert_eq!(a.field_name(), b.field_name());
+            let down = a.goto_first_child();
+            assert_eq!(down, b.goto_first_child());
+            if down {
+                continue;
+            }
+            loop {
+                let next = a.goto_next_sibling();
+                assert_eq!(next, b.goto_next_sibling());
+                if next {
+                    break;
+                }
+                let up = a.goto_parent();
+                assert_eq!(up, b.goto_parent());
+                if !up {
+                    break;
+                }
+            }
+            if a.node() == incremental.root_node() {
+                break;
+            }
+        }
+        let n = lexed.load(Ordering::Relaxed);
+        assert!(n > 0);
+        n
+    }
+
+    #[test]
+    fn incremental_insert_relexing_stays_bounded() {
+        for (semicolon, procedure) in [(false, false), (true, false), (false, true)] {
+            let mut counts = Vec::new();
+            for count in [256, 1024] {
+                let prefix = if procedure {
+                    "CREATE PROCEDURE dbo.p AS BEGIN\n"
+                } else {
+                    ""
+                };
+                let statement = if semicolon {
+                    "INSERT INTO dbo.t (a) VALUES (1);\n"
+                } else {
+                    "INSERT INTO dbo.t (a) VALUES (1)\n"
+                };
+                let source = format!(
+                    "{prefix}{}{}",
+                    statement.repeat(count),
+                    if procedure { "END\n" } else { "" }
+                );
+                let at =
+                    prefix.len() + count / 2 * statement.len() + statement.find("dbo").unwrap();
+                let n = incremental_lexes(source, at);
+                eprintln!(
+                    "semicolon={semicolon} procedure={procedure} statements={count} lexed={n}"
+                );
+                counts.push(n);
+            }
+            assert!(
+                counts.iter().all(|&n| n <= 32),
+                "relexed tokens: {counts:?}"
+            );
+            assert!(
+                counts[1] <= counts[0] + 2,
+                "relexing grows with input: {counts:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn incremental_create_table_name_relexing_stays_bounded() {
+        let mut counts = Vec::new();
+        for count in [256, 1024] {
+            let columns = (0..count)
+                .map(|i| format!("c{i} int"))
+                .collect::<Vec<_>>()
+                .join(", ");
+            let source = format!("CREATE TABLE dbo.t ({columns});\n");
+            let n = incremental_lexes(source, "CREATE TABLE ".len());
+            eprintln!("table columns={count} lexed={n}");
+            counts.push(n);
+        }
+        assert!(counts.iter().all(|&n| n <= 4), "relexed tokens: {counts:?}");
+        assert!(
+            counts[1] <= counts[0] + 2,
+            "relexing grows with input: {counts:?}"
+        );
+    }
+
+    #[test]
+    fn incremental_procedure_header_relexing_stays_bounded() {
+        let mut counts = Vec::new();
+        for count in [256, 1024] {
+            let source = format!(
+                "CREATE PROCEDURE dbo.p AS BEGIN\n{}END\nGO\n",
+                "UPDATE dbo.t SET a = 1;\n".repeat(count)
+            );
+            let n = incremental_lexes(source, "CREATE PROCEDURE dbo.".len());
+            eprintln!("procedure UPDATE statements={count} lexed={n}");
+            counts.push(n);
+        }
+        assert!(
+            counts.iter().all(|&n| n <= 8),
+            "procedure header relexes too much: {counts:?}"
+        );
+        assert!(
+            counts[1] <= counts[0] + 2,
+            "relexing grows with input: {counts:?}"
+        );
+    }
+
     #[test]
     fn test_can_load_grammar() {
         let mut parser = tree_sitter::Parser::new();

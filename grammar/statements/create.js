@@ -150,7 +150,7 @@ export default {
         $.keyword_create,
         optional($.keyword_external),
         $.keyword_table,
-        field('name', $.object_reference),
+        field('name', alias($._create_table_name, $.object_reference)),
         choice(
           seq($.with_options, $.keyword_as, $._dml_read),
           seq(
