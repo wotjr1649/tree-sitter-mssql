@@ -88,6 +88,7 @@ export default {
   // prec.right keeps a real item's trailing `;` bound to the
   // body item it follows rather than to `program`'s own separator —
   // otherwise a bare body would end at its first semicolon.
+  // Keep this helper factored so procedure boundaries can reuse UPDATE terminators.
   _body_item: ($) =>
-    choice(prec.right(seq(choice($.statement, $.block), optional($._semicolon))), ';'),
+    choice(prec.right(seq(choice($.statement, $.block), optional($._semicolon))), $._semicolon),
 };

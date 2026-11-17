@@ -128,7 +128,6 @@ export default grammar({
     $._alter_service_contracts,
     $._alter_statement,
     $._audit_specification_target,
-    $._body_item,
     $._broker_priority_body,
     $._check_option,
     $._column_alias,
@@ -187,6 +186,15 @@ export default grammar({
     // batches directly instead of re-deriving them by scanning for
     // `go_statement` and slicing.
     program: ($) => repeat($.batch),
+    // Keep table-name reductions separate from the broader identifier follow sets for reuse.
+    _create_table_identifier: expression_rules.identifier,
+    _create_table_name: ($) =>
+      expression_rules.object_reference(
+        new Proxy($, {
+          get: (target, prop) =>
+            prop === 'identifier' ? alias($._create_table_identifier, $.identifier) : target[prop],
+        }),
+      ),
 
     // Empty statements are anonymous `;` tokens, preserving existing statement ranges.
     // Each statement/block may be terminated by `;`; only the batch's last
@@ -219,7 +227,7 @@ export default grammar({
     _batch_item: ($) =>
       choice(
         prec.right(seq(choice($.statement, $.block), optional($._semicolon))),
-        ';',
+        $._semicolon,
         $.sqlcmd_setvar,
         $.sqlcmd_include,
         $.sqlcmd_on_error,
