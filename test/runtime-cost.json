@@ -1,5 +1,5 @@
 {
-  "label": "M3 end (#46: every engine-accepted oracle case parses; cost rounds 1-5)",
-  "commit": "4ff4c5f1f3479697ee438dacf27bac3a4c1836df",
+  "label": "2.0.0 (#62: parser.c compiled with optimization; the release baseline)",
+  "commit": "d206c0a77c739b56cbcc6f19f9a0b2abe51fadfc",
   "max_ratio": 1.5
 }
