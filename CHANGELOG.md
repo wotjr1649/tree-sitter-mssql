@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0] - 2026-11-16
+## [2.0.0] - 2026-11-18
 
 The first release of this independent repository. Every input SQL Server accepts in the oracle (10,709 sources,
 21,418 QUOTED_IDENTIFIER session/case pairs; recorded SQL Server 2017, 2019, 2022 and 2025 results at supported
