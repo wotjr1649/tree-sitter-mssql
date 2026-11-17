@@ -36,6 +36,10 @@ Scope and known limits:
   edit can differ from a fresh parse of the same text when a reused node starts with a keyword that has to be read
   as a name there: 160 of 123,094 edit steps over the oracle did, 0 with the fix. After an edit that leaves invalid
   text, the incremental tree may also place its `ERROR` differently from a fresh parse. A fresh parse is always exact.
+- incremental reparsing re-reads more tokens than needed at some boundaries; the tree is unaffected. The nested block
+  comment is an external-scanner token, so tree-sitter 0.27.2 re-reads a token whose lex mode changed instead of
+  reusing it. Over 217,563 sampled edits of the test inputs, 320 re-read more than 4 tokens beyond the best earlier
+  build, 74 of them on valid text before and after the edit (worst: 91 tokens in a 1.5 KB `MERGE`).
 
 Moving from 1.0.0: [docs/migrating-from-1.0.md](docs/migrating-from-1.0.md).
 
