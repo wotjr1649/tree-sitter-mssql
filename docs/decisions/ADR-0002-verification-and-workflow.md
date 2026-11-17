@@ -8,7 +8,7 @@
 The goal is complete T-SQL support with zero defects (ADR-0001: SQL Server's parser is the reference). Measurements on
 2026-11-15:
 
-- Upstream v1.0.0 agrees with SQL Server 2025 LocalDB 17.0.1000.7 (`SET PARSEONLY ON`) on 386 of 681 judged cases at
+- The original grammar's v1.0.0 agrees with SQL Server 2025 LocalDB 17.0.1000.7 (`SET PARSEONLY ON`) on 386 of 681 judged cases at
   compatibility level 170 (56.7 %). The 726 cases from tree-sitter-grammar-kit hold 708 distinct sources.
 - grammar-kit carries a patch chain against the same base tree as this repository's commit `2e34d86e`. Applied there,
   it reaches 514 of 681 (75.5 %), but turns 6 engine-accepted cases into `ERROR`. It also fails 81 of 370 current
@@ -84,7 +84,7 @@ The goal is complete T-SQL support with zero defects (ADR-0001: SQL Server's par
    - Runtime cost is also bounded against a milestone (owner decision, 2026-11-16): `scripts/runtime-cost.mjs` compiles
      the milestone commit's parser and the current one with the same compiler in the same CI job, and compares the
      library size, the median time to parse every fixture and oracle case, and the peak memory of that parse. Each
-     ratio must stay within `max_ratio` of `test/runtime-cost.json` (1.5x of the M2 end, `e8a398e`). Per-change growth
+     ratio must stay within `max_ratio` of `test/runtime-cost.json` (1.5x of the 2.0.0 release baseline, `d206c0a`, after #62; previously the M3 end `4ff4c5f` under ADR-0005, and the M2 end `e8a398e` before that). Per-change growth
      is what the budget above limits; this bounds the sum. Passing the ratio needs a recorded decision and a new
      milestone, normally after a refactor that pays the growth back.
 7. **grammar-kit patches.**
@@ -94,16 +94,16 @@ The goal is complete T-SQL support with zero defects (ADR-0001: SQL Server's par
    - Wholesale adoption is considered only if every gate above passes with no node kind removed.
 8. **Workflow.**
    - `main` is the only long-lived branch and stays green. Work happens on short topic branches from the latest
-     `main`, merged by pull request with a merge commit (no squash or rebase: the imported upstream history stays
+     `main`, merged by pull request with a merge commit (no squash or rebase: the imported history stays
      intact).
-   - Commit pins are the release mechanism. If tags are ever needed they use the prefix `fork-v`, because upstream
-     may tag the same version numbers.
+   - Commit pins are the release mechanism. Releases are tagged `vMAJOR.MINOR.PATCH` with a GitHub Release (ADR-0007; this replaced
+     the earlier `fork-v` prefix).
    - Dependabot targets `main`. The tree-sitter CLI is excluded from automatic version updates because consumers
      regenerate with the same pinned version.
-9. **Upstream's deliberate error tests.** `test/corpus/errors.txt` pins `SELECT 1 WHERE 1=1;` and
+9. **Deliberate error tests inherited from 1.0.0.** `test/corpus/errors.txt` pins `SELECT 1 WHERE 1=1;` and
    `SELECT 1 GROUP BY 1;` as errors, while SQL Server accepts both (measured at levels 110 and 170 on 2026-11-15). They are rewritten as
-   positive cases in the change that fixes the grammar, and the divergence is recorded for upstream merges
-   in [`docs/upstream-divergence.md`](../upstream-divergence.md).
+   positive cases in the change that fixes the grammar, and the divergence is recorded in
+   [`docs/divergence-from-1.0.md`](../divergence-from-1.0.md).
 10. **`docs/accepted-gaps.md`** stays as the ledger, rewritten against engine verdicts. Each row carries a case ID,
     direction, profile and issue, and rows not yet measured are marked `UNVERIFIED`.
 
@@ -111,6 +111,6 @@ The goal is complete T-SQL support with zero defects (ADR-0001: SQL Server's par
 
 - The oracle and its gates come before grammar fixes, and fixes become measurable per case.
 - Complete support will grow the parser. The budget makes each increase deliberate instead of forbidding it.
-- Supporting `QUOTED_IDENTIFIER OFF` requires a stateful external scanner with serialization. It is planned as its
-  own change with incremental-parsing tests.
+- `QUOTED_IDENTIFIER OFF` is supported by session-aware constraint checks (ADR-0006), including
+  `tc_check_v2` in the WASM interface. Both settings share the same grammar tree; no session scanner was needed.
 - Consumers move their pins deliberately. Behaviour changes arrive as separate, reviewed pin moves.

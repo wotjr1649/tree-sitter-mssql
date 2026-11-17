@@ -38,7 +38,7 @@ cargo test --manifest-path crates/tree-check/Cargo.toml
 
 ## Pull requests
 
-- Open pull requests against **`main`** and merge with a merge commit (no squash or rebase: the imported upstream history must stay intact).
+- Open pull requests against **`main`** and merge with a merge commit (no squash or rebase: the imported history of the original grammar must stay intact).
 - Use a Conventional Commit title (`feat:`, `fix:`, `docs:`, `chore:`, `test:`, ...).
 - Keep each pull request to one change; link the issue it resolves in the body.
 - Regenerate and commit `src/parser.c` and `test/node-kinds.txt` alongside any `grammar.js` change; CI diffs both against a fresh regenerate and fails on drift.
@@ -57,7 +57,7 @@ cargo test --manifest-path crates/tree-check/Cargo.toml
 ## Fixing a defect
 
 1. **Issue.** Open one issue per defect with the `defect` template: the minimal T-SQL input, SQL Server's verdict under `SET PARSEONLY ON` with compatibility level and engine version, and the current tree or `ERROR` excerpt.
-2. **Failing case.** Add a corpus case under `test/corpus/` or an oracle case that fails before the change. SQL Server's verdict decides what is valid; where an upstream test or [docs/accepted-gaps.md](docs/accepted-gaps.md) disagrees, the change names the case and the compatibility level.
+2. **Failing case.** Add a corpus case under `test/corpus/` or an oracle case that fails before the change. SQL Server's verdict decides what is valid; where a test inherited from 1.0.0 or [docs/accepted-gaps.md](docs/accepted-gaps.md) disagrees, the change names the case and the compatibility level.
 3. **Grammar change.** Edit `grammar.js` or `grammar/**/*.js` (or `src/scanner.c`), never the generated files.
 4. **Regenerate.** Run `tree-sitter generate` with CLI 0.27.2 and commit `src/parser.c`, `src/grammar.json`, `src/node-types.json` and `test/node-kinds.txt` with the grammar change.
 5. **Gates.** Run the checks in "Validation before a pull request". Existing corpus cases and fixtures keep passing unless the change alters them on purpose and says why.
@@ -72,5 +72,4 @@ Issue labels:
 | `over-accept` | SQL Server rejects the input with a syntax error; the tree is clean |
 | `contextual` | SQL Server rejects the input for a reason that needs context, outside the grammar |
 | `oracle` | The SQL Server oracle runner, its cases or its verdict files |
-| `upstream-sync` | Merging changes from `alfpricot/tree-sitter-mssql` |
 | `breaking` | Removes or renames a node kind or field name |

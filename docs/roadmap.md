@@ -1,12 +1,13 @@
 # Roadmap
 
 Phases in order. Each phase ends when its "done when" holds. The definitions, gates and budgets are in
-[ADR-0002](decisions/ADR-0002-verification-and-workflow.md). The reasons for continuing from upstream are in
-[ADR-0001](decisions/ADR-0001-continue-from-upstream-v1.md). All work lands on `main` through short topic branches.
+[ADR-0002](decisions/ADR-0002-verification-and-workflow.md). The reasons for continuing from the original grammar are in
+[ADR-0001](decisions/ADR-0001-continue-from-upstream-v1.md); the repository is independent since
+[ADR-0007](decisions/ADR-0007-independent-repository.md). All work lands on `main` through short topic branches.
 
 ## M0.5: Foundation on `main`
 
-Remove upstream's release automation, point every policy at `main`, merge the foundation with upstream history
+Remove the original grammar's release automation, point every policy at `main`, merge the foundation with its history
 preserved.
 
 Done when the foundation is merged into `main` by merge commit and the full `Verify` run passes on it.
@@ -32,7 +33,7 @@ First, re-run grammar-kit's patch chain as a measured experiment (per-case trans
 node-type diff, cost). Then fix one class per pull request, re-implemented here:
 
 1. `CREATE/ALTER QUEUE … WITH ACTIVATION (…, EXECUTE AS …)`.
-2. Clauses without FROM: `WHERE`, `GROUP BY`, `HAVING`, rewriting the two upstream error cases.
+2. Clauses without FROM: `WHERE`, `GROUP BY`, `HAVING`, rewriting the two error cases inherited from 1.0.0.
 3. Unicode identifiers and variables (Unicode 3.2 BMP letters and digits, per engine verdicts).
 4. Leading and empty `;`, and CTE boundaries.
 5. Table-hint forms and their numeric bounds.
@@ -62,16 +63,14 @@ Status (2026-11-16):
 
 ## M3: Remaining surface
 
-The remaining inventory cells: DDL families, `QUOTED_IDENTIFIER OFF` (stateful scanner), `GO`/sqlcmd as a client
+The M3 inventory cells: DDL families, `QUOTED_IDENTIFIER OFF` (session-aware constraint checks, ADR-0006), `GO`/sqlcmd as a client
 suite, the syntax false positives that are syntactic.
 
 Done when every declared cell is verified; cells with only an issue count as open.
 
-## M4: Upstream sync and consumers
+## M4: Consumers
 
-- Check `alfpricot/tree-sitter-mssql` every two to four weeks and bundle useful changes in one `upstream-sync` pull
-  request.
 - Consumers (go-treesitter) move their pins in separate, reviewed changes. Each move records the node-type diff, the
   native tree diff, the cost and the memory.
 
-Done when the cadence has run once and each consumer move has its record.
+Done when each consumer move has its record.
