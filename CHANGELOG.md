@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0] - 2026-11-16
 
-The first release of this fork. Every input SQL Server accepts in the oracle (10,649 cases; SQL Server 2017, 2019,
-2022 and 2025 at compatibility levels 100–170, under both QUOTED_IDENTIFIER settings) parses without an error; with
+The first release of this independent repository. Every input SQL Server accepts in the oracle (10,709 sources,
+21,418 QUOTED_IDENTIFIER session/case pairs; recorded SQL Server 2017, 2019, 2022 and 2025 results at supported
+compatibility levels 100–170) parses without an error; with
 the constraint layer, every remaining oracle input is rejected or classified, including runner exclusions. Acceptance
-means acceptance by at least one recorded engine/level. Breaking: 42 of the 5,278 valid inputs that 1.0.0
+means acceptance by at least one recorded engine/level. Breaking: 40 of the 5,379 distinct inputs that 1.0.0
 parsed without an error get a different tree, mostly where 1.0.0 read them wrongly; no node kind or field is
 removed. See [docs/migrating-from-1.0.md](docs/migrating-from-1.0.md).
 
@@ -21,6 +22,9 @@ removed. See [docs/migrating-from-1.0.md](docs/migrating-from-1.0.md).
 - Share nonempty EVENT SESSION, SELECT and UPDATE/DELETE suffixes and inline 50 unaliased helpers to reduce the generated parse table (CLI 0.27.2). All node kinds, fields and named corpus trees are unchanged; no keyword is generalized and no checker rule is weakened.
 
 ### Fixed
+
+- Restore bounded incremental reuse for semicolon-free statements, CREATE TABLE name edits and procedure headers over UPDATE bodies (#57); preserve valid trees and verdicts (20 rejected-input ERROR trees change).
+- Reuse factored MERGE sources, Service Broker and CTE subtrees after header edits without changing valid trees or verdicts (#59).
 
 - Nested `IF` without `BEGIN` parses at any depth (it was an ERROR from depth 10), and `IF ... ELSE IF ...` chains parse in linear time (252 KB: 15.9 s before, 0.1 s now). The `;` of an `IF x s;; ELSE t` clause is chosen by the external scanner (`_else_semicolon`, aliased to `;`, one per semicolon, only when ELSE follows) instead of a GLR fork per `;`. Oracle set `if-nesting` (39 cases, LocalDB 17.0.1000.7, levels 100-170, both QUOTED_IDENTIFIER settings).
 - Every character SQL Server takes as a token separator is whitespace to the grammar: the 53 code points it accepts between tokens (U+0000-0020, U+0085, U+00A0, U+1680, U+2000-200B, U+2028, U+2029, U+202F, U+205F, U+3000; not U+180E or U+FEFF), oracle set `metamorphic-whitespace` (110 cases, LocalDB 17.0.1000.7, levels 100-170). Keyword case and whitespace no longer change a verdict. tree-check reports no constraint violations on a tree that already has a parse error, instead of re-parsing a normalized copy.
@@ -39,6 +43,8 @@ removed. See [docs/migrating-from-1.0.md](docs/migrating-from-1.0.md).
 - Parse table/column/constraint and partitioned index DDL verified by the SQL Server oracle; preserve existing clean trees.
 
 ### Added
+
+- Add 60 Korean identifier oracle cases and 15 corpus cases for Hangul names, variables, temporary objects, modules, Jamo and invalid neighbours (#58); LocalDB 17.0.1000.7 levels 100–170, QUOTED_IDENTIFIER ON 50 accepted/10 rejected and OFF 48/12. Document native UTF-8/UTF-16 parsing, custom decoding and the UTF-8-only constraint interface in `docs/consuming.md`.
 
 - QUOTED_IDENTIFIER OFF is checked too (ADR-0006). The oracle runner, ScriptDOM and tree-check take `--quoted-identifier on|off` (default on); the wasm module adds `tc_check_v2` with the session (ABI 2, `tc_check` unchanged). The tree stays the same in both sessions; tree-check judges `"text"` as a string under OFF, follows `SET QUOTED_IDENTIFIER` inside the source and the setting a module was created with. Every oracle set is judged under both settings (`.qi-off.json` verdicts, LocalDB 17.0.1000.7, levels 100-170), plus a `quoted-identifier` probe set (122 cases). Found on the way: `BULK INSERT ... FROM "path"`, any string as a filegroup name in ON/FILESTREAM_ON/MOVE positions, and string-only positions under ON (RAISERROR message, WAITFOR DELAY, parenthesized dynamic EXEC, COLLATE, CONVERT style type).
 - Parse full-text LANGUAGE arguments and general static references with method chaining; add the optional schema field to static field nodes, with no node kind or field removed.

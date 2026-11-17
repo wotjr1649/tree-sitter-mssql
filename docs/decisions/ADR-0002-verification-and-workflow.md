@@ -111,6 +111,6 @@ The goal is complete T-SQL support with zero defects (ADR-0001: SQL Server's par
 
 - The oracle and its gates come before grammar fixes, and fixes become measurable per case.
 - Complete support will grow the parser. The budget makes each increase deliberate instead of forbidding it.
-- Supporting `QUOTED_IDENTIFIER OFF` requires a stateful external scanner with serialization. It is planned as its
-  own change with incremental-parsing tests.
+- `QUOTED_IDENTIFIER OFF` is supported by session-aware constraint checks (ADR-0006), including
+  `tc_check_v2` in the WASM interface. Both settings share the same grammar tree; no session scanner was needed.
 - Consumers move their pins deliberately. Behaviour changes arrive as separate, reviewed pin moves.

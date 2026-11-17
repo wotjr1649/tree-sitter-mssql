@@ -63,7 +63,7 @@ Status (2026-11-16):
 
 ## M3: Remaining surface
 
-The remaining inventory cells: DDL families, `QUOTED_IDENTIFIER OFF` (stateful scanner), `GO`/sqlcmd as a client
+The M3 inventory cells: DDL families, `QUOTED_IDENTIFIER OFF` (session-aware constraint checks, ADR-0006), `GO`/sqlcmd as a client
 suite, the syntax false positives that are syntactic.
 
 Done when every declared cell is verified; cells with only an issue count as open.

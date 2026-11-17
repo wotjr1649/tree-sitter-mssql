@@ -8,7 +8,7 @@
 
 ADR-0001 continued the grammar from `alfpricot/tree-sitter-mssql` v1.0.0 (`852cbd2`) and planned to merge that
 repository's later changes when useful. Since then this repository has replaced most of the grammar's behaviour with
-SQL Server-verified behaviour (an oracle of 10,649 inputs on SQL Server 2017, 2019, 2022 and 2025, a constraint layer,
+SQL Server-verified behaviour (an oracle of 10,709 sources with recorded SQL Server 2017, 2019, 2022 and 2025 results, a constraint layer,
 and its own corpus), and its owner maintains it alone. Merging changes from the original grammar would bring back
 choices that SQL Server's verdicts already overrode, and nothing in this repository depends on it.
 

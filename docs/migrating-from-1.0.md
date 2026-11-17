@@ -15,10 +15,11 @@ its release commit `852cbd2`. Measured against it, `src/node-types.json` changes
 
 ## Trees that change for valid input
 
-This is why the version is 2.0.0. The release audit parsed every input that SQL Server accepts in the oracle, every
-fixture and every corpus input of 1.0.0 with both parsers. Of the 5,278 distinct inputs 1.0.0 parsed without an
-error, 5,236 keep their tree exactly and **42 change**. Most of them 1.0.0 had read wrongly (`8 << 2` without a shift operator,
-`KILL 12 ROLLBACK` as two statements, `WITH (NOLOCK NOWAIT)` as an OPENJSON schema). A query written against the
+This is why the version is 2.0.0. Re-measured at `825c964` with CLI/runtime 0.27.2, the comparison uses the
+7,838 QUOTED_IDENTIFIER ON engine-accepted oracle inputs, all 156 fixtures at that commit and all 370 corpus
+inputs of 1.0.0. Deduplicating by exact UTF-8 source bytes gives 8,103 inputs. Of the 5,379 that 1.0.0 parsed
+without an error, 5,339 keep their complete tree (including fields and ranges) and **40 change**. Most of them 1.0.0 had read wrongly (`KILL 12 ROLLBACK` as two statements,
+`WITH (NOLOCK NOWAIT)` as an OPENJSON schema). A query written against the
 old tree of these forms stops matching:
 
 | form (example) | 1.0.0 | 2.0.0 |
@@ -31,7 +32,6 @@ old tree of these forms stops matching:
 | `KILL 12 ROLLBACK` | `kill_statement` + `rollback_statement` | one `kill_statement` |
 | `ALTER COLUMN c ADD PERSISTED` | `identifier` | `keyword_persisted` |
 | `COLUMN_SET FOR ALL_SPARSE_COLUMNS` | `identifier`s | keywords |
-| `8 << 2 + 1` | no shift operator; a `field` among the operands | shift operator, nested by precedence |
 | `UPDATE t SET c = DEFAULT` | `right: field` | `right: keyword_default` |
 | `UPDATE t SET @n = c += 1` | `right: binary_expression` | `right: assignment` |
 | `GENERATED ALWAYS AS ROW START HIDDEN` | `identifier`s | `generated_always` |
@@ -77,9 +77,10 @@ Child iteration is unchanged. `ChildByFieldName` now finds them.
 
 ## What else changes for a consumer
 
-- **Every input SQL Server accepts parses without an error.** The oracle holds 10,300 cases judged by SQL Server
-  2017, 2019, 2022 and 2025 at compatibility levels 100–170; acceptance at any recorded engine/level counts.
-  All 7,504 accepted cases parse cleanly. One runner-controlled input was not submitted to the engines. Inputs that
+- **Every input SQL Server accepts parses without an error.** The oracle holds 10,709 sources (21,418 ON/OFF
+  session/case pairs), with recorded SQL Server 2017, 2019, 2022 and 2025 verdicts at supported compatibility
+  levels 100–170; acceptance at any recorded engine/level counts. All 7,838 ON and 7,747 OFF accepted cases
+  parse cleanly. LocalDB 2025 covers all sources in both sessions; Linux results cover earlier ON snapshots. One runner-controlled input was not submitted to the engines. Inputs that
   1.0.0 parsed with an `ERROR` may now parse cleanly, and their trees are new.
 - **Incremental reparsing.** Use a tree-sitter runtime that contains tree-sitter commit `f932671a5` (released after
   0.27.2). Older runtimes can give a reparse that differs from a fresh parse when a reused node starts with a keyword
@@ -87,11 +88,11 @@ Child iteration is unchanged. `ChildByFieldName` now finds them.
 - **Error recovery of invalid input.** Trees of inputs SQL Server rejects may differ inside their `ERROR` nodes. They
   were never a contract. The same holds for an incremental reparse after an edit that leaves invalid text: it can
   place the `ERROR` differently from a fresh parse of that text.
-- **Validation is a separate layer.** The grammar alone rejects 852 of the 2,795 engine-rejected inputs (30.48 %).
-  The constraint layer in `crates/tree-check` rejects 1,755 more. A CGO-free host can use it as a WebAssembly
+- **Validation is a separate layer.** Under QUOTED_IDENTIFIER ON, the grammar alone rejects 876 of the
+  2,870 engine-rejected inputs (30.52 %); the constraint layer in `crates/tree-check` rejects 1,805 more. A CGO-free host can use it as a WebAssembly
   module ([constraint-wasm.md](constraint-wasm.md)). What remains clean is classified in
-  `oracle/data/rejected-clean.json`: 189 context, environment, version and runner cases, including the one runner exclusion,
-  with no oracle case classified as an open grammar gap.
+  `oracle/data/rejected-clean.json`: 445 session/case pairs (ON 190, OFF 255), including the runner exclusion
+  in each session; context 111, environment 294, version 36 and runner 4, with no open grammar gap.
 - **Highlights.** Every `keyword_*` kind has a highlight.
 - **Size and time.** In the release audit on Windows x64 with gcc 16.2.0 `-O2`, the compiled library was 1.386x
   the M2 milestone (`e8a398e`), and median parse time over five alternating runs was 0.949x. Against the current

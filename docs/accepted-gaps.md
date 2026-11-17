@@ -1,6 +1,15 @@
 # Accepted gaps
 
-## R20: current status of the rejected-but-clean ledger
+## Current status at `825c964`
+
+The oracle replay has no engine-accepted errors or open `gap` entries. The current ledger
+`oracle/data/rejected-clean.json` contains 445 session/case pairs: context 111, environment 294,
+version 36 and runner 4 (QUOTED_IDENTIFIER ON 190, OFF 255). It includes one runner-excluded
+source in each session. The sections below are historical measurements at the named rounds,
+not a list of current unresolved defects; their raw-tree gaps may now be rejected by tree-check.
+The committed ledger and replay, rather than those earlier counts, define current status.
+
+## R20: historical rejected-but-clean ledger
 
 The historical measurements below are superseded by `oracle/data/rejected-clean.json` for current status.
 R20 closes 125 of its original 127 `gap` entries through tree-local constraints, without changing
@@ -10,15 +19,16 @@ and adjacent accepted/rejected forms at LocalDB 17.0.1000.7 compatibility levels
 the constraint layer. Empty CATCH, qualified user functions, documented contextual names and
 engine-accepted option orders remain accepted.
 
-Two original entries retain their `gap` class pending a separate ledger decision:
+The two original entries left at R20 were subsequently classified (neither is now a `gap`):
 
-- `ddl-rest/commit-off`: declaring the transaction variable makes the identical COMMIT WITH clause
+- `ddl-rest/commit-off` (`context`): declaring the transaction variable makes the identical COMMIT WITH clause
   accepted. Rejecting its shape would reject valid programs; resolving the variable needs batch context.
-- `kit-routes/alt-tsql-V22-r018`: VECTOR_SEARCH needs a preview-enabled engine/database to separate syntax
+- `kit-routes/alt-tsql-V22-r018` (`environment`): VECTOR_SEARCH needs a preview-enabled engine/database to separate syntax
   from feature availability. The documented source alias is optional; no alias requirement is inferred.
 
-No original gap was reclassified to make it disappear. New context/environment observations are
-classified separately with their measured reason. The grammar still builds the same trees;
+Those final classifications record why the tree cannot decide the rejection: COMMIT requires batch
+declarations, and VECTOR_SEARCH requires preview-enabled engine configuration. Other context/environment
+observations are classified separately with their measured reason. The grammar still builds the same trees;
 consumers needing the validation results must also use the constraint layer (ADR-0003).
 
 

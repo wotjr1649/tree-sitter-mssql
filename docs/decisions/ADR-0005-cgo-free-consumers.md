@@ -11,12 +11,17 @@ go-treesitter, the intended consumer, is a CGO-free Go library. It compiles each
 the original grammar, `alfpricot/tree-sitter-mssql` at `2e34d86e`.
 
 This repository's guarantee (ADR-0004) is the grammar plus the constraint layer in `crates/tree-check`, which is Rust.
-On the 2.0.0 oracle (10,300 inputs; acceptance at any recorded engine/level counts):
-- the grammar alone parses all 7,504 engine-accepted cases cleanly;
-- of the 2,795 engine-rejected inputs, the grammar rejects 852 (30.48 %);
-- the constraint layer rejects 1,755 more;
-- the remaining 188, plus one input the runner excludes because it sets PARSEONLY itself, are classified in
-  `oracle/data/rejected-clean.json` (189 total: context 49, environment 123, version 15, runner 2; no `gap`).
+On the 2.0.0 oracle at `825c964` (10,709 sources; acceptance at any recorded engine/level counts),
+under QUOTED_IDENTIFIER ON:
+- the grammar alone parses all 7,838 engine-accepted cases cleanly;
+- of the 2,870 engine-rejected inputs, the grammar rejects 876 (30.52 %);
+- the constraint layer rejects 1,805 more;
+- the remaining 189, plus one input the runner excludes because it sets PARSEONLY itself, are classified in
+  `oracle/data/rejected-clean.json` (ON 190: context 50, environment 123, version 15, runner 2; no `gap`).
+
+Across both sessions the ledger has 445 entries: context 111, environment 294, version 36 and runner 4.
+All 7,747 OFF engine-accepted cases also parse cleanly; LocalDB 2025 covers every source under both settings,
+while Linux engine results cover earlier ON case-set snapshots.
 
 Before this decision, the runtime bound of ADR-0002 §6 was 1.5x of the M2 end (`e8a398e`). After the M3 work
 the compiled library stands at about 1.39x in the release audit below.

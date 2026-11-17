@@ -14,8 +14,9 @@ An owner-maintained [tree-sitter](https://tree-sitter.github.io/tree-sitter/) gr
 
 ## What it guarantees
 
-SQL Server's own parser is the reference (`SET PARSEONLY ON`, ADR-0002). The oracle in `oracle/` holds 10,300
-inputs with recorded SQL Server 2017, 2019, 2022 and 2025 results at compatibility levels 100–170. Acceptance means
+SQL Server's own parser is the reference (`SET PARSEONLY ON`, ADR-0002). The oracle in `oracle/data` holds 10,709 sources (21,418 QUOTED_IDENTIFIER session/case pairs), with recorded
+SQL Server 2017, 2019, 2022 and 2025 results at supported compatibility levels 100–170. LocalDB 2025 covers every
+source under both settings; the Linux engine observations cover earlier case-set snapshots under ON. Acceptance means
 acceptance by at least one recorded engine/level; the runner excludes one input that sets PARSEONLY itself.
 From 2.0.0:
 
@@ -40,6 +41,12 @@ Scope and known limits:
   comment is an external-scanner token, so tree-sitter 0.27.2 re-reads a token whose lex mode changed instead of
   reusing it. Over 217,563 sampled edits of the test inputs, 320 re-read more than 4 tokens beyond the best earlier
   build, 74 of them on valid text before and after the edit (worst: 91 tokens in a 1.5 KB `MERGE`).
+
+The 2.0.0 regression coverage includes 60 Korean identifier oracle cases (120 ON/OFF session/case pairs).
+The parser accepts UTF-8 and UTF-16; other encodings need transcoding or a custom decoder, and the constraint
+interface takes UTF-8 only ([text encoding](docs/consuming.md#text-encoding)). Incremental reuse is bounded by
+regression tests for semicolon-free statements, CREATE TABLE names, procedure headers and factored MERGE sources
+(#57, #59); valid trees and verdicts are preserved.
 
 Moving from 1.0.0: [docs/migrating-from-1.0.md](docs/migrating-from-1.0.md).
 
