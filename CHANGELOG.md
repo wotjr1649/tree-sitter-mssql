@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Reuse factored MERGE sources after header edits without changing valid trees or verdicts.
+
 - Restore bounded incremental reuse for semicolon-free statements, CREATE TABLE name edits, and procedure headers over UPDATE bodies; preserve valid trees and verdicts (20 rejected-input ERROR trees change).
 
 * **tree-check:** keep deep expression checks linear while preserving diagnostics and keyword ranges.

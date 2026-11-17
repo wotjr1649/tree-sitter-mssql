@@ -45,7 +45,7 @@ pub const TAGS_QUERY: &str = include_str!("../../queries/tags.scm");
 mod tests {
     use tree_sitter::{Parser, Query, QueryCursor, StreamingIterator};
 
-    fn incremental_lexes(mut source: String, at: usize) -> usize {
+    fn incremental_lexes(mut source: String, at: usize, replacement: &str) -> usize {
         use std::sync::{
             Arc,
             atomic::{AtomicUsize, Ordering},
@@ -59,7 +59,8 @@ mod tests {
         let prefix = &source[..at];
         let row = prefix.bytes().filter(|&c| c == b'\n').count();
         let column = prefix.rsplit('\n').next().unwrap().len();
-        source.replace_range(at..at + 1, "x");
+        assert_eq!(replacement.len(), 1);
+        source.replace_range(at..at + 1, replacement);
         old.edit(&InputEdit {
             start_byte: at,
             old_end_byte: at + 1,
@@ -140,7 +141,7 @@ mod tests {
                 );
                 let at =
                     prefix.len() + count / 2 * statement.len() + statement.find("dbo").unwrap();
-                let n = incremental_lexes(source, at);
+                let n = incremental_lexes(source, at, "x");
                 eprintln!(
                     "semicolon={semicolon} procedure={procedure} statements={count} lexed={n}"
                 );
@@ -166,7 +167,7 @@ mod tests {
                 .collect::<Vec<_>>()
                 .join(", ");
             let source = format!("CREATE TABLE dbo.t ({columns});\n");
-            let n = incremental_lexes(source, "CREATE TABLE ".len());
+            let n = incremental_lexes(source, "CREATE TABLE ".len(), "x");
             eprintln!("table columns={count} lexed={n}");
             counts.push(n);
         }
@@ -185,7 +186,7 @@ mod tests {
                 "CREATE PROCEDURE dbo.p AS BEGIN\n{}END\nGO\n",
                 "UPDATE dbo.t SET a = 1;\n".repeat(count)
             );
-            let n = incremental_lexes(source, "CREATE PROCEDURE dbo.".len());
+            let n = incremental_lexes(source, "CREATE PROCEDURE dbo.".len(), "x");
             eprintln!("procedure UPDATE statements={count} lexed={n}");
             counts.push(n);
         }
@@ -197,6 +198,70 @@ mod tests {
             counts[1] <= counts[0] + 2,
             "relexing grows with input: {counts:?}"
         );
+    }
+
+    #[test]
+    fn incremental_merge_joined_source_relexing_stays_bounded() {
+        let source = r#"CREATE TABLE Person
+(
+    ID INTEGER PRIMARY KEY,
+    PersonName VARCHAR(100)
+)
+AS NODE
+GO
+CREATE TABLE City
+(
+    ID INTEGER PRIMARY KEY,
+    CityName VARCHAR(100),
+    StateName VARCHAR(100)
+)
+AS NODE
+GO
+CREATE TABLE livesIn
+(
+    StreetAddress VARCHAR(100)
+)
+AS EDGE
+GO
+INSERT INTO Person VALUES (1, 'Ron'), (2, 'David'), (3, 'Nancy')
+GO
+INSERT INTO City VALUES (1, 'Redmond', 'Washington'), (2, 'Seattle', 'Washington')
+GO
+INSERT livesIn SELECT P.$node_id, C.$node_id, c
+FROM Person P, City C, (values (1,1, '123 Avenue'), (2,2,'Main Street')) v(a,b,c)
+WHERE P.id = a AND C.id = b
+GO
+CREATE OR ALTER PROCEDURE mergeEdge
+    @PersonId integer,
+    @CityId integer,
+    @StreetAddress varchar(100)
+AS
+BEGIN
+    MERGE livesIn
+        USING ((SELECT @PersonId, @CityId, @StreetAddress) AS T (PersonId, CityId, StreetAddress)
+                JOIN Person ON T.PersonId = Person.ID
+                JOIN City ON T.CityId = City.ID)
+        ON MATCH (Person-(livesIn)->City)
+    WHEN MATCHED THEN
+        UPDATE SET StreetAddress = @StreetAddress
+    WHEN NOT MATCHED THEN
+        INSERT ($from_id, $to_id, StreetAddress)
+        VALUES (Person.$node_id, City.$node_id, @StreetAddress) ;
+END
+GO
+EXEC mergeEdge 3, 2, '4444th Avenue'
+GO
+EXEC mergeEdge 1, 1, '321 Avenue'
+GO
+SELECT PersonName, CityName, StreetAddress
+FROM Person , City , livesIn
+WHERE MATCH(Person-(livesIn)->city)
+GO
+"#
+        .to_string();
+        let at = source.find("MERGE livesIn").unwrap();
+        let n = incremental_lexes(source, at, "m");
+        assert!(n <= 11, "MERGE joined source relexes too much: {n}");
     }
 
     #[test]
