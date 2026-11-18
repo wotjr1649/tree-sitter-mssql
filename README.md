@@ -161,9 +161,42 @@ parser.setLanguage(SQL);
 
 [docs/consuming.md](docs/consuming.md) covers the exported symbol, the parser ABI, the query-file constants, node-kind stability, and `versions.json`.
 
+## Repository layout
+
+Most root files sit where a tool expects them: npm, node-gyp, cargo, the tree-sitter CLI, GitHub, or an agent.
+
+| Path | What it is |
+| --- | --- |
+| **Grammar** | |
+| `grammar.js`, `grammar/` | Grammar source: the entry point and its rule modules |
+| `src/` | Generated parser (`parser.c`, `grammar.json`, `node-types.json`, `tree_sitter/`) and the hand-written `scanner.c` |
+| `queries/` | Tree-sitter query files (highlights, injections, …) |
+| `bindings/` | Rust crate and Node.js addon |
+| **Tests and tools** | |
+| `test/` | Corpus, fixtures, highlight and query tests, node-kind snapshot, cost baselines |
+| `oracle/` | SQL Server oracle: recorded cases and verdicts (`data/`) and the .NET runners (`runners/`) |
+| `crates/tree-check/` | Constraint layer: Rust library, CLI and wasm reactor |
+| `scripts/` | Node check and maintenance scripts with their tests |
+| `fuzz/` | `cargo-fuzz` target |
+| **Documents** | |
+| `README.md`, `CHANGELOG.md` | This page and the release history |
+| `docs/` | Architecture, scope, consuming, development, benchmarks, migration, accepted gaps, decisions (ADRs) |
+| `LICENSE`, `NOTICE` | MIT license and attribution |
+| `AGENTS.md`, `CLAUDE.md` | Standing rules for coding agents (`CLAUDE.md` only includes `AGENTS.md`) |
+| `.github/` | CI workflows, the contribution guide (`CONTRIBUTING.md`) and the security policy (`SECURITY.md`) |
+| **Package manifests** | |
+| `tree-sitter.json` | Grammar metadata for the tree-sitter CLI |
+| `package.json`, `package-lock.json`, `binding.gyp` | npm package and Node addon build |
+| `Cargo.toml` | Rust crate |
+| `versions.json` | Minimum SQL Server version and deprecation data per node kind, shipped in both packages ([docs/consuming.md](docs/consuming.md)) |
+| **Tool settings** | |
+| `.editorconfig`, `.gitattributes`, `.gitignore` | Editor, line-ending and ignore rules |
+| `.nvmrc` | Node.js version |
+| `.oxlintrc.json`, `.oxfmtrc.json`, `.rustfmt.toml` | JavaScript lint and format, Rust format |
+
 ## How to contribute
 
-Fix a defect starting from a failing corpus case or SQL Server oracle case, regenerate the parser with tree-sitter CLI 0.27.2 after any grammar change, and run the checks described in [CONTRIBUTING.md](CONTRIBUTING.md). [AGENTS.md](AGENTS.md) holds the standing rules, [docs/development.md](docs/development.md) has the build and test details, and [ARCHITECTURE.md](ARCHITECTURE.md) maps the repository.
+Fix a defect starting from a failing corpus case or SQL Server oracle case, regenerate the parser with tree-sitter CLI 0.27.2 after any grammar change, and run the checks described in [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md). [AGENTS.md](AGENTS.md) holds the standing rules, [docs/development.md](docs/development.md) has the build and test details, and [docs/architecture.md](docs/architecture.md) maps the repository.
 
 ## License
 

@@ -42,11 +42,11 @@ src/node-types.json      linguist-generated=true
 
 # Documentation
 CHANGELOG.md             linguist-generated=true linguist-documentation=true
-CONTRIBUTING.md          text eol=lf linguist-documentation=true
+.github/CONTRIBUTING.md  text eol=lf linguist-documentation=true
 LICENSE                  text eol=lf linguist-documentation=true
 NOTICE                   text eol=lf linguist-documentation=true
 README.md                text eol=lf linguist-documentation=true
-SECURITY.md              text eol=lf linguist-documentation=true
+.github/SECURITY.md      text eol=lf linguist-documentation=true
 
 # Generated / lock files (excluded from language stats and diffs)
 Cargo.lock               linguist-generated=true export-ignore -diff
