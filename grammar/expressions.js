@@ -389,8 +389,39 @@ export default {
   _static_reference: ($) =>
     seq(field('schema', $.object_reference), '::', field('name', $.object_reference)),
 
+  // The first value spells out `literal`'s alternatives as aliases rather than `$.literal`: the `;` is then
+  // decided on the literal's own token, so after an ordinary literal argument the state holds only the unit
+  // reduction to `_expression`, which the generator drops. Keep the list in step with `literal`.
   _rowset_connection: ($) =>
-    prec.right(seq(field('value', $.literal), ';', optional($.literal), ';', optional($.literal))),
+    prec.right(
+      seq(
+        field(
+          'value',
+          choice(
+            alias($._integer, $.literal),
+            alias($._decimal_number, $.literal),
+            alias($._single_quote_string, $.literal),
+            alias($._money, $.literal),
+            alias($._rowset_literal, $.literal),
+          ),
+        ),
+        ';',
+        optional($.literal),
+        ';',
+        optional($.literal),
+      ),
+    ),
+
+  _rowset_literal: ($) =>
+    choice(
+      $.keyword_null,
+      seq(
+        '{',
+        alias($._odbc_date_kind, $.identifier),
+        alias($._single_quote_string, $.literal),
+        '}',
+      ),
+    ),
 
   parenthesized_expression: ($) => prec(2, wrapped_in_parenthesis($._expression)),
 
@@ -534,7 +565,7 @@ export default {
       choice(
         $._integer,
         $._decimal_number,
-        $._literal_string,
+        $._single_quote_string,
         $._money,
         $.keyword_null,
         seq(
@@ -552,9 +583,6 @@ export default {
   // Character string, optionally with the N prefix for nvarchar. A quote
   // inside the string is doubled; there is no backslash escaping.
   _single_quote_string: (_) => /[nN]?'([^']|'')*'/,
-  // Alias `_single_quote_string` elsewhere, never this rule: the generator keeps the reduction of an aliased
-  // one-symbol hidden rule, which would cost every string literal an extra reduction and tree node.
-  _literal_string: ($) => $._single_quote_string,
   _natural_number: (_) => /\d+/,
   // Decimal integers and hexadecimal binary literals (`0x4D5A`, `0x`).
   _integer: (_) => /(0[xX][0-9A-Fa-f]*(\\\r?\n[0-9A-Fa-f]+)*)|(\d+)/,

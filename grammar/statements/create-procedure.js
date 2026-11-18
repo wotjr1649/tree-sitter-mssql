@@ -78,32 +78,33 @@ export default {
   // that rule, and a bonus there would score a body that stops early as high as
   // one that does not.
   //
-  // `prec.right` on the later items settles "continue the body" at generation time, so the parser no
-  // longer forks a version that ends the body at every statement boundary (the dynamic score above
-  // chose the same continuation; the fork only cost time). The leading-semicolon fork stays.
+  // Precedence settles the forks the score above would only settle at run time, so the parser does not
+  // carry them: `prec.right` on the later items continues the body at every statement boundary, and the
+  // precedence 1 on a body that starts with a statement or block (on its AS and on its first item, the
+  // steps the generator compares) beats the empty body when a statement follows AS, and continues the body
+  // after its first item. Only the leading-semicolon fork stays, so that alternative keeps AS at precedence 0.
+  // After an item, a token that can both start a statement and follow the body (END: END CONVERSATION or
+  // the END of an enclosing block) now continues the body; a procedure inside a block is rejected by SQL
+  // Server anyway (CREATE PROCEDURE must start its batch).
   //
   // A CLR procedure or trigger has `AS EXTERNAL NAME assembly.class.method`
   // in place of the statements.
-  procedure_body: ($) =>
-    prec.dynamic(
+  procedure_body: ($) => {
+    const items = prec.right(
       1,
-      seq(
-        $.keyword_as,
-        choice(
-          $.external_name,
-          optional(
-            prec.dynamic(
-              2,
-              seq(
-                repeat(';'),
-                choice($.statement, $.block),
-                prec.right(repeat($._procedure_body_item)),
-              ),
-            ),
-          ),
+      seq(choice($.statement, $.block), prec.right(repeat($._procedure_body_item))),
+    );
+    return prec.dynamic(
+      1,
+      choice(
+        seq($.keyword_as, optional($.external_name)),
+        prec.dynamic(
+          2,
+          choice(prec.right(1, seq($.keyword_as, items)), seq($.keyword_as, repeat1(';'), items)),
         ),
       ),
-    ),
+    );
+  },
 
   // A module body needs a real first item so AS ; GO keeps its existing ranges.
   // Later empty statements are anonymous, as they are in a batch.
