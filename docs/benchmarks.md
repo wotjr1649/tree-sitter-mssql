@@ -1,4 +1,4 @@
-# Benchmarks: 1.0.0, 2.0.0 and 2.1.0
+# Benchmarks: 1.0.0, 2.0.0, 2.1.0 and 2.1.1
 
 This page compares two versions of the grammar:
 
@@ -11,10 +11,10 @@ This repository is independent and maintained by its owner. Everything below was
 session, in alternating A/B rounds, and every figure says what it was measured on. Where the evidence ends, the text says so.
 
 Contents: [Summary](#summary) · [Method](#method) · [Accuracy](#accuracy) · [Robustness](#robustness) ·
-[Speed](#speed) · [Memory](#memory) · [Size](#size) · [2.1.0](#210) ·
+[Speed](#speed) · [Memory](#memory) · [Size](#size) · [2.1.0](#210) · [2.1.1](#211) ·
 [Limits of these measurements](#limits-of-these-measurements)
 
-Every section except [2.1.0](#210) measures 2.0.0.
+Every section except [2.1.0](#210) and [2.1.1](#211) measures 2.0.0.
 
 ## Summary
 
@@ -442,8 +442,78 @@ The extra work comes from three sources:
 - The gcc `-O2` library is 0.4 % smaller than 2.0.0's (+29 % over 1.0.0), and `parser.c` is 0.5 % smaller.
 
 **clang.** A wasi-sdk 34.0 clang `-O2` wasm32-wasip1 build under Node, pinned, over 3 alternating rounds, points the
-same way: 2.1.0 is 5–7 % faster than 2.0.0. It is also 0.94–0.99 times 1.0.0, a larger gap than with gcc; the cause
-was not isolated.
+same way: 2.1.0 is 5–7 % faster than 2.0.0. It is also 0.94–0.99 times 1.0.0, a larger gap than with gcc. That run
+was not warmed up; [2.1.1](#211) isolates the cause.
+
+## 2.1.1
+
+2.1.1 is `main` after pull request #68 (`aa4287d`). It changes only the grammar.
+
+- **Procedure-body forks.**
+  - 2.1.0 settled two forks at run time by dynamic precedence: an empty body against a statement after `AS`, and
+    ending the body after its first item.
+  - Static precedence now settles both. `AS` is written per alternative, because the generator compares the
+    precedence of the step just before the dot.
+  - Only the leading-semicolon fork stays.
+- **Unit reductions.**
+  - OPENROWSET's first connection value spells out `literal`'s alternatives.
+  - `literal` takes the string token directly.
+  - Both let the generator drop unit reductions it kept before.
+
+Valid-input trees, node kinds, fields and verdicts are unchanged. Inputs SQL Server rejects can get a different tree;
+the [CHANGELOG](../CHANGELOG.md) lists those.
+
+The method is the same as for [2.1.0](#210): two interleaved runs, inputs all versions parse cleanly. The ratios
+below are over 1.0.0.
+
+| Set | 2.1.0 | 2.1.1 | 2.1.1 inputs faster than 1.0.0 |
+| --- | ---: | ---: | ---: |
+| fixtures | 0.983 | 1.022 | 66 % |
+| oracle (total / per-input median) | 1.105 / 0.974 | 1.152 / 0.984 | 37 % |
+| corpus tests | 0.967 | 0.984 | 48 % |
+| synthetic | 0.995 | 1.009 | 64 % |
+| private corpus | 0.985 | 1.017 | 88 % |
+| private, <4 KB / 4–16 / 16–64 / 64–256 / ≥256 KB | 0.950 / 0.965 / 0.985 / 0.994 / 1.007 | 1.027 / 1.023 / 1.017 / 1.013 / 1.011 | |
+
+The 2.1.0 column is this run's measurement and agrees with the [2.1.0](#210) table within 0.01.
+
+**Counters.** On the private corpus, against 1.0.0:
+
+- GLR multi-version steps are +0.17 % (2.1.0: +5.9 %).
+- Shifts and lexer calls are equal.
+- Reductions are +2.6 % (2.1.0: +4.4 %).
+
+**Where the gap remains.**
+
+- **Corpus tests (−1.6 %).**
+  - Corpus-test inputs with as many reductions as in 1.0.0 parse at 1.03 times 1.0.0's speed. Inputs with 10 % more
+    reductions parse at 0.89.
+  - The extra reductions come from hidden wrappers such as `_invocation_arguments`, `_expression_list` and
+    `_query_specification_rest`.
+  - Seven restructurings were tried. All but the two now in 2.1.1 grew the parse table (by up to 11 %) or made
+    incremental reuse worse (2 to 2,843 clean edits).
+- **Most GLR steps.** The largest share is the qualified column against object reference after `.`, the same fork as
+  in 1.0.0. Settling it statically would change the tree shape, which is a breaking change.
+
+**clang/WASM.** This build uses wasi-sdk 34 clang `-O2`, wasm32-wasip1 under Node, measured after a warm-up pass.
+
+| Set | 2.1.0 | 2.1.1 |
+| --- | ---: | ---: |
+| fixtures | 0.919 | 0.972 |
+| corpus tests | 0.939 | 0.946 |
+| synthetic | 0.948 | 0.979 |
+
+The lexer calls were replayed alone (lexer functions only, fixtures and corpus tests):
+
+- With gcc, the main lexer costs 0.70 times 1.0.0's.
+- In WASM, it costs 1.14 times 1.0.0's.
+- Most of the WASM difference is one `set_contains` binary search over the 368-range Unicode identifier table, run
+  for the character that ends each identifier. The generator draws no ASCII check before it
+  ([tree-sitter#6139](https://github.com/tree-sitter/tree-sitter/issues/6139)).
+- A diagnostic copy of the generated `parser.c` adds `lookahead >= 0x80 &&` in front of the 24 such calls whose ASCII
+  characters were already handled. With it, the WASM main lexer costs 0.995 times 1.0.0's.
+- A grammar cannot express that check. A consumer that post-processes the generated file, or generates it with a CLI
+  that has an ASCII fast path, gets the rest of the speed.
 
 ## Limits of these measurements
 
