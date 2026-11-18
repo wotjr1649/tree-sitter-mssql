@@ -264,6 +264,44 @@ For the private files of more than 1 MB (40 edits) the medians are 5.4 ms (1.0.0
 10–100 KB band 0.15 ms against 0.54 ms: on real files an incremental reparse with 2.0.0 takes about 1.9 times as long
 as with 1.0.0, and still about 14 times less than a fresh parse in the median.
 
+**2.1.1.** Re-measured with the same edits for all three versions.
+
+- **Method.**
+  - The edits are chosen once, on 2.1.1's tree, so 1.0.0, 2.0.0 and 2.1.1 get byte-identical edits.
+  - One process loads all three grammars, interleaved, on a pinned core.
+  - Each edit is the median of 5 samples; there are 2 runs, 3 for synthetic.
+  - The edit sets are the same: 25 private files (528 clean edits, 24 files), fixtures and synthetic.
+- **Ratios over 1.0.0.**
+
+  | Edits | 2.0.0 per edit / summed | 2.1.1 per edit / summed |
+  | --- | ---: | ---: |
+  | private, all | 1.42 / 1.35 | 0.986 / 1.002 |
+  | private, 10–100 KB | 1.62 / 1.87 | 0.999 / 1.022 |
+  | private, 100 KB–1 MB | 1.01 / 2.36 | 0.980 / 1.104 |
+  | private, over 1 MB | 0.99 / 0.98 | 0.979 / 0.969 |
+  | fixtures | 1.02 / 1.19 | 0.962 / 0.870 |
+  | synthetic | 1.03 / 1.19 | 1.012 / 1.028 |
+
+- **Why 2.0.0 was slower.** In 2.0.0 the procedure-body fork (#60) kept up to 4 GLR versions. Nodes built under more
+  than one version are fragile and are not reused, so every edit re-parsed procedure bodies. #68 settles that fork at
+  generation time.
+- **What is left in 2.1.1.** It is concentrated in a few files: one file sums to 2.7 times 1.0.0's time.
+  - Cause: the external tokens for spaced comparison operators (`< =` and the like) are valid only after an
+    operand, so they split the external lexer states.
+  - Effect: after a statement that ends in an operand without `;`, the next statement's first token was lexed in the
+    "after an operand" state. An incremental reparse reaches it from "after a batch item" and cannot reuse it, so the
+    statement is rebuilt.
+- **A grammar fix that was tried and not adopted.** Valid everywhere as a dead-end non-terminal extra, these tokens
+  stop the split.
+  - Incremental reparse: 10–100 KB 0.88, 100 KB–1 MB 0.91 over 1.0.0, with exactness kept.
+  - Cost: it slows full parses of the corpus tests by 6 %, and grows `parser.c` by 19 % and the large states by 31 %.
+- **A runtime fix (not upstream at the time of writing).** `can_reuse_first_leaf` could compare only the external
+  tokens that can start at that byte; a diagnostic runtime copy shows the same gain.
+- **Common to all three versions.** These costs are the same in 1.0.0:
+  - top-level repeat nodes are fragile, so every edit walks every top-level item: about 8,600 steps and 6.8 ms per
+    edit in files over 1 MB;
+  - `ts_tree_get_changed_ranges` takes about 70 % of that again.
+
 **Exactness.** An incremental tree should equal a fresh parse. Measured with tree-sitter 0.27.2:
 
 | Edit set | Edits | Differ from a fresh parse, 1.0.0 | 2.0.0 |
@@ -514,6 +552,9 @@ The lexer calls were replayed alone (lexer functions only, fixtures and corpus t
   characters were already handled. With it, the WASM main lexer costs 0.995 times 1.0.0's.
 - A grammar cannot express that check. A consumer that post-processes the generated file, or generates it with a CLI
   that has an ASCII fast path, gets the rest of the speed.
+- That post-processing was tried, with a 128-bit ASCII bitmap per range table so that every call keeps its exact
+  result. Every tree stayed identical. On whole parses it saved 1.2–1.7 % in WASM (within the run-to-run range) and
+  nothing with gcc, because the lexer is about a fifth of parse time. It was not adopted.
 
 ## Limits of these measurements
 
