@@ -48,3 +48,6 @@
 {"id":"batch-rules/go-in-nested-comment","sha256":"62a820cd3a774e83c840223e7e92af27a0b3d077f3ae8ee64d51ece9bee72937","source":"/* a /* b\nGO\n*/ */\nSELECT 1;"}
 {"id":"batch-rules/go-count-in-block-comment","sha256":"85f8eff6766b84fe0e96f962f029db6b841644c4553a59a8bd39132b87605a8b","source":"/*\nGO 2\n*/\nSELECT 1;"}
 {"id":"batch-rules/go-in-string","sha256":"4bdb8a65d841a3c4f427e0c7acea903ad9cda16e40de8fd1de91721dc895d116","source":"SELECT '\nGO\n';"}
+{"id":"batch-rules/empty-where","sha256":"3956652d673481779818d880cf164d668adfb6a00e578aeab6b39b067909d9ae","source":"SELECT 1 WHERE;"}
+{"id":"batch-rules/empty-having","sha256":"59f2b1da08903cb38f9b3a9ee934ed5bd85eb7c19de5b36dd41da6255f4f29fc","source":"SELECT 1 HAVING;"}
+{"id":"batch-rules/unterminated-block-comment","sha256":"200af1a72cc87b0830b400a40689bd5ff94d7f249fe80c6a165ace39b98b433f","source":"SELECT 1;\n/* never closed\nSELECT 2;"}

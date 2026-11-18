@@ -1,5 +1,5 @@
 {
-"meta": {"mode":"PARSEONLY","engine":{"product_version":"17.0.1000.7","product_level":"RTM","edition":"Express Edition (64-bit)","platform":"Windows","collation":"SQL_Latin1_General_CP1_CI_AS"},"session_set":{"quoted_identifier":1,"ansi_nulls":1,"ansi_padding":1,"ansi_warnings":1,"arithabort":0,"concat_null_yields_null":1},"levels":[100,110,120,130,140,150,160,170],"cases_sha256":"f18395743a645398124128d6e89451fa6bd05eb0098d1a3bea4217f2d237931c","runner":"oracle/runner/ParseOnly (C#, Microsoft.Data.SqlClient)","runner_sha256":"21a9036ef504ec8fa75669e902b8ad3f229d68104d0e6d5a24c3ebaee3745603","observed_utc":"2026-11-16"},
+"meta": {"mode":"PARSEONLY","engine":{"product_version":"17.0.1000.7","product_level":"RTM","edition":"Express Edition (64-bit)","platform":"Windows","collation":"SQL_Latin1_General_CP1_CI_AS"},"session_set":{"quoted_identifier":1,"ansi_nulls":1,"ansi_padding":1,"ansi_warnings":1,"arithabort":0,"concat_null_yields_null":1},"levels":[100,110,120,130,140,150,160,170],"cases_sha256":"b5a43c5dff46eb42b60cc51483580b70391f2aaa3fa4c4c98ad9c15ec9eb422c","runner":"oracle/runners/ParseOnly (C#, Microsoft.Data.SqlClient)","runner_sha256":"9c73f0dade20221ac4ef5cbae58ca2f0007afeeabd896548c21ea7cf0232f180","observed_utc":"2026-11-18"},
 "verdicts": {
   "batch-rules/proc-first": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
   "batch-rules/proc-after-select": {"100":[111],"110":[111],"120":[111],"130":[111],"140":[111],"150":[111],"160":[111],"170":[111]},
@@ -50,6 +50,9 @@
   "batch-rules/go-text-in-block-comment": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
   "batch-rules/go-in-nested-comment": {"100":[113,113,102],"110":[113,113,102],"120":[113,113,102],"130":[113,113,102],"140":[113,113,102],"150":[113,113,102],"160":[113,113,102],"170":[113,113,102]},
   "batch-rules/go-count-in-block-comment": {"100":[113,102],"110":[113,102],"120":[113,102],"130":[113,102],"140":[113,102],"150":[113,102],"160":[113,102],"170":[113,102]},
-  "batch-rules/go-in-string": {"100":[105,102,105],"110":[105,102,105],"120":[105,102,105],"130":[105,102,105],"140":[105,102,105],"150":[105,102,105],"160":[105,102,105],"170":[105,102,105]}
+  "batch-rules/go-in-string": {"100":[105,102,105],"110":[105,102,105],"120":[105,102,105],"130":[105,102,105],"140":[105,102,105],"150":[105,102,105],"160":[105,102,105],"170":[105,102,105]},
+  "batch-rules/empty-where": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]},
+  "batch-rules/empty-having": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]},
+  "batch-rules/unterminated-block-comment": {"100":[113],"110":[113],"120":[113],"130":[113],"140":[113],"150":[113],"160":[113],"170":[113]}
 }
 }
