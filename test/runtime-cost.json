@@ -1,5 +1,5 @@
 {
-  "label": "2.1.0 (#65: faster lexing and fewer reductions; the release baseline)",
-  "commit": "693a57575478f2dd8e7fd417e262c1d473321b8e",
+  "label": "2.1.1 (#68: procedure-body forks settled at generation time; the release baseline)",
+  "commit": "aa4287db4fcdee6d8318b86cad6e1b9c69589b23",
   "max_ratio": 1.5
 }

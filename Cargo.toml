@@ -1,7 +1,7 @@
 [package]
 name = "tree-sitter-mssql"
 description = "Tree-sitter grammar for Microsoft SQL Server T-SQL"
-version = "2.1.0"
+version = "2.1.1"
 authors = ["Derek Stride", "M. Reifschneider", "Kim Jae Seok"]
 license = "MIT"
 readme = "README.md"
