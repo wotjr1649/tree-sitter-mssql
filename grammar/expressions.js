@@ -7,6 +7,27 @@ import {
   IDENTIFIER_CONTINUE,
 } from './helpers.js';
 
+// A class body of `\uXXXX` and `\uXXXX-\uXXXX` items, split into its ASCII and non-ASCII parts.
+const splitAscii = (body) => {
+  const hex = (cp) => `\\u${cp.toString(16).toUpperCase().padStart(4, '0')}`;
+  const item = (a, b) => (a === b ? hex(a) : `${hex(a)}-${hex(b)}`);
+  const ascii = [];
+  const rest = [];
+  for (const [, a, b] of body.matchAll(/\\u([0-9A-F]{4})(?:-\\u([0-9A-F]{4}))?/g)) {
+    const lo = parseInt(a, 16);
+    const hi = parseInt(b ?? a, 16);
+    if (lo < 0x80) ascii.push(item(lo, Math.min(hi, 0x7f)));
+    if (hi >= 0x80) rest.push(item(Math.max(lo, 0x80), hi));
+  }
+  return [ascii.join(''), rest.join('')];
+};
+const [START_ASCII, START_OTHER] = splitAscii(IDENTIFIER_START);
+const [CONTINUE_ASCII, CONTINUE_OTHER] = splitAscii(IDENTIFIER_CONTINUE);
+// `[continue]*` written so that ASCII and non-ASCII characters lead to different lexer states: the generated
+// lexer then tests ASCII with plain comparisons and binary-searches the Unicode range table only from the first
+// non-ASCII character on (tree-sitter#6139). It matches the same strings, so tokens and trees do not change.
+const CONTINUE_TAIL = `[${CONTINUE_ASCII}]*([${CONTINUE_OTHER}][${IDENTIFIER_CONTINUE}]*)?`;
+
 export default {
   _expression: ($) =>
     prec(
@@ -531,6 +552,8 @@ export default {
   // Character string, optionally with the N prefix for nvarchar. A quote
   // inside the string is doubled; there is no backslash escaping.
   _single_quote_string: (_) => /[nN]?'([^']|'')*'/,
+  // Alias `_single_quote_string` elsewhere, never this rule: the generator keeps the reduction of an aliased
+  // one-symbol hidden rule, which would cost every string literal an extra reduction and tree node.
   _literal_string: ($) => $._single_quote_string,
   _natural_number: (_) => /\d+/,
   // Decimal integers and hexadecimal binary literals (`0x4D5A`, `0x`).
@@ -568,12 +591,13 @@ export default {
     ),
   // A regular identifier: letters, digits, `_`, `#` and `$` after the first
   // character, per SQL Server's identifier rules (`addr##1` is legal).
-  _identifier: (_) => new RegExp(`[${IDENTIFIER_START}][${IDENTIFIER_CONTINUE}]*`),
+  _identifier: (_) =>
+    new RegExp(`[${START_ASCII}]${CONTINUE_TAIL}|[${START_OTHER}][${IDENTIFIER_CONTINUE}]*`),
   // `@` then continuation characters: variables (`@a`, `@1`, a bare `@`) and system
   // variables (`@@ROWCOUNT`) alike, since `@` is itself a continuation character.
-  _tsql_parameter: (_) => new RegExp(`@[${IDENTIFIER_CONTINUE}]*`),
+  _tsql_parameter: (_) => new RegExp(`@${CONTINUE_TAIL}`),
   // `#` then continuation characters: `#t`, `##t`, `#1`, a bare `#`.
-  _temporary_table: (_) => new RegExp(`#[${IDENTIFIER_CONTINUE}]*`),
+  _temporary_table: (_) => new RegExp(`#${CONTINUE_TAIL}`),
   _bracketed_identifier: (_) => /\[([^\]]|\]\])+\]/,
   // "quoted identifier" — a string only when QUOTED_IDENTIFIER is OFF,
   // which the grammar does not track. A double quote inside is doubled to

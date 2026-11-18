@@ -792,7 +792,7 @@ export default {
       $.identifier,
       optional($.keyword_all),
       $.keyword_to,
-      paren_list(choice($.identifier, alias($._literal_string, $.literal)), true),
+      paren_list(choice($.identifier, alias($._single_quote_string, $.literal)), true),
     ),
 
   // CREATE EVENT SESSION name ON SERVER

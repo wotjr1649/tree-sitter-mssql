@@ -187,6 +187,24 @@ bool tree_sitter_mssql_external_scanner_scan(void *payload, TSLexer *lexer, cons
   // could be produced again at the same position, so the sqlcmd checks only run
   // during a normal parse.
   bool recovering = valid_symbols[UNTERMINATED_COMMENT];
+  // Fast exit, before any of the checks below: in a normal parse, a lookahead that is neither a space nor `/`
+  // can only start an external token that is valid here. The checks below would also return false for it.
+  if (!recovering && !valid_symbols[SQLCMD_BOUNDARY] && !valid_symbols[SQLCMD_ARGUMENT] &&
+      !valid_symbols[SQLCMD_INLINE]) {
+    int32_t c = lexer->lookahead;
+    if (!is_space(c) && c != '/' &&
+        !(c == ';' && valid_symbols[ELSE_SEMICOLON]) &&
+        !(c >= '0' && c <= '9' && (valid_symbols[HINT_INTEGER] || valid_symbols[HINT_NUMERIC])) &&
+        !((c == '!' || c == '<' || c == '>') &&
+          (valid_symbols[SPACED_NOT_EQUAL] || valid_symbols[SPACED_LESS_EQUAL] ||
+           valid_symbols[SPACED_GREATER_EQUAL] || valid_symbols[SPACED_NOT_EQUAL_ALT] ||
+           valid_symbols[SPACED_NOT_LESS] || valid_symbols[SPACED_NOT_GREATER])) &&
+        !(((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) &&
+          (valid_symbols[QUEUE_ACTIVATION] || valid_symbols[QUEUE_RETENTION] || valid_symbols[QUEUE_POISON] ||
+           valid_symbols[QUEUE_STATUS] || valid_symbols[QUEUE_PROCEDURE] || valid_symbols[QUEUE_READERS]))) {
+      return false;
+    }
+  }
   if (valid_symbols[SQLCMD_BOUNDARY] && !recovering) {
     if (lexer->eof(lexer) || is_space(lexer->lookahead)) {
       lexer->mark_end(lexer);
