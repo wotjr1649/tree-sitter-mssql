@@ -1,6 +1,6 @@
 # Development
 
-How to build and test the grammar. [CONTRIBUTING.md](../CONTRIBUTING.md) lists the checks a pull request must pass.
+How to build and test the grammar. [.github/CONTRIBUTING.md](../.github/CONTRIBUTING.md) lists the checks a pull request must pass.
 
 ## Building
 
