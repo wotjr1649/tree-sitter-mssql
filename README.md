@@ -71,8 +71,28 @@ and every limit are in [docs/benchmarks.md](docs/benchmarks.md).
 
 On the private corpus, 2.0.0 parses clean input about 6–20 % slower than 1.0.0 (13 % overall). Most of the earlier 30 % gap was a compiler
 effect: `tree-sitter generate` 0.27.2 compiles the whole `parser.c` without optimization when the main lexer has more than
-300 states, and 2.0.0's had 568; it now has 271. An earlier counter study attributes the remaining gap to bigger parse tables, Unicode
-identifier sets and more reductions; its effects were not isolated or re-counted after #62.
+300 states, and 2.0.0's had 568; it now has 271.
+
+**2.1.0** (#65) closes most of the remaining gap from the grammar and scanner alone, so it survives regeneration:
+
+- ASCII identifier characters and common separators are tested with plain comparisons.
+- String literals no longer take an extra reduction.
+- Procedure bodies no longer fork a GLR version at every statement.
+
+Measured differently from the table above: one process, variants interleaved per input, on a pinned core. On inputs
+1.0.0, 2.0.0 and 2.1.0 all parse cleanly, 2.1.0 over 1.0.0 is:
+
+| Set | Ratio |
+| --- | ---: |
+| private corpus | 0.987 (2.0.0: 0.877) |
+| fixtures | 0.991 |
+| corpus tests | 0.973 |
+| synthetic | 1.010 |
+| oracle | 1.105 |
+
+Inputs that do the same parser work as in 1.0.0 parse faster than in 1.0.0. The rest of the gap is on inputs that need
+more reductions or GLR steps (hidden rules kept for incremental reuse and table size). Tree bytes per source byte on
+the private corpus fall to +0.3 % over 1.0.0. Details: [docs/benchmarks.md](docs/benchmarks.md#210).
 
 **Assessment.** The criteria are SQL Server's own parser (`SET PARSEONLY ON`) as the reference, and each verdict says
 what was measured.
@@ -82,11 +102,11 @@ what was measured.
 | Correctness against SQL Server | Meets, with limits | Every engine-accepted oracle case passes tree-check (SQL Server 2017–2025, levels 100–170, both QUOTED_IDENTIFIER settings); the grammar alone misses three OFF cases. The 445 rejected or runner-excluded pairs not flagged are classified (context, version, environment, runner). The oracle was written by this project, so it is a regression gate more than an independent test. |
 | Real-world agreement | Meets, with limits | 5,987 of 5,987 accepted scripts clean, 18 of 19 rejected flagged; the one miss is a context error (Msg 137). One source, only 19 rejected scripts, and the corpus was also used during development. |
 | Robustness | Meets | No crash, hang or superlinear time on 43 stress inputs (nesting to 50,000, 200,000-term chains, an 8 MB literal) or on 41 synthetic classes (exponents 0.96–1.06). |
-| Performance and memory | Meets, with limits | About 10 MB/s parsing, 5 MB/s with tree-check, about 26 bytes of tree per source byte, a 2.25 MB script peaks at about 102 MiB of process memory; the WASM module starts at 14 MiB. It is about 13 % slower and 4–5 % more memory-hungry than 1.0.0 on clean input. |
+| Performance and memory | Meets, with limits | About 10 MB/s parsing, 5 MB/s with tree-check, about 26 bytes of tree per source byte, a 2.25 MB script peaks at about 102 MiB of process memory; the WASM module starts at 14 MiB. 2.0.0 was about 13 % slower and 4–5 % more memory-hungry than 1.0.0 on clean input. 2.1.0 (native gcc `-O2`) is 1–3 % slower than 1.0.0 on the fixtures, corpus tests and private corpus, up to about 4 % slower on small private files, and faster on synthetic and oracle inputs. A clang/WASM build is 1–6 % slower. Its trees are 0.3–4 % larger. |
 | Incremental editing | Meets, with limits | An incremental tree equals a fresh parse on all 8,063 measured edits (an earlier candidate differed on 24 edits of one file; fixed by a grammar change). Median reparse about 0.5 ms on 100 KB–1 MB files, about 1.9 times 1.0.0's. The edits are four simple kinds, and tree-sitter 0.27.2 has known runtime defects in incremental parsing that 0.27.3 (not released) addresses; 0.27.3 was not tested. Per edit, the reuse repairs cut re-lexed tokens by 8.7 %; 52 edits that leave the text invalid re-lex more than before (by more than 4 tokens, at most +28). |
 | API stability | Meets | 0 node kinds and 0 fields removed or renamed, 244 kinds added; 40 of the 5,379 distinct inputs that 1.0.0 parsed cleanly get a different tree, listed in the migration guide; SemVer major version. |
 | Verification in CI | Meets (read from the workflow files, not re-run for this page) | Oracle replay, corpus, fixtures, comment/case/whitespace mutation and WASM parity gates on every pull request; the oracle runs on SQL Server 2017, 2019, 2022 and 2025 (pull requests that touch it, weekly); a weekly fuzz run covers the parser, the scanner and tree-check. |
-| Maintenance | Meets, with limits | One maintainer; 2.0.0 is the first release of this repository. |
+| Maintenance | Meets, with limits | One maintainer; 2.0.0 was the first release of this repository, and 2.1.0 the second. |
 
 **Known limits.** Errors that need context (undeclared variables, conflicting hints, boolean versus scalar, names,
 permissions) are outside a grammar and are not flagged. Some Azure Synapse syntax kept from 1.0.0 is accepted by the

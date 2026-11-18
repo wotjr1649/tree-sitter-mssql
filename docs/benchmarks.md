@@ -1,4 +1,4 @@
-# Benchmarks: 1.0.0 and 2.0.0
+# Benchmarks: 1.0.0, 2.0.0 and 2.1.0
 
 This page compares two versions of the grammar:
 
@@ -11,7 +11,10 @@ This repository is independent and maintained by its owner. Everything below was
 session, in alternating A/B rounds, and every figure says what it was measured on. Where the evidence ends, the text says so.
 
 Contents: [Summary](#summary) · [Method](#method) · [Accuracy](#accuracy) · [Robustness](#robustness) ·
-[Speed](#speed) · [Memory](#memory) · [Size](#size) · [Limits of these measurements](#limits-of-these-measurements)
+[Speed](#speed) · [Memory](#memory) · [Size](#size) · [2.1.0](#210) ·
+[Limits of these measurements](#limits-of-these-measurements)
+
+Every section except [2.1.0](#210) measures 2.0.0.
 
 ## Summary
 
@@ -352,6 +355,96 @@ total after the largest check is the peak: 14.0 MiB for under 10 KB inputs, 15.1
 Node kinds and fields are the public contract: against 1.0.0, 0 node kinds and 0 fields are removed or renamed and 244
 kinds are added.
 
+## 2.1.0
+
+2.1.0 is `main` after pull request #65 (`693a575`). Its only change from 2.0.0 is a performance change in the grammar
+and `src/scanner.c`, so a consumer that regenerates `parser.c` with CLI 0.27.2 gets all of it.
+
+**Unchanged from 2.0.0.**
+
+- `node-types.json`, node kinds, fields, and full trees (named and anonymous nodes, ranges, flags) on every valid input.
+  This was checked on the fixtures, oracle, corpus tests, synthetic inputs, random procedures and the private corpus.
+- Verdicts and incremental exactness.
+- One tree changes, on an engine-rejected input (`BEGIN CREATE PROCEDURE p AS SELECT 1; END`): the final `;` moves
+  from the procedure body to the block.
+
+**Method.** This study did not use the alternating rounds of the sections above. Instead:
+
+- One process loads one static tree-sitter 0.27.2 runtime and the three grammars, all built with gcc `-O2`. The
+  1.0.0 `parser.c` is identical to its CLI 0.27.2 regeneration.
+- It alternates the variant order per input and per sample. Each sample repeats for at least 2 ms, and the result is
+  the median of 5 samples (3 on the oracle).
+- The process is pinned to one performance core.
+- The study ran twice, and every set ratio agreed within 0.003.
+
+The figures are not directly comparable with the [Speed](#speed) table, which used separate executables. Inputs are
+those all three versions parse cleanly.
+
+| Set | Inputs | 1.0.0 (B/ms) | 2.0.0 / 1.0.0 | 2.1.0 / 1.0.0 | 2.1.0 per-input median |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| fixtures | 154 | 19,110 | 0.878 | 0.991 | 1.005 |
+| oracle | 6,342 | 13,514 | 1.003 | 1.105 | 0.976 |
+| corpus tests | 740 | 14,709 | 0.884 | 0.973 | 0.994 |
+| synthetic¹ | 39 | 11,387 | 0.949 | 1.010 | 1.004 |
+| private corpus | 5,874 | 17,147 | 0.877 | 0.987 | 0.952 |
+| private, <4 KB | 4,090 | 22,486 | 0.848 | 0.956 | |
+| private, 4–16 KB | 1,248 | 20,475 | 0.849 | 0.967 | |
+| private, 16–64 KB | 457 | 18,237 | 0.876 | 0.986 | |
+| private, 64–256 KB | 69 | 16,204 | 0.890 | 0.990 | |
+| private, ≥256 KB | 10 | 12,438 | 0.899 | 1.011 | |
+
+¹ Without the `IF … ELSE IF …` chain, where 1.0.0 is quadratic.
+
+**What changed, and its effect.**
+
+| Change | Effect |
+| --- | --- |
+| Identifier, `@variable` and `#temp` patterns send ASCII and non-ASCII characters to different lexer states | ASCII is tested with plain comparisons; the Unicode range table is binary-searched only after a non-ASCII character ([tree-sitter#6139](https://github.com/tree-sitter/tree-sitter/issues/6139)). Main lexer cycles fell to about 0.8 times 1.0.0's on synthetic input |
+| Space, LF, CR and tab repeated as extras with distinct precedences | Each gets its own single-character transition ahead of the 53-code-point separator set |
+| `_literal_string` no longer aliased | Saves one reduction and one tree node per string literal |
+| `prec.right` on a procedure body's later items | No GLR fork at every statement boundary |
+| Scanner fast exit | The scanner returns before any check when no external token can start |
+
+On the private corpus, reductions fall from +11.7 % to +4.2 % per KB over 1.0.0, and GLR version steps from +4.9 % to
++2.6 %. Parse states fall from 14,107 to 14,074, and the main lexer has 274 states.
+
+**Where the gap remains.** Private inputs that need no more GLR steps than in 1.0.0 parse at 1.007 times 1.0.0's
+speed. The gap grows with the extra work:
+
+| Version steps over 1.0.0 | Ratio |
+| --- | ---: |
+| 0.1–3 % | 0.998 |
+| 3–6 % | 0.960 |
+| 6–10 % | 0.943 |
+| more than 10 % | 0.90 |
+
+The extra work comes from three sources:
+
+- Hidden wrapper rules (`_batch_item`, `_invocation_arguments`, `_expression_list`, `_case_body`,
+  `_query_specification_rest`, …). Inlining them grows the parse table by 3–12 %, and for some it worsens
+  incremental reuse.
+- The remaining procedure-body conflict.
+- The scanner reading whitespace before the main lexer reads it again, which costs 0–3 %. The runtime calls the
+  external scanner first for every token, and a nested block comment cannot be found without skipping whitespace.
+
+**Memory and size.**
+
+- Tree bytes per source byte over 1.0.0:
+
+  | Set | 2.0.0 | 2.1.0 |
+  | --- | ---: | ---: |
+  | private corpus | +4.5 % | +0.3 % |
+  | fixtures | +5.3 % | +3.2 % |
+  | oracle | +6.0 % | +4.4 % |
+
+  These are counted with `ts_set_allocator` and are deterministic.
+- Peak during a parse on the private corpus: +5.2 % over 1.0.0 in 2.0.0, +1.6 % in 2.1.0.
+- The gcc `-O2` library is 0.4 % smaller than 2.0.0's (+29 % over 1.0.0), and `parser.c` is 0.5 % smaller.
+
+**clang.** A wasi-sdk 34.0 clang `-O2` wasm32-wasip1 build under Node, pinned, over 3 alternating rounds, points the
+same way: 2.1.0 is 5–7 % faster than 2.0.0. It is also 0.94–0.99 times 1.0.0, a larger gap than with gcc; the cause
+was not isolated.
+
 ## Limits of these measurements
 
 - One machine, one operating system (Windows), one session, possibly with another CPU-heavy job running.
@@ -363,8 +456,9 @@ kinds are added.
   are outside a grammar; some Azure Synapse syntax kept from 1.0.0 is accepted by the grammar but not by SQL Server.
 - The WASM module is the unoptimised recipe (no Binaryen); an optimised build changes size and speed. The native and
   WASM tree-check runs were not alternated.
-- The remaining slowdown on clean input (about 13 %) is attributed to the larger tables, Unicode identifier sets and
-  extra reductions from an earlier counter study; its parts were not separated and the counters were not re-taken here.
+- 2.0.0's slowdown on clean input (about 13 %) is attributed to the larger tables, Unicode identifier sets and extra
+  reductions from an earlier counter study; its parts were not separated here. The [2.1.0](#210) study re-took the
+  counters, and splits its remaining gap only by input bucket.
 - Incremental exactness was measured on 8,063 edits of four simple kinds with tree-sitter 0.27.2; tree-sitter 0.27.3
   was not tested. The re-lex figures come from a separate study (counters, not timings).
 - 1.0.0 was measured with the same benchmark program and runtime, not with its own CI or tooling.
