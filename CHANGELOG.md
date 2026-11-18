@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Parse about 3 % faster than 2.1.0 on real-world scripts (2–4 % by set, gcc `-O2`), from the grammar alone (CLI 0.27.2 output): precedence now settles at generation time the procedure-body GLR forks that dynamic precedence settled at run time (an empty body against a statement after `AS`, and ending the body after its first item), so GLR version steps on clean input fall to the level of 1.0.0; an OPENROWSET connection's first value no longer keeps a unit reduction alive after every literal call argument, and a string literal no longer goes through a one-symbol hidden rule (`parser.c` −0.3 %, large states −25). Node kinds, fields, valid-input trees and verdicts are unchanged, and no sampled incremental edit relexes more. Only trees of inputs SQL Server rejects change: `BEGIN CREATE PROCEDURE p AS SELECT 1; END` now has an ERROR (`END` continues the body, as `END CONVERSATION` would); a final `;` after a nested or native-module body joins the innermost body; and a body that 2.1.0 could end right after `AS` when GLR version pruning lost the dynamic choice now always runs on.
+
 ## [2.1.0] - 2026-11-18
 
 ### Changed
