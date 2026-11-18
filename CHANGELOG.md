@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Parse 6–13 % faster than 2.0.0 with about 4 % smaller trees on real-world scripts, from the grammar and scanner alone (CLI 0.27.2 output): the lexer tests ASCII identifier characters and the common separators (space, tab, CR, LF) with plain comparisons instead of binary-searching the Unicode tables (tree-sitter/tree-sitter#6139); a string literal no longer takes an extra hidden reduction (one `alias` kept the generator from removing it); a procedure body no longer forks a GLR version at every statement; the external scanner returns at once when no external token can start. Node kinds, fields, valid-input trees and verdicts are unchanged, and no sampled incremental edit relexes more; in one rejected input (`BEGIN CREATE PROCEDURE p AS SELECT 1; END`) the final `;` moves from the procedure body to the block.
+
 ## [2.0.0] - 2026-11-18
 
 The first release of this independent repository. Every input SQL Server accepts in the oracle (10,709 sources,

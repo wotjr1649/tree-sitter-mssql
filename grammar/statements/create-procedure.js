@@ -78,6 +78,10 @@ export default {
   // that rule, and a bonus there would score a body that stops early as high as
   // one that does not.
   //
+  // `prec.right` on the later items settles "continue the body" at generation time, so the parser no
+  // longer forks a version that ends the body at every statement boundary (the dynamic score above
+  // chose the same continuation; the fork only cost time). The leading-semicolon fork stays.
+  //
   // A CLR procedure or trigger has `AS EXTERNAL NAME assembly.class.method`
   // in place of the statements.
   procedure_body: ($) =>
@@ -90,7 +94,11 @@ export default {
           optional(
             prec.dynamic(
               2,
-              seq(repeat(';'), choice($.statement, $.block), repeat($._procedure_body_item)),
+              seq(
+                repeat(';'),
+                choice($.statement, $.block),
+                prec.right(repeat($._procedure_body_item)),
+              ),
             ),
           ),
         ),

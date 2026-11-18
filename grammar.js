@@ -11,6 +11,12 @@ export default grammar({
 
   // Engine-measured token separators: oracle/data/probes/metamorphic-whitespace.jsonl, levels 100-170.
   extras: ($) => [
+    // The common separators again, each with its own precedence, so the generated lexer gives each a separate
+    // single-character transition and tests it first instead of binary-searching the full set below.
+    token(prec(4, ' ')),
+    token(prec(3, '\n')),
+    token(prec(2, '\r')),
+    token(prec(1, '\t')),
     // oxlint-disable-next-line no-control-regex -- SQL Server accepts these controls as token separators.
     /[\u0000-\u0020\u0085\u00a0\u1680\u2000-\u200b\u2028\u2029\u202f\u205f\u3000]/,
     $.comment,
