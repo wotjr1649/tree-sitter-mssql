@@ -16,12 +16,13 @@ approval. go-treesitter regenerates `src/parser.c` with its own pinned CLI.
   the parser from grammar.js` step in `.github/workflows/verify.yml` and commit the generated files with the source
   change. Never edit generated files by hand or by post-processing. A generated `parser.c` must not contain the
   generator's optimize-off pragmas.
-- The CLI pin is `TREE_SITTER_CLI_VERSION` in `.github/workflows/verify.yml`. `devDependencies.tree-sitter-cli`,
-  `allowScripts` and the `prestart`/`start` scripts in `package.json` and `fuzz.yml` repeat it: change all together.
-  It tracks the latest stable tree-sitter release (`gh release view -R tree-sitter/tree-sitter`). Move it in its own
+- The CLI pin is `devDependencies.tree-sitter-cli` in `package.json`. Its `package-lock.json` entry and the
+  exact-version `allowScripts` key repeat it: change all three together. Verify fails when they differ or the installed
+  CLI reports another version; Verify, `fuzz.yml` and the `prestart`/`start` scripts read the pin. It tracks the latest stable tree-sitter release (`gh release view -R tree-sitter/tree-sitter`). Move it in its own
   PR: regenerate, compare full CSTs on the fixed inputs and record generated-code differences. Identical trees are a
   patch release; otherwise follow the SemVer rules below.
-- The ABI is the CLI default, `LANGUAGE_VERSION` in `src/parser.c` (the generate step passes no `--abi` yet). Binding
+- The ABI is `ci/tree-sitter-abi.txt`. The generate step passes it with `--abi` and Verify checks it against
+  `LANGUAGE_VERSION` in `src/parser.c`. Binding
   runtime lower bounds are in the binding manifests. Changing the ABI or a runtime lower bound needs the owner's
   approval and a major release.
 - Valid T-SQL means SQL Server's parser accepts it (`SET PARSEONLY ON`) at a stated compatibility level. Tests

@@ -196,7 +196,7 @@ Most root files sit where a tool expects them: npm, node-gyp, cargo, the tree-si
 
 ## How to contribute
 
-Fix a defect starting from a failing corpus case or SQL Server oracle case, regenerate the parser with tree-sitter CLI 0.27.2 after any grammar change, and run the checks described in [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md). [AGENTS.md](AGENTS.md) holds the standing rules, [docs/development.md](docs/development.md) has the build and test details, and [docs/architecture.md](docs/architecture.md) maps the repository.
+Fix a defect starting from a failing corpus case or SQL Server oracle case, regenerate the parser with the tree-sitter CLI pinned in `package.json` after any grammar change, and run the checks described in [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md). [AGENTS.md](AGENTS.md) holds the standing rules, [docs/development.md](docs/development.md) has the build and test details, and [docs/architecture.md](docs/architecture.md) maps the repository.
 
 ## License
 

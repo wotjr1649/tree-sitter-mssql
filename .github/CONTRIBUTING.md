@@ -11,16 +11,17 @@ A tree-sitter grammar for Microsoft SQL Server T-SQL, with Rust and Node.js bind
 
 ```sh
 npm install --ignore-scripts
-npx --yes --package=tree-sitter-cli@0.27.2 -- tree-sitter generate
+npm rebuild tree-sitter-cli
+npx tree-sitter generate --abi "$(cat ci/tree-sitter-abi.txt)" --js-runtime native
 cargo build
 ```
 
-`--ignore-scripts` skips the package's own `node-gyp-build` install script, which needs a C++ build toolchain. Regenerate the parser and commit the diff after any `grammar.js` change; a committed parser that has drifted from the grammar is a CI failure. On a machine without MSVC, prefix `tree-sitter test` and `tree-sitter parse` with `CC=gcc CXX=g++`.
+`--ignore-scripts` skips the package's own `node-gyp-build` install script, which needs a C++ build toolchain; `npm rebuild tree-sitter-cli` then runs only the CLI's install script, which downloads the binary of the version pinned in `package.json`. Regenerate the parser and commit the diff after any `grammar.js` change; a committed parser that has drifted from the grammar is a CI failure. On a machine without MSVC, prefix `tree-sitter test` and `tree-sitter parse` with `CC=gcc CXX=g++`.
 
 ## Validation before a pull request
 
 ```sh
-npx --yes --package=tree-sitter-cli@0.27.2 -- tree-sitter test
+npx tree-sitter test
 node scripts/generate-node-kinds.mjs
 node scripts/check-registries.mjs
 node scripts/parser-cost.mjs
@@ -59,7 +60,7 @@ cargo test --manifest-path crates/tree-check/Cargo.toml
 1. **Issue.** Open one issue per defect with the `defect` template: the minimal T-SQL input, SQL Server's verdict under `SET PARSEONLY ON` with compatibility level and engine version, and the current tree or `ERROR` excerpt.
 2. **Failing case.** Add a corpus case under `test/corpus/` or an oracle case that fails before the change. SQL Server's verdict decides what is valid; where a test inherited from 1.0.0 or [docs/accepted-gaps.md](../docs/accepted-gaps.md) disagrees, the change names the case and the compatibility level.
 3. **Grammar change.** Edit `grammar.js` or `grammar/**/*.js` (or `src/scanner.c`), never the generated files.
-4. **Regenerate.** Run `tree-sitter generate` with CLI 0.27.2 and commit `src/parser.c`, `src/grammar.json`, `src/node-types.json` and `test/node-kinds.txt` with the grammar change.
+4. **Regenerate.** Run the generate command from "Local setup" with the pinned CLI and commit `src/parser.c`, `src/grammar.json`, `src/node-types.json` and `test/node-kinds.txt` with the grammar change.
 5. **Gates.** Run the checks in "Validation before a pull request". Existing corpus cases and fixtures keep passing unless the change alters them on purpose and says why.
 
 Errors that need context (conflicting hints, boolean versus scalar, names, permissions) are not grammar defects; label them `contextual` instead of bending the grammar.
