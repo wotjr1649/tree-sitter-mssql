@@ -335,14 +335,15 @@ export default {
       seq(
         choice($.object_reference, alias($._static_reference, $.object_reference)),
         $._invocation_arguments,
-        optional(
-          seq(
-            $.keyword_within,
-            $.keyword_group,
-            wrapped_in_parenthesis(choice($.order_by, seq($.keyword_graph, $.keyword_path))),
-          ),
-        ),
+        optional($._invocation_within_group),
       ),
+    ),
+
+  _invocation_within_group: ($) =>
+    seq(
+      $.keyword_within,
+      $.keyword_group,
+      wrapped_in_parenthesis(choice($.order_by, seq($.keyword_graph, $.keyword_path))),
     ),
 
   // Reduce the argument list before the optional suffix to share expression states.
@@ -529,22 +530,17 @@ export default {
       ),
     ),
 
+  _between_operator: ($) => seq(optional($.keyword_not), $.keyword_between),
+
   between_expression: ($) =>
-    choice(
-      ...[
-        [$.keyword_between, 'between'],
-        [seq($.keyword_not, $.keyword_between), 'between'],
-      ].map(([operator, precedence]) =>
-        prec.left(
-          precedence,
-          seq(
-            field('left', $._expression),
-            field('operator', operator),
-            field('low', $._expression),
-            $.keyword_and,
-            field('high', $._expression),
-          ),
-        ),
+    prec.left(
+      'between',
+      seq(
+        field('left', $._expression),
+        field('operator', $._between_operator),
+        field('low', $._expression),
+        $.keyword_and,
+        field('high', $._expression),
       ),
     ),
 
