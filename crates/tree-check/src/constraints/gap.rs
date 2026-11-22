@@ -423,18 +423,16 @@ pub(super) fn identifier(node: Node, context: &Context, source: &[u8], out: &mut
             matches!(
                 n.grammar_name(),
                 "(" | "," | "keyword_collate" | "keyword_constraint" | "keyword_index"
-            ) || inline_index_filestream(n, source)
+            ) || varying_column_collate(n, parent, source)
+                || inline_index_filestream(n, source)
         })
     {
         // https://learn.microsoft.com/en-us/sql/t-sql/statements/create-table-transact-sql
         // HIDDEN is part of generated_always; only these flags can be standalone.
-        if !matches!(word.as_str(), "FILESTREAM" | "SPARSE" | "ROWGUIDCOL")
-            && !(word == "VARYING"
-                && node.syntax_prev_sibling().is_some_and(|ty| {
-                    Some(ty) == parent.child_by_field_name("type")
-                        && matches!(ty.kind(), "char" | "binary")
-                        && ty.child_by_field_name("size").is_none()
-                }))
+        if varying_column_collate(node, parent, source) {
+            collation_name(node, source, out);
+        } else if !matches!(word.as_str(), "FILESTREAM" | "SPARSE" | "ROWGUIDCOL")
+            && !column_varying(node, parent, source)
             && !inline_index_filestream(node, source)
         {
             out.push(violation(
@@ -452,6 +450,32 @@ pub(super) fn identifier(node: Node, context: &Context, source: &[u8], out: &mut
             node,
         ));
     }
+}
+
+fn column_varying(node: Node, column: Node, source: &[u8]) -> bool {
+    node.kind() == "identifier"
+        && node
+            .utf8_text(source)
+            .is_ok_and(|text| text.eq_ignore_ascii_case("VARYING"))
+        && node.syntax_prev_sibling().is_some_and(|ty| {
+            Some(ty) == column.child_by_field_name("type")
+                && matches!(ty.kind(), "char" | "binary")
+                && ty.child_by_field_name("size").is_none()
+        })
+}
+
+// The column flag fallback can absorb both words of COLLATE after a split VARYING type.
+fn varying_column_collate(node: Node, column: Node, source: &[u8]) -> bool {
+    node.kind() == "identifier"
+        && node
+            .utf8_text(source)
+            .is_ok_and(|text| text.eq_ignore_ascii_case("COLLATE"))
+        && node
+            .syntax_prev_sibling()
+            .is_some_and(|varying| column_varying(varying, column, source))
+        && node
+            .syntax_next_sibling()
+            .is_some_and(|name| name.kind() == "identifier")
 }
 
 fn inline_index_filestream(node: Node, source: &[u8]) -> bool {

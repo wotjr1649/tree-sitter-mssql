@@ -2,7 +2,7 @@
 
 ## Current oracle status
 
-The replay covers 10,829 sources and 21,658 session/case pairs. All 15,703
+The replay covers 10,841 sources and 21,682 session/case pairs. All 15,727
 engine-accepted pairs pass tree-check. The [rejected-clean ledger](../oracle/data/rejected-clean.json)
 contains 445 pairs (190 ON, 255 OFF): context 111, environment 294, version 36 and runner 4.
 There are zero entries classified as `gap`. The #87 history records one incremental difference.
@@ -36,6 +36,10 @@ consumers needing the validation results must also use the constraint layer (ADR
 
 ## Under-acceptance and unmeasured syntax
 
+`CREATE TABLE dbo.t (c char varying(5));` passes LocalDB 17.0.1000.7 PARSEONLY at
+levels 100–170 with QUOTED_IDENTIFIER ON and OFF. The existing grammar produces an
+error tree at the parenthesized length after `VARYING`.
+
 The [WRITETEXT BULK probes](../oracle/data/probes/quoted-identifier.jsonl) record LocalDB 17.0.1000.7
 at levels 100–170 with QUOTED_IDENTIFIER ON and OFF. The engine accepts BULK with a text pointer
 and optional WITH LOG, with the data supplied through TDS. Inline data with BULK is rejected
@@ -67,6 +71,8 @@ ALWAYS. The option forms are documented in [CREATE TABLE](https://learn.microsof
 The review probes cover multiword types in the first argument of CONVERT and TRY_CONVERT,
 the INSERT, CURRENT_TIMESTAMP and DATABASE ODBC escapes, the nameless TIMESTAMP with NOT NULL,
 and VARYING immediately after a CHAR or BINARY column type without a length.
+The column probes also cover COLLATE after CHAR, CHARACTER, and BINARY VARYING, and
+NOT NULL, NULL, DEFAULT, and named CHECK constraints after CHAR VARYING with or without COLLATE.
 
 In `batch-rules/issue-87-step-5`, the fresh CST reads `ON` as the name in `REFERENCES dbo. ON`
 and treats the next five words as column options. LocalDB returns Msg 156. Tree-check emits

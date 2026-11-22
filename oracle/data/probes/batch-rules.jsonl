@@ -160,3 +160,15 @@
 {"id":"batch-rules/review-column-timestamp-not-null","sha256":"835a0b56a354badd00725d362b3cddb6832eac91b1a17c8830a810b7beab179b","source":"CREATE TABLE t (TIMESTAMP NOT NULL);"}
 {"id":"batch-rules/review-column-char-varying","sha256":"b1f12386012227bd7f1281737088b3294723584813a6c1078d7014cad4ff38e0","source":"CREATE TABLE dbo.t (c char varying);"}
 {"id":"batch-rules/review-column-binary-varying","sha256":"8ec8e8d95b173897db0d3a45e3100eeb8ffbc6f22c76687243d5c735e26d99ca","source":"CREATE TABLE dbo.t (c binary varying);"}
+{"id":"batch-rules/char-varying-collate","sha256":"f5687e662985fc6b96e7d676011e98baea00ed65f8a17b3121e25fdc799eb118","source":"CREATE TABLE dbo.t (c char varying COLLATE Latin1_General_CI_AS);"}
+{"id":"batch-rules/character-varying-collate","sha256":"31f346040a848c750552bae00e58181484f3b8340a62b8957eed169620ab54cd","source":"CREATE TABLE dbo.t (c character varying COLLATE Latin1_General_CI_AS);"}
+{"id":"batch-rules/binary-varying-collate","sha256":"cf30de9c3444bbf26094e636f4a5bb8ceaec409e8296e47643c4d431834184d9","source":"CREATE TABLE dbo.t (c binary varying COLLATE Latin1_General_CI_AS);"}
+{"id":"batch-rules/char-varying-not-null","sha256":"fe23b7de6857911a6a462c522958ed70a777185c6bc5d3ee89f0e7909ab0780e","source":"CREATE TABLE dbo.t (c char varying NOT NULL);"}
+{"id":"batch-rules/char-varying-collate-not-null","sha256":"85c580f1c2b9b80c70c0007e96cc1658b1e4abe2ff482036e5a7aaad2619e4e3","source":"CREATE TABLE dbo.t (c char varying COLLATE Latin1_General_CI_AS NOT NULL);"}
+{"id":"batch-rules/char-varying-null","sha256":"dbb0fbafec1f454dfc01ff06906547adf73ec48eb7e69ac4ac214f32b69240f6","source":"CREATE TABLE dbo.t (c char varying NULL);"}
+{"id":"batch-rules/char-varying-collate-null","sha256":"b5069b226f044dd782d375ec8c7efc5904ed3c9b610395ee871637790c0e8cbe","source":"CREATE TABLE dbo.t (c char varying COLLATE Latin1_General_CI_AS NULL);"}
+{"id":"batch-rules/char-varying-default","sha256":"6f189173b9588bf6e5a6cecbdd5783d4c2d5ba4eeb12912302ee9e32ebed4d5a","source":"CREATE TABLE dbo.t (c char varying DEFAULT ('x'));"}
+{"id":"batch-rules/char-varying-collate-default","sha256":"fac5c2ff49ae34500a965398c6b20365933d7570476102e2065a8c7c6f2315b1","source":"CREATE TABLE dbo.t (c char varying COLLATE Latin1_General_CI_AS DEFAULT ('x'));"}
+{"id":"batch-rules/char-varying-constraint","sha256":"78f1da7af123ec08c6b35c775c7617070749db8318aa89c8e2f44d17242d3e35","source":"CREATE TABLE dbo.t (c char varying CONSTRAINT ck CHECK (c <> ''));"}
+{"id":"batch-rules/char-varying-collate-constraint","sha256":"c6b6ee5170a172bb8cd0904eb9465e4fa8f39e2642eb213cb57eae454fa05c89","source":"CREATE TABLE dbo.t (c char varying COLLATE Latin1_General_CI_AS CONSTRAINT ck CHECK (c <> ''));"}
+{"id":"batch-rules/char-varying-collate-database-default","sha256":"c927f93538407a52c0ed1a3c6250d6ad37003f22b43625e4f40898af1ec986db","source":"CREATE TABLE dbo.t (c char varying COLLATE DATABASE_DEFAULT);"}

@@ -145,6 +145,61 @@ fn issue_87_review_exceptions_are_limited_to_the_syntax_words() {
 }
 
 #[test]
+fn varying_column_neighbours_pass_in_both_sessions() {
+    let cases: Vec<_> = probe_cases(include_str!(
+        "../../../../oracle/data/probes/batch-rules.jsonl"
+    ))
+    .filter(|case| {
+        let id = case["id"].as_str().unwrap();
+        id.starts_with("batch-rules/char-varying-")
+            || matches!(
+                id,
+                "batch-rules/character-varying-collate" | "batch-rules/binary-varying-collate"
+            )
+    })
+    .collect();
+    assert_eq!(cases.len(), 12);
+    for case in cases {
+        let sql = case["source"].as_str().unwrap();
+        let tree = parse(sql);
+        for setting in [crate::QuotedIdentifier::On, crate::QuotedIdentifier::Off] {
+            let report = crate::inspect_with_quoted_identifier(&tree, sql.as_bytes(), setting);
+            assert!(report.ok(), "{sql} ({setting:?}): {report:?}");
+        }
+    }
+}
+
+#[test]
+fn split_varying_collate_still_checks_the_name_and_column_tail() {
+    for (tail, expected) in [
+        ("COLLATE", &["column-unknown-option"][..]),
+        ("COLLATE [Latin1_General_CI_AS]", &["collation-name"][..]),
+        ("COLLATE \"Latin1_General_CI_AS\"", &["collation-name"][..]),
+        ("COLLATE ON", &["gap-reserved-name"][..]),
+        (
+            "COLLATE Latin1_General_CI_AS junk",
+            &["column-unknown-option"][..],
+        ),
+        (
+            "[COLLATE] Latin1_General_CI_AS",
+            &["column-unknown-option"; 2][..],
+        ),
+        (
+            "NULL COLLATE Latin1_General_CI_AS",
+            &["column-unknown-option"; 2][..],
+        ),
+        (
+            "COLLATE Latin1_General_CI_AS COLLATE Latin1_General_CI_AS",
+            &["column-unknown-option"; 2][..],
+        ),
+    ] {
+        let sql = format!("CREATE TABLE dbo.t (c char varying {tail});");
+        assert!(!parse(&sql).root_node().has_error(), "{sql}");
+        assert_eq!(rules(&sql), expected, "{sql}");
+    }
+}
+
+#[test]
 fn comments_do_not_change_constraint_rules() {
     for sql in [
         "SELECT 1 FROM t WHERE a = 1 AND (\n b = 0 OR c = 1);",

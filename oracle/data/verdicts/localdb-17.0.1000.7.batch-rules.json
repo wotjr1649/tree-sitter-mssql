@@ -1,5 +1,5 @@
 {
-"meta": {"mode":"PARSEONLY","engine":{"product_version":"17.0.1000.7","product_level":"RTM","edition":"Express Edition (64-bit)","platform":"Windows","collation":"SQL_Latin1_General_CP1_CI_AS"},"session_set":{"quoted_identifier":1,"ansi_nulls":1,"ansi_padding":1,"ansi_warnings":1,"arithabort":0,"concat_null_yields_null":1},"levels":[100,110,120,130,140,150,160,170],"cases_sha256":"a05b2151d6c80ea1b9ff8019408c33733e1741ba99ce44182d0be6eacb11c1a2","runner":"oracle/runners/ParseOnly (C#, Microsoft.Data.SqlClient)","runner_sha256":"9c73f0dade20221ac4ef5cbae58ca2f0007afeeabd896548c21ea7cf0232f180","observed_utc":"2026-11-22"},
+"meta": {"mode":"PARSEONLY","engine":{"product_version":"17.0.1000.7","product_level":"RTM","edition":"Express Edition (64-bit)","platform":"Windows","collation":"SQL_Latin1_General_CP1_CI_AS"},"session_set":{"quoted_identifier":1,"ansi_nulls":1,"ansi_padding":1,"ansi_warnings":1,"arithabort":0,"concat_null_yields_null":1},"levels":[100,110,120,130,140,150,160,170],"cases_sha256":"a768d378b8573b415570c23c3039f8a325d9fce6fd63dcdbb87ae599e4ad90e2","runner":"oracle/runners/ParseOnly (C#, Microsoft.Data.SqlClient)","runner_sha256":"9c73f0dade20221ac4ef5cbae58ca2f0007afeeabd896548c21ea7cf0232f180","observed_utc":"2026-11-22"},
 "verdicts": {
   "batch-rules/proc-first": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
   "batch-rules/proc-after-select": {"100":[111],"110":[111],"120":[111],"130":[111],"140":[111],"150":[111],"160":[111],"170":[111]},
@@ -162,6 +162,18 @@
   "batch-rules/review-odbc-database": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
   "batch-rules/review-column-timestamp-not-null": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
   "batch-rules/review-column-char-varying": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
-  "batch-rules/review-column-binary-varying": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]}
+  "batch-rules/review-column-binary-varying": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/char-varying-collate": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/character-varying-collate": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/binary-varying-collate": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/char-varying-not-null": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/char-varying-collate-not-null": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/char-varying-null": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/char-varying-collate-null": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/char-varying-default": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/char-varying-collate-default": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/char-varying-constraint": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/char-varying-collate-constraint": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/char-varying-collate-database-default": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]}
 }
 }
