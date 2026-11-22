@@ -150,17 +150,9 @@ export default {
         seq(
           // SQL Server also takes the table form's column list here: a INT FOREIGN KEY (a) REFERENCES r (a).
           optional(seq($.keyword_foreign, $.keyword_key, optional(paren_list($.identifier, true)))),
-          $.keyword_references,
-          $.object_reference,
-          optional(paren_list($.identifier, true)),
-          repeat($.referential_action),
-          optional($._not_for_replication),
+          $._constraint_references,
         ),
-        seq(
-          $.keyword_check,
-          optional($._not_for_replication),
-          wrapped_in_parenthesis($._expression),
-        ),
+        $._constraint_check,
       ),
     ),
 
@@ -205,17 +197,9 @@ export default {
           $.keyword_foreign,
           $.keyword_key,
           paren_list($.identifier, true),
-          $.keyword_references,
-          $.object_reference,
-          optional(paren_list($.identifier, true)),
-          repeat($.referential_action),
-          optional($._not_for_replication),
+          $._constraint_references,
         ),
-        seq(
-          $.keyword_check,
-          optional($._not_for_replication),
-          wrapped_in_parenthesis($._expression),
-        ),
+        $._constraint_check,
         seq(
           $.keyword_connection,
           paren_list(seq($.object_reference, $.keyword_to, $.object_reference), true),
@@ -257,6 +241,20 @@ export default {
         ),
       ),
     ),
+
+  _constraint_references: ($) =>
+    prec.right(
+      seq(
+        $.keyword_references,
+        $.object_reference,
+        optional(paren_list($.identifier, true)),
+        repeat($.referential_action),
+        optional($._not_for_replication),
+      ),
+    ),
+
+  _constraint_check: ($) =>
+    seq($.keyword_check, optional($._not_for_replication), wrapped_in_parenthesis($._expression)),
 
   // ON { DELETE | UPDATE } { NO ACTION | CASCADE | SET NULL | SET DEFAULT }
   referential_action: ($) =>

@@ -5,12 +5,6 @@ import {
   write_target,
 } from '../helpers.js';
 
-// The optional `AND <predicate>` a match condition may carry, shared by
-// all three `_when_*` rules below.
-function match_predicate($) {
-  return optional(seq($.keyword_and, field('predicate', $._expression)));
-}
-
 // DELETE | UPDATE SET — the action MATCHED and NOT MATCHED BY SOURCE
 // share; NOT MATCHED [BY TARGET] takes INSERT instead (see
 // `_when_not_matched_by_target` below).
@@ -76,16 +70,11 @@ export default {
       alias($._when_not_matched_by_source, $.merge_when_clause),
     ),
 
+  _merge_when_then: ($) =>
+    seq(optional(seq($.keyword_and, field('predicate', $._expression))), $.keyword_then),
+
   _when_matched: ($) =>
-    prec.left(
-      seq(
-        $.keyword_when,
-        $.keyword_matched,
-        match_predicate($),
-        $.keyword_then,
-        delete_or_update($),
-      ),
-    ),
+    prec.left(seq($.keyword_when, $.keyword_matched, $._merge_when_then, delete_or_update($))),
 
   _when_not_matched_by_target: ($) =>
     prec.left(
@@ -94,8 +83,7 @@ export default {
         $.keyword_not,
         $.keyword_matched,
         optional(seq($.keyword_by, $.keyword_target)),
-        match_predicate($),
-        $.keyword_then,
+        $._merge_when_then,
         seq(
           $.keyword_insert,
           optional(alias($._column_list, $.list)),
@@ -115,8 +103,7 @@ export default {
         $.keyword_matched,
         $.keyword_by,
         $.keyword_source,
-        match_predicate($),
-        $.keyword_then,
+        $._merge_when_then,
         delete_or_update($),
       ),
     ),

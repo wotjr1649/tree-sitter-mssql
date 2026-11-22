@@ -472,30 +472,33 @@ export default {
       $.keyword_alter,
       $.keyword_assembly,
       $.identifier,
-      optional(
-        seq(
-          $.keyword_from,
-          comma_list(choice($.literal, alias($._tsql_parameter, $.identifier)), true),
-        ),
-      ),
+      optional($._alter_assembly_from),
       optional(alias($._alter_assembly_with_clause, $.with_clause)),
-      optional(
-        seq(
-          $.keyword_drop,
-          $.keyword_file,
-          choice($.keyword_all, comma_list(choice($.identifier, $.literal), true)),
-        ),
-      ),
-      optional(
-        seq(
-          $.keyword_add,
-          $.keyword_file,
-          $.keyword_from,
-          comma_list(
-            seq($.literal, optional(seq($.keyword_as, choice($.identifier, $.literal)))),
-            true,
-          ),
-        ),
+      optional($._alter_assembly_drop),
+      optional($._alter_assembly_add),
+    ),
+
+  _alter_assembly_from: ($) =>
+    seq(
+      $.keyword_from,
+      comma_list(choice($.literal, alias($._tsql_parameter, $.identifier)), true),
+    ),
+
+  _alter_assembly_drop: ($) =>
+    seq(
+      $.keyword_drop,
+      $.keyword_file,
+      choice($.keyword_all, comma_list(choice($.identifier, $.literal), true)),
+    ),
+
+  _alter_assembly_add: ($) =>
+    seq(
+      $.keyword_add,
+      $.keyword_file,
+      $.keyword_from,
+      comma_list(
+        seq($.literal, optional(seq($.keyword_as, choice($.identifier, $.literal)))),
+        true,
       ),
     ),
 
