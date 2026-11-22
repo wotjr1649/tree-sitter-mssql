@@ -1,0 +1,61 @@
+name: Parse benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      bench_refs:
+        description: Space-separated Git refs, with the baseline first
+        type: string
+        default: 'v2.1.1 v2.2.0 HEAD'
+      bench_max_increase_pct:
+        description: Optional maximum instruction increase (%) per input set and parse mode
+        type: string
+  pull_request:
+    paths:
+      - '.github/workflows/parse-bench.yml'
+      - 'scripts/parse-bench.*'
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  benchmark:
+    name: Measure parser instructions
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout benchmark tools and refs
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: '.nvmrc'
+          package-manager-cache: false
+      - name: Test benchmark scripts
+        run: node --test scripts/parse-bench.test.mjs
+      - name: Install Callgrind
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends valgrind
+      - name: Build, measure and compare
+        id: benchmark
+        env:
+          BENCH_REFS: ${{ inputs.bench_refs }}
+          BENCH_MAX_INCREASE_PCT: ${{ inputs.bench_max_increase_pct }}
+        run: bash scripts/parse-bench.sh
+      - name: Upload benchmark evidence
+        if: ${{ !cancelled() && steps.benchmark.outputs.artifacts != '' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: parse-instructions
+          path: ${{ steps.benchmark.outputs.artifacts }}
+          if-no-files-found: error
+          retention-days: 7
