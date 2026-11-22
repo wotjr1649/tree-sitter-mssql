@@ -23,7 +23,7 @@ statements in the tree. A structural linter and a code-metrics tool both parse T
 kinds and field names are a public contract. See [consuming.md](consuming.md).
 
 **Known mismatches.** [accepted-gaps.md](accepted-gaps.md) records current classifications and earlier grammar
-mismatches. [`WRITETEXT BULK`](accepted-gaps.md#under-acceptance-and-unmeasured-syntax) remains an open parser gap.
+mismatches.
 The current oracle classifications are in [`oracle/data/rejected-clean.json`](../oracle/data/rejected-clean.json).
 
 ## Origin

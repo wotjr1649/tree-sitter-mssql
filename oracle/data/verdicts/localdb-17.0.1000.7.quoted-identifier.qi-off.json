@@ -1,5 +1,5 @@
 {
-"meta": {"mode":"PARSEONLY","engine":{"product_version":"17.0.1000.7","product_level":"RTM","edition":"Express Edition (64-bit)","platform":"Windows","collation":"SQL_Latin1_General_CP1_CI_AS"},"session_set":{"quoted_identifier":0,"ansi_nulls":1,"ansi_padding":1,"ansi_warnings":1,"arithabort":0,"concat_null_yields_null":1},"levels":[100,110,120,130,140,150,160,170],"cases_sha256":"3c59c6e2bcecc8ccab8b93a96dd6ef4dcdb10a66a8f9cf74b8dc5e88ee3694c1","runner":"oracle/runner/ParseOnly (C#, Microsoft.Data.SqlClient)","runner_sha256":"965b8cfe9b6b25c9c2d5cb11345c10de532a6b95305da1e41c40babbb810b587","observed_utc":"2026-11-16"},
+"meta": {"mode":"PARSEONLY","engine":{"product_version":"17.0.1000.7","product_level":"RTM","edition":"Express Edition (64-bit)","platform":"Windows","collation":"SQL_Latin1_General_CP1_CI_AS"},"session_set":{"quoted_identifier":0,"ansi_nulls":1,"ansi_padding":1,"ansi_warnings":1,"arithabort":0,"concat_null_yields_null":1},"levels":[100,110,120,130,140,150,160,170],"cases_sha256":"e55ab27148bd9e8edb680109915a2f71e5f226aae639189f42f3a7d54ddec336","runner":"oracle/runners/ParseOnly (C#, Microsoft.Data.SqlClient)","runner_sha256":"9c73f0dade20221ac4ef5cbae58ca2f0007afeeabd896548c21ea7cf0232f180","observed_utc":"2026-11-22"},
 "verdicts": {
   "quoted-identifier/select-value": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
   "quoted-identifier/select-escaped-value": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
@@ -122,6 +122,14 @@
   "quoted-identifier/filegroup-column-index-filestream/null": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
   "quoted-identifier/filegroup-column-index-filestream/lower-null": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
   "quoted-identifier/filegroup-column-index-filestream/single-default": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
-  "quoted-identifier/filegroup-column-index-filestream/single-null": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]}
+  "quoted-identifier/filegroup-column-index-filestream/single-null": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "quoted-identifier/writetext-bulk/bracketed": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "quoted-identifier/writetext-bulk/with-log": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "quoted-identifier/writetext-bulk/double-quoted": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]},
+  "quoted-identifier/writetext-bulk/misplaced-bulk": {"100":[156],"110":[156],"120":[156],"130":[156],"140":[156],"150":[156],"160":[156],"170":[156]},
+  "quoted-identifier/writetext-bulk/inline-data": {"100":[185],"110":[185],"120":[185],"130":[185],"140":[185],"150":[185],"160":[185],"170":[185]},
+  "quoted-identifier/writetext-bulk/inline-data-with-log": {"100":[185],"110":[185],"120":[185],"130":[185],"140":[185],"150":[185],"160":[185],"170":[185]},
+  "quoted-identifier/writetext-bulk/plain-missing-data": {"100":[186],"110":[186],"120":[186],"130":[186],"140":[186],"150":[186],"160":[186],"170":[186]},
+  "quoted-identifier/writetext-bulk/plain-bracketed-bulk": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]}
 }
 }
