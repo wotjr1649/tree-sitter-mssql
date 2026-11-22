@@ -168,6 +168,21 @@ jobs:
           tar -xzf "$archive" -C "$RUNNER_TEMP"
           rm "$archive"
 
+      - name: Check the CLI and ABI pins
+        # The CLI pin is package.json devDependencies.tree-sitter-cli; the lockfile and allowScripts repeat it.
+        # Runs before npm install, which would rewrite a stale package-lock.json in this checkout.
+        run: |
+          set -euo pipefail
+          pin=$(node -p 'require("./package.json").devDependencies["tree-sitter-cli"]')
+          lock=$(node -p 'require("./package-lock.json").packages["node_modules/tree-sitter-cli"].version')
+          allow=$(node -p 'Object.keys(require("./package.json").allowScripts).filter((k) => k.startsWith("tree-sitter-cli@")).join(" ")')
+          abi=$(cat ci/tree-sitter-abi.txt)
+          echo "CLI pin ${pin}; lockfile ${lock}; allowScripts ${allow}; ABI ${abi}"
+          [[ "$pin" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::devDependencies.tree-sitter-cli must be an exact version, not ${pin}"; exit 1; }
+          [[ "$lock" == "$pin" ]] || { echo "::error::package-lock.json resolves tree-sitter-cli ${lock}, the pin is ${pin}"; exit 1; }
+          [[ "$allow" == "tree-sitter-cli@${pin}" ]] || { echo "::error::allowScripts must list tree-sitter-cli@${pin} only, not '${allow}'"; exit 1; }
+          [[ "$abi" =~ ^[0-9]+$ ]] || { echo "::error::ci/tree-sitter-abi.txt must hold one integer, not '${abi}'"; exit 1; }
+
       - name: Install the pinned tree-sitter CLI and the lint/format devDependencies
         # A bare `npm install` here would also run this package's own
         # "install": "node-gyp-build" lifecycle script and fail without
@@ -178,22 +193,9 @@ jobs:
           # --ignore-scripts skips the CLI's binary download; run only that
           # package's install script so every later step uses this one binary.
           npm rebuild tree-sitter-cli
-
-      - name: Check the CLI and ABI pins
-        # The CLI pin is package.json devDependencies.tree-sitter-cli; the lockfile and allowScripts repeat it.
-        run: |
-          set -euo pipefail
           pin=$(node -p 'require("./package.json").devDependencies["tree-sitter-cli"]')
-          lock=$(node -p 'require("./package-lock.json").packages["node_modules/tree-sitter-cli"].version')
-          allow=$(node -p 'Object.keys(require("./package.json").allowScripts).filter((k) => k.startsWith("tree-sitter-cli@")).join(" ")')
           installed=$(node_modules/tree-sitter-cli/tree-sitter --version)
-          abi=$(cat ci/tree-sitter-abi.txt)
-          echo "CLI pin ${pin}; lockfile ${lock}; allowScripts ${allow}; installed ${installed}; ABI ${abi}"
-          [[ "$pin" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::devDependencies.tree-sitter-cli must be an exact version, not ${pin}"; exit 1; }
-          [[ "$lock" == "$pin" ]] || { echo "::error::package-lock.json resolves tree-sitter-cli ${lock}, the pin is ${pin}"; exit 1; }
-          [[ "$allow" == "tree-sitter-cli@${pin}" ]] || { echo "::error::allowScripts must list tree-sitter-cli@${pin} only, not '${allow}'"; exit 1; }
           [[ "$installed" == "tree-sitter ${pin}" ]] || { echo "::error::the installed CLI reports '${installed}', the pin is ${pin}"; exit 1; }
-          [[ "$abi" =~ ^[0-9]+$ ]] || { echo "::error::ci/tree-sitter-abi.txt must hold one integer, not '${abi}'"; exit 1; }
 
       - name: Regenerate the parser from grammar.js
         run: |
