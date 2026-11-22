@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A node-types compatibility gate compares `src/node-types.json` with the base the pull request is merged onto and fails on a removed kind, field, field type, child type or supertype subtype, lost multiplicity, or an existing entry becoming required (#74).
 - `docs/benchmarks.md` records the lexer and LR analysis: 26 states of main-lexer headroom below the generator's 300-state threshold, and the rejected experiments (#75).
 
+### Documentation
+
+- Every document was re-checked against this release: current oracle counts (10,712 sources, 21,424 session/case pairs), accepted-gap rows that tree-check now rejects or that later rounds fixed, the CLI/ABI pin locations, the WASM ABI contract, fuzzing in CI, consumer pinning by tag, and broken links. Open gaps stay listed, among them the documented `WRITETEXT BULK ...` form that still parses with an error and ScriptDOM `batch-rules` verdicts that cover 50 of 53 cases. The issue labels named in `.github/CONTRIBUTING.md` now exist.
+
 ## [2.1.1] - 2026-11-18
 
 ### Changed
@@ -103,7 +107,7 @@ removed. See [docs/migrating-from-1.0.md](docs/migrating-from-1.0.md).
 - libFuzzer fuzzing in CI of the parser and scanner, and of tree-check inspection and edit histories under both QUOTED_IDENTIFIER settings (#61); `scripts/runtime-cost.mjs` bounds library size, parse time and peak memory where the host
   can measure it.
 - Layout: `scripts/` (Node tools and gates), `crates/` (Rust), `oracle/data` and `oracle/runners`
-  ([ARCHITECTURE.md](ARCHITECTURE.md)).
+  ([docs/architecture.md](docs/architecture.md)).
 
 ## 1.0.0 (2026-11-04)
 

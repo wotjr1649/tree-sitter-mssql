@@ -1,20 +1,14 @@
-# Benchmarks: 1.0.0, 2.0.0, 2.1.0 and 2.1.1
+# Benchmarks: 1.0.0 through 2.2.0
 
-This page compares two versions of the grammar:
-
-- **1.0.0**: the original grammar (alfpricot/tree-sitter-mssql v1.0.0) this repository started from, commit `852cbd2`, its committed
-  `src/parser.c` and `src/scanner.c` as a consumer gets them. It has no constraint layer.
-- **2.0.0**: this repository at commit `d206c0a` (the 2.0.0 candidate, `main` after pull requests #59–#62): the
-  committed generated sources plus `crates/tree-check`, native release build and the WASM module.
-
-This repository is independent and maintained by its owner. Everything below was measured on one machine in one
-session, in alternating A/B rounds, and every figure says what it was measured on. Where the evidence ends, the text says so.
+The summary and initial measurements compare the original 1.0.0 (alfpricot/tree-sitter-mssql, `852cbd2`) with
+the 2.0.0 candidate from this repository (`d206c0a`). Both use their committed parser and scanner sources.
+The 2.0.0 measurements also cover native and WASM builds of `crates/tree-check`. The 2.1.0, 2.1.1, incremental
+reparse and 2026-11-22 lexer/LR sections describe their own subjects and methods.
 
 Contents: [Summary](#summary) · [Method](#method) · [Accuracy](#accuracy) · [Robustness](#robustness) ·
 [Speed](#speed) · [Memory](#memory) · [Size](#size) · [2.1.0](#210) · [2.1.1](#211) ·
+[Lexer and LR analysis](#lexer-and-lr-analysis-2026-11-22) ·
 [Limits of these measurements](#limits-of-these-measurements)
-
-Every section except [2.1.0](#210) and [2.1.1](#211) measures 2.0.0.
 
 ## Summary
 
@@ -35,9 +29,10 @@ Every section except [2.1.0](#210) and [2.1.1](#211) measures 2.0.0.
 ¹ The 3 cases are QUOTED_IDENTIFIER OFF inputs with a double-quoted string; tree-check re-parses them under the
 session's reading (ADR-0006), the grammar tree alone does not.
 
-2.0.0 accepts everything SQL Server accepts in this oracle, catches most of what it rejects, and is linear on every
-synthetic class measured. It parses about 13 % slower than 1.0.0 on clean input, uses about 4–5 % more memory, and its
-compiled library is about 30 % larger.
+With tree-check, 2.0.0 passes all 15,585 engine-accepted oracle pairs and flags 5,388 of the 5,833 rejected or
+runner-excluded pairs. The grammar alone misses three accepted OFF inputs. Parse time scales approximately
+linearly on the 41 measured synthetic classes. 2.0.0 parses about 13 % slower than 1.0.0 on clean input, uses
+about 4–5 % more memory, and its compiled library is about 30 % larger.
 
 ## Method
 
@@ -100,7 +95,7 @@ CFLAGS=-O2 cargo build --release            # per subject, in its own checkout a
 node scripts/oracle-replay.mjs --tree-check <tree-check.exe>      # the 2.0.0 oracle gate (2.0.0 only)
 tree-sitter test                            # corpus tests, CLI 0.27.2; one TREE_SITTER_LIBDIR per subject
 node scripts/tree-check-wasm-build.mjs      # WASM module (WASI_SDK_PATH = wasi-sdk 34.0)
-gcc -O2 -std=c11 -I src -c src/parser.c src/scanner.c ; gcc -shared -s -o mssql.dll parser.o scanner.o
+gcc -O2 -std=c11 -I src -c src/parser.c src/scanner.c && gcc -shared -s -o mssql.dll parser.o scanner.o
 ```
 
 ## Accuracy
@@ -226,10 +221,11 @@ Parse throughput, B/ms (median of 5 alternating rounds, per-input median, total 
 - On clean private-corpus input 2.0.0 parses about 6–20 % slower than 1.0.0 (2.0.0 over 1.0.0: 0.80 below 1 KB, 0.83 at 1–10 KB,
   0.87 at 10–100 KB, 0.88 at 100 KB–1 MB, 0.94 above 1 MB). Per file (files of 10 KB and more, both clean, 890 files),
   the median ratio of 2.0.0 throughput to 1.0.0 throughput is 0.85 (10th percentile 0.74, 90th percentile 0.96).
-- Cause of the remaining difference. Since pull request #62 the generated `parser.c` is compiled with optimization:
-  `tree-sitter generate` 0.27.2 emits `#pragma GCC optimize ("O0", "jump-tables")` for a whole `parser.c` once the main lexer has more
-  than 300 states, and 2.0.0's lexer had 568; it now has 271, and the parse-state count fell from 15,020 to 14,107. Before
-  that change the same measurement gave about 30 % (the corpus ratio was 0.70 against 0.87 now). An earlier counter study attributes the remaining gap to
+- In the 2.0.0 candidate measured here (`d206c0a`), #62 reduced the main lexer from 568 to 271 states and the parse
+  table from 15,020 to 14,107 states. Tree-sitter CLI 0.27.2 emits pragmas such as
+  `#pragma GCC optimize ("O0", "jump-tables")` to disable optimization above 300 main-lexer states. The measured
+  clean-corpus ratio against 1.0.0 rose from 0.70 before #62 to 0.87 for this candidate. An earlier counter study
+  attributes the remaining gap to
   the larger grammar: in a deterministic counter study on inputs both versions parse
   cleanly, lexer calls and shifts per KB were the same, and 2.0.0 was slower on the same work because of larger parse
   tables (4,478 large states over 1,368 symbols instead of 4,969 over 913), Unicode identifier sets (`set_contains`
@@ -398,13 +394,10 @@ kinds are added.
 2.1.0 is `main` after pull request #65 (`693a575`). Its only change from 2.0.0 is a performance change in the grammar
 and `src/scanner.c`, so a consumer that regenerates `parser.c` with CLI 0.27.2 gets all of it.
 
-**Unchanged from 2.0.0.**
-
-- `node-types.json`, node kinds, fields, and full trees (named and anonymous nodes, ranges, flags) on every valid input.
-  This was checked on the fixtures, oracle, corpus tests, synthetic inputs, random procedures and the private corpus.
-- Verdicts and incremental exactness.
-- One tree changes, on an engine-rejected input (`BEGIN CREATE PROCEDURE p AS SELECT 1; END`): the final `;` moves
-  from the procedure body to the block.
+**Comparison with 2.0.0.** Node types and fields are unchanged. Full CSTs (named and anonymous nodes, ranges and
+flags), verdicts and incremental exactness were unchanged on the valid test inputs in the fixture, oracle,
+corpus, synthetic, random-procedure and private sets. The comparison found one changed tree on an engine-rejected
+input (`BEGIN CREATE PROCEDURE p AS SELECT 1; END`), where the final `;` moves from the procedure body to the block.
 
 **Method.** This study did not use the alternating rounds of the sections above. Instead:
 
@@ -437,7 +430,7 @@ those all three versions parse cleanly.
 
 | Change | Effect |
 | --- | --- |
-| Identifier, `@variable` and `#temp` patterns send ASCII and non-ASCII characters to different lexer states | ASCII is tested with plain comparisons; the Unicode range table is binary-searched only after a non-ASCII character ([tree-sitter#6139](https://github.com/tree-sitter/tree-sitter/issues/6139)). Main lexer cycles fell to about 0.8 times 1.0.0's on synthetic input |
+| Identifier, `@variable` and `#temp` patterns send ASCII and non-ASCII characters to different lexer states | ASCII identifier characters take direct comparisons. The lexer can still search the Unicode ranges at the character that ends an identifier, even on ASCII input ([tree-sitter#6139](https://github.com/tree-sitter/tree-sitter/issues/6139)). Main lexer cycles fell to about 0.8 times 1.0.0's on synthetic input |
 | Space, LF, CR and tab repeated as extras with distinct precedences | Each gets its own single-character transition ahead of the 53-code-point separator set |
 | `_literal_string` no longer aliased | Saves one reduction and one tree node per string literal |
 | `prec.right` on a procedure body's later items | No GLR fork at every statement boundary |
@@ -462,8 +455,9 @@ The extra work comes from three sources:
   `_query_specification_rest`, …). Inlining them grows the parse table by 3–12 %, and for some it worsens
   incremental reuse.
 - The remaining procedure-body conflict.
-- The scanner reading whitespace before the main lexer reads it again, which costs 0–3 %. The runtime calls the
-  external scanner first for every token, and a nested block comment cannot be found without skipping whitespace.
+- When the lex mode enables external tokens, the runtime tries the external scanner before the main lexer. The
+  scanner can skip whitespace while looking for a nested block comment, then leave the main lexer to read the
+  same whitespace again. This costs 0–3 %.
 
 **Memory and size.**
 
@@ -513,7 +507,8 @@ below are over 1.0.0.
 | private corpus | 0.985 | 1.017 | 88 % |
 | private, <4 KB / 4–16 / 16–64 / 64–256 / ≥256 KB | 0.950 / 0.965 / 0.985 / 0.994 / 1.007 | 1.027 / 1.023 / 1.017 / 1.013 / 1.011 | |
 
-The 2.1.0 column is this run's measurement and agrees with the [2.1.0](#210) table within 0.01.
+The 2.1.0 column is this run's measurement. The displayed ratios differ from the earlier [2.1.0](#210) table
+by up to 0.015, on synthetic inputs.
 
 **Counters.** On the private corpus, against 1.0.0:
 
@@ -550,11 +545,10 @@ The lexer calls were replayed alone (lexer functions only, fixtures and corpus t
   ([tree-sitter#6139](https://github.com/tree-sitter/tree-sitter/issues/6139)).
 - A diagnostic copy of the generated `parser.c` adds `lookahead >= 0x80 &&` in front of the 24 such calls whose ASCII
   characters were already handled. With it, the WASM main lexer costs 0.995 times 1.0.0's.
-- A grammar cannot express that check. A consumer that post-processes the generated file, or generates it with a CLI
-  that has an ASCII fast path, gets the rest of the speed.
-- That post-processing was tried, with a 128-bit ASCII bitmap per range table so that every call keeps its exact
-  result. Every tree stayed identical. On whole parses it saved 1.2–1.7 % in WASM (within the run-to-run range) and
-  nothing with gcc, because the lexer is about a fifth of parse time. It was not adopted.
+- The CLI's generated lexer controls this fallback. A second diagnostic used a 128-bit ASCII bitmap per range
+  table so that every call kept its exact result. Every measured tree stayed identical. It saved 1.2–1.7 % on
+  whole WASM parses (within the run-to-run range) and showed no gcc gain. The lexer is about a fifth of parse
+  time. The repository builds the generated source directly.
 
 ## Lexer and LR analysis (2026-11-22)
 

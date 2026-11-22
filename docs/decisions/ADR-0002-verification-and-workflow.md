@@ -73,6 +73,9 @@ The goal is complete T-SQL support with zero defects (ADR-0001: SQL Server's par
      batch separate from the input batch. Infrastructure failures are reported as failures, never as rejections.
    - Tree errors are judged through the tree-sitter API (`has_error`, `is_missing`, full source range), not through
      the CLI summary.
+   - Current practice (2026-11-22): Verify replays the committed verdicts on ready pull requests and pushes to `main`;
+     the `Oracle engine` workflow runs pinned SQL Server 2017, 2019, 2022 and 2025 Linux containers on pull requests
+     selected by its path filters, weekly and on manual dispatch; local measurements use LocalDB.
 5. **Regression gates.** No case that parsed cleanly may gain `ERROR`/`MISSING`, and no fixed syntax negative may be
    accepted again. Aggregate agreement, per-distinct-source results and per-class results are reported side by side.
 6. **Cost budget.** Every pull request reports `src/parser.c` bytes, `STATE_COUNT`, `LARGE_STATE_COUNT`, `SYMBOL_COUNT`,
@@ -84,7 +87,7 @@ The goal is complete T-SQL support with zero defects (ADR-0001: SQL Server's par
    - Runtime cost is also bounded against a milestone (owner decision, 2026-11-16): `scripts/runtime-cost.mjs` compiles
      the milestone commit's parser and the current one with the same compiler in the same CI job, and compares the
      library size, the median time to parse every fixture and oracle case, and the peak memory of that parse. Each
-     ratio must stay within `max_ratio` of `test/runtime-cost.json` (1.5x of the 2.0.0 release baseline, `d206c0a`, after #62; previously the M3 end `4ff4c5f` under ADR-0005, and the M2 end `e8a398e` before that). Per-change growth
+     ratio must stay within `max_ratio` of `test/runtime-cost.json` (1.5x of its milestone: since 2.1.1 the release baseline `aa4287db`, #68; before that the 2.0.0 release baseline `d206c0a` after #62, the M3 end `4ff4c5f` under ADR-0005, and the M2 end `e8a398e`). Per-change growth
      is what the budget above limits; this bounds the sum. Passing the ratio needs a recorded decision and a new
      milestone, normally after a refactor that pays the growth back.
 7. **grammar-kit patches.**
@@ -106,6 +109,8 @@ The goal is complete T-SQL support with zero defects (ADR-0001: SQL Server's par
    [`docs/divergence-from-1.0.md`](../divergence-from-1.0.md).
 10. **`docs/accepted-gaps.md`** stays as the ledger, rewritten against engine verdicts. Each row carries a case ID,
     direction, profile and issue, and rows not yet measured are marked `UNVERIFIED`.
+    Current practice (2026-11-22): the current oracle classifications live in `oracle/data/rejected-clean.json`, which
+    the replay checks; `docs/accepted-gaps.md` keeps measured gaps, historical rounds and follow-up checks.
 
 ## Consequences
 

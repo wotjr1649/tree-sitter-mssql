@@ -2,22 +2,32 @@
 
 [![Verify](https://github.com/wotjr1649/tree-sitter-mssql/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/wotjr1649/tree-sitter-mssql/actions/workflows/verify.yml)
 
-An owner-maintained [tree-sitter](https://tree-sitter.github.io/tree-sitter/) grammar for Microsoft SQL Server Transact-SQL (T-SQL). It covers T-SQL only, and one grammar accepts the union of every SQL Server version's syntax, so a consumer never needs to know the server version a file targets. [docs/scope.md](docs/scope.md) holds the scope rules, version handling, and the list of covered syntax.
+An owner-maintained [tree-sitter](https://tree-sitter.github.io/tree-sitter/) grammar for Microsoft SQL Server Transact-SQL
+(T-SQL). One parser handles the supported T-SQL forms across SQL Server versions without a server-version switch.
+[docs/scope.md](docs/scope.md) describes version handling and syntax coverage.
 
-**Why it exists.** T-SQL has no well-maintained tree-sitter grammar. The only candidate, [`alfpricot/tree-sitter-mssql`](https://github.com/alfpricot/tree-sitter-mssql) (MIT), has one maintainer, changed its owner name twice in two months (`meloncholic` → `meloncholera` → `alfpricot`) and rewrote its Git history, which orphaned the commit a downstream consumer pinned. This repository continues that grammar so defects get fixed quickly and pinned commits stay reachable.
+**Why it exists.** When this project began in November 2026, its downstream consumer had pinned
+[`alfpricot/tree-sitter-mssql`](https://github.com/alfpricot/tree-sitter-mssql), an MIT-licensed grammar with one
+maintainer. The original repository had changed owner names twice (`meloncholic` → `meloncholera` → `alfpricot`)
+and rewritten its Git history, leaving the pinned commit unreachable there. This repository continues from its
+v1.0.0 so consumers can keep reachable pins and get fixes.
 
 **Origin.** This repository is independent (ADR-0007). It started from the original grammar's v1.0.0, commit [`852cbd2`](https://github.com/alfpricot/tree-sitter-mssql/commit/852cbd20d7dc8078bdea0ebbcbb621e78c86f0cf), merged with its full history on 2026-11-15; that grammar started as a fork of [`tree-sitter-sql`](https://github.com/DerekStride/tree-sitter-sql) by Derek Stride. Its later changes are not merged: defects are fixed here. See [ADR-0001](docs/decisions/ADR-0001-continue-from-upstream-v1.md), [ADR-0007](docs/decisions/ADR-0007-independent-repository.md) and [NOTICE](NOTICE).
 
-**Consumer.** The intended first consumer is `go-treesitter`, a CGO-free Go tree-sitter library, which is to pin a commit of this repository and regenerate `src/parser.c` with tree-sitter CLI 0.27.2.
+**Consumer.** `go-treesitter`, a CGO-free Go tree-sitter library, pins a release of this repository and regenerates
+its T-SQL parser with its own pinned tree-sitter CLI.
 
 **Correctness reference.** Valid T-SQL means what SQL Server's own parser accepts under `SET PARSEONLY ON` at a stated compatibility level. Where tests inherited from 1.0.0 or [docs/accepted-gaps.md](docs/accepted-gaps.md) disagree with SQL Server, SQL Server wins. [docs/roadmap.md](docs/roadmap.md) records the milestones.
 
 ## What it guarantees
 
-SQL Server's own parser is the reference (`SET PARSEONLY ON`, ADR-0002). The oracle in `oracle/data` holds 10,709 sources (21,418 QUOTED_IDENTIFIER session/case pairs), with recorded
-SQL Server 2017, 2019, 2022 and 2025 results at supported compatibility levels 100–170. LocalDB 2025 covers every
-source under both settings; the Linux engine observations cover earlier case-set snapshots under ON. Acceptance means
-acceptance by at least one recorded engine/level; the runner excludes one input that sets PARSEONLY itself.
+SQL Server's own parser is the reference (`SET PARSEONLY ON`, ADR-0002). The oracle in `oracle/data` holds 10,712
+sources (21,424 QUOTED_IDENTIFIER session/case pairs), with recorded SQL Server 2017, 2019, 2022 and 2025 results at
+supported compatibility levels 100–170. LocalDB 2025 covers the set under both settings except for one input that
+sets PARSEONLY itself and is excluded by the runner. Linux engine observations cover earlier case-set snapshots
+under ON. A case counts as accepted if at least one recorded engine and compatibility level accepts it under the
+same session setting.
+
 From 2.0.0:
 
 - every engine-accepted oracle case passes tree-check; under QUOTED_IDENTIFIER OFF, tree-check re-parses a
@@ -69,9 +79,9 @@ and every limit are in [docs/benchmarks.md](docs/benchmarks.md).
 | Tree bytes per source byte / largest single parse peak | 24.6 / 80 MiB | 25.7 / 88 MiB |
 | Compiled library, gcc `-O2`, stripped | 10.3 MB | 13.4 MB |
 
-On the private corpus, 2.0.0 parses clean input about 6–20 % slower than 1.0.0 (13 % overall). Most of the earlier 30 % gap was a compiler
-effect: `tree-sitter generate` 0.27.2 compiles the whole `parser.c` without optimization when the main lexer has more than
-300 states, and 2.0.0's had 568; it now has 271.
+On the private corpus, the 2.0.0 candidate parses clean input about 6–20 % slower than 1.0.0 (13 % overall).
+Tree-sitter CLI 0.27.2 emits pragmas that disable optimization of `parser.c` when the main lexer exceeds 300
+states. #62 brought the candidate's main lexer down from 568 to 271 states, narrowing the earlier 30 % gap.
 
 **2.1.0** (#65) closes most of the remaining gap from the grammar and scanner alone, so it survives regeneration:
 
@@ -114,11 +124,11 @@ what was measured.
 | Correctness against SQL Server | Meets, with limits | Every engine-accepted oracle case passes tree-check (SQL Server 2017–2025, levels 100–170, both QUOTED_IDENTIFIER settings); the grammar alone misses three OFF cases. The 445 rejected or runner-excluded pairs not flagged are classified (context, version, environment, runner). The oracle was written by this project, so it is a regression gate more than an independent test. |
 | Real-world agreement | Meets, with limits | 5,987 of 5,987 accepted scripts clean, 18 of 19 rejected flagged; the one miss is a context error (Msg 137). One source, only 19 rejected scripts, and the corpus was also used during development. |
 | Robustness | Meets | No crash, hang or superlinear time on 43 stress inputs (nesting to 50,000, 200,000-term chains, an 8 MB literal) or on 41 synthetic classes (exponents 0.96–1.06). |
-| Performance and memory | Meets, with limits | About 10 MB/s parsing, 5 MB/s with tree-check, about 26 bytes of tree per source byte, a 2.25 MB script peaks at about 102 MiB of process memory; the WASM module starts at 14 MiB. 2.0.0 was about 13 % slower and 4–5 % more memory-hungry than 1.0.0 on clean input. 2.1.1 (native gcc `-O2`) is 1–3 % faster than 1.0.0 on the private corpus in every size band, the fixtures, synthetic and oracle inputs, and 1.6 % slower on the corpus tests. A clang/WASM build is 2–5 % slower. Its trees are 0.3–4 % larger. |
+| Performance and memory | Meets, with limits | About 10 MB/s parsing, 5 MB/s with tree-check, about 26 bytes of tree per source byte, a 2.25 MB script peaks at about 102 MiB of process memory; the WASM module starts at 14 MiB. 2.0.0 was about 13 % slower and 4–5 % more memory-hungry than 1.0.0 on clean input. 2.1.1 (native gcc `-O2`) is about 1–3 % faster than 1.0.0 on every private-corpus size band, the fixtures and synthetic inputs. Oracle throughput is 15.2 % higher, with a per-input median speed ratio of 0.984. Corpus tests are 1.6 % slower. A clang/WASM build is 2–5 % slower. Its trees are 0.3–4 % larger. |
 | Incremental editing | Meets, with limits | An incremental tree equals a fresh parse on all 8,063 measured edits (an earlier candidate differed on 24 edits of one file; fixed by a grammar change). Reparse time per edit matches 1.0.0 in 2.1.1 (median per-edit ratio 0.986 on 528 edits of 24 real files; 2.0.0 took about 1.4–1.9 times as long); summed over edits, files of 100 KB–1 MB still take 10 % longer. The edits are four simple kinds, and tree-sitter 0.27.2 has known runtime defects in incremental parsing that 0.27.3 (not released) addresses; 0.27.3 was not tested. Per edit, the reuse repairs cut re-lexed tokens by 8.7 %; 52 edits that leave the text invalid re-lex more than before (by more than 4 tokens, at most +28). |
-| API stability | Meets | 0 node kinds and 0 fields removed or renamed, 244 kinds added; 40 of the 5,379 distinct inputs that 1.0.0 parsed cleanly get a different tree, listed in the migration guide; SemVer major version. |
-| Verification in CI | Meets (read from the workflow files, not re-run for this page) | Oracle replay, corpus, fixtures, comment/case/whitespace mutation and WASM parity gates on every pull request; the oracle runs on SQL Server 2017, 2019, 2022 and 2025 (pull requests that touch it, weekly); a weekly fuzz run covers the parser, the scanner and tree-check. |
-| Maintenance | Meets, with limits | One maintainer; releases 2.0.0, 2.1.0 and 2.1.1. |
+| API stability | Meets | 2.0.0 removed or renamed no node kinds or fields and added 244 named or anonymous node kinds. 40 of the 5,379 distinct inputs that 1.0.0 parsed cleanly got a different tree, so this was a SemVer major. The [migration guide](docs/migrating-from-1.0.md#trees-that-change-for-valid-input) shows representative changes. |
+| Verification in CI | Meets (read from the workflow files) | Full Verify runs on ready pull requests and pushes to `main`. It includes oracle replay, corpus, fixtures, comment/case/whitespace mutation and WASM parity. Oracle engine runs against SQL Server 2017, 2019, 2022 and 2025 on relevant pull requests and weekly. Fuzz covers the parser, scanner and tree-check on relevant pull requests and weekly. |
+| Maintenance | Meets, with limits | One maintainer. See the [release history](CHANGELOG.md) through 2.2.0. |
 
 **Known limits.** Errors that need context (undeclared variables, conflicting hints, boolean versus scalar, names,
 permissions) are outside a grammar and are not flagged. Some Azure Synapse syntax kept from 1.0.0 is accepted by the
@@ -127,19 +137,24 @@ grammar but not by SQL Server. Session settings other than QUOTED_IDENTIFIER are
 
 ## Using it
 
-Nothing is published to crates.io, npm or any other registry. Pin a commit of this repository: the generated parser (`src/parser.c`, `src/grammar.json`, `src/node-types.json`) is committed, and `src/scanner.c` must be compiled alongside `src/parser.c`.
+Nothing is published to crates.io, npm or any other registry. Pin a tag or commit of this repository.
+The generated parser (`src/parser.c`, `src/grammar.json`, `src/node-types.json`) is committed, and
+`src/scanner.c` must be compiled alongside `src/parser.c`.
 
-For Rust, as a Git dependency pinned to a release tag (`v2.0.0`) or a commit:
+For Rust, pin a release tag in `Cargo.toml`. To pin a commit, replace `tag = "v2.2.0"` with `rev = "<commit>"`.
 
 ```toml
 [dependencies]
-tree-sitter-mssql = { git = "https://github.com/wotjr1649/tree-sitter-mssql", rev = "<commit>" }
+tree-sitter = "0.27"
+tree-sitter-mssql = { git = "https://github.com/wotjr1649/tree-sitter-mssql", tag = "v2.2.0" }
 ```
 
 ### Requirements
 
-- Rust 1.85 or newer (the crate uses edition 2024).
-- For Node.js, the `tree-sitter` package `^0.25.0` is an optional peer dependency, and building the addon needs a C toolchain.
+- The grammar crate requires Rust 1.85 or newer (edition 2024). The example above uses the tree-sitter 0.27
+  runtime, whose 0.27.2 release requires Rust 1.90 or newer.
+- For Node.js, `tree-sitter` `^0.25.0` is an optional peer dependency. Building the addon from source requires Python
+  and the platform's C/C++ build tools for `node-gyp`. This repository uses Node.js 24 (`.nvmrc`).
 
 ## Usage
 
@@ -190,6 +205,7 @@ Most root files sit where a tool expects them: npm, node-gyp, cargo, the tree-si
 | `Cargo.toml` | Rust crate |
 | `versions.json` | Minimum SQL Server version and deprecation data per node kind, shipped in both packages ([docs/consuming.md](docs/consuming.md)) |
 | **Tool settings** | |
+| `ci/` | Parser ABI pin (`tree-sitter-abi.txt`), used by Verify for regeneration and ABI validation |
 | `.editorconfig`, `.gitattributes`, `.gitignore` | Editor, line-ending and ignore rules |
 | `.nvmrc` | Node.js version |
 | `.oxlintrc.json`, `.oxfmtrc.json`, `.rustfmt.toml` | JavaScript lint and format, Rust format |
