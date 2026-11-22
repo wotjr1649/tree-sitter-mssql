@@ -2,7 +2,7 @@
 
 ## Current oracle status
 
-The replay covers 10,817 sources and 21,634 session/case pairs. All 15,679
+The replay covers 10,829 sources and 21,658 session/case pairs. All 15,703
 engine-accepted pairs pass tree-check. The [rejected-clean ledger](../oracle/data/rejected-clean.json)
 contains 445 pairs (190 ON, 255 OFF): context 111, environment 294, version 36 and runner 4.
 There are zero entries classified as `gap`. The #87 history records one incremental difference.
@@ -63,6 +63,10 @@ The bare-identifier arm of `_column_constraint` leaves stray words directly unde
 `column_definition`. Tree-check accepts FILESTREAM, SPARSE, and ROWGUIDCOL there, and
 preserves the inline index's FILESTREAM_ON clause and filegroup. HIDDEN belongs to GENERATED
 ALWAYS. The option forms are documented in [CREATE TABLE](https://learn.microsoft.com/en-us/sql/t-sql/statements/create-table-transact-sql).
+
+The review probes cover multiword types in the first argument of CONVERT and TRY_CONVERT,
+the INSERT, CURRENT_TIMESTAMP and DATABASE ODBC escapes, the nameless TIMESTAMP with NOT NULL,
+and VARYING immediately after a CHAR or BINARY column type without a length.
 
 In `batch-rules/issue-87-step-5`, the fresh CST reads `ON` as the name in `REFERENCES dbo. ON`
 and treats the next five words as column options. LocalDB returns Msg 156. Tree-check emits

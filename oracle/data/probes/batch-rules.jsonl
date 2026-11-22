@@ -148,3 +148,15 @@
 {"id":"batch-rules/column-pseudo-columns","sha256":"0cebe07eb6af91b5d3ddf7133531010106ea1d4ff3fb4fa6f9e2bf96422e177a","source":"SELECT IDENTITYCOL, ROWGUIDCOL, t.IDENTITYCOL, t.ROWGUIDCOL FROM dbo.t;"}
 {"id":"batch-rules/column-filestream-placement-without-index","sha256":"64bdb36bc7251019a85d7a9cb8cc578e589fa0b62f8cdb3137a899f6c79bffe2","source":"CREATE TABLE t (id int FILESTREAM_ON fg);"}
 {"id":"batch-rules/column-index-filestream-without-filegroup","sha256":"a3ebcffe923f3329b0e963154dbeb16a4564c9ab6e2bad0df0606d3fb82e3753","source":"CREATE TABLE t (id int INDEX ix NONCLUSTERED FILESTREAM_ON);"}
+{"id":"batch-rules/review-convert-double-precision","sha256":"ab28eec9eaff278bd8b0a6fbff1be505b12db73cd69267df7700ef29f267d406","source":"SELECT CONVERT(DOUBLE PRECISION, 1);"}
+{"id":"batch-rules/review-try-convert-double-precision","sha256":"610b776a0bd6005685ce5d0e1ade45869667cea2b30ac7b56c48024e59d39e38","source":"SELECT TRY_CONVERT(DOUBLE PRECISION, 1);"}
+{"id":"batch-rules/review-convert-national-character","sha256":"c4e0bebb468fec3e1eda6e006333385ffc5f874f361aa4c78333c41ea18bed32","source":"SELECT CONVERT(NATIONAL CHARACTER, 'x');"}
+{"id":"batch-rules/review-convert-char-varying","sha256":"a294a2bb40e335e55fab67dab178b1da706b921fe121bad80a88198d598e515d","source":"SELECT CONVERT(char varying, 1);"}
+{"id":"batch-rules/review-convert-character-varying","sha256":"62ad00c053f2ea294c68ac0e76f7aed8ab7b0679501336485c931c2fa614ad04","source":"SELECT CONVERT(character varying, 1);"}
+{"id":"batch-rules/review-convert-binary-varying","sha256":"a9f93d24145a94f511ad52c8ef4f88db017487372eedfd18208bc93df2c6f719","source":"SELECT CONVERT(binary varying, 1);"}
+{"id":"batch-rules/review-odbc-insert","sha256":"268c7ed3d0c97540d5d3dd9b1746956eb480d3ab4f28ef8ad7b14cabfef1444a","source":"SELECT {fn INSERT('xyz', 1, 1, 'a')};"}
+{"id":"batch-rules/review-odbc-current-timestamp","sha256":"2767f44787002d79b31e64d51b9a63afd1c94acf6f8ae193a0e36c5081920afb","source":"SELECT {fn CURRENT_TIMESTAMP()};"}
+{"id":"batch-rules/review-odbc-database","sha256":"a36587c10d98ca6f90286662f079344f96e7ef6ab41923151e476c62921e8ea3","source":"SELECT {fn DATABASE()};"}
+{"id":"batch-rules/review-column-timestamp-not-null","sha256":"835a0b56a354badd00725d362b3cddb6832eac91b1a17c8830a810b7beab179b","source":"CREATE TABLE t (TIMESTAMP NOT NULL);"}
+{"id":"batch-rules/review-column-char-varying","sha256":"b1f12386012227bd7f1281737088b3294723584813a6c1078d7014cad4ff38e0","source":"CREATE TABLE dbo.t (c char varying);"}
+{"id":"batch-rules/review-column-binary-varying","sha256":"8ec8e8d95b173897db0d3a45e3100eeb8ffbc6f22c76687243d5c735e26d99ca","source":"CREATE TABLE dbo.t (c binary varying);"}

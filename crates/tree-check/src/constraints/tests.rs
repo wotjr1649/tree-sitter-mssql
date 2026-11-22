@@ -90,6 +90,61 @@ fn column_word_checks_preserve_the_flattened_index_placement() {
 }
 
 #[test]
+fn issue_87_review_forms_pass_in_both_sessions() {
+    let cases: Vec<_> = probe_cases(include_str!(
+        "../../../../oracle/data/probes/batch-rules.jsonl"
+    ))
+    .filter(|case| {
+        case["id"]
+            .as_str()
+            .unwrap()
+            .starts_with("batch-rules/review-")
+    })
+    .collect();
+    assert_eq!(cases.len(), 12);
+    for case in cases {
+        let sql = case["source"].as_str().unwrap();
+        let tree = parse(sql);
+        for setting in [crate::QuotedIdentifier::On, crate::QuotedIdentifier::Off] {
+            let report = crate::inspect_with_quoted_identifier(&tree, sql.as_bytes(), setting);
+            assert!(report.ok(), "{sql} ({setting:?}): {report:?}");
+        }
+    }
+}
+
+#[test]
+fn issue_87_review_exceptions_are_limited_to_the_syntax_words() {
+    for (sql, rule) in [
+        ("SELECT f(DOUBLE PRECISION, 1);", "gap-reserved-name"),
+        (
+            "SELECT CONVERT(DOUBLE AS PRECISION, 1);",
+            "gap-reserved-name",
+        ),
+        ("SELECT CONVERT(int, char varying);", "gap-reserved-name"),
+        ("SELECT CONVERT(dbo.foo varying, 1);", "gap-reserved-name"),
+        ("SELECT DATABASE();", "gap-reserved-name"),
+        ("SELECT {fn CONCAT(DATABASE(), 'x')};", "gap-reserved-name"),
+        ("CREATE TABLE t (TIMESTAMP NOT);", "gap-reserved-name"),
+        (
+            "CREATE TABLE t (TIMESTAMP NOT(1) NULL);",
+            "gap-reserved-name",
+        ),
+        ("CREATE TABLE t (c int varying);", "column-unknown-option"),
+        (
+            "CREATE TABLE t (c char(10) varying);",
+            "column-unknown-option",
+        ),
+        (
+            "CREATE TABLE t (c char varying varying);",
+            "column-unknown-option",
+        ),
+    ] {
+        assert!(!parse(sql).root_node().has_error(), "{sql}");
+        assert_eq!(rules(sql), [rule], "{sql}");
+    }
+}
+
+#[test]
 fn comments_do_not_change_constraint_rules() {
     for sql in [
         "SELECT 1 FROM t WHERE a = 1 AND (\n b = 0 OR c = 1);",

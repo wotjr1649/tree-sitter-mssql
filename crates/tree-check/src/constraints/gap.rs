@@ -429,6 +429,12 @@ pub(super) fn identifier(node: Node, context: &Context, source: &[u8], out: &mut
         // https://learn.microsoft.com/en-us/sql/t-sql/statements/create-table-transact-sql
         // HIDDEN is part of generated_always; only these flags can be standalone.
         if !matches!(word.as_str(), "FILESTREAM" | "SPARSE" | "ROWGUIDCOL")
+            && !(word == "VARYING"
+                && node.syntax_prev_sibling().is_some_and(|ty| {
+                    Some(ty) == parent.child_by_field_name("type")
+                        && matches!(ty.kind(), "char" | "binary")
+                        && ty.child_by_field_name("size").is_none()
+                }))
             && !inline_index_filestream(node, source)
         {
             out.push(violation(
@@ -492,6 +498,19 @@ fn rowset_modifier(invocation: Node, source: &[u8]) -> bool {
         })
 }
 
+// The expression grammar can represent a conversion type as a value and alias.
+fn conversion_type(argument: Node, source: &[u8]) -> bool {
+    let Some(call) = argument.parent().filter(|n| {
+        n.kind() == "invocation" && n.child_by_field_name("parameter") == Some(argument)
+    }) else {
+        return false;
+    };
+    matches!(
+        invocation_name(call, source).as_deref(),
+        Some("CONVERT" | "TRY_CONVERT")
+    ) && !has_child(argument, "keyword_as")
+}
+
 // Some grammar productions use the generic identifier for a fixed syntax word.
 fn keyword_in_identifier(
     node: Node,
@@ -512,7 +531,8 @@ fn keyword_in_identifier(
                     | "OPENQUERY" | "OPENROWSET" | "OPENXML" | "RIGHT" | "TSEQUAL" | "UPDATE" => {
                         true
                     }
-                    "CURRENT_DATE" | "CURRENT_TIME" | "TRUNCATE" => context
+                    "CURRENT_DATE" | "CURRENT_TIME" | "CURRENT_TIMESTAMP" | "DATABASE"
+                    | "INSERT" | "TRUNCATE" => context
                         .ancestor_parent("invocation")
                         .is_some_and(|n| n.kind() == "odbc_function_escape"),
                     "BULK" | "ORDER" => grand.is_some_and(|n| rowset_modifier(n, source)),
@@ -527,15 +547,24 @@ fn keyword_in_identifier(
                             "IDENTITY_INSERT" | "OFFSETS" | "ROWCOUNT" | "STATISTICS" | "TEXTSIZE"
                         )
                 }
-                // The timestamp shorthand parses NULL as a type in this tree.
-                Some("custom_type") if word == "NULL" => {
-                    context.ancestor("column_definition").is_some_and(|column| {
-                        column.child_by_field_name("type") == grand
-                            && column
-                                .child_by_field_name("name")
-                                .is_some_and(|name| upper_text(name, source) == "TIMESTAMP")
-                    })
-                }
+                // A nameless TIMESTAMP column can parse its nullability as a type.
+                Some("custom_type") if matches!(word, "NULL" | "NOT") => grand.is_some_and(|ty| {
+                    ty.syntax_child(1).is_none()
+                        && (word == "NULL"
+                            || ty
+                                .syntax_next_sibling()
+                                .is_some_and(|n| n.kind() == "keyword_null"))
+                        && ty.parent().is_some_and(|column| {
+                            column.kind() == "column_definition"
+                                && column.child_by_field_name("type") == Some(ty)
+                                && column.child_by_field_name("name").is_some_and(|name| {
+                                    matches!(
+                                        upper_text(name, source).as_str(),
+                                        "TIMESTAMP" | "[TIMESTAMP]" | "\"TIMESTAMP\""
+                                    )
+                                })
+                        })
+                }),
                 Some("field") => matches!(
                     word,
                     "CURRENT_DATE"
@@ -557,6 +586,21 @@ fn keyword_in_identifier(
             "CURRENT_DATE" | "CURRENT_TIMESTAMP" | "CURRENT_USER" | "SESSION_USER" | "SYSTEM_USER"
             | "USER",
         ) => parent.syntax_child(0) == Some(node) && parent.syntax_child(1).is_none(),
+        ("field", "DOUBLE" | "NATIONAL") => {
+            parent.syntax_child(0) == Some(node)
+                && parent.syntax_child(1).is_none()
+                && grand.is_some_and(|argument| {
+                    argument.kind() == "term"
+                        && argument.child_by_field_name("value") == Some(parent)
+                        && argument.child_by_field_name("alias").is_some_and(|alias| {
+                            matches!(
+                                (word, upper_text(alias, source).as_str()),
+                                ("DOUBLE", "PRECISION") | ("NATIONAL", "CHAR" | "CHARACTER")
+                            )
+                        })
+                        && conversion_type(argument, source)
+                })
+        }
         ("field", "IDENTITYCOL" | "ROWGUIDCOL") => parent.child_by_field_name("name") == Some(node),
         ("field", "DEFAULT") => grand.is_some_and(|n| n.kind() == "list"),
         ("field", "DISTINCT") => grand.is_some_and(|n| {
@@ -583,6 +627,28 @@ fn keyword_in_identifier(
         ("field", "BULK") | ("term", "UNIQUE") => context
             .ancestor("invocation")
             .is_some_and(|n| invocation_name(n, source).as_deref() == Some("OPENROWSET")),
+        ("term", "VARYING") => {
+            parent.child_by_field_name("alias") == Some(node)
+                && parent
+                    .child_by_field_name("value")
+                    .filter(|value| value.kind() == "field")
+                    .and_then(|value| value.child_by_field_name("name"))
+                    .is_some_and(|name| {
+                        matches!(
+                            upper_text(name, source).as_str(),
+                            "CHAR"
+                                | "CHARACTER"
+                                | "BINARY"
+                                | "[CHAR]"
+                                | "[CHARACTER]"
+                                | "[BINARY]"
+                                | "\"CHAR\""
+                                | "\"CHARACTER\""
+                                | "\"BINARY\""
+                        )
+                    })
+                && conversion_type(parent, source)
+        }
         ("term", "ASC" | "DESC") => grand.is_some_and(|n| {
             n.kind() == "invocation"
                 && invocation_name(n, source).as_deref() == Some("ORDER")
