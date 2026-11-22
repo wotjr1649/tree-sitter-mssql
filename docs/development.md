@@ -5,9 +5,13 @@ How to build and test the grammar. [.github/CONTRIBUTING.md](../.github/CONTRIBU
 ## Building
 
 ```sh
-npx --yes --package=tree-sitter-cli@0.27.2 -- tree-sitter generate
+npm install --ignore-scripts
+npm rebuild tree-sitter-cli
+npx tree-sitter generate --abi "$(cat ci/tree-sitter-abi.txt)" --js-runtime native
 cargo build
 ```
+
+`npm rebuild tree-sitter-cli` downloads the binary of the CLI version pinned in `package.json` (`devDependencies.tree-sitter-cli`), and `npx tree-sitter` runs that local copy. `ci/tree-sitter-abi.txt` holds the parser ABI; Verify runs the same command.
 
 The generated parser (`src/parser.c`, `src/grammar.json`, `src/node-types.json`) is committed, so consumers can build the C parser through `cc` during `cargo build` without needing the tree-sitter CLI themselves. Regenerate and commit the diff after any `grammar.js` change.
 
@@ -18,14 +22,14 @@ The block comment is lexed by `src/scanner.c` rather than a regex, because T-SQL
 ## Testing
 
 ```sh
-npx --yes --package=tree-sitter-cli@0.27.2 -- tree-sitter test
+npx tree-sitter test
 cargo test
 ```
 
 On a machine without MSVC, point the CLI at another C compiler, and run Cargo with the GNU toolchain (`rustup toolchain install stable-x86_64-pc-windows-gnu`, then `cargo +stable-x86_64-pc-windows-gnu …`), which links with MinGW `gcc`:
 
 ```sh
-CC=gcc CXX=g++ npx --yes --package=tree-sitter-cli@0.27.2 -- tree-sitter test
+CC=gcc CXX=g++ npx tree-sitter test
 ```
 
 `test/corpus/` holds the per-construct tree assertions. `test/corpus/errors.txt` deliberately pins error recovery on invalid input and is hand-written — `tree-sitter test --update` refuses to touch it. Every file under `test/fixtures/*.sql` must also parse cleanly. `crates/tree-check` judges each tree through the tree-sitter API — root `has_error`, `ERROR`, `MISSING` and zero-width nodes, and whether the root spans the whole input — and prints one JSON line per file. It also applies the option-set constraint layer of [ADR-0003](decisions/ADR-0003-option-set-constraints.md) (`crates/tree-check/src/constraints.rs`, with rule families in `crates/tree-check/src/constraints/`): rules such as "each QUEUE activation setting at most once", which SQL Server enforces while parsing and the grammar deliberately does not encode. Violations make a tree fail like an `ERROR` node, and are listed under `constraint_violations`. The CLI's parse summary is not enough: it can report success for a tree that contains `ERROR` or only zero-width nodes.

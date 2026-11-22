@@ -24,6 +24,8 @@ on:
       - 'src/scanner.c'
       - 'src/parser.c'
       - '.github/workflows/fuzz.yml'
+      - 'package.json'
+      - 'ci/tree-sitter-abi.txt'
       - 'crates/tree-check/**'
       - 'fuzz/**'
       - 'test/fixtures/**'
@@ -48,12 +50,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      - name: Read the tree-sitter CLI pin
+        id: tree-sitter-pin
+        run: node -p '"ref=v" + require("./package.json").devDependencies["tree-sitter-cli"]' >> "$GITHUB_OUTPUT"
+
       - name: Fuzz the parser and scanner
         uses: tree-sitter/fuzz-action@6a1dcff00aefd038ba418bd63732a9add4901266 # v4
         with:
           directory: .
           corpus: test/fixtures
-          tree-sitter-version: v0.27.2
+          tree-sitter-version: ${{ steps.tree-sitter-pin.outputs.ref }}
           # Seconds: five minutes on a pull request, thirty on the weekly run.
           max-time: ${{ github.event_name == 'schedule' && '1800' || '300' }}
           timeout: '10'

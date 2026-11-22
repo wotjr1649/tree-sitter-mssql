@@ -38,9 +38,6 @@ concurrency:
   group: verify-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  TREE_SITTER_CLI_VERSION: '0.27.2'
-
 jobs:
   pr-title:
     name: PR title
@@ -171,11 +168,65 @@ jobs:
           tar -xzf "$archive" -C "$RUNNER_TEMP"
           rm "$archive"
 
+      - name: Check the CLI and ABI pins
+        # The CLI pin is package.json devDependencies.tree-sitter-cli; the lockfile and allowScripts repeat it.
+        # Runs before npm install, which would rewrite a stale package-lock.json in this checkout.
+        run: |
+          set -euo pipefail
+          pin=$(node -p 'require("./package.json").devDependencies["tree-sitter-cli"]')
+          lock=$(node -p 'require("./package-lock.json").packages["node_modules/tree-sitter-cli"].version')
+          allow=$(node -p 'Object.keys(require("./package.json").allowScripts).filter((k) => k.startsWith("tree-sitter-cli@")).join(" ")')
+          abi=$(cat ci/tree-sitter-abi.txt)
+          echo "CLI pin ${pin}; lockfile ${lock}; allowScripts ${allow}; ABI ${abi}"
+          [[ "$pin" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::devDependencies.tree-sitter-cli must be an exact version, not ${pin}"; exit 1; }
+          [[ "$lock" == "$pin" ]] || { echo "::error::package-lock.json resolves tree-sitter-cli ${lock}, the pin is ${pin}"; exit 1; }
+          [[ "$allow" == "tree-sitter-cli@${pin}" ]] || { echo "::error::allowScripts must list tree-sitter-cli@${pin} only, not '${allow}'"; exit 1; }
+          [[ "$abi" =~ ^[0-9]+$ ]] || { echo "::error::ci/tree-sitter-abi.txt must hold one integer, not '${abi}'"; exit 1; }
+
+      - name: Install the pinned tree-sitter CLI and the lint/format devDependencies
+        # A bare `npm install` here would also run this package's own
+        # "install": "node-gyp-build" lifecycle script and fail without
+        # MSVC; --ignore-scripts installs the declared devDependencies
+        # (tree-sitter-cli, oxlint, oxfmt) without running any of them.
+        run: |
+          npm install --ignore-scripts
+          # --ignore-scripts skips the CLI's binary download; run only that
+          # package's install script so every later step uses this one binary.
+          npm rebuild tree-sitter-cli
+          pin=$(node -p 'require("./package.json").devDependencies["tree-sitter-cli"]')
+          installed=$(node_modules/tree-sitter-cli/tree-sitter --version)
+          [[ "$installed" == "tree-sitter ${pin}" ]] || { echo "::error::the installed CLI reports '${installed}', the pin is ${pin}"; exit 1; }
+
       - name: Regenerate the parser from grammar.js
-        run: npx --yes --package=tree-sitter-cli@${{ env.TREE_SITTER_CLI_VERSION }} -- tree-sitter generate
+        run: |
+          set -euo pipefail
+          abi=$(cat ci/tree-sitter-abi.txt)
+          node_modules/tree-sitter-cli/tree-sitter generate --abi "$abi" --js-runtime native
 
       - name: Fail if the generated parser is out of date
-        run: git diff --exit-code -- src/parser.c src/grammar.json src/node-types.json
+        run: |
+          set -euo pipefail
+          git diff --exit-code -- src/parser.c src/grammar.json src/node-types.json src/tree_sitter
+          untracked=$(git ls-files --others --exclude-standard -- src)
+          [[ -z "$untracked" ]] || { echo "::error::generate wrote untracked files: ${untracked}"; exit 1; }
+
+      - name: Check the emitted ABI and the main lexer
+        # The generator compiles parser.c without optimization above 300 main-lexer states (README, "Performance").
+        run: |
+          set -euo pipefail
+          abi=$(cat ci/tree-sitter-abi.txt)
+          emitted=$(awk '$1 == "#define" && $2 == "LANGUAGE_VERSION" { print $3 }' src/parser.c)
+          [[ "$emitted" == "$abi" ]] || { echo "::error::src/parser.c has LANGUAGE_VERSION ${emitted}, ci/tree-sitter-abi.txt has ${abi}"; exit 1; }
+          awk '
+            /^static bool ts_lex\(/ { in_main_lexer = 1 }
+            /^}/ { in_main_lexer = 0 }
+            in_main_lexer && /^[[:space:]]*case [0-9]+:/ { cases++ }
+            /^[[:space:]]*#[[:space:]]*pragma[[:space:]]+(optimize[[:space:]]*\(|clang[[:space:]]+optimize[[:space:]]+off([[:space:]]|$)|GCC[[:space:]]+optimize([[:space:](]|$))/ {
+              print FILENAME ":" FNR ": forbidden optimization pragma: " $0
+              blocked = 1
+            }
+            END { print "Main lexer cases: " (cases + 0); exit (blocked || !cases) }
+          ' src/parser.c
 
       - name: Fail if the node-kind snapshot is out of date
         run: |
@@ -188,17 +239,6 @@ jobs:
 
       - name: Fail if a create/alter/drop rule is unregistered or versions.json cites a missing kind or case
         run: node scripts/check-registries.mjs
-
-      - name: Install lint/format devDependencies
-        # A bare `npm install` here would also run this package's own
-        # "install": "node-gyp-build" lifecycle script and fail without
-        # MSVC; --ignore-scripts installs the declared devDependencies
-        # (oxlint, oxfmt) without running any of them.
-        run: |
-          npm install --ignore-scripts
-          # --ignore-scripts skips the CLI's binary download; fetch it so
-          # later steps that call tree-sitter through npx find a working copy.
-          npm rebuild tree-sitter-cli
 
       - name: Lint the grammar JS
         run: npm run lint
@@ -220,7 +260,7 @@ jobs:
         run: node scripts/package-check.mjs
 
       - name: Run corpus and highlight tests
-        run: npx --yes --package=tree-sitter-cli@${{ env.TREE_SITTER_CLI_VERSION }} -- tree-sitter test
+        run: node_modules/tree-sitter-cli/tree-sitter test
 
       - name: Parse every fixture and fail on any tree problem
         # crates/tree-check judges each tree through the tree-sitter API (root has_error,
@@ -251,7 +291,7 @@ jobs:
       - name: Report fixture parse performance
         run: |
           set -euo pipefail
-          stats=$(npx --yes --package=tree-sitter-cli@${{ env.TREE_SITTER_CLI_VERSION }} -- tree-sitter parse --quiet --time --stat test/fixtures/*.sql 2>&1 | grep '^Total parses:')
+          stats=$(node_modules/tree-sitter-cli/tree-sitter parse --quiet --time --stat test/fixtures/*.sql 2>&1 | grep '^Total parses:')
           parser_bytes=$(wc -c < src/parser.c)
           {
             echo "### Fixture parse performance"
