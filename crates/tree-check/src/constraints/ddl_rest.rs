@@ -203,6 +203,15 @@ pub(super) fn ddl_rest_create(node: Node, source: &[u8], out: &mut Vec<Violation
                 ));
             }
         }
+        // batch-rules/certificate-from-provider: Msg 102 on LocalDB 17.0.1000.7,
+        // levels 100-170 in both sessions. CREATE ASYMMETRIC KEY accepts this source.
+        "create_certificate" if has_child(node, "keyword_provider") => {
+            out.push(violation(
+                "certificate-provider",
+                "CREATE CERTIFICATE does not support FROM PROVIDER".into(),
+                node,
+            ));
+        }
         "create_asymmetric_key" if has_child(node, "keyword_from") => {
             for option in direct_options(node) {
                 if option_name(option, source) == "EXECUTABLE" {

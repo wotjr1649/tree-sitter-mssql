@@ -244,6 +244,37 @@ pub(super) const SERVER_ONLY_EVENTS: &[&str] = &[
     "REVOKE_SERVER",
 ];
 
+/// The shared procedure body can be bare AS. Triggers need a statement or EXTERNAL NAME.
+/// LocalDB 17.0.1000.7, levels 100-170, both QUOTED_IDENTIFIER settings:
+/// batch-rules/{create,alter}-trigger-no-body and trigger-semicolon-only (Msg 102).
+pub(super) fn trigger_body(trigger: Node, out: &mut Vec<Violation>) {
+    if let Some(body) = trigger.child_by_field_name("body")
+        && body.syntax_named_child_count() == 1
+    {
+        out.push(violation(
+            "trigger-body",
+            "a trigger needs a statement or EXTERNAL NAME after AS".into(),
+            body,
+        ));
+    }
+}
+
+/// A direct RETURNS TABLE column list is a CLR result shape. A RETURNS @r TABLE column list
+/// is nested in table_var_declaration. LocalDB 17.0.1000.7, levels 100-170, both sessions:
+/// batch-rules/{create,alter}-function-table-columns-{inline,block} (Msg 156).
+pub(super) fn function_result_columns(function: Node, out: &mut Vec<Violation>) {
+    if has_child(function, "column_definitions")
+        && let Some(body) = function.child_by_field_name("body")
+        && !has_child(body, "external_name")
+    {
+        out.push(violation(
+            "function-result-columns",
+            "RETURNS TABLE with a column list requires an EXTERNAL NAME body".into(),
+            body,
+        ));
+    }
+}
+
 /// Trigger scope, decided by `ON DATABASE` / `ON ALL SERVER` (a DDL trigger) versus `ON object`
 /// (a DML trigger). Evidence: SQL Server 2025 LocalDB 17.0.1000.7, levels 100-170, oracle set
 /// `context/trig-*` and the trigger-* cases, for CREATE, ALTER and CREATE OR ALTER:

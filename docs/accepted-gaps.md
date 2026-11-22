@@ -2,7 +2,7 @@
 
 ## Current oracle status
 
-For `v2.2.0`, the replay at `a4cccb0` covers 10,712 sources and 21,424 session/case pairs. All 15,585
+The replay covers 10,739 sources and 21,478 session/case pairs. All 15,614
 engine-accepted pairs pass tree-check. The [rejected-clean ledger](../oracle/data/rejected-clean.json)
 contains 445 pairs (190 ON, 255 OFF): context 111, environment 294, version 36 and runner 4.
 There are zero entries classified as `gap` and zero edit histories with incremental differences.
@@ -48,16 +48,23 @@ The probes in [ddl-rest.jsonl](../oracle/data/probes/ddl-rest.jsonl) and the tre
 For join hints, removed syntax, EXEC arguments and branch-local ORDER BY, see the
 [fixture syntax notes](../test/fixtures/README.md#syntax-notes).
 
-## Over-acceptance — constructs this grammar accepts that SQL Server rejects
+## Over-acceptance resolved in tree-check
 
-The examples below still pass the raw parser and tree-check. They lack committed engine verdicts
-for the exact forms shown.
+Tree-check rejects these shapes in otherwise clean parse trees. The
+[batch-rules probes](../oracle/data/probes/batch-rules.jsonl) record LocalDB 17.0.1000.7
+PARSEONLY verdicts at levels 100–170 with QUOTED_IDENTIFIER ON and OFF. IDs below
+have the `batch-rules/` prefix.
 
-| Construct | Why | Pinned by |
+| Construct | Rejected cases | SQL Server verdict |
 | --- | --- | --- |
-| A body-less `CREATE TRIGGER ... AS` with no statements after `AS` | The procedure and trigger bodies share one rule; a body-less procedure is legitimate SSMS-scripted syntax, but SQL Server rejects a body-less trigger specifically, and modeling that as a second rule was judged not worth the duplication for one invalid combination | No corpus case exercises a body-less trigger yet — the existing "An empty procedure body and a numbered procedure" case in `test/corpus/procedures.txt` only pins the (correct) procedure form |
-| `CREATE CERTIFICATE ... FROM PROVIDER name` | `CREATE CERTIFICATE` and `CREATE ASYMMETRIC KEY` share the same `_key_source` rule, but only `ASYMMETRIC KEY` accepts `PROVIDER` in real SQL Server | The current raw tree and tree-check accept this shape through `_key_source`. No corpus case pins the combination. A corpus-only reproduction can use the committed parser. |
-| `CREATE FUNCTION ... RETURNS TABLE ( columns )` with an inline (`RETURN query`) or `BEGIN ... END` body | The column list is the result shape of a CLR table-valued function, whose body is `EXTERNAL NAME`; the `RETURNS` clause and the body are separate rules, and tying the column list to the CLR body would duplicate the function definition for one invalid combination | No corpus case exercises the invalid combination; "CLR scalar and table-valued functions with EXTERNAL NAME" in `test/corpus/create_function.txt` pins the valid CLR form |
+| `CREATE` or `ALTER TRIGGER` with no statement or `EXTERNAL NAME` body | `create-trigger-no-body`, `alter-trigger-no-body`, `trigger-semicolon-only` | Msg 102 |
+| `CREATE CERTIFICATE ... FROM PROVIDER name` | `certificate-from-provider` | Msg 102 |
+| `CREATE` or `ALTER FUNCTION` with `RETURNS TABLE (columns)` and an inline or `BEGIN ... END` body | `create-function-table-columns-inline`, `create-function-table-columns-block`, `alter-function-table-columns-inline`, `alter-function-table-columns-block` | Msg 156 |
+
+`create-procedure-no-body`, `create-trigger-select`, `alter-trigger-select` and
+`trigger-external-name` pass, as do `certificate-from-file` and `asymmetric-key-from-provider`.
+The accepted function probes cover `EXTERNAL NAME`, `RETURNS @r TABLE (columns)` and inline
+`RETURNS TABLE` without a column list.
 
 ## FROM-less clauses: measured residual gaps
 

@@ -201,11 +201,13 @@ fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
             "create_function" | "alter_function" => {
                 query_module(node, &mut out);
                 scalar_function_return(node, &mut out);
+                function_result_columns(node, &mut out);
                 batch_module(node, &mut out);
             }
             "create_trigger" | "alter_trigger" => {
                 query_module(node, &mut out);
                 trigger_scope(node, source, &mut out);
+                trigger_body(node, &mut out);
                 batch_module(node, &mut out);
             }
             "create_endpoint" | "alter_endpoint" => {
@@ -272,7 +274,10 @@ fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
             "backup_statement" | "restore_statement" => {
                 backup_restore(node, source, &mut out);
             }
-            "create_aggregate" | "create_cryptographic_provider" | "create_asymmetric_key" => {
+            "create_aggregate"
+            | "create_cryptographic_provider"
+            | "create_asymmetric_key"
+            | "create_certificate" => {
                 ddl_rest_create(node, source, &mut out);
             }
             "create_view" | "alter_view" | "create_rule" | "create_default" => {

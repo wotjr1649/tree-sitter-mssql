@@ -1023,6 +1023,64 @@ fn column_lists_allow_only_some_permissions() {
 }
 
 #[test]
+fn triggers_need_a_body() {
+    for sql in [
+        "CREATE TRIGGER dbo.tr ON dbo.t AFTER INSERT AS",
+        "ALTER TRIGGER dbo.tr ON dbo.t AFTER INSERT AS /* comment */",
+        "CREATE TRIGGER dbo.tr ON dbo.t AFTER INSERT AS ;",
+    ] {
+        assert!(!parse(sql).root_node().has_error(), "{sql}");
+        assert_eq!(rules(sql), ["trigger-body"], "{sql}");
+    }
+    for sql in [
+        "CREATE PROCEDURE dbo.p AS",
+        "CREATE TRIGGER dbo.tr ON dbo.t AFTER INSERT AS SELECT 1;",
+        "ALTER TRIGGER dbo.tr ON dbo.t AFTER INSERT AS EXTERNAL NAME a.b.c;",
+    ] {
+        assert!(!parse(sql).root_node().has_error(), "{sql}");
+        assert!(rules(sql).is_empty(), "{sql}");
+    }
+}
+
+#[test]
+fn certificates_cannot_come_from_a_provider() {
+    let sql = "CREATE CERTIFICATE c FROM /* comment */ PROVIDER p;";
+    assert!(!parse(sql).root_node().has_error(), "{sql}");
+    assert_eq!(rules(sql), ["certificate-provider"]);
+
+    for sql in [
+        "CREATE CERTIFICATE [provider] FROM FILE = 'c.cer';",
+        "CREATE ASYMMETRIC KEY k FROM PROVIDER p WITH PROVIDER_KEY_NAME = 'x', CREATION_DISPOSITION = OPEN_EXISTING;",
+    ] {
+        assert!(!parse(sql).root_node().has_error(), "{sql}");
+        assert!(rules(sql).is_empty(), "{sql}");
+    }
+}
+
+#[test]
+fn function_result_columns_need_an_external_body() {
+    for verb in ["CREATE", "ALTER"] {
+        for tail in [
+            "TABLE (a int) AS RETURN SELECT 1 AS a;",
+            "TABLE /* comment */ (a int) AS BEGIN RETURN; END;",
+        ] {
+            let sql = format!("{verb} FUNCTION dbo.f() RETURNS {tail}");
+            assert!(!parse(&sql).root_node().has_error(), "{sql}");
+            assert_eq!(rules(&sql), ["function-result-columns"], "{sql}");
+        }
+        for tail in [
+            "TABLE AS RETURN SELECT 1 AS a;",
+            "TABLE (a int) AS EXTERNAL NAME a.b.c;",
+            "@r TABLE (a int) AS BEGIN RETURN; END;",
+        ] {
+            let sql = format!("{verb} FUNCTION dbo.f() RETURNS {tail}");
+            assert!(!parse(&sql).root_node().has_error(), "{sql}");
+            assert!(rules(&sql).is_empty(), "{sql}");
+        }
+    }
+}
+
+#[test]
 fn trigger_events_match_the_scope() {
     for ok in [
         "CREATE TRIGGER tr ON DATABASE FOR CREATE_TABLE AS RETURN;",
