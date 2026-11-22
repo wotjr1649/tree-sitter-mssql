@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2026-11-22
+
+### Changed
+
+- A smaller parse table from the grammar alone (CLI 0.27.2 output): `BETWEEN` and `NOT BETWEEN` share one continuation, and an invocation's `WITHIN GROUP` suffix reduces through one hidden rule. Parse states fall from 14,080 to 13,721 (−2.55 %) and `parser.c` by 1.32 %; large states, node kinds, fields, valid-input trees and verdicts are unchanged. Full CSTs match 2.1.1 on 2,562 corpus cases, 156 fixtures and 10,712 oracle sources. Parse time is unchanged within measurement noise (#75).
+
+### Tooling
+
+- Verify reads the tree-sitter CLI pin from `package.json` and checks the lockfile entry, the `allowScripts` key and the installed binary against it before generating; generation passes the ABI from `ci/tree-sitter-abi.txt` (15) with `--js-runtime native`, the drift check covers `src/tree_sitter/*.h`, the emitted `LANGUAGE_VERSION` must equal the ABI pin, and the generator's optimize-off pragmas fail the job. The parser fuzz job uses the same pin (#73).
+- A node-types compatibility gate compares `src/node-types.json` with the base the pull request is merged onto and fails on a removed kind, field, field type, child type or supertype subtype, lost multiplicity, or an existing entry becoming required (#74).
+- `docs/benchmarks.md` records the lexer and LR analysis: 26 states of main-lexer headroom below the generator's 300-state threshold, and the rejected experiments (#75).
+
 ## [2.1.1] - 2026-11-18
 
 ### Changed
