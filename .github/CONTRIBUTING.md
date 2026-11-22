@@ -22,9 +22,11 @@ cargo build
 
 ```sh
 npx tree-sitter test
-node scripts/generate-node-kinds.mjs
+node scripts/generate-node-kinds.mjs && git diff --exit-code -- test/node-kinds.txt
+node scripts/check-node-types.mjs "$(git merge-base origin/main HEAD)"
 node scripts/check-registries.mjs
 node scripts/parser-cost.mjs
+node --test scripts/*.test.mjs
 npm run lint
 npm run format:check
 cargo fmt --check
@@ -42,9 +44,9 @@ cargo test --manifest-path crates/tree-check/Cargo.toml
 - Open pull requests against **`main`** and merge with a merge commit (no squash or rebase: the imported history of the original grammar must stay intact).
 - Use a Conventional Commit title (`feat:`, `fix:`, `docs:`, `chore:`, `test:`, ...).
 - Keep each pull request to one change; link the issue it resolves in the body.
-- Regenerate and commit `src/parser.c` and `test/node-kinds.txt` alongside any `grammar.js` change; CI diffs both against a fresh regenerate and fails on drift.
+- Regenerate and commit `src/parser.c`, `src/grammar.json`, `src/node-types.json`, `src/tree_sitter/*.h` and `test/node-kinds.txt` alongside any grammar change; CI diffs them against a fresh regenerate and fails on drift.
 - Add a corpus case, or extend a fixture, for any new construct.
-- A node-kind addition, removal, or rename is part of the published API surface (see [docs/consuming.md](../docs/consuming.md)); call it out in the description so it reaches `CHANGELOG.md`.
+- A node-kind addition, removal, or rename is part of the published API surface (see [docs/consuming.md](../docs/consuming.md)); call it out in the description so it reaches `CHANGELOG.md`. CI compares `src/node-types.json` with the pull request's base and fails on a removed kind, field, field type, child type or subtype, lost multiplicity, or an existing entry that becomes required.
 
 ## Documentation
 
@@ -60,7 +62,7 @@ cargo test --manifest-path crates/tree-check/Cargo.toml
 1. **Issue.** Open one issue per defect with the `defect` template: the minimal T-SQL input, SQL Server's verdict under `SET PARSEONLY ON` with compatibility level and engine version, and the current tree or `ERROR` excerpt.
 2. **Failing case.** Add a corpus case under `test/corpus/` or an oracle case that fails before the change. SQL Server's verdict decides what is valid; where a test inherited from 1.0.0 or [docs/accepted-gaps.md](../docs/accepted-gaps.md) disagrees, the change names the case and the compatibility level.
 3. **Grammar change.** Edit `grammar.js` or `grammar/**/*.js` (or `src/scanner.c`), never the generated files.
-4. **Regenerate.** Run the generate command from "Local setup" with the pinned CLI and commit `src/parser.c`, `src/grammar.json`, `src/node-types.json` and `test/node-kinds.txt` with the grammar change.
+4. **Regenerate.** Run the generate command from "Local setup" with the pinned CLI and commit `src/parser.c`, `src/grammar.json`, `src/node-types.json`, `src/tree_sitter/*.h` and `test/node-kinds.txt` with the grammar change.
 5. **Gates.** Run the checks in "Validation before a pull request". Existing corpus cases and fixtures keep passing unless the change alters them on purpose and says why.
 
 Errors that need context (conflicting hints, boolean versus scalar, names, permissions) are not grammar defects; label them `contextual` instead of bending the grammar.

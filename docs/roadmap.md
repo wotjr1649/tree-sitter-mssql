@@ -7,10 +7,9 @@ Phases in order. Each phase ends when its "done when" holds. The definitions, ga
 
 ## M0.5: Foundation on `main`
 
-Remove the original grammar's release automation, point every policy at `main`, merge the foundation with its history
-preserved.
-
-Done when the foundation is merged into `main` by merge commit and the full `Verify` run passes on it.
+The foundation landed on `main` in merge commit `c696e2c` (PR #1, 2026-11-15). It preserved the imported
+history, removed the original registry-publishing and automatic-release workflows, and set `main` as
+Verify's target branch. Completion required a full Verify pass on the merge commit.
 
 ## M1: Surface inventory and SQL Server oracle
 
@@ -20,17 +19,21 @@ Done when the foundation is merged into `main` by merge commit and the full `Ver
   353 edit histories. grammar-kit's stored trees and its own `syntax_error` flags are not imported as expectations.
 - A tree checker that uses the tree-sitter API (`has_error`, `is_missing`, full range), tested against inputs that the
   CLI summary misreports.
-- A parse-only runner (LocalDB locally, a SQL Server 2025 container pinned by digest in CI), with infrastructure
-  failures reported as failures.
-- Gates: offline verdict replay on every pull request, per-case regression gates, and the cost report.
+- A PARSEONLY runner uses LocalDB locally. The Oracle engine workflow runs pinned SQL Server 2017, 2019,
+  2022 and 2025 Linux images and treats infrastructure failures as failures.
+- The M1 design called for offline verdict replay on every pull request, per-case regression gates, and the cost report.
 
-Done when the counts 726 / 681 judged / 45 unknown and 708 / 665 distinct sources are reproduced, every level from 100
-to 170 is recorded, and an injected regression makes CI fail.
+The original import recorded 726 cases (681 judged, 45 unknown) and 708 distinct sources (665 judged).
+M1's completion criteria were to reproduce those counts, record verdicts at every compatibility level from
+100 through 170, and demonstrate that CI fails on an injected regression.
 
-## M2: Defect classes
+The current Verify gate replays every committed case set and session. See [the oracle README](../oracle/README.md)
+for coverage and the engine workflow.
 
-First, re-run grammar-kit's patch chain as a measured experiment (per-case transitions, corpus and fixture breakage,
-node-type diff, cost). Then fix one class per pull request, re-implemented here:
+## M2: Defect classes (completed)
+
+M2 called for measuring grammar-kit's patch chain (per-case transitions, corpus and fixture breakage, node-type
+diff and cost), then re-implementing each defect class here in a separate pull request:
 
 1. `CREATE/ALTER QUEUE … WITH ACTIVATION (…, EXECUTE AS …)`.
 2. Clauses without FROM: `WHERE`, `GROUP BY`, `HAVING`, rewriting the two error cases inherited from 1.0.0.
@@ -39,8 +42,9 @@ node-type diff, cost). Then fix one class per pull request, re-implemented here:
 5. Table-hint forms and their numeric bounds.
 6. Trailing comma in `CREATE TABLE`.
 
-Done for each class when it has a failing case before the change, engine evidence, adjacent negatives, and passes
-every gate within the cost budget.
+Each class required a failing case before the change, engine evidence, adjacent negatives and a pass on every gate
+within the cost budget. The M2 cost milestone was recorded at `e8a398e` (PR #25). See ADR-0002 for the subsequent
+baseline changes.
 
 ## M2.5: Absorb grammar-kit's T-SQL work (ADR-0004)
 
@@ -48,7 +52,8 @@ every gate within the cost budget.
 - Import grammar-kit's 640 route cases as an oracle probe set with fresh verdicts on every verified engine, and its T-SQL queries.
 - Record the decisions in grammar-kit's reports where they apply.
 
-Done when no T-SQL check or asset remains only in grammar-kit, and every ported rule agrees with the engine on its oracle cases.
+Completion covers the checks and assets adopted here, with engine agreement on their oracle cases. The Go API
+contracts listed below stay with go-treesitter under ADR-0004.
 
 Status (2026-11-16):
 - Ported: every `CheckTSQLContext` check (#25, #26 and the scalar-predicate rule). Each was re-measured on the engine.
@@ -61,16 +66,24 @@ Status (2026-11-16):
 - Left to go-treesitter (Go API contracts, ADR-0004 §1): the T-SQL fact-query mapping and the `tsql8` query
   classification.
 
-## M3: Remaining surface
+## M3: Surface rounds and remaining coverage
 
-The M3 inventory cells: DDL families, `QUOTED_IDENTIFIER OFF` (session-aware constraint checks, ADR-0006), `GO`/sqlcmd as a client
-suite, the syntax false positives that are syntactic.
+The M3 rounds ended at `4ff4c5f` (PR #46). They expanded DDL, query, DML, module and expression coverage.
+Session-aware QUOTED_IDENTIFIER ON/OFF checking subsequently landed under ADR-0006, and the committed
+oracle covers both initial settings.
 
-Done when every declared cell is verified; cells with only an issue count as open.
+The grammar and tests cover GO and modeled sqlcmd syntax. The engine runner splits supported GO lines
+and sends T-SQL batches to SQL Server. The full client-syntax suite remains subject to the ADR-0002
+inventory criteria.
+
+A declared inventory cell is verified when it has the required positive and adjacent negative cases,
+expected tree, applicable edit history and engine verdict. An issue alone leaves the cell open. See
+[Accepted gaps](accepted-gaps.md) and [the oracle](../oracle/README.md) for measured cases.
 
 ## M4: Consumers
 
-- Consumers (go-treesitter) move their pins in separate, reviewed changes. Each move records the node-type diff, the
-  native tree diff, the cost and the memory.
+go-treesitter pins a release of this repository and regenerates `src/parser.c` with its own pinned CLI. Pin moves
+such as an update to `v2.2.0` are separate, reviewed changes. Each records the node-type diff, native tree diff,
+cost and memory.
 
 Done when each consumer move has its record.

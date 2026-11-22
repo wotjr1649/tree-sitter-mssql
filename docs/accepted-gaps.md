@@ -1,13 +1,16 @@
 # Accepted gaps
 
-## Current status at `825c964`
+## Current oracle status
 
-The oracle replay has no engine-accepted errors or open `gap` entries. The current ledger
-`oracle/data/rejected-clean.json` contains 445 session/case pairs: context 111, environment 294,
-version 36 and runner 4 (QUOTED_IDENTIFIER ON 190, OFF 255). It includes one runner-excluded
-source in each session. The sections below are historical measurements at the named rounds,
-not a list of current unresolved defects; their raw-tree gaps may now be rejected by tree-check.
-The committed ledger and replay, rather than those earlier counts, define current status.
+For `v2.2.0`, the replay at `a4cccb0` covers 10,712 sources and 21,424 session/case pairs. All 15,585
+engine-accepted pairs pass tree-check. The [rejected-clean ledger](../oracle/data/rejected-clean.json)
+contains 445 pairs (190 ON, 255 OFF): context 111, environment 294, version 36 and runner 4.
+There are zero entries classified as `gap` and zero edit histories with incremental differences.
+
+The four runner entries cover two sources in both sessions. The PARSEONLY guard excludes one
+source, and the runner's GO splitter accounts for the other. The committed replay and ledger
+define the status of the recorded oracle cases. The sections below record historical measurements
+and follow-up checks, including gaps outside the recorded oracle.
 
 ## R20: historical rejected-but-clean ledger
 
@@ -31,43 +34,28 @@ declarations, and VECTOR_SEARCH requires preview-enabled engine configuration. O
 observations are classified separately with their measured reason. The grammar still builds the same trees;
 consumers needing the validation results must also use the constraint layer (ADR-0003).
 
+## Under-acceptance and unmeasured syntax
 
-This is the ledger of genuine mismatches between what SQL Server itself accepts or rejects and
-what this grammar's tree does — one row per gap, whether the grammar over- or under-accepts, and
-the corpus case (or fixture) that pins the current behavior so a future change is a reviewable
-diff instead of a silent regression. It consolidates the over- and under-acceptance notes that
-were previously scattered across grammar comments with the subset of
-`test/fixtures/README.md`'s "Not parsed on purpose" table that is an actual mismatch rather than a
-construct the grammar correctly rejects because SQL Server rejects it too — see that file for the
-complete list of constructs deliberately left unmodeled, matched or not.
+WRITETEXT BULK remains an open parser gap. The documented form produces a tree error when the
+source includes the table column, text pointer and data. The committed oracle has no verdict
+for this exact form.
 
-An entry with no corpus case listed is a known gap in the pinning itself, not a claim that the
-behavior is untested in general — see the note on each such row.
+R17 added ALTER MESSAGE TYPE, KILL STATS JOB and KILL QUERY NOTIFICATION SUBSCRIPTION.
+The probes in [ddl-rest.jsonl](../oracle/data/probes/ddl-rest.jsonl) and the trees in
+[ddl-rest.txt](../test/corpus/ddl-rest.txt) pin their supported forms.
 
-## Under-acceptance — constructs SQL Server accepts that this grammar rejects
-
-`test/fixtures/README.md`'s "Not parsed on purpose" table already pins three of these: the
-physical join hint with no join type (`HASH JOIN`/`LOOP JOIN`/`MERGE JOIN`/`REMOTE JOIN`), the rare
-sub-forms of deprecated or console statements (`WRITETEXT BULK ...`,
-`KILL STATS JOB`/`KILL QUERY NOTIFICATION`), and the parenthesized union branch with its own
-`ORDER BY` alongside `TOP`/`OFFSET`/`FETCH`. See that file rather than duplicating the rows here.
-That same table also lists `COMPUTE`, the `*=`/`=*` outer-join operators, and
-`EXEC p 1 + 2`/`EXEC p @a = 1, 2` — those three are not gaps at all, since SQL Server itself
-rejects them too (the first two are removed constructs; the third violates Msg 119's
-argument-ordering rule), so the grammar's rejection already matches SQL Server's.
-
-One further under-acceptance surfaced while consolidating this ledger, not yet in either source:
-
-| Construct | Why | Pinned by |
-| --- | --- | --- |
-| `ALTER MESSAGE TYPE name VALIDATION = ...` | Valid, documented T-SQL (unlike its six sibling Service Broker object kinds, which each gained an `ALTER` form, message types were assumed immutable and given none) — this is a genuine missing rule, not a deliberate decision | Not modeled at all — no corpus case |
+For join hints, removed syntax, EXEC arguments and branch-local ORDER BY, see the
+[fixture syntax notes](../test/fixtures/README.md#syntax-notes).
 
 ## Over-acceptance — constructs this grammar accepts that SQL Server rejects
+
+The examples below still pass the raw parser and tree-check. They lack committed engine verdicts
+for the exact forms shown.
 
 | Construct | Why | Pinned by |
 | --- | --- | --- |
 | A body-less `CREATE TRIGGER ... AS` with no statements after `AS` | The procedure and trigger bodies share one rule; a body-less procedure is legitimate SSMS-scripted syntax, but SQL Server rejects a body-less trigger specifically, and modeling that as a second rule was judged not worth the duplication for one invalid combination | No corpus case exercises a body-less trigger yet — the existing "An empty procedure body and a numbered procedure" case in `test/corpus/procedures.txt` only pins the (correct) procedure form |
-| `CREATE CERTIFICATE ... FROM PROVIDER name` | `CREATE CERTIFICATE` and `CREATE ASYMMETRIC KEY` share the same `_key_source` rule, but only `ASYMMETRIC KEY` accepts `PROVIDER` in real SQL Server | No corpus case exercises this combination yet — adding one needs a `tree-sitter generate` + `test --update` cycle; tracked here as a known gap in the pinning rather than fixed in this pass |
+| `CREATE CERTIFICATE ... FROM PROVIDER name` | `CREATE CERTIFICATE` and `CREATE ASYMMETRIC KEY` share the same `_key_source` rule, but only `ASYMMETRIC KEY` accepts `PROVIDER` in real SQL Server | The current raw tree and tree-check accept this shape through `_key_source`. No corpus case pins the combination. A corpus-only reproduction can use the committed parser. |
 | `CREATE FUNCTION ... RETURNS TABLE ( columns )` with an inline (`RETURN query`) or `BEGIN ... END` body | The column list is the result shape of a CLR table-valued function, whose body is `EXTERNAL NAME`; the `RETURNS` clause and the body are separate rules, and tying the column list to the CLR body would duplicate the function definition for one invalid combination | No corpus case exercises the invalid combination; "CLR scalar and table-valued functions with EXTERNAL NAME" in `test/corpus/create_function.txt` pins the valid CLR form |
 
 ## FROM-less clauses: measured residual gaps
@@ -77,30 +65,31 @@ PARSEONLY at levels 100–170, accepts both error tests inherited from 1.0.0 `SE
 and `SELECT 1 GROUP BY 1;`. They are positive cases in
 `test/corpus/select-fromless.txt` (ADR-0002 §9); the other existing error cases are unchanged.
 
-Making those clauses independent exposes the following existing expression/session gaps. All
-listed oracle cases now parse cleanly; no engine-accepted clean case becomes an error. This is
-not a claim of zero defects, and these are not option-set constraints covered by ADR-0003.
+The listed FROM-less forms produce clean raw trees. The dispositions below identify tree-check
+rejections separately from the raw parser result.
 
 | Cases | SQL Server verdict | Classification and disposition |
 | --- | --- | --- |
 | `count-empty`, `mut-02235`, `mut-02255` | Msg 174 on every committed engine/level | Rejected by the `builtin-arity` constraint (ADR-0003, ADR-0004) |
 | `regex-79` | Msg 4145 on SQL Server 2017–2022 and 2025 levels 100–160; Msg 156 on both 2025 engines at level 170 | Rejected by the `scalar-predicate` constraint (a scalar function call as the WHERE condition) |
 | `regex-80` | Msg 4145 on 2025; 195 on older engines | Rejected by the `scalar-predicate` constraint |
-| `qi-on-contains-search`, `qi-on-freetext-search`, `qi-on-property`, `qi-on-language` | Msg 102 on every committed engine/level | Unresolved syntax over-acceptance: with QUOTED_IDENTIFIER ON, these full-text arguments require strings rather than double-quoted identifiers. Requires session-aware lexical/argument rules, not an option-set constraint. Matching `qi-off-*` cases are accepted |
-| `SELECT NOT 1 WHERE 1=1;` | LocalDB Msg 156 at levels 100–170 | Unresolved SELECT expression over-acceptance. The corresponding FROM-bearing control is already clean in main; no corpus case pins this gap |
-| `SELECT 1 WHERE CURRENT OF c;` | LocalDB Msg 102 at levels 100–170 | Unresolved statement restriction: CURRENT OF belongs to positioned UPDATE/DELETE. The corresponding FROM-bearing SELECT is already clean in main; no corpus case pins this gap |
+| `qi-on-contains-search`, `qi-on-freetext-search`, `qi-on-property`, `qi-on-language` | Msg 102 on every committed engine/level | Tree-check rejects these forms. `gap-fulltext-string` covers CONTAINS and FREETEXT search strings and the PROPERTY argument. `expression-fulltext-language` covers LANGUAGE. The matching `qi-off-*` controls set QUOTED_IDENTIFIER OFF in the source and pass. |
+| `SELECT NOT 1 WHERE 1=1;` | LocalDB Msg 156 at levels 100–170 | Open gap. The FROM-less example and the corresponding FROM-bearing form both produce clean trees and pass tree-check. The historical LocalDB result refers to the FROM-less example. Neither form has a committed oracle case for this discrepancy. |
+| `SELECT 1 WHERE CURRENT OF c;` | LocalDB Msg 102 at levels 100–170 | Open gap. The FROM-less SELECT and the corresponding FROM-bearing SELECT both produce clean trees and pass tree-check. The historical LocalDB result refers to the FROM-less example. Positioned UPDATE and DELETE have separate oracle coverage. |
 
 R18 also recovers the later-UNION-branch INTO form:
 `SELECT 1 UNION SELECT 2 INTO #r7 WHERE 2=2;` is accepted by LocalDB PARSEONLY at
 levels 100–170 and now parses cleanly. The grammar-kit issue-128 report distinguishes this
 from NOEXEC Msg 196; compile-time rejection is not a syntax verdict.
 
-| Blocks containing only empty statements, including TRY/CATCH bodies | The existing block rules allow zero real statements. Adding anonymous semicolons extends that existing gap to semicolon-only blocks. LocalDB 100–170 returns 102; a future nonempty-body constraint should require a real statement. | `semicolon/block-empty`, `try-empty`; corpus `semicolon.txt` |
-| Consecutive bare ENABLE/DISABLE TRIGGER statements without a separator | LocalDB 100–170 returns 102; the semicolon-separated control is accepted. This pre-existing boundary gap needs its own constraint. | `semicolon/trigger-chain`; corpus `semicolon.txt` |
-| `SELECT FROM;` (also with a leading `;`) | FROM is read as an identifier when the SELECT expression is absent; the new empty statement support exposes this existing SELECT gap. LocalDB 100–170 returns 156. | `semicolon/invalid-leading-select`; corpus `semicolon.txt` |
-| A statement-less BEGIN/END block followed by a CTE | LocalDB 100–170 returns 156 and 102; the grammar accepts the empty block; the CTE after it is now rejected by the `cte-terminator` constraint, so the input fails as SQL Server says, though for that reason rather than the empty block. | `semicolon/cte-after-empty-block`; corpus `semicolon.txt` |
+| Construct | LocalDB verdict and current tree-check rule | Evidence |
+| --- | --- | --- |
+| Blocks containing only empty statements, including the measured TRY body | Msg 102. `gap-statement-shape` requires a real statement in these bodies. | `semicolon/block-empty`, `semicolon/try-empty`; `test/corpus/semicolon.txt` |
+| Consecutive bare ENABLE/DISABLE TRIGGER statements without a separator | Msg 102. `gap-statement-shape` rejects the chain. The semicolon-separated control passes. | `semicolon/trigger-chain`; `test/corpus/semicolon.txt` |
+| `SELECT FROM;` with or without a leading semicolon | Msg 156. `gap-reserved-name` rejects FROM in the expression position. | `semicolon/invalid-leading-select`, `semicolon/control-select-from`; `test/corpus/semicolon.txt` |
+| An empty BEGIN/END block followed by a CTE | Msg 156 and 102. Tree-check reports both `gap-statement-shape` and `cte-terminator`. | `semicolon/cte-after-empty-block`; `test/corpus/semicolon.txt` |
 
-## Table hints: remaining gaps
+## Table hints: constraints on clean raw trees
 
 The table-hint probes (`oracle/data/probes/table-hints.jsonl`, 165 cases) were measured with LocalDB
 17.0.1000.7, PARSEONLY at levels 100–170. INDEX takes a name or a 0..2147483647 integer;
@@ -109,35 +98,35 @@ included); SPATIAL_WINDOW_MAX_CELLS allows up to 128 digits, still bounded by 21
 accepts comma, space and mixed separators; TABLE HINT in OPTION requires commas and may omit its
 inner hint list.
 
-Names, conflicts, FORCESEEK arguments and DML-target restrictions are enforced by the
-`table-hint` constraint (ADR-0003, measured in `oracle/data/probes/hint-rules.jsonl`). These rejected
-cases still have a clean tree:
+The `table-hint` constraint checks the names, conflicts, FORCESEEK arguments and DML-target
+restrictions measured in `oracle/data/probes/hint-rules.jsonl`. The following engine-rejected
+cases still have clean raw trees.
 
-| Oracle cases | Engine verdict | Disposition |
+| Oracle cases | LocalDB verdict | Disposition |
 | --- | --- | --- |
-| `table-hints/bare-index`, `table-hints/bare-index-alone` | 1018 | Deprecated hint form without WITH after an alias: INDEX needs WITH there. Needs its own measured rule |
-| `table-hints/maxdop-32768`, `table-hints/maxdop-2147483647` | 304 | Query-hint value gap: MAXDOP is 0..32767 |
-| `table-hints/maxdop-2147483648`, `table-hints/maxdop-1e0`, `table-hints/maxdop-0x1` | 102 | Query-hint number syntax over-acceptance, outside the table-hint rule |
-| `hint-rules/merge-source-nolock`, `hint-rules/merge-source-index` | 156 | `MERGE ... USING src WITH (...) AS s`: the grammar takes hints before the source alias, where SQL Server does not |
+| `table-hints/bare-index`, `table-hints/bare-index-alone` | 1018 | `gap-option-shape` rejects INDEX without WITH in the measured post-alias forms. |
+| `table-hints/maxdop-32768`, `table-hints/maxdop-2147483647` | 304 | `gap-option-shape` enforces the MAXDOP bound of 0–32767. |
+| `table-hints/maxdop-2147483648`, `table-hints/maxdop-1e0`, `table-hints/maxdop-0x1` | 102 | `gap-option-shape` rejects out-of-range, exponential and hexadecimal MAXDOP values. The recorded SQL Server 2017–2022 runs report Msg 1080 for `maxdop-2147483648`. |
+| `hint-rules/merge-source-nolock`, `hint-rules/merge-source-index` | 156 | `gap-option-shape` rejects the measured MERGE source hints before the source alias. |
 
-## Table and index DDL: measured residual gaps (R10)
+## Table and index DDL: R10 measurements and current checks
 
-The table/index forms in `oracle/data/probes/ddl-table.jsonl` were measured with the committed
-PARSEONLY runner on LocalDB 17.0.1000.7 at levels 100–170. All 90 engine-accepted probes
-parse cleanly. Ten rejected probes still parse cleanly; the five existing route rejections
-that become clean are also listed below. These are not claims of syntax validity.
+At R10, LocalDB 17.0.1000.7 at levels 100–170 accepted 90 probes in
+`oracle/data/probes/ddl-table.jsonl`. All 90 produced clean trees. Ten rejected probes and
+five route rejections also produced clean raw trees at that round. The table records their
+dispositions.
 
-| Cases | Engine error | Remaining check |
+| Cases | Engine error | Disposition |
 | --- | --- | --- |
 | `ddl-table/column-online-on`, `drop-constraint-online`; routes `alt-tsql-V22-r004`, `alt-tsql-B03-r118`, `r165`, `r166` | 1712; resumable routes also 11905 | Express edition does not support ONLINE/resumable operations. Environment-dependent, outside the grammar. |
 | `ddl-table/index-resume` (already clean before this change) | 11905 | Same edition limit. |
-| `ddl-table/system-versioning-year` | 13539 | HISTORY_TABLE requires a two-part name; the shared option rule also accepts three parts. A decidable name-shape constraint remains. |
-| `ddl-table/index-partition-range`, `index-partition-reverse` | 10737 | These single DATA_COMPRESSION clauses need REBUILD PARTITION=ALL. Do not infer that the descending range itself caused the error. The accepted route r111 also uses XML_COMPRESSION without PARTITION=ALL, so a blanket restriction would contradict the oracle. |
-| `ddl-table/index-wrong-partition-option` | 156 | ON PARTITIONS is currently a shared option suffix; restrict its applicability to the compression options in the constraint layer (ADR-0003). |
-| `ddl-table/xml-null-schema` | 156 | The shared object-reference rule accepts the reserved word NULL as a schema-collection name. This is a syntax/name-token gap, not a catalog lookup. |
-| `ddl-table/plain-keyword-names` (already clean) | 156 | Unquoted reserved-name acceptance in the existing identifier rule; separate identifier/keyword work. |
-| `ddl-table/create-duplicate-online` (already clean) | 102 | Duplicate SYSTEM_VERSIONING options; an ADR-0003 uniqueness check remains. |
-| `kit-routes/alt-tsql-B04-r040` | 35310 | Columnstore indexes are forbidden on table variables/types. The shared column-definition rule intentionally models their syntax; applicability is decidable by the check layer. |
+| `ddl-table/system-versioning-year` | 13539 | `gap-name-parts` rejects the measured three-part HISTORY_TABLE name. |
+| `ddl-table/index-partition-range`, `index-partition-reverse` | 10737 | `gap-option-shape` rejects these DATA_COMPRESSION clauses without REBUILD PARTITION=ALL. The accepted XML_COMPRESSION control is `alt-tsql-B03-r111`. |
+| `ddl-table/index-wrong-partition-option` | 156 | `gap-option-shape` rejects ON PARTITIONS on the measured MAXDOP option. |
+| `ddl-table/xml-null-schema` | 156 | `gap-name-parts` rejects the unquoted NULL schema-collection name. |
+| `ddl-table/plain-keyword-names` (already clean) | 156 | `gap-reserved-name` rejects the measured unquoted reserved names. |
+| `ddl-table/create-duplicate-online` (already clean) | 102 | `gap-option-shape` rejects duplicate SYSTEM_VERSIONING options. |
+| `kit-routes/alt-tsql-B04-r040` | 35310 | `gap-option-shape` rejects columnstore indexes on table variables and table types in the measured route. |
 
 The selective XML index reference documents a trailing WITH option list, but LocalDB rejects
 `FOR (ADD p='/x') WITH (PAD_INDEX=ON)`, the MAXDOP and DROP_EXISTING controls, and route
@@ -146,9 +135,9 @@ without a type is accepted when followed by MAXLENGTH or SINGLETON, but bare AS 
 102. Each is pinned in the new corpus. This follows engine evidence, not the broader diagram:
 [ALTER INDEX (Selective XML Indexes)](https://learn.microsoft.com/en-us/sql/t-sql/statements/alter-index-selective-xml-indexes?view=sql-server-ver17).
 
-Only LocalDB 2025 was run for these new probes; the committed verdicts from other engines
-were replayed, not remeasured. The remaining 309 engine-accepted errors in the complete oracle
-are outside this defect family.
+At R10, the new probes were measured on LocalDB 2025, and the existing verdicts from other
+engines were replayed. The complete oracle still had 309 engine-accepted errors outside the
+R10 defect family at that round.
 
 ## EXTERNAL/FULLTEXT/ENDPOINT probes (R12)
 
@@ -158,22 +147,24 @@ corpus trees in `test/corpus/ddl-external.txt` also pin the structural trees of 
 negatives, whose case titles name the constraint. Full-Text component error 7609 and endpoint
 edition error 7878 are contextual and do not make valid structure a tree error.
 
-| Construct | Remaining difference | Pinned by |
+| Construct | Disposition | Oracle case |
 | --- | --- | --- |
-| `DROP EVENT NOTIFICATION ... ON SERVER/DATABASE` after a valid `DROP EXTERNAL TABLE` | The external drop now parses; the following notification DDL is outside the R12 family and remains unmodeled. The whole script is still an engine-accepted tree error. | `kit-routes/alt-tsql-B03-r308` |
-| `ALTER EXTERNAL DATA SOURCE ... RESOURCE_MANAGER_LOCATION = ...` for Hadoop | SQL Server 2025 rejects this older documented form with 102. Keep the earlier SQL Server syntax; new probes do not claim older-engine verification. | `kit-routes/alt-tsql-B03-r095` |
+| `DROP EVENT NOTIFICATION ... ON SERVER/DATABASE` after a valid `DROP EXTERNAL TABLE` | R12 recovered the external drop. R17 added DROP EVENT NOTIFICATION, and the complete case now passes tree-check. | `kit-routes/alt-tsql-B03-r308` |
+| `ALTER EXTERNAL DATA SOURCE ... RESOURCE_MANAGER_LOCATION = ...` for Hadoop | The raw tree retains the documented Hadoop form. Tree-check rejects the measured case with `gap-option-shape`, matching Msg 102 on every committed engine and level. | `kit-routes/alt-tsql-B03-r095` |
 
-## Adding an entry
+## Recording a newly measured case
 
-When a review or a probe finds a new gap, add a row here in the same pass as the corpus case (or
-fixture) that pins it, rather than leaving the behavior undocumented until the next audit finds it
-again.
+Add an oracle case and its engine verdict, and pin the tree or checker behaviour in the relevant
+test. Update the replay baseline for a verified change and classify engine-rejected cases that
+remain clean in `oracle/data/rejected-clean.json`. Record a reproduction and any measurement
+limits for cases outside the committed oracle.
 
 ## Database and server DDL (R11)
 
 Measured with SQL Server 2025 LocalDB 17.0.1000.7, PARSEONLY at levels 100–170.
-The 259 cases in `oracle/data/probes/ddl-database.jsonl` are pinned in `test/corpus/ddl-database.txt`;
-148 engine-accepted cases are clean. The remaining four engine-rejected clean probes are contextual:
+The 259 cases in `oracle/data/probes/ddl-database.jsonl` are pinned in `test/corpus/ddl-database.txt`.
+LocalDB accepted 148 probes. Four LocalDB-rejected probes still pass tree-check because of catalog,
+permissions or edition limits. The table also records three groups of kit routes.
 
 | Cases | Verdict | Disposition |
 | --- | --- | --- |
@@ -182,24 +173,24 @@ The 259 cases in `oracle/data/probes/ddl-database.jsonl` are pinned in `test/cor
 | `kit-routes/alt-tsql-B03-r031/r034` | 35246 | SQL Server cannot validate the named instance because an engine DLL is unavailable. The replica syntax is retained. |
 | `kit-routes/alt-tsql-B03-r160` | 534 | The same MEMORY_OPTIMIZED edition restriction. |
 
-No syntax-negative probe in this set becomes clean. `kit-routes/alt-tsql-B03-r040` remains an error:
-LISTENER is not a distributed-group option; its LISTENER_URL neighbour is accepted.
+Tree-check rejects `kit-routes/alt-tsql-B03-r040` with `distributed-availability-option`. The raw
+tree accepts LISTENER in the distributed group, and LocalDB returns Msg 155. The LISTENER_URL
+control passes.
 HARDWARE_OFFLOAD ON/OFF and = ON/OFF are rejected by this LocalDB and remain errors despite the syntax reference.
 
 The constraint layer covers the measured file-specification requirements/duplicates, replica requirements,
 AG SET/MODIFY single-change rules, nested database option duplicates, QUERY_CAPTURE_POLICY keys/units,
-BPE option order and values, audit clause duplicates and encryption ALGORITHM. It does not claim every
-unmeasured database/AG option or value is validated. Distributed-group required options, other option
-value bounds, and the wider remaining oracle failures are open inventory work.
+BPE option order and values, audit clause duplicates and encryption ALGORITHM. R11 left distributed-group
+required options, other option value bounds and additional engine-accepted errors for later rounds.
 
-## Query forms (R13): budget-stopped and preserved gaps
+## Query forms deferred at R13
 
-These positive cases are pinned in oracle/data/probes/query-forms.jsonl and test/corpus/query-forms.txt,
-with LocalDB 17.0.1000.7 PARSEONLY verdicts at levels 100–170. They were tree errors at R13; R17 and R18 recovery status is recorded below.
-The R13 patch stays within every +10% parser-cost limit. This list does not imply that a scanner
-change is needed or that every shape has had a full alternate implementation attempted.
+The cases in `oracle/data/probes/query-forms.jsonl` and `test/corpus/query-forms.txt` were measured
+with LocalDB 17.0.1000.7 PARSEONLY at levels 100–170. They were tree errors at R13 and now pass
+tree-check after R17 and R18. The owner approved going over the +10% per-change limit for
+PR #33, which increased `parser.c` size by 10.32%.
 
-| Positive probe IDs (query-forms/ prefix omitted) | Remaining surface |
+| Positive probe IDs (query-forms/ prefix omitted) | Form deferred at R13 |
 | --- | --- |
 | open-like-escape | LIKE ... ESCAPE |
 | open-json-arrayagg, open-json-objectagg | JSON aggregates with ORDER BY, NULL handling and key:value |
@@ -235,9 +226,17 @@ LIKE ESCAPE and JSON aggregates remain outside this change.
 
 R17 recovers all 119 remaining engine-accepted kit routes in scope, including the six R13 open query forms listed above. Positivity merges every committed engine and compatibility level. At R17, LIKE ESCAPE (B01-r006) and JSON aggregates (V22-r014) were excluded; R18 recovers both. Evidence: oracle/data/probes/ddl-rest.jsonl and LocalDB 17.0.1000.7 levels 100–170; the committed Linux verdicts identify edition-limited positive routes.
 
-The 533 neighbours include 328 engine positives, all clean. Four engine-negative probes remain clean: two pre-existing permission-name gaps (permission-new-permission-words, permission-unknown-permission) and two undeclared-variable cases newly supported syntactically (routes-implicit-exec-args, commit-off). The existing committed issue151-implicit-local case also remains a contextual error-to-clean transition. Do not infer catalog, type, permission or variable resolution from syntax trees.
+At R17, 328 of the 533 neighbour probes were LocalDB positives and passed tree-check. The two
+permission-name negatives produced clean trees at R17 and are now rejected by
+`gap-statement-shape`. The undeclared-variable cases `routes-implicit-exec-args`, `commit-off` and
+`issue151-implicit-local` remain classified as context.
 
-Closing probes reject scalar XE source parentheses, database/server-qualified DROP SEQUENCE names, measured CONNECT ON AVAILABILITY GROUP combinations, and quoted multiword class qualifiers. The graph_match.sql fixture is corrected to grouped SHORTEST_PATH and OR of complete MATCH predicates: the original and shortest-path-only correction are engine 102, the final fixture is accepted at every level. Original fixture bytes remain in the tree-preservation snapshot inputs.
+Closing probes reject scalar XE source parentheses, database/server-qualified DROP SEQUENCE names,
+measured CONNECT ON AVAILABILITY GROUP combinations, and quoted multiword class qualifiers. At
+R17, the `graph_match.sql` fixture was corrected to use grouped SHORTEST_PATH and OR of complete
+MATCH predicates. LocalDB returned Msg 102 for the original and shortest-path-only correction and
+accepted the final fixture at every measured level. Original fixture bytes remain in the
+tree-preservation snapshot inputs.
 
 PARSEONLY accepts PRIORITY_LEVEL = 11, several spatial grid/bounding-box forms, and an application role without PASSWORD; no guessed restrictions are added. Event-session clause reordering beyond the fixed ADD/DROP sequence remains a pre-existing gap. Later set-operation INTO was deferred at R17 and is recovered by R18.
 
@@ -257,8 +256,8 @@ and windows subject to the measured combinations; JSON_OBJECTAGG takes one key:v
 no argument ORDER BY or DISTINCT, and permits NULL handling, RETURNING json and windows.
 Bare JSON_ARRAYAGG(DISTINCT x) and WITHIN GROUP are accepted by PARSEONLY, so they remain allowed.
 
-Five negative escape-operand probes remain contextual (boolean versus scalar): escape-boolean,
-escape-and_operand, escape-is-null, escape-in and escape-operand-comparison-group.
-The unquoted reserved word ESCAPE as a column or alias (escape-keyword-column, escape-alias)
-is a pre-existing lexical gap: both probes were clean before R18. Quoted [escape] is accepted.
+Tree-check rejects the five measured ESCAPE operand negatives with `expression-like-escape`:
+`escape-boolean`, `escape-and_operand`, `escape-is-null`, `escape-in` and
+`escape-operand-comparison-group`. It rejects `escape-keyword-column` and `escape-alias` with
+`gap-reserved-name`. These cases still have clean raw trees. Quoted `[escape]` passes.
 No name, type or boolean/scalar resolution is inferred from a syntax tree.

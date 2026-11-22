@@ -10,9 +10,9 @@ This policy covers the grammar, the generated parser, the scanner, and the Rust 
 
 ## Supported versions
 
-Nothing is published to a registry. Fixes land on `main`; consumers pick them up by moving their pinned commit.
+Releases are `vMAJOR.MINOR.PATCH` tags with a GitHub Release; nothing is published to a registry. Fixes land on `main` and ship in the next release; consumers pick them up by moving their pinned commit or tag.
 
 ## Practices
 
 - No credentials in the repository: `Verify` scans the working tree and the Git history for secrets on every pull request.
-- Dependencies are pinned to exact versions in `package.json`.
+- `dependencies` and `devDependencies` are pinned to exact versions in `package.json`.

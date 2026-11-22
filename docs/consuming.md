@@ -4,7 +4,12 @@ What a downstream project needs to know to depend on `tree-sitter-mssql`.
 
 ## Symbol and ABI
 
-The exported C symbol is `tree_sitter_mssql` (not `tree_sitter_sql`), so linking this grammar alongside a general-SQL tree-sitter grammar in the same binary does not collide. The parser is `LANGUAGE_VERSION` (ABI) 15. The crate depends on `tree-sitter-language = "0.1"` at runtime and only dev-depends on `tree-sitter ~0.27`, so a consumer on `tree-sitter = "0.26"` or newer is compatible.
+The exported C symbol is `tree_sitter_mssql`, so the parser can link alongside a general-SQL tree-sitter grammar
+in the same binary. The generated parser uses language ABI 15. Rust consumers supply an ABI-15-capable tree-sitter
+runtime. The documented Rust runtime floor is `tree-sitter = "0.26"`. The grammar crate depends on
+`tree-sitter-language = "0.1"` at runtime and uses `tree-sitter ~0.27` for its own tests. See the
+[README's incremental parsing limits](../README.md#what-it-guarantees) for the additional runtime requirement
+for incremental edits.
 
 ## Query files
 
@@ -12,7 +17,14 @@ Both bindings expose every query file — `HIGHLIGHTS_QUERY`, `INDENTS_QUERY`, `
 
 ## Node-kind stability
 
-`test/node-kinds.txt` is the public API surface. It is generated from `src/node-types.json`, and checked for drift on every pull request in `.github/workflows/verify.yml`, so two commits can be diffed mechanically. Node-kind and field-name additions are compatible; removals or renames are breaking; call out either in the pull request or commit that makes the change so it is visible in `CHANGELOG.md`.
+`test/node-kinds.txt` lists named node kinds and their field names. Verify checks the snapshot for drift. On pull
+requests, [`scripts/check-node-types.mjs`](../scripts/check-node-types.mjs) also compares `src/node-types.json` with
+the PR's merge target (the test merge's first parent). It checks for removed kinds, fields, field or child
+types and supertype subtypes, lost multiplicity, and existing entries becoming required.
+
+Removing or renaming a kind, field or supertype subtype is a major change. So is changing the CST of valid input
+that the previous release parsed cleanly. Additions that preserve those CSTs are minor changes. Call out contract
+changes in the pull request or commit for `CHANGELOG.md`. See [AGENTS.md](../AGENTS.md) for the release rules.
 
 ## Version-specific and deprecated constructs
 
@@ -20,12 +32,22 @@ Both bindings expose every query file — `HIGHLIGHTS_QUERY`, `INDENTS_QUERY`, `
 
 ## Packaging
 
-Nothing is published to a registry: pin a commit of this repository. The Node binding compiles the committed generated parser through `node-gyp-build`. `src/scanner.c` must be compiled alongside `src/parser.c` — vendoring one without the other produces a link error, or a parser that can lex neither a block comment nor any sqlcmd command (`:setvar`, `:r`, `:on error` and the rest).
+Nothing is published to a registry. Pin a Git tag or commit from this repository. On Node.js, the package loads
+the native addon with `node-gyp-build`. On Bun, it loads `prebuilds/<platform>-<arch>/tree-sitter-mssql.node`
+directly. Supply that prebuild when using Bun with a Git tag or commit. A source build uses `binding.gyp`.
+When vendoring the C parser, compile both `src/parser.c` and `src/scanner.c` to resolve the external scanner
+symbols.
 
 ## Text encoding
 
-- The parser reads UTF-8, UTF-16LE and UTF-16BE natively (tree-sitter `TSInputEncoding`). A UTF-8 byte order mark at the start of the input parses cleanly.
-- Other encodings, such as CP949 or EUC-KR, must be either transcoded to UTF-8 before parsing, or decoded on the fly with `TSInputEncodingCustom` and a `TSDecodeFunction` (tree-sitter 0.25 or newer). With a custom decoder, node byte offsets are offsets in the original encoding. This was checked with a CP949 decoder built on Windows `MultiByteToWideChar` (code page 949): a 497-byte CP949 file parsed with 0 errors, and the identifier `고객` spans CP949 bytes 51-55. The same raw CP949 bytes read as UTF-8 give parse errors.
+- The tree-sitter C API accepts UTF-8, UTF-16LE and UTF-16BE through `TSInputEncoding`. A UTF-8 byte order mark at
+  the start of the input parses cleanly. With the 0.27.2 CLI on little-endian Windows, transcode UTF-16BE input to
+  UTF-8 before using `tree-sitter parse`.
+- Other encodings, such as CP949 or EUC-KR, can be transcoded to UTF-8 or decoded through `TSInputEncodingCustom`
+  and a `DecodeFunction` callback (tree-sitter 0.25 or newer). With a custom decoder, node byte offsets are in the
+  original encoding. This was checked with a CP949 decoder built on Windows `MultiByteToWideChar` (code page 949):
+  a 497-byte CP949 file parsed with 0 errors, and the identifier `고객` spans CP949 bytes 51-55. The same raw CP949
+  bytes read as UTF-8 give parse errors.
 - The constraint layer (`crates/tree-check`: the CLI, and `tc_check`/`tc_check_v2` in the WASM build) takes UTF-8 text only. Transcode other encodings to UTF-8 before calling it.
 - Hangul identifiers: the identifier start and continue classes are generated from code points measured on SQL Server (`oracle/data/unicode/identifier-chars.json`, LocalDB 17.0.1000.7). Accepted: Hangul Syllables U+AC00-D7A3 (11,172 of 11,172), Hangul Jamo U+1100-11FF (240 of 256), Hangul Compatibility Jamo U+3131-318E (94 of 94) and Halfwidth Hangul U+FFA0-FFDC (52 of 61). The engine rejects Hangul Jamo Extended-A U+A960-A97C (0 of 29) and Extended-B U+D7B0-D7FB (0 of 76), and so does the grammar. Oracle set `korean` and `test/corpus/korean.txt` cover Hangul names in queries, DML, DDL, modules, variables, temporary tables, EXEC, CTEs, labels and cursors.
 

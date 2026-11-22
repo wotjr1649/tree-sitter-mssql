@@ -1,18 +1,29 @@
 # Fixtures
 
-Real T-SQL that the grammar must parse with zero `ERROR` and `MISSING` nodes: sanitized real
-objects, SQL snippets a T-SQL linter/formatter's own test suite feeds its parser, and examples
-from Microsoft's T-SQL reference. They are the integration check that sits next to the
-per-construct corpus tests: a construct that first appears in a fixture also gets a corpus test.
+These are integration fixtures from sanitized scripts, linter and formatter tests, and Microsoft
+documentation. They sit alongside the per-construct corpus tests. A construct that first appears
+in a fixture also gets a corpus test.
 
-Run the check with:
+The fixture gate requires clean tree-check verdicts with the default QUOTED_IDENTIFIER ON setting.
+It checks the root's `has_error` flag, `ERROR` and `MISSING` nodes, zero-width nodes on nonempty
+input, whether the root ends at the input byte length, and syntax constraints.
+The WASM parity check compares native and WASM reports under both settings, including rejections.
+
+From the repository root in Bash:
 
 ```bash
-cargo run --manifest-path crates/tree-check/Cargo.toml -- test/fixtures/*.sql
+cargo run --locked --manifest-path crates/tree-check/Cargo.toml -- test/fixtures/*.sql
 ```
 
-Files are named for the T-SQL construct(s) they exercise, not for where the SQL came from. The
-handful of T-SQL shapes the grammar deliberately does not parse are listed in the last section.
+From the repository root in PowerShell:
+
+```powershell
+$fixturePaths = (Get-ChildItem -LiteralPath test/fixtures -Filter '*.sql' -File).FullName
+cargo run --locked --manifest-path crates/tree-check/Cargo.toml -- $fixturePaths
+```
+
+Files are named for the constructs they exercise. See [Syntax notes](#syntax-notes) for nearby
+forms and their parser behavior.
 
 ## Statements and DDL
 
@@ -61,7 +72,7 @@ handful of T-SQL shapes the grammar deliberately does not parse are listed in th
 | `fulltext_catalog.sql` | `CREATE FULLTEXT CATALOG` |
 | `server_audit_create_and_enable.sql` | `CREATE SERVER AUDIT ... TO FILE (...) WITH (...)`, `ALTER SERVER AUDIT` |
 | `assembly_from_binary.sql` | `CREATE ASSEMBLY ... FROM 0x... WITH PERMISSION_SET` (the binary is truncated) |
-| `exec_output_return_value.sql` | `DECLARE` plus `EXEC @return_value = ... OUTPUT` |
+| `exec_output_return_value.sql` | `DECLARE`, then `EXEC` with a return-status assignment to `@return_value` and two named `OUTPUT` arguments |
 | `insert_select_where_not_exists.sql` | Multi-statement `INSERT ... SELECT ... WHERE NOT EXISTS` inside a top-level `BEGIN`/`END` |
 | `cursor_temp_table.sql` | Cursor lifecycle, a `#temp` table, a table variable, nested `IF` without `BEGIN`/`END` |
 | `dynamic_sql_try_catch.sql` | `TRY`/`CATCH`, `EXEC sp_executesql`, `QUOTENAME`, output parameters with a default |
@@ -152,7 +163,7 @@ handful of T-SQL shapes the grammar deliberately does not parse are listed in th
 | `at_time_zone.sql` | `AT TIME ZONE` (2016), incl. chained application and use in `WHERE` |
 | `tablesample.sql` | `TABLESAMPLE (n PERCENT \| ROWS)`, `TABLESAMPLE SYSTEM (...) REPEATABLE (seed)`, and combined with a table alias |
 | `opendatasource_changetable.sql` | `OPENDATASOURCE(...)` with a dotted object suffix, `CHANGETABLE(CHANGES ...)` joined against its source table, `CHANGETABLE(VERSION ...)` |
-| `graph_match.sql` | Graph tables (2017): `CREATE TABLE ... AS NODE`/`AS EDGE`, and `MATCH(...)` in `WHERE` with the `-()->`/`<-()-` arrow pattern, `SHORTEST_PATH(...)`, and a `\|`-alternated (polymorphic) edge pattern |
+| `graph_match.sql` | Graph tables (2017): `CREATE TABLE ... AS NODE`/`AS EDGE`, forward and reverse MATCH patterns, grouped `SHORTEST_PATH`, and OR between two complete MATCH predicates |
 
 ## Functions
 
@@ -207,20 +218,20 @@ accepts. Three more were dropped as out of scope rather than modeled: `COMPUTE` 
 `*=`/`=*` outer-join operators are syntax SQL Server removed outright (compatibility level 90 and
 SQL Server 2012), nothing the grammar's consumers run can execute them, and no corpus shows them.
 
-## Not parsed on purpose
+## Syntax notes
 
-Every file above parses with zero `ERROR`/`MISSING` nodes; nothing is pending. The T-SQL shapes
-the grammar knowingly leaves out, so a new fixture does not go looking for a rule that was
-decided against. `../../docs/accepted-gaps.md` is the ledger of the ones that are genuine
-mismatches with SQL Server's own behavior (a ledger entry there means the grammar and SQL Server
-disagree; a row here means only that a fixture shouldn't go looking for this rule, whether or not
-they disagree):
+See [Accepted gaps](../../docs/accepted-gaps.md) for oracle evidence and the distinction between
+raw parser and tree-check verdicts.
 
-| Construct | Why |
-|---|---|
-| `COMPUTE`, the `*=`/`=*` outer-join operators | Removed from SQL Server; out of scope (see above) — the grammar's rejection matches SQL Server's own, so this is not an accepted-gaps entry |
-| `FROM a HASH JOIN b`, `LOOP JOIN`, `MERGE JOIN`, `REMOTE JOIN` — a physical join hint with no join type | With no join type the hint word sits where an AS-less alias goes, so `FROM dbo.t hash` would stop parsing and `FROM dbo.a remote JOIN dbo.b` would silently lose its alias; and after an unterminated `FROM`, `MERGE` is also the start of a `MERGE` statement, a fork that tripled `generate` time. `INNER HASH JOIN` and the other typed forms parse. |
-| `WRITETEXT BULK ...`, `KILL STATS JOB`/`KILL QUERY NOTIFICATION` | Rare sub-forms of deprecated or console statements, not modeled |
-| `EXEC p 1 + 2`, `EXEC p @a = 1, 2` | Rejected here because SQL Server rejects them: a procedure argument is a constant, a variable or `DEFAULT`, and a positional argument cannot follow a named one (Msg 119) — the grammar's rejection matches SQL Server's own, so this is not an accepted-gaps entry |
-| `(SELECT TOP 1 a FROM t ORDER BY a) UNION ALL (SELECT TOP 1 b FROM u ORDER BY b)` — a parenthesized union branch with its own `ORDER BY` alongside `TOP`/`OFFSET`/`FETCH` | Not modeled either way; not a new gap from the `query_specification` split — this already failed to parse before that rule existed |
-| `ALTER MESSAGE TYPE name VALIDATION = ...` | Valid, documented T-SQL the grammar doesn't yet model — unlike the other six object kinds `CREATE MESSAGE TYPE`'s siblings gained an `ALTER` for, message types were assumed immutable and given none. See `../../docs/accepted-gaps.md` for this one — it's a genuine gap, not a deliberate decision. |
+| Construct | Current behavior |
+| --- | --- |
+| `COMPUTE`, `*=` and `=*` | The parser rejects these legacy forms. |
+| `SELECT * FROM a HASH JOIN b ON a.i = b.i;` and the LOOP, MERGE and REMOTE variants | A physical hint needs an explicit join type for the intended hinted inner join. The raw tree reads HASH, LOOP and REMOTE as aliases in these examples. MERGE yields a parse error. Typed forms such as INNER HASH JOIN produce a join hint. |
+| `WRITETEXT BULK dbo.t.c @ptr 'x';` | Open parser gap. Plain WRITETEXT is covered by `deprecated_syntax_snippets.sql`. |
+| `EXEC p 1 + 2`, `EXEC p @a = 1, 2` | The parser rejects both forms. Use a constant, variable or DEFAULT for a procedure argument. Once an argument is named, the subsequent arguments must also be named. |
+| `(SELECT TOP 1 a FROM t ORDER BY a) UNION ALL (SELECT TOP 1 b FROM u ORDER BY b)` | The raw parser rejects this shape. The adjacent recorded branch-local sort probes in `oracle/data/probes/expr-forms.jsonl` are SQL Server Msg 156. Parenthesized set operands without a branch-local sort are covered by the same set. |
+| `ALTER MESSAGE TYPE`, `KILL STATS JOB` and `KILL QUERY NOTIFICATION SUBSCRIPTION` | Supported and measured in `oracle/data/probes/ddl-rest.jsonl`. See the corresponding cases in `test/corpus/ddl-rest.txt`. |
+
+Recognizing the bare join-hint words as hints would conflict with aliases written without `AS`,
+such as `FROM dbo.a remote JOIN dbo.b`. An experiment with a conflict rule for bare `MERGE`
+tripled parser generation time. `MERGE` can also start the next statement after an unterminated `FROM`.

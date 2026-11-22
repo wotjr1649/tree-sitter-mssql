@@ -4,13 +4,13 @@ The reference for valid T-SQL is SQL Server's own parser under `SET PARSEONLY ON
 
 | Path | Holds |
 | --- | --- |
-| `kit/cases.jsonl` | 726 cases from tree-sitter-grammar-kit: `id`, `sha256`, `source` ([NOTICE](kit/NOTICE)) |
-| `kit/edits.jsonl`, `kit/route-edits.jsonl` | Edit histories for comparing incremental and fresh parses: 353 gap histories (939 edits) and 19 route histories (40 edits) |
-| `probes/*.jsonl` | Cases written and engine-checked while fixing defects. They gate those fixes like the kit cases do. IDs are prefixed with the set name. Current sets: `kit-dynamic-sql` (grammar-kit's dynamic SQL fixture), `backup-restore` (666 BACKUP and RESTORE forms: every WITH option name bare, with a number and with a string in both statements, devices, file lists, MIRROR TO, certificate and key backups), `query-forms` (174 query, DML, cursor, EXEC and native-module forms), `ddl-database` (259 database, availability group and server DDL forms), `ddl-external` (184 EXTERNAL/FULLTEXT/ENDPOINT neighbours), `ddl-table` (146 adjacent table/index DDL forms), `hint-rules` (596, the table-hint rules: every hint alone, every pair, every hint on each DML target), `table-hints` (165, hint syntax), `context` (797, the context rules ported from grammar-kit under ADR-0004: permissions, all 312 trigger event types on both scopes, built-in arity, scalar RETURN, CTE table source, window frame, MERGE terminator), `kit-routes` (640 realistic scripts from grammar-kit, ADR-0004; 44 contain `GO` lines, which the runner splits like a client), `queue-activation` (86, the QUEUE fix and constraint rules), `semicolon` (70), `exec-output` (18, EXEC OUTPUT rules), `identifiers` (34: Unicode names, bare `#`/`@` sigil names, and variables in column, table and MERGE alias positions, which the engine rejects) , `column-constraints` (28: table constraint forms inside a column definition, and foreign keys in table variables and types), `batch-rules` (53: statements that must start or end a batch, GO lines inside comments and strings, an unterminated block comment, and an empty WHERE or HAVING clause), `if-nesting` (39: IF nested without BEGIN up to depth 200, ELSE IF chains, `;`/`;;`/commented ELSE and dangling ELSE, under both QUOTED_IDENTIFIER settings) and `korean` (60: Hangul table, column, alias, variable, temporary table, module, parameter, CTE, label and cursor names in business-style T-SQL, double-quoted Hangul names, Jamo and Compatibility Jamo starts, and rejected forms: a digit before Hangul, Jamo Extended-A/B, a space inside an unquoted name) |
-| `verdicts/*.json` | Engine verdicts per case and compatibility level: the error numbers, `[]` for accepted. `meta` records the engine build, edition, platform, session `SET` state, levels, and the hashes of the cases and of the runner. Every case set has verdicts from LocalDB (`localdb-17.0.1000.7[.set].json`), which the replay requires. Most sets also have committed verdicts from the four Linux engines of the CI matrix (`linux-<build>[.set].json`, downloaded from the `oracle-engine` workflow artifacts). `batch-rules`, `column-constraints`, `if-nesting`, `korean`, `metamorphic-whitespace` and `quoted-identifier` do not; the workflow still judges them on every pull request that touches the oracle and compares the result with LocalDB in its artifacts. LocalDB is an Express edition, so edition-limited forms (Msg 1712, 11905) are accepted only by the Linux Developer edition engines |
-| `runner/ParseOnly/` | The runner that produces the verdicts (C#, .NET 10, Microsoft.Data.SqlClient pinned by `packages.lock.json`) |
-| `expected.json` | The grammar's current result per case (`clean` or `error`) and the edit histories whose incremental parse differs from a fresh one |
-| `rejected-clean.json` | Every case that every engine rejects but that parses cleanly, with its class: `gap` (decidable from the tree, not enforced yet), `context` (needs declarations or the catalog), `version` (a feature these engine builds lack), `environment` (edition, platform or server configuration), `runner` (not judgeable). Classes come from the newest engine's error. The replay fails on an unclassified case or a stale entry, so a change that leaves a rejected case clean must classify it |
+| `data/kit/cases.jsonl` | 726 grammar-kit cases with `id`, `sha256` and `source`. See [NOTICE](data/kit/NOTICE). |
+| `data/kit/edits.jsonl`, `data/kit/route-edits.jsonl` | 353 gap histories (939 edits) and 19 route histories (40 edits) for comparing incremental and fresh parses. |
+| `data/probes/*.jsonl` | Engine-checked defect and surface cases, with IDs prefixed by set. The replay discovers every probe file automatically. At `a4cccb0`, 32 probe sets plus the kit contribute 10,712 sources. |
+| `data/verdicts/*.json` | Per-engine, per-session and per-level observations. An empty error array means acceptance. `UNSUPPORTED_CONTROL` marks source skipped by the PARSEONLY guard. Metadata records the engine, levels, session setting and case and runner hashes. LocalDB has committed ON and OFF verdicts for every set. The four Linux engines have committed ON verdicts for every set except batch-rules, column-constraints, if-nesting, korean, metamorphic-whitespace and quoted-identifier. The engine workflow measures both settings for every set. |
+| `runners/ParseOnly/` | The .NET 10 runner, with Microsoft.Data.SqlClient pinned by `packages.lock.json`. |
+| `data/expected.json` | The current tree-check verdict per session/case pair and edit histories whose incremental parse differs from a fresh parse. |
+| `data/rejected-clean.json` | Clean session/case pairs with no accepted engine verdict. Each entry has a reason and a class: `gap` (a check the tree can decide), `context` (depends on declarations or the catalog), `version` (unavailable in the recorded builds), `environment` (edition, platform or configuration), or `runner` (a runner limitation). Replay fails when an entry is missing or stale. |
 
 The `table-hints` probe set adds 165 cases for INDEX/FORCESEEK arguments, numeric and token-length
 bounds, adjacent/space-separated hints, query TABLE HINT and UPDATE/DELETE targets. Its committed
@@ -19,17 +19,22 @@ LocalDB verdicts cover levels 100–170; the matching corpus includes the docume
 The `ddl-external` set is measured on LocalDB 17.0.1000.7, levels 100–170. Its five
 rejected-but-clean cases are Full-Text component/endpoint edition limits (7609/7878);
 option-set rejections are checked in tree-check.
-The query-forms set adds 174 query, DML, cursor, EXEC and native-module neighbours measured on
+The `query-forms` set adds 174 query, DML, cursor, EXEC and native-module neighbours measured on
 LocalDB 17.0.1000.7, levels 100–170 (108 accepted, 66 rejected). Every case is pinned in
-test/corpus/query-forms.txt. The set deliberately retains engine-accepted budget-stopped and pre-existing
-gaps; a corpus tree containing ERROR is not a claim that SQL Server rejects its source.
-The matching constraints and their engine evidence live in crates/tree-check/src/constraints.rs.
+`test/corpus/query-forms.txt`. At R13 this set recorded engine-accepted forms deferred by the
+parser-cost budget. The deferred cases now pass tree-check after R17 and R18. Matching rules live
+under [constraints/](../crates/tree-check/src/constraints/), with evidence in the corresponding probes.
 
 ## Reading the verdicts
 
-- A case is **positive** when SQL Server accepts it at any verified level. A case is a **negative** only when every level rejects it.
-- Rejections include context errors that a grammar cannot and should not catch (conflicting hints, boolean versus scalar, permissions). Agreement is therefore never expected to reach 100 %. Classifying the rejections as syntax or context is a later step.
-- The replay merges every verdict file; each file is bound by its `meta.cases_sha256` to the one case set (kit or a probe set) it was made from. A case is positive when any engine at any level accepts it **under the same session setting**.
+- A case is **positive** in a session when at least one recorded engine and level returns an
+  empty error array for that session. A case with only rejections or an unsupported-control outcome
+  has no accepted verdict. The ledger explains why some of those cases pass tree-check.
+- A case is a **syntax negative** only when every recorded engine and level for that session
+  rejects it on syntax grounds. Catalog, permission, edition and configuration errors can produce
+  rejections without establishing a syntax defect.
+- The replay binds every verdict file to its source set using `meta.cases_sha256` and keeps ON
+  and OFF observations separate.
 
 | Verdict file | Engine | Platform | Levels | Cases that differ from LocalDB at a shared level |
 | --- | --- | --- | --- | ---: |
@@ -47,8 +52,9 @@ The matching constraints and their engine evidence live in crates/tree-check/src
 ## Checking the grammar
 
 ```sh
-cargo build --locked --manifest-path crates/tree-check/Cargo.toml
-node scripts/oracle-replay.mjs --tree-check target/debug/tree-check   # with CARGO_TARGET_DIR=target
+export CARGO_TARGET_DIR=target
+cargo build --locked --manifest-path crates/tree-check/Cargo.toml --bin tree-check
+node scripts/oracle-replay.mjs --tree-check target/debug/tree-check
 ```
 
 The replay sends `--quoted-identifier on|off` to `tree-check` for the session recorded in each verdict. Existing ON cases keep their IDs; OFF cases use `<id>@qi-off` in `expected.json` and `rejected-clean.json`. Missing session metadata means the historical ON default. ON and OFF acceptance are never merged. Every case set must have engine verdicts under both settings; missing ON or OFF coverage fails the replay. Edit histories compare the shared, session-independent grammar tree once.
@@ -56,50 +62,73 @@ The replay sends `--quoted-identifier on|off` to `tree-check` for the session re
 The replay judges every case with `tree-check` (through the tree-sitter API) and prints the agreement table. It replays the edit histories and compares the results with `expected.json`. Exit codes:
 
 - **0:** the results equal the baseline.
-- **1:** the results differ from the baseline. Review the listed changes, then rerun with `--update` in the same pull request.
+- **1:** The baseline differs, an engine-accepted case fails, or the rejected-clean ledger is
+  out of sync. Resolve the listed failures first. Use `--update` to record a verified baseline
+  change once the acceptance and classification checks pass.
 - **2:** the inputs are inconsistent, for example a hash mismatch or verdicts made from different cases.
 
 `--update` refuses to record any engine-accepted case with an error, including a newly added case. The replay also refuses a baseline with any accepted-and-error case.
 
 ## Producing verdicts
 
+From the repository root, run these refresh commands against LocalDB 17.0.1000.7. For another
+engine or build, write to separate verdict files named for the product version reported in
+`meta.engine.product_version`.
+
 ```sh
-(cd oracle/runners/ParseOnly && dotnet restore --locked-mode && dotnet build -c Release --no-restore)
-dotnet oracle/runners/ParseOnly/bin/Release/net10.0/ParseOnly.dll --self-test
-dotnet oracle/runners/ParseOnly/bin/Release/net10.0/ParseOnly.dll --cases oracle/data/kit/cases.jsonl --out oracle/data/verdicts/<engine>.json
+runner=oracle/runners/ParseOnly/bin/Release/net10.0/ParseOnly.dll
+(cd oracle/runners/ParseOnly && dotnet restore --locked-mode && dotnet build -c Release --no-restore) &&
+  dotnet "$runner" --self-test &&
+  dotnet "$runner" --cases oracle/data/kit/cases.jsonl \
+    --out oracle/data/verdicts/localdb-17.0.1000.7.json --quoted-identifier on &&
+  dotnet "$runner" --cases oracle/data/kit/cases.jsonl \
+    --out oracle/data/verdicts/localdb-17.0.1000.7.qi-off.json --quoted-identifier off
 ```
 
-Without `--server` the runner uses SQL Server LocalDB with Windows authentication. With `--server HOST,PORT` it uses SQL authentication: the user comes from `MSSQL_USER` (default `sa`) and the password from `MSSQL_PASSWORD`. `--levels` restricts the compatibility levels. `--quoted-identifier on|off` selects the initial session setting (default `on`); the runner sets it in its own control batch before `SET PARSEONLY ON` and before sending the case text unchanged. `meta.session_set.quoted_identifier` records the verified numeric `SESSIONPROPERTY` value (`1` for ON, `0` for OFF).
+Without `--server` the runner uses LocalDB with Windows authentication. With `--server HOST,PORT`
+it reads SQL credentials from `MSSQL_USER` (default `sa`) and `MSSQL_PASSWORD`. Use `--levels` for
+a subset of compatibility levels and `--quoted-identifier on|off` for the initial session setting.
+The verdict records the numeric SESSIONPROPERTY value in `meta.session_set.quoted_identifier`.
 
-What the runner does:
+- The runner creates a temporary database for each level and drops it at the end.
+- Each case gets a new unpooled connection. The runner sends `SET QUOTED_IDENTIFIER` and
+  `SET PARSEONLY ON` as separate control batches.
+- The runner sends each nonblank part between recognized GO lines as one batch. Its line-based split also
+  applies inside comments and strings. The runner consumes a repeat count as part of the separator
+  without repeating the batch. A GO line ending in a semicolon is outside the splitter's pattern.
+- It records the engine's error numbers across the submitted batches and `[]` for acceptance. Source containing
+  PARSEONLY is recorded as `UNSUPPORTED_CONTROL` and skipped.
+- Connection failures, timeouts and fatal errors abort the run with exit 2.
+- Each verdict file records the SHA-256 of the embedded ParseOnly.csproj and Program.cs bytes, in that order.
 
-- It creates a temporary database per level and drops it at the end.
-- Each case gets a new unpooled connection. `SET QUOTED_IDENTIFIER ON|OFF` and `SET PARSEONLY ON` are sent as separate control batches, then the case text unchanged.
-- It records every error number the engine returns, and `[]` when the engine accepts the case.
-- It never sends a case that mentions `PARSEONLY` (recorded as `UNSUPPORTED_CONTROL`).
-- Connection failures, timeouts and fatal errors stop the run with exit 2. They are never recorded as rejections.
-- Each verdict file records the hash of the runner's own source.
+`--self-test` checks the runner on a live engine at its default compatibility level. Test failures
+return 1. Infrastructure or argument failures return 2. Run it with `--quoted-identifier on`
+and then with `--quoted-identifier off` to verify both sessions. The self-test checks that:
 
-`--self-test` checks the runner against a live engine and exits 1 on any failure:
-
-- a valid statement is accepted;
-- a double-quoted table name is accepted under ON and rejected under OFF;
-- a syntax error is rejected with 102;
-- the batch-first rule for `CREATE PROCEDURE` holds;
-- Unicode text is accepted;
-- a parsed `CREATE TABLE` is not executed;
-- guarded text is never sent.
+- a valid statement is accepted
+- a double-quoted table name is accepted under ON and rejected under OFF
+- a syntax error is rejected with 102
+- `CREATE PROCEDURE` must start its batch
+- GO splits batches, and an empty or GO-only script is accepted
+- Unicode text is accepted
+- a parsed `CREATE TABLE` is not executed
+- guarded text is never sent
 
 The `Oracle engine` workflow runs the self-test and every case on real engines in Linux containers, each image pinned by digest:
 
 | Engine | Levels |
 | --- | --- |
-| SQL Server 2017 CU31 | 100–140 |
-| SQL Server 2019 CU32 | 100–150 |
+| SQL Server 2017 CU31 GDR20 | 100–140 |
+| SQL Server 2019 CU32 GDR13 | 100–150 |
 | SQL Server 2022 CU28 | 100–160 |
 | SQL Server 2025 CU11 | 100–170 |
 
-It runs on pull requests that touch the oracle, and weekly. It compares each engine's verdicts with the committed LocalDB verdicts (`scripts/verdict-diff.mjs`) and uploads them. Differences between engines are observations to classify; they do not fail the job. SQL Server 2008 to 2016 run only on Windows and are not verified.
+The workflow runs weekly, on manual dispatch, and on pull requests that change
+`oracle/runners/`, `oracle/data/kit/`, `oracle/data/probes/`, `oracle/data/verdicts/`,
+`scripts/verdict-diff.mjs` or the workflow file. It compares each run with the matching
+committed LocalDB session using [verdict-diff.mjs](../scripts/verdict-diff.mjs) and uploads
+the verdicts. Engine differences are reported for classification. The verified matrix starts
+at SQL Server 2017.
 
 
 ## QUOTED_IDENTIFIER sessions

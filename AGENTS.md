@@ -18,13 +18,13 @@ approval. go-treesitter regenerates `src/parser.c` with its own pinned CLI.
   generator's optimize-off pragmas.
 - The CLI pin is `devDependencies.tree-sitter-cli` in `package.json`. Its `package-lock.json` entry and the
   exact-version `allowScripts` key repeat it: change all three together. Verify fails when they differ or the installed
-  CLI reports another version; Verify, `fuzz.yml` and the `prestart`/`start` scripts read the pin. It tracks the latest stable tree-sitter release (`gh release view -R tree-sitter/tree-sitter`). Move it in its own
-  PR: regenerate, compare full CSTs on the fixed inputs and record generated-code differences. Identical trees are a
-  patch release; otherwise follow the SemVer rules below.
+  CLI reports another version; Verify and `fuzz.yml` read the pin; the `prestart`/`start` scripts run the installed CLI. It tracks the
+  latest stable tree-sitter release (`gh release view -R tree-sitter/tree-sitter`). Move it in its own PR: regenerate,
+  compare full CSTs on the fixed inputs and record generated-code differences. Identical trees are a patch release;
+  otherwise follow the SemVer rules below.
 - The ABI is `ci/tree-sitter-abi.txt`. The generate step passes it with `--abi` and Verify checks it against
-  `LANGUAGE_VERSION` in `src/parser.c`. Binding
-  runtime lower bounds are in the binding manifests. Changing the ABI or a runtime lower bound needs the owner's
-  approval and a major release.
+  `LANGUAGE_VERSION` in `src/parser.c`. Binding runtime lower bounds are in the binding manifests. Changing the ABI
+  or a runtime lower bound needs the owner's approval and a major release.
 - Valid T-SQL means SQL Server's parser accepts it (`SET PARSEONLY ON`) at a stated compatibility level. Tests
   inherited from the original grammar (baseline in ADR-0001) and `docs/accepted-gaps.md` are that grammar's choices;
   where they disagree with SQL Server, SQL Server wins and the change names the case and level.

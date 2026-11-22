@@ -37,7 +37,7 @@ old tree of these forms stops matching:
 | `GENERATED ALWAYS AS ROW START HIDDEN` | `identifier`s | `generated_always` |
 | `ALTER QUEUE q REORGANIZE WITH (...)` | `with_clause` with a nested `option` | `with_options` |
 | `CREATE TABLE ... AS NODE ON fg` | second `table_data_placement` | `on_filegroup` |
-| `PARSE` / `TRY_PARSE(x AS int)` | `invocation`, type as an alias | `cast` with `name: keyword_try_parse` |
+| `PARSE(x AS int)` / `TRY_PARSE(x AS int)` | `invocation`, type as an alias | `cast` with `name: keyword_parse` for `PARSE` and `name: keyword_try_parse` for `TRY_PARSE` |
 | `CREATE PROCEDURE p AS ; WITH c AS (...) SELECT ...` | CTE outside the procedure body | inside `procedure_body` |
 | `DECLARE @c AS CURSOR` | `custom_type` | `keyword_cursor` |
 | `IF a IF b s ELSE t` (dangling ELSE) | `else_clause` on the outer `if_statement` | on the nearest `if_statement`, as SQL Server executes it |
@@ -82,9 +82,9 @@ Child iteration is unchanged. `ChildByFieldName` now finds them.
   levels 100–170; acceptance at any recorded engine/level counts. All 7,838 ON and 7,747 OFF accepted cases
   pass, including session-aware re-parsing under OFF (the grammar alone misses three accepted OFF cases). LocalDB 2025 covers all sources in both sessions; Linux results cover earlier ON snapshots. One runner-controlled input was not submitted to the engines. Inputs that
   1.0.0 parsed with an `ERROR` may now parse cleanly, and their trees are new.
-- **Incremental reparsing.** Use a tree-sitter runtime that contains tree-sitter commit `f932671a5` (released after
-  0.27.2). Older runtimes can give a reparse that differs from a fresh parse when a reused node starts with a keyword
-  that must be read as a name; this is a runtime defect, the same for 1.0.0, and no grammar can avoid it.
+- **Incremental reparsing.** Use a tree-sitter runtime containing commit `f932671a5` for the reuse fix. Earlier
+  runtimes can reuse the wrong first leaf when a keyword must be read as a name. This also affects 1.0.0.
+  A fresh parse avoids that reuse defect.
 - **Error recovery of invalid input.** Trees of inputs SQL Server rejects may differ inside their `ERROR` nodes. They
   were never a contract. The same holds for an incremental reparse after an edit that leaves invalid text: it can
   place the `ERROR` differently from a fresh parse of that text.
@@ -97,5 +97,5 @@ Child iteration is unchanged. `ChildByFieldName` now finds them.
 - **Size and time.** In the release audit on Windows x64 with gcc 16.2.0 `-O2`, the compiled library was 1.386x
   the M2 milestone (`e8a398e`), and median parse time over five alternating runs was 0.949x. Against the then-current
   milestone (`4ff4c5f`), the ratios were 1.000x and 0.952x. Timing varies by host and run; peak memory was not
-  measured on Windows (ADR-0005). The release runtime milestone is now `d206c0a` (#62); those earlier ratios do
-  not measure against it. The current 1.0.0 comparison is in [benchmarks.md](benchmarks.md).
+  measured on Windows (ADR-0005). The direct comparison with 1.0.0 in [benchmarks.md](benchmarks.md) uses the
+  2.0.0 release candidate at `d206c0a` (#62).
