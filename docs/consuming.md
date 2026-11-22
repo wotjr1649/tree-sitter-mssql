@@ -15,6 +15,13 @@ for incremental edits.
 
 Both bindings expose every query file — `HIGHLIGHTS_QUERY`, `INDENTS_QUERY`, `INJECTIONS_QUERY`, `LOCALS_QUERY`, `TAGS_QUERY` — so a consumer can load `queries/highlights.scm` without resolving the package's install path by hand. The Rust crate exports them as real `pub const` items (`tree_sitter_mssql::HIGHLIGHTS_QUERY`); the Node binding exposes them as properties of its default export (`SQL.HIGHLIGHTS_QUERY`, not a named import).
 
+## WRITETEXT BULK migration
+
+In v2.2.0, a data-less `WRITETEXT BULK` without `WITH LOG` could parse with `BULK` as the
+`object_reference` and the target column as a `field`. Consumers of `writetext_statement`
+can now match its `keyword_bulk` child and read the target from `object_reference`. In that
+form, the text pointer is the only argument after the target, and the payload comes through TDS.
+
 ## Node-kind stability
 
 `test/node-kinds.txt` lists named node kinds and their field names. Verify checks the snapshot for drift. On pull

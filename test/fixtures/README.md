@@ -227,7 +227,7 @@ raw parser and tree-check verdicts.
 | --- | --- |
 | `COMPUTE`, `*=` and `=*` | The parser rejects these legacy forms. |
 | `SELECT * FROM a HASH JOIN b ON a.i = b.i;` and the LOOP, MERGE and REMOTE variants | A physical hint needs an explicit join type for the intended hinted inner join. The raw tree reads HASH, LOOP and REMOTE as aliases in these examples. MERGE yields a parse error. Typed forms such as INNER HASH JOIN produce a join hint. |
-| `WRITETEXT BULK dbo.t.c @ptr 'x';` | Open parser gap. Plain WRITETEXT is covered by `deprecated_syntax_snippets.sql`. |
+| `WRITETEXT BULK dbo.t.c @ptr [WITH LOG]` | The BULK form expects data through TDS. See [the WRITETEXT cases](../corpus/misc_ddl.txt) and [the engine probes](../../oracle/data/probes/quoted-identifier.jsonl). |
 | `EXEC p 1 + 2`, `EXEC p @a = 1, 2` | The parser rejects both forms. Use a constant, variable or DEFAULT for a procedure argument. Once an argument is named, the subsequent arguments must also be named. |
 | `(SELECT TOP 1 a FROM t ORDER BY a) UNION ALL (SELECT TOP 1 b FROM u ORDER BY b)` | The raw parser rejects this shape. The adjacent recorded branch-local sort probes in `oracle/data/probes/expr-forms.jsonl` are SQL Server Msg 156. Parenthesized set operands without a branch-local sort are covered by the same set. |
 | `ALTER MESSAGE TYPE`, `KILL STATS JOB` and `KILL QUERY NOTIFICATION SUBSCRIPTION` | Supported and measured in `oracle/data/probes/ddl-rest.jsonl`. See the corresponding cases in `test/corpus/ddl-rest.txt`. |

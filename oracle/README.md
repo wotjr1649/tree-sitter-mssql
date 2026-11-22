@@ -135,9 +135,10 @@ at SQL Server 2017.
 
 The `metamorphic-whitespace` set adds 110 cases for 55 code points in two unambiguous token-gap positions, engine-checked under both settings at levels 100–170. SQL Server accepts the 53 separators represented by U+0000–0020, U+0085, U+00A0, U+1680, U+2000–200B, U+2028–2029, U+202F, U+205F and U+3000; U+180E and U+FEFF are rejected.
 
-The 122-case `probes/quoted-identifier.jsonl` set covers quoted names, expression values, LIKE/IN,
+The 130-case `probes/quoted-identifier.jsonl` set covers quoted names, expression values, LIKE/IN,
 EXEC arguments and dynamic SQL, DDL, defaults, XML methods, indexed views, computed-column and
-filtered indexes, inline SET switches across GO, stored-procedure capture and dynamic-SQL isolation. LocalDB verdicts cover levels 100–170 under both settings. Session-specific files
+filtered indexes, inline SET switches across GO, stored-procedure capture, dynamic-SQL isolation and
+WRITETEXT BULK. LocalDB verdicts cover levels 100–170 under both settings. Session-specific files
 use `<engine>[.<set>].qi-on.json` and `<engine>[.<set>].qi-off.json` (the kit omits `<set>`);
 legacy files without a session suffix retain their recorded ON setting. The new quoted-identifier set
 uses explicit suffixes for both sessions; other sets retain their legacy ON filename. For example:
