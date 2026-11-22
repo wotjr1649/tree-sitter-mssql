@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2026-11-23
+
+### Changed
+
+- A smaller parse table from the grammar alone (CLI 0.27.2 output). The optional `ALTER ASSEMBLY` clauses reduce through hidden rules, column and table constraints share the `CHECK` and `REFERENCES` tails, and `MERGE` branches share `[AND predicate] THEN`. Parse states fall from 13,726 to 13,398, `parser.c` by 2.10 % and the Windows DLL by 1.93 %; parse instruction counts are unchanged (−0.87 % to +0.13 %). Trees of valid input are unchanged on the corpus, fixtures, oracle sources and 3,563 generated engine-accepted inputs. Some error-recovery trees in `MERGE` and constraints differ (#86).
+- tree-check rejects a T-SQL reserved keyword used as an unquoted name, such as `REFERENCES dbo. ON`, and bare words in a column definition that are not documented column options (Msg 156). Bracketed and quoted names, non-reserved keywords as names, documented options, multi-word types (`DOUBLE PRECISION`, `… VARYING` with `COLLATE`) and ODBC `{fn …}` calls stay clean. Nine reserved words that SQL Server still accepts as names at some level are exempt. The edit history from #87, whose incremental and fresh trees differ, is tracked in the oracle (#88).
+
+### Documentation
+
+- `docs/benchmarks.md` records the LR, lexer and CST analysis and the rejected experiments. Removing `inline` grew the DLL. Sharing the DROP tails was not worth coupling eight statements. All 28 conflicts are required. Left-factoring and scanner moves did not help (#86).
+- `docs/accepted-gaps.md` lists `char varying(n)`, which SQL Server accepts but which parses to an error tree. `docs/scope.md` counts 62,882 case verdicts at 2.5.0, with 92 level-dependent cases (#88).
+
 ## [2.4.0] - 2026-11-22
 
 ### Changed
