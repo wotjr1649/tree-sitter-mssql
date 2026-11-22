@@ -244,6 +244,54 @@ pub(super) const SERVER_ONLY_EVENTS: &[&str] = &[
     "REVOKE_SERVER",
 ];
 
+/// The shared procedure body can be bare AS. Triggers need a statement or EXTERNAL NAME.
+/// LocalDB 17.0.1000.7, levels 100-170, both QUOTED_IDENTIFIER settings:
+/// batch-rules/{create,alter}-trigger-no-body and trigger-semicolon-only (Msg 102).
+pub(super) fn trigger_body(trigger: Node, out: &mut Vec<Violation>) {
+    if let Some(body) = trigger.child_by_field_name("body")
+        && body.syntax_named_child_count() == 1
+    {
+        out.push(violation(
+            "trigger-body",
+            "a trigger needs a statement or EXTERNAL NAME after AS".into(),
+            body,
+        ));
+    }
+}
+
+/// The RETURNS clause selects the body form. LocalDB 17.0.1000.7, levels 100-170, both sessions:
+/// batch-rules function cases for table-columns (Msg 156), inline-table and table-variable
+/// (156/102), and *scalar-function-inline-query (102) reject mismatched bodies.
+pub(super) fn function_return_body(function: Node, out: &mut Vec<Violation>) {
+    let Some(body) = function.child_by_field_name("body") else {
+        return;
+    };
+    let (valid, detail) = if has_child(function, "column_definitions") {
+        (
+            has_child(body, "external_name"),
+            "RETURNS TABLE with a column list requires an EXTERNAL NAME body",
+        )
+    } else if has_child(function, "table_var_declaration") {
+        (
+            has_child(body, "keyword_begin"),
+            "RETURNS @variable TABLE requires a BEGIN ... END body",
+        )
+    } else if has_child(function, "keyword_table") {
+        (
+            has_child(body, "keyword_return"),
+            "inline RETURNS TABLE requires RETURN followed by a query",
+        )
+    } else {
+        (
+            has_child(body, "keyword_begin") || has_child(body, "external_name"),
+            "a scalar function requires a BEGIN ... END or EXTERNAL NAME body",
+        )
+    };
+    if !valid {
+        out.push(violation("function-return-body", detail.into(), body));
+    }
+}
+
 /// Trigger scope, decided by `ON DATABASE` / `ON ALL SERVER` (a DDL trigger) versus `ON object`
 /// (a DML trigger). Evidence: SQL Server 2025 LocalDB 17.0.1000.7, levels 100-170, oracle set
 /// `context/trig-*` and the trigger-* cases, for CREATE, ALTER and CREATE OR ALTER:

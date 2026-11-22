@@ -6,7 +6,7 @@ The reference for valid T-SQL is SQL Server's own parser under `SET PARSEONLY ON
 | --- | --- |
 | `data/kit/cases.jsonl` | 726 grammar-kit cases with `id`, `sha256` and `source`. See [NOTICE](data/kit/NOTICE). |
 | `data/kit/edits.jsonl`, `data/kit/route-edits.jsonl` | 353 gap histories (939 edits) and 19 route histories (40 edits) for comparing incremental and fresh parses. |
-| `data/probes/*.jsonl` | Engine-checked defect and surface cases, with IDs prefixed by set. The replay discovers every probe file automatically. At `a4cccb0`, 32 probe sets plus the kit contribute 10,712 sources. |
+| `data/probes/*.jsonl` | Engine-checked defect and surface cases, with IDs prefixed by set. The replay discovers every probe file automatically. The 32 probe sets plus the kit contribute 10,780 sources (21,560 session/case pairs). |
 | `data/verdicts/*.json` | Per-engine, per-session and per-level observations. An empty error array means acceptance. `UNSUPPORTED_CONTROL` marks source skipped by the PARSEONLY guard. Metadata records the engine, levels, session setting and case and runner hashes. LocalDB has committed ON and OFF verdicts for every set. The four Linux engines have committed ON verdicts for every set except batch-rules, column-constraints, if-nesting, korean, metamorphic-whitespace and quoted-identifier. The engine workflow measures both settings for every set. |
 | `runners/ParseOnly/` | The .NET 10 runner, with Microsoft.Data.SqlClient pinned by `packages.lock.json`. |
 | `data/expected.json` | The current tree-check verdict per session/case pair and edit histories whose incremental parse differs from a fresh parse. |
@@ -24,6 +24,9 @@ LocalDB 17.0.1000.7, levels 100–170 (108 accepted, 66 rejected). Every case is
 `test/corpus/query-forms.txt`. At R13 this set recorded engine-accepted forms deferred by the
 parser-cost budget. The deferred cases now pass tree-check after R17 and R18. Matching rules live
 under [constraints/](../crates/tree-check/src/constraints/), with evidence in the corresponding probes.
+
+The `batch-rules` set has 113 cases, including the trigger, certificate and function body
+constraints measured in both sessions. It also has ScriptDOM verdicts for both sessions.
 
 ## Reading the verdicts
 

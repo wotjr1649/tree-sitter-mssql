@@ -2,7 +2,7 @@
 
 ## Current oracle status
 
-For `v2.2.0`, the replay at `a4cccb0` covers 10,712 sources and 21,424 session/case pairs. All 15,585
+The replay covers 10,780 sources and 21,560 session/case pairs. All 15,642
 engine-accepted pairs pass tree-check. The [rejected-clean ledger](../oracle/data/rejected-clean.json)
 contains 445 pairs (190 ON, 255 OFF): context 111, environment 294, version 36 and runner 4.
 There are zero entries classified as `gap` and zero edit histories with incremental differences.
@@ -48,16 +48,34 @@ The probes in [ddl-rest.jsonl](../oracle/data/probes/ddl-rest.jsonl) and the tre
 For join hints, removed syntax, EXEC arguments and branch-local ORDER BY, see the
 [fixture syntax notes](../test/fixtures/README.md#syntax-notes).
 
-## Over-acceptance — constructs this grammar accepts that SQL Server rejects
+## Over-acceptance resolved in tree-check
 
-The examples below still pass the raw parser and tree-check. They lack committed engine verdicts
-for the exact forms shown.
+Tree-check rejects these shapes in otherwise clean parse trees. The
+[batch-rules probes](../oracle/data/probes/batch-rules.jsonl) record LocalDB 17.0.1000.7
+PARSEONLY verdicts at levels 100–170 with QUOTED_IDENTIFIER ON and OFF. IDs below
+have the `batch-rules/` prefix.
 
-| Construct | Why | Pinned by |
+| Construct | Rejected cases | SQL Server verdict |
 | --- | --- | --- |
-| A body-less `CREATE TRIGGER ... AS` with no statements after `AS` | The procedure and trigger bodies share one rule; a body-less procedure is legitimate SSMS-scripted syntax, but SQL Server rejects a body-less trigger specifically, and modeling that as a second rule was judged not worth the duplication for one invalid combination | No corpus case exercises a body-less trigger yet — the existing "An empty procedure body and a numbered procedure" case in `test/corpus/procedures.txt` only pins the (correct) procedure form |
-| `CREATE CERTIFICATE ... FROM PROVIDER name` | `CREATE CERTIFICATE` and `CREATE ASYMMETRIC KEY` share the same `_key_source` rule, but only `ASYMMETRIC KEY` accepts `PROVIDER` in real SQL Server | The current raw tree and tree-check accept this shape through `_key_source`. No corpus case pins the combination. A corpus-only reproduction can use the committed parser. |
-| `CREATE FUNCTION ... RETURNS TABLE ( columns )` with an inline (`RETURN query`) or `BEGIN ... END` body | The column list is the result shape of a CLR table-valued function, whose body is `EXTERNAL NAME`; the `RETURNS` clause and the body are separate rules, and tying the column list to the CLR body would duplicate the function definition for one invalid combination | No corpus case exercises the invalid combination; "CLR scalar and table-valued functions with EXTERNAL NAME" in `test/corpus/create_function.txt` pins the valid CLR form |
+| `CREATE` or `ALTER TRIGGER` with no statement or `EXTERNAL NAME` body | `create-trigger-no-body`, `alter-trigger-no-body`, `trigger-semicolon-only` | Msg 102 |
+| `CREATE CERTIFICATE` with a bare or delimited `PROVIDER` source | `certificate-from-provider`, `certificate-from-bracketed-provider`, `certificate-from-bracketed-provider-assignment`, `certificate-from-quoted-provider-assignment` | Msg 102 |
+| `CREATE CERTIFICATE` with a padded or quoted source, an unknown option, or a missing `=` | `certificate-from-padded-provider`, `certificate-from-bracketed-file`, `certificate-from-unknown-option`, `certificate-from-file-without-equals`, `certificate-from-binary-without-equals` | Msg 102 |
+| `RETURNS TABLE (columns)` with an inline or block body | `create-function-table-columns-inline`, `create-function-table-columns-block`, `alter-function-table-columns-inline`, `alter-function-table-columns-block` | Msg 156 |
+| `RETURNS TABLE` without columns with an `EXTERNAL NAME` or block body | `create-function-inline-table-external` (156), `create-function-inline-table-block` (102) | Msg 156, 102 |
+| `RETURNS @r TABLE (columns)` with an `EXTERNAL NAME` or inline body | `alter-function-table-variable-external`, `create-or-alter-function-table-variable-external` (156), `create-function-table-variable-inline` (102) | Msg 156, 102 |
+| A statement in the same batch after a CLR trigger or procedure | `clr-trigger-then-select`, `alter-clr-trigger-then-select`, `clr-proc-then-select`, `alter-clr-proc-then-select` | Msg 156 |
+| A statement in the same batch after a CLR function | `clr-function-then-select`, `alter-clr-function-then-select` | Msg 156 |
+| A scalar function with an inline `RETURN` query body | `scalar-function-inline-query`, `create-or-alter-scalar-function-inline-query` | Msg 102 |
+| A standalone block before a CLR module in the same batch | `block-then-clr-function`, `block-then-clr-trigger`, `block-then-clr-proc` | Msg 111 |
+| A standalone block after a CLR module in the same batch | `clr-trigger-then-block`, `alter-clr-proc-then-block`, `clr-function-then-block` | Msg 156 |
+
+`create-procedure-no-body`, `create-trigger-select`, `alter-trigger-select`, `trigger-external-name`,
+`certificate-from-file` and `asymmetric-key-from-provider` pass. The accepted TVF pairings are
+`RETURN` followed by a query for inline `RETURNS TABLE`, a block for `RETURNS @r TABLE (columns)`,
+and `EXTERNAL NAME` for `RETURNS TABLE (columns)`. Scalar functions accept a block or
+`EXTERNAL NAME`. A `GO` separator lets a statement or block precede or follow a CLR module.
+A T-SQL trigger can contain multiple statements, including blocks. Certificate import accepts
+`ASSEMBLY`, `FILE =`, `EXECUTABLE FILE =` and `BINARY =`.
 
 ## FROM-less clauses: measured residual gaps
 

@@ -51,3 +51,63 @@
 {"id":"batch-rules/empty-where","sha256":"3956652d673481779818d880cf164d668adfb6a00e578aeab6b39b067909d9ae","source":"SELECT 1 WHERE;"}
 {"id":"batch-rules/empty-having","sha256":"59f2b1da08903cb38f9b3a9ee934ed5bd85eb7c19de5b36dd41da6255f4f29fc","source":"SELECT 1 HAVING;"}
 {"id":"batch-rules/unterminated-block-comment","sha256":"200af1a72cc87b0830b400a40689bd5ff94d7f249fe80c6a165ace39b98b433f","source":"SELECT 1;\n/* never closed\nSELECT 2;"}
+{"id":"batch-rules/create-trigger-no-body","sha256":"2b5465f89aca07cd8228f728f0d69e611d3cf75ec4f14e363166cc47d46dd114","source":"CREATE TRIGGER dbo.tr ON dbo.t AFTER INSERT AS"}
+{"id":"batch-rules/create-trigger-select","sha256":"cc208a0b6257001372dc2a0601702d3a742cdfa63a049677cfdf0f8989415aa4","source":"CREATE TRIGGER dbo.tr ON dbo.t AFTER INSERT AS SELECT 1;"}
+{"id":"batch-rules/alter-trigger-no-body","sha256":"3f1b7ed83cccec82fd5b031eca3ed1642d111855a3028e823429a416968ea5f6","source":"ALTER TRIGGER dbo.tr ON dbo.t AFTER INSERT AS"}
+{"id":"batch-rules/alter-trigger-select","sha256":"dab668388eef165ac867769408fcd15333f941f5a41dc6e6024bb4c856b9c09e","source":"ALTER TRIGGER dbo.tr ON dbo.t AFTER INSERT AS SELECT 1;"}
+{"id":"batch-rules/trigger-semicolon-only","sha256":"5f5d96e4fd8c04440ff1a6bbaac5cd4594f2bc36b15288775b0b96ad57e15691","source":"CREATE TRIGGER dbo.tr ON dbo.t AFTER INSERT AS ;"}
+{"id":"batch-rules/trigger-external-name","sha256":"18bac6c5c33b75087e014875b39818685cc9cb851bc6ea03092efd1e65bdcf48","source":"CREATE TRIGGER dbo.tr ON dbo.t AFTER INSERT AS EXTERNAL NAME a.b.c;"}
+{"id":"batch-rules/create-procedure-no-body","sha256":"5a92ec06da274f68fb79254bac18fd1e5524654542d1584bd79588959f20b734","source":"CREATE PROCEDURE dbo.p AS"}
+{"id":"batch-rules/certificate-from-provider","sha256":"d51d5e3a820477002e88c0d10546a49d010122c870f48dbcc14f37363987b7d4","source":"CREATE CERTIFICATE c FROM PROVIDER p;"}
+{"id":"batch-rules/certificate-from-file","sha256":"89e3550a2e2a614d777a449efd177bb604b1bd37525a0ab1ac1bf4c8f3e63dd8","source":"CREATE CERTIFICATE [provider] FROM FILE = 'c.cer';"}
+{"id":"batch-rules/asymmetric-key-from-provider","sha256":"2ced843d22417d1268219fdc25317b8d03aa757646fb35350a1139392db808fb","source":"CREATE ASYMMETRIC KEY k FROM PROVIDER p WITH PROVIDER_KEY_NAME = 'x', CREATION_DISPOSITION = OPEN_EXISTING;"}
+{"id":"batch-rules/create-function-table-columns-inline","sha256":"73e328b2ed8d9c436c196cc80917589321815de31a53b37096db6228963d1f34","source":"CREATE FUNCTION dbo.f() RETURNS TABLE (a int) AS RETURN SELECT 1 AS a;"}
+{"id":"batch-rules/create-function-table-columns-block","sha256":"3ef7fd8e967b5989ef55bc1a6c7407bcd8606191807a4b39b596fef82f17a6d8","source":"CREATE FUNCTION dbo.f() RETURNS TABLE (a int) AS BEGIN RETURN; END;"}
+{"id":"batch-rules/create-function-table-columns-external","sha256":"8ede08445f7b6328fe66d7152c3bd177e86a69ad78d8fbecff1256fa98ed2cda","source":"CREATE FUNCTION dbo.f() RETURNS TABLE (a int) AS EXTERNAL NAME a.b.c;"}
+{"id":"batch-rules/create-function-table-variable","sha256":"55a7a542743d95fe24ec600316be78dc7af387f118d47afefbe3765859220912","source":"CREATE FUNCTION dbo.f() RETURNS @r TABLE (a int) AS BEGIN RETURN; END;"}
+{"id":"batch-rules/alter-function-table-columns-inline","sha256":"cd74a7dd5ab45fd8807349d4aeea616cc0186a6416f7d3a6dd177cb3b9803863","source":"ALTER FUNCTION dbo.f() RETURNS TABLE (a int) AS RETURN SELECT 1 AS a;"}
+{"id":"batch-rules/alter-function-table-columns-block","sha256":"bbb87ff81b2af4425c15fb2988b9c6d749d55ab97de3cabce051708b55224420","source":"ALTER FUNCTION dbo.f() RETURNS TABLE (a int) AS BEGIN RETURN; END;"}
+{"id":"batch-rules/alter-function-table-columns-external","sha256":"f4ecd918b04cc71ac3e4906d3c3b58ea6fb61ac8861e25e9de307f19f935b76e","source":"ALTER FUNCTION dbo.f() RETURNS TABLE (a int) AS EXTERNAL NAME a.b.c;"}
+{"id":"batch-rules/alter-function-table-variable","sha256":"d015a0a92c253b6d2a96537c1f142b5c1e1baf4b79a10486f536c3f6c12ce797","source":"ALTER FUNCTION dbo.f() RETURNS @r TABLE (a int) AS BEGIN RETURN; END;"}
+{"id":"batch-rules/alter-function-inline-table","sha256":"9e0c17cd7555c0e87f4d5bf302cb5a3ff076e063a619096fdcc4da8ed5f83a59","source":"ALTER FUNCTION dbo.f() RETURNS TABLE AS RETURN SELECT 1 AS a;"}
+{"id":"batch-rules/certificate-from-bracketed-provider","sha256":"078f659d48fb686eeb5cd7db5d773a1765158d6bb331a71c346691f94f070528","source":"CREATE CERTIFICATE c FROM [PROVIDER];"}
+{"id":"batch-rules/certificate-from-bracketed-provider-assignment","sha256":"71f97c1e2448c6050037533e55da1882bcdec14462f47d0c26bca8f21d6be298","source":"CREATE CERTIFICATE c FROM [PROVIDER] = 'p';"}
+{"id":"batch-rules/certificate-from-quoted-provider-assignment","sha256":"a2f38d149cada5c57947114f897c57d86efbfa7ccf435a8c396db3e62f49beb3","source":"CREATE CERTIFICATE c FROM \"PROVIDER\" = 'p';"}
+{"id":"batch-rules/create-function-inline-table-external","sha256":"e1f3c842470712bc87ca998df4052d0912b12cab1ded26415d70441904158045","source":"CREATE FUNCTION dbo.f() RETURNS TABLE AS EXTERNAL NAME a.b.c;"}
+{"id":"batch-rules/alter-function-table-variable-external","sha256":"22c3ccd7afbac4bc6282c052ed205cf9fb7c32a00370a69e1c722fae7976e8b5","source":"ALTER FUNCTION dbo.f() RETURNS @r TABLE (x int) AS EXTERNAL NAME a.b.c;"}
+{"id":"batch-rules/create-or-alter-function-table-variable-external","sha256":"784cf39abc5631f4f80770e577223da704af96d45f58ad9e3c866a39e837c6f2","source":"CREATE OR ALTER FUNCTION dbo.f() RETURNS @r TABLE (x int) WITH EXECUTE AS CALLER AS EXTERNAL NAME a.b.c;"}
+{"id":"batch-rules/create-function-inline-table-block","sha256":"2b0d016863b8a32cfdd6d26326f3aa2b72a5278c63d1888a7f5070ff9cbaec24","source":"CREATE FUNCTION dbo.f() RETURNS TABLE AS BEGIN RETURN; END;"}
+{"id":"batch-rules/create-function-table-variable-inline","sha256":"75a42172c0f3fd1d9157f929a7482f8bc36c79b4d335385df78b7966fa61909d","source":"CREATE FUNCTION dbo.f() RETURNS @r TABLE (x int) AS RETURN SELECT 1 AS x;"}
+{"id":"batch-rules/create-or-alter-function-table-variable-block","sha256":"518a10a80d71ae8b6a2e816ca71e4e6e7d480f7375fad0a6675fd3fbfaa66e67","source":"CREATE OR ALTER FUNCTION dbo.f() RETURNS @r TABLE (x int) WITH EXECUTE AS CALLER AS BEGIN RETURN; END;"}
+{"id":"batch-rules/create-function-inline-table-no-as","sha256":"32383b2860ada0d8f6c833c5d5eee94b90aa015575636fdd1f59308f16076650","source":"CREATE FUNCTION dbo.f() RETURNS TABLE RETURN (SELECT 1 AS x);"}
+{"id":"batch-rules/clr-trigger-then-select","sha256":"fe370fa5c2fa9fe7e91c80639657b3906fb53e5302f4b635f16d300cb27270b9","source":"CREATE TRIGGER dbo.tr ON dbo.t AFTER INSERT AS EXTERNAL NAME a.b.c; SELECT 1;"}
+{"id":"batch-rules/alter-clr-trigger-then-select","sha256":"4388158319364843c4e6b3d7c813f847528db3472f2c3b9df9072da0337bc27f","source":"ALTER TRIGGER dbo.tr ON dbo.t AFTER INSERT AS EXTERNAL NAME a.b.c; SELECT 1;"}
+{"id":"batch-rules/clr-trigger-then-go-select","sha256":"5c44b12ba2b537a08a96d2c82daeb8cc4f14861a50a005413dd0f30f80aa64d6","source":"CREATE TRIGGER dbo.tr ON dbo.t AFTER INSERT AS EXTERNAL NAME a.b.c;\nGO\nSELECT 1;"}
+{"id":"batch-rules/tsql-trigger-two-statements","sha256":"8f8495f3f5c0c9b0ec2dc6a9aa010776a1e70f216eac863537787be3ec8ed915","source":"CREATE TRIGGER dbo.tr ON dbo.t AFTER INSERT AS SELECT 1; SELECT 2;"}
+{"id":"batch-rules/clr-proc-then-select","sha256":"218b65501e8688a6cc655dc4a754dd35a6798d8394ebde962b038d5c84a76613","source":"CREATE PROCEDURE dbo.p AS EXTERNAL NAME a.b.c; SELECT 1;"}
+{"id":"batch-rules/alter-clr-proc-then-select","sha256":"a145b77d31def0d56decd3e29c1cc2360e6b20be2c7989c5c9752f0c54a1d820","source":"ALTER PROCEDURE dbo.p AS EXTERNAL NAME a.b.c; SELECT 1;"}
+{"id":"batch-rules/clr-proc-then-go-select","sha256":"cdc766573b29a50d4d8ead890f6a7dc4452fc57d3437a714966275a4c9df262b","source":"CREATE PROCEDURE dbo.p AS EXTERNAL NAME a.b.c;\nGO\nSELECT 1;"}
+{"id":"batch-rules/clr-function-then-select","sha256":"99c9519e8347c3db85e9c16f7da85d97bf778b848d14572f692eace7dff14103","source":"CREATE FUNCTION dbo.f() RETURNS int AS EXTERNAL NAME a.b.c; SELECT 1;"}
+{"id":"batch-rules/alter-clr-function-then-select","sha256":"f6b24ac7db4ff9c94c1ca1ed3866a9bbdfc56efe6cd59e21f717075090312dc3","source":"ALTER FUNCTION dbo.f() RETURNS int AS EXTERNAL NAME a.b.c; SELECT 1;"}
+{"id":"batch-rules/clr-function-then-go-select","sha256":"a881327a0e116e9c232040380888b6a1a419f12e36995c3cfdee17cc2364b57a","source":"CREATE FUNCTION dbo.f() RETURNS int AS EXTERNAL NAME a.b.c;\nGO\nSELECT 1;"}
+{"id":"batch-rules/clr-trigger-then-block","sha256":"bf7514438f0e278456399c5ea0ec942bf8d7b74c713c5777ce57c0674590a02f","source":"CREATE TRIGGER dbo.tr ON dbo.t AFTER INSERT AS EXTERNAL NAME a.b.c; BEGIN SELECT 1; END;"}
+{"id":"batch-rules/alter-clr-proc-then-block","sha256":"c551db8ab92816cb46733ea9dbb7772b9d245c80aba4ffe55aa5258fa98f71cd","source":"ALTER PROC dbo.p AS EXTERNAL NAME a.b.c; BEGIN SELECT 1; END;"}
+{"id":"batch-rules/clr-function-then-block","sha256":"2db2816bb8d58d04eba45e1a9ce5ff9da6078cae8358908a3585a52d75f6b2a3","source":"CREATE FUNCTION dbo.f() RETURNS int AS EXTERNAL NAME a.b.c; BEGIN SELECT 1; END;"}
+{"id":"batch-rules/block-then-clr-function","sha256":"35215be8b8950315337a02f136a6f3b6b09252462d6fe9445c45770ecd248681","source":"BEGIN SELECT 1; END; CREATE FUNCTION dbo.f() RETURNS int AS EXTERNAL NAME a.b.c;"}
+{"id":"batch-rules/block-then-clr-trigger","sha256":"896b364675fc4143d3d1d5abf9f9ff4507d194fa7701a8bdf51965a6193153de","source":"BEGIN SELECT 1; END; CREATE TRIGGER dbo.tr ON dbo.t AFTER INSERT AS EXTERNAL NAME a.b.c;"}
+{"id":"batch-rules/block-then-clr-proc","sha256":"7d3bc66ada107af0bdc09d8e93ec0a6ea7860a6124d158effaf4cb4464f3ec9a","source":"BEGIN SELECT 1; END; ALTER PROC dbo.p AS EXTERNAL NAME a.b.c;"}
+{"id":"batch-rules/clr-trigger-then-go-block","sha256":"8d229c65b8fbeb9958f557249ecc897c31d3767da38ed5dad4b60c6fa656af20","source":"CREATE TRIGGER dbo.tr ON dbo.t AFTER INSERT AS EXTERNAL NAME a.b.c;\nGO\nBEGIN SELECT 1; END;"}
+{"id":"batch-rules/block-then-go-clr-function","sha256":"12a5202cc0470b9542c3a24dc23b72b6c655a167bc187a0c3e66ca62fdeae2f0","source":"BEGIN SELECT 1; END;\nGO\nCREATE FUNCTION dbo.f() RETURNS int AS EXTERNAL NAME a.b.c;"}
+{"id":"batch-rules/trigger-with-block-body","sha256":"c32f4f03831aff01c7bf782bc89ee31c7cbddacb7f029336ca51a37d87292e2c","source":"CREATE TRIGGER dbo.tr ON dbo.t AFTER INSERT AS BEGIN SELECT 1; END;"}
+{"id":"batch-rules/scalar-function-inline-query","sha256":"7ddff61ff39e422ef81c0493afd3d1cf04cde49938a4799af7b15a24218a4fd6","source":"CREATE FUNCTION dbo.f() RETURNS int AS RETURN SELECT 1;"}
+{"id":"batch-rules/create-or-alter-scalar-function-inline-query","sha256":"629b802401738c9f7c8c398652c7d3c341330de0e71415573502a27b1a513f2f","source":"CREATE OR ALTER FUNCTION dbo.f() RETURNS int WITH SCHEMABINDING RETURN (SELECT 1);"}
+{"id":"batch-rules/scalar-function-block","sha256":"a9b634f585a1afc5b8e71e825772092af0c32a8a29c03a8688935d7c1db9dbaa","source":"CREATE FUNCTION dbo.f() RETURNS int AS BEGIN RETURN 1; END;"}
+{"id":"batch-rules/create-or-alter-scalar-function-block","sha256":"5ca434e0631d588c7a68b48a9a1c97932b6b5bb047c600a5f697e543a5a02bdf","source":"CREATE OR ALTER FUNCTION dbo.f() RETURNS int WITH SCHEMABINDING AS BEGIN RETURN 1; END;"}
+{"id":"batch-rules/certificate-from-padded-provider","sha256":"79f1c1fad0f3c1c81eedfdc423baae8e5749626a34488aaf0f528725467156d9","source":"CREATE CERTIFICATE c FROM [PROVIDER ] = 'p';"}
+{"id":"batch-rules/certificate-from-bracketed-file","sha256":"af5d6925a2c963f8293ab23db385fdfb3045901254b0d676bade9e8125de8a7e","source":"CREATE CERTIFICATE c FROM [FILE] = 'c.cer';"}
+{"id":"batch-rules/certificate-from-file-without-equals","sha256":"bcf113c7020e759abd00d854726ab8cc2ae907c84c13c79088729e81a0be35d3","source":"CREATE CERTIFICATE c FROM FILE 'c.cer';"}
+{"id":"batch-rules/certificate-from-binary-without-equals","sha256":"f56cbb465272b34f0669c08c187fcab2825ccf71d717be59ef6ccba7e2d0be32","source":"CREATE CERTIFICATE c FROM BINARY 0x3082010A;"}
+{"id":"batch-rules/certificate-from-unknown-option","sha256":"116ee265bcb9c361cb0b02b0bcebea3dee701e3db25df2af3a9021b054258108","source":"CREATE CERTIFICATE c FROM OTHER = 'c.cer';"}
+{"id":"batch-rules/certificate-from-binary","sha256":"66066ead82189cdbee05b2ee6a29d4fcadd8b981dfead95c214359209c308563","source":"CREATE CERTIFICATE c FROM BINARY = 0x3082010A;"}
+{"id":"batch-rules/certificate-from-executable-file","sha256":"d776539b7ccd221787573901b394e69e23ff9d51a63eeec25c67d2cfaa0d09d4","source":"CREATE CERTIFICATE c FROM EXECUTABLE FILE = 'c.dll';"}
+{"id":"batch-rules/certificate-from-assembly","sha256":"2f3b7ec3b58f839a16b13c1797e3a62545a765bbb7e0b0319bf7ab6d89b118fa","source":"CREATE CERTIFICATE c AUTHORIZATION dbo FROM ASSEMBLY [asm] ACTIVE FOR BEGIN_DIALOG = ON;"}

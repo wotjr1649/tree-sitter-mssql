@@ -21,8 +21,8 @@ its T-SQL parser with its own pinned tree-sitter CLI.
 
 ## What it guarantees
 
-SQL Server's own parser is the reference (`SET PARSEONLY ON`, ADR-0002). The oracle in `oracle/data` holds 10,712
-sources (21,424 QUOTED_IDENTIFIER session/case pairs), with recorded SQL Server 2017, 2019, 2022 and 2025 results at
+SQL Server's own parser is the reference (`SET PARSEONLY ON`, ADR-0002). The oracle in `oracle/data` holds 10,780
+sources (21,560 QUOTED_IDENTIFIER session/case pairs), with recorded SQL Server 2017, 2019, 2022 and 2025 results at
 supported compatibility levels 100–170. LocalDB 2025 covers the set under both settings except for one input that
 sets PARSEONLY itself and is excluded by the runner. Linux engine observations cover earlier case-set snapshots
 under ON. A case counts as accepted if at least one recorded engine and compatibility level accepts it under the
