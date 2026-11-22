@@ -1,6 +1,6 @@
 use super::Violation;
 use super::util::*;
-use crate::tree::named_children;
+use crate::tree::{has_child, named_children};
 use tree_sitter::{Node, Tree};
 
 /// A table variable, a table type and a function's RETURNS table cannot have a foreign key, in a
@@ -11,8 +11,10 @@ use tree_sitter::{Node, Tree};
 /// 17.0.1000.7, levels 100 and 170, oracle set `batch-rules`: CREATE/ALTER PROCEDURE, VIEW,
 /// FUNCTION, TRIGGER and CREATE RULE/DEFAULT after another statement or a label are Msg 111, and
 /// inside IF, BEGIN or another module Msg 156; only comments and `;` may come before. A VIEW,
-/// FUNCTION, RULE or DEFAULT followed by another statement is Msg 156 (a procedure or trigger
-/// body takes the following statements). CREATE SCHEMA is checked by `surface-shape`; a view
+/// FUNCTION, RULE or DEFAULT followed by another statement is Msg 156. A T-SQL procedure or
+/// trigger body takes the following statements. The CLR form also rejects them with Msg 156
+/// (batch-rules/*clr-{trigger,proc}-then-select, levels 100-170, both sessions).
+/// CREATE SCHEMA is checked by `surface-shape`; a view
 /// inside it is a schema element (accepted, `surface-fix-gaps/schema/view`).
 pub(super) fn batch_module(module: Node, out: &mut Vec<Violation>) {
     let statement = module.parent().filter(|p| p.kind() == "statement");
@@ -49,7 +51,9 @@ pub(super) fn batch_module(module: Node, out: &mut Vec<Violation>) {
     let ends_batch = !matches!(
         module.kind(),
         "create_procedure" | "alter_procedure" | "create_trigger" | "alter_trigger"
-    );
+    ) || module
+        .child_by_field_name("body")
+        .is_some_and(|body| has_child(body, "external_name"));
     if ends_batch && statements.last() != Some(&statement) {
         out.push(violation(
             "batch-module",

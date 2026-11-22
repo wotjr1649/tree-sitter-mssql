@@ -203,9 +203,17 @@ pub(super) fn ddl_rest_create(node: Node, source: &[u8], out: &mut Vec<Violation
                 ));
             }
         }
-        // batch-rules/certificate-from-provider: Msg 102 on LocalDB 17.0.1000.7,
-        // levels 100-170 in both sessions. CREATE ASYMMETRIC KEY accepts this source.
-        "create_certificate" if has_child(node, "keyword_provider") => {
+        // batch-rules/certificate-from-*provider*: Msg 102 on LocalDB 17.0.1000.7,
+        // levels 100-170 in both sessions. A delimited PROVIDER is an option name.
+        "create_certificate"
+            if has_child(node, "keyword_provider")
+                || direct_options(node).into_iter().any(|option| {
+                    matches!(
+                        option_name(option, source).as_str(),
+                        "PROVIDER" | "[PROVIDER]" | "\"PROVIDER\""
+                    )
+                }) =>
+        {
             out.push(violation(
                 "certificate-provider",
                 "CREATE CERTIFICATE does not support FROM PROVIDER".into(),

@@ -259,19 +259,33 @@ pub(super) fn trigger_body(trigger: Node, out: &mut Vec<Violation>) {
     }
 }
 
-/// A direct RETURNS TABLE column list is a CLR result shape. A RETURNS @r TABLE column list
-/// is nested in table_var_declaration. LocalDB 17.0.1000.7, levels 100-170, both sessions:
-/// batch-rules/{create,alter}-function-table-columns-{inline,block} (Msg 156).
-pub(super) fn function_result_columns(function: Node, out: &mut Vec<Violation>) {
-    if has_child(function, "column_definitions")
-        && let Some(body) = function.child_by_field_name("body")
-        && !has_child(body, "external_name")
+/// TVF return shapes select the body form. LocalDB 17.0.1000.7, levels 100-170, both sessions:
+/// batch-rules function cases for table-columns (Msg 156), inline-table (156/102) and
+/// table-variable (156/102) reject mismatched bodies.
+pub(super) fn function_return_body(function: Node, out: &mut Vec<Violation>) {
+    let (required, detail) = if has_child(function, "column_definitions") {
+        (
+            "external_name",
+            "RETURNS TABLE with a column list requires an EXTERNAL NAME body",
+        )
+    } else if has_child(function, "table_var_declaration") {
+        (
+            "keyword_begin",
+            "RETURNS @variable TABLE requires a BEGIN ... END body",
+        )
+    } else if has_child(function, "keyword_table") {
+        (
+            "keyword_return",
+            "inline RETURNS TABLE requires RETURN followed by a query",
+        )
+    } else {
+        return;
+    };
+    if let Some(body) = function
+        .child_by_field_name("body")
+        .filter(|n| !has_child(*n, required))
     {
-        out.push(violation(
-            "function-result-columns",
-            "RETURNS TABLE with a column list requires an EXTERNAL NAME body".into(),
-            body,
-        ));
+        out.push(violation("function-return-body", detail.into(), body));
     }
 }
 

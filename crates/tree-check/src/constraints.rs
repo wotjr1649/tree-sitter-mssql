@@ -201,7 +201,7 @@ fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
             "create_function" | "alter_function" => {
                 query_module(node, &mut out);
                 scalar_function_return(node, &mut out);
-                function_result_columns(node, &mut out);
+                function_return_body(node, &mut out);
                 batch_module(node, &mut out);
             }
             "create_trigger" | "alter_trigger" => {
