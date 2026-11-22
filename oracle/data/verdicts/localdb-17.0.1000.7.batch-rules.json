@@ -1,5 +1,5 @@
 {
-"meta": {"mode":"PARSEONLY","engine":{"product_version":"17.0.1000.7","product_level":"RTM","edition":"Express Edition (64-bit)","platform":"Windows","collation":"SQL_Latin1_General_CP1_CI_AS"},"session_set":{"quoted_identifier":1,"ansi_nulls":1,"ansi_padding":1,"ansi_warnings":1,"arithabort":0,"concat_null_yields_null":1},"levels":[100,110,120,130,140,150,160,170],"cases_sha256":"63c4ce15ecb67c8b6222f2b4462e40d2e391dc71acab9315244dc9670a5ba22b","runner":"oracle/runners/ParseOnly (C#, Microsoft.Data.SqlClient)","runner_sha256":"9c73f0dade20221ac4ef5cbae58ca2f0007afeeabd896548c21ea7cf0232f180","observed_utc":"2026-11-22"},
+"meta": {"mode":"PARSEONLY","engine":{"product_version":"17.0.1000.7","product_level":"RTM","edition":"Express Edition (64-bit)","platform":"Windows","collation":"SQL_Latin1_General_CP1_CI_AS"},"session_set":{"quoted_identifier":1,"ansi_nulls":1,"ansi_padding":1,"ansi_warnings":1,"arithabort":0,"concat_null_yields_null":1},"levels":[100,110,120,130,140,150,160,170],"cases_sha256":"8e0b7321067a2ebdbd838459261db06b1c0b9a227509c7cdc3c86506523d8913","runner":"oracle/runners/ParseOnly (C#, Microsoft.Data.SqlClient)","runner_sha256":"9c73f0dade20221ac4ef5cbae58ca2f0007afeeabd896548c21ea7cf0232f180","observed_utc":"2026-11-22"},
 "verdicts": {
   "batch-rules/proc-first": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
   "batch-rules/proc-after-select": {"100":[111],"110":[111],"120":[111],"130":[111],"140":[111],"150":[111],"160":[111],"170":[111]},
@@ -92,6 +92,27 @@
   "batch-rules/clr-proc-then-go-select": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
   "batch-rules/clr-function-then-select": {"100":[156],"110":[156],"120":[156],"130":[156],"140":[156],"150":[156],"160":[156],"170":[156]},
   "batch-rules/alter-clr-function-then-select": {"100":[156],"110":[156],"120":[156],"130":[156],"140":[156],"150":[156],"160":[156],"170":[156]},
-  "batch-rules/clr-function-then-go-select": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]}
+  "batch-rules/clr-function-then-go-select": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/clr-trigger-then-block": {"100":[156],"110":[156],"120":[156],"130":[156],"140":[156],"150":[156],"160":[156],"170":[156]},
+  "batch-rules/alter-clr-proc-then-block": {"100":[156],"110":[156],"120":[156],"130":[156],"140":[156],"150":[156],"160":[156],"170":[156]},
+  "batch-rules/clr-function-then-block": {"100":[156],"110":[156],"120":[156],"130":[156],"140":[156],"150":[156],"160":[156],"170":[156]},
+  "batch-rules/block-then-clr-function": {"100":[111],"110":[111],"120":[111],"130":[111],"140":[111],"150":[111],"160":[111],"170":[111]},
+  "batch-rules/block-then-clr-trigger": {"100":[111],"110":[111],"120":[111],"130":[111],"140":[111],"150":[111],"160":[111],"170":[111]},
+  "batch-rules/block-then-clr-proc": {"100":[111],"110":[111],"120":[111],"130":[111],"140":[111],"150":[111],"160":[111],"170":[111]},
+  "batch-rules/clr-trigger-then-go-block": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/block-then-go-clr-function": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/trigger-with-block-body": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/scalar-function-inline-query": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]},
+  "batch-rules/create-or-alter-scalar-function-inline-query": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]},
+  "batch-rules/scalar-function-block": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/create-or-alter-scalar-function-block": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/certificate-from-padded-provider": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]},
+  "batch-rules/certificate-from-bracketed-file": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]},
+  "batch-rules/certificate-from-file-without-equals": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]},
+  "batch-rules/certificate-from-binary-without-equals": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]},
+  "batch-rules/certificate-from-unknown-option": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]},
+  "batch-rules/certificate-from-binary": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/certificate-from-executable-file": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/certificate-from-assembly": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]}
 }
 }

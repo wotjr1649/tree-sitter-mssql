@@ -2,7 +2,7 @@
 
 ## Current oracle status
 
-The replay covers 10,759 sources and 21,518 session/case pairs. All 15,626
+The replay covers 10,780 sources and 21,560 session/case pairs. All 15,642
 engine-accepted pairs pass tree-check. The [rejected-clean ledger](../oracle/data/rejected-clean.json)
 contains 445 pairs (190 ON, 255 OFF): context 111, environment 294, version 36 and runner 4.
 There are zero entries classified as `gap` and zero edit histories with incremental differences.
@@ -59,17 +59,23 @@ have the `batch-rules/` prefix.
 | --- | --- | --- |
 | `CREATE` or `ALTER TRIGGER` with no statement or `EXTERNAL NAME` body | `create-trigger-no-body`, `alter-trigger-no-body`, `trigger-semicolon-only` | Msg 102 |
 | `CREATE CERTIFICATE` with a bare or delimited `PROVIDER` source | `certificate-from-provider`, `certificate-from-bracketed-provider`, `certificate-from-bracketed-provider-assignment`, `certificate-from-quoted-provider-assignment` | Msg 102 |
+| `CREATE CERTIFICATE` with a padded or quoted source, an unknown option, or a missing `=` | `certificate-from-padded-provider`, `certificate-from-bracketed-file`, `certificate-from-unknown-option`, `certificate-from-file-without-equals`, `certificate-from-binary-without-equals` | Msg 102 |
 | `RETURNS TABLE (columns)` with an inline or block body | `create-function-table-columns-inline`, `create-function-table-columns-block`, `alter-function-table-columns-inline`, `alter-function-table-columns-block` | Msg 156 |
 | `RETURNS TABLE` without columns with an `EXTERNAL NAME` or block body | `create-function-inline-table-external` (156), `create-function-inline-table-block` (102) | Msg 156, 102 |
 | `RETURNS @r TABLE (columns)` with an `EXTERNAL NAME` or inline body | `alter-function-table-variable-external`, `create-or-alter-function-table-variable-external` (156), `create-function-table-variable-inline` (102) | Msg 156, 102 |
 | A statement in the same batch after a CLR trigger or procedure | `clr-trigger-then-select`, `alter-clr-trigger-then-select`, `clr-proc-then-select`, `alter-clr-proc-then-select` | Msg 156 |
 | A statement in the same batch after a CLR function | `clr-function-then-select`, `alter-clr-function-then-select` | Msg 156 |
+| A scalar function with an inline `RETURN` query body | `scalar-function-inline-query`, `create-or-alter-scalar-function-inline-query` | Msg 102 |
+| A standalone block before a CLR module in the same batch | `block-then-clr-function`, `block-then-clr-trigger`, `block-then-clr-proc` | Msg 111 |
+| A standalone block after a CLR module in the same batch | `clr-trigger-then-block`, `alter-clr-proc-then-block`, `clr-function-then-block` | Msg 156 |
 
 `create-procedure-no-body`, `create-trigger-select`, `alter-trigger-select`, `trigger-external-name`,
 `certificate-from-file` and `asymmetric-key-from-provider` pass. The accepted TVF pairings are
 `RETURN` followed by a query for inline `RETURNS TABLE`, a block for `RETURNS @r TABLE (columns)`,
-and `EXTERNAL NAME` for `RETURNS TABLE (columns)`. `GO` lets a new statement follow any of the three
-CLR modules, and a T-SQL trigger can contain multiple statements.
+and `EXTERNAL NAME` for `RETURNS TABLE (columns)`. Scalar functions accept a block or
+`EXTERNAL NAME`. A `GO` separator lets a statement or block precede or follow a CLR module.
+A T-SQL trigger can contain multiple statements, including blocks. Certificate import accepts
+`ASSEMBLY`, `FILE =`, `EXECUTABLE FILE =` and `BINARY =`.
 
 ## FROM-less clauses: measured residual gaps
 

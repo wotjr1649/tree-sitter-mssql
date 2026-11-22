@@ -14,6 +14,8 @@ use tree_sitter::{Node, Tree};
 /// FUNCTION, RULE or DEFAULT followed by another statement is Msg 156. A T-SQL procedure or
 /// trigger body takes the following statements. The CLR form also rejects them with Msg 156
 /// (batch-rules/*clr-{trigger,proc}-then-select, levels 100-170, both sessions).
+/// Standalone blocks count as statements: batch-rules/block-then-clr-* (Msg 111)
+/// and *clr-*-then-block (Msg 156).
 /// CREATE SCHEMA is checked by `surface-shape`; a view
 /// inside it is a schema element (accepted, `surface-fix-gaps/schema/view`).
 pub(super) fn batch_module(module: Node, out: &mut Vec<Violation>) {
@@ -31,7 +33,7 @@ pub(super) fn batch_module(module: Node, out: &mut Vec<Violation>) {
     };
     let statements: Vec<Node> = named_children(batch)
         .into_iter()
-        .filter(|n| n.kind() == "statement")
+        .filter(|n| matches!(n.kind(), "statement" | "block"))
         .collect();
     // A view after CREATE SCHEMA in the same batch is one of its schema elements.
     let first_is_schema = statements

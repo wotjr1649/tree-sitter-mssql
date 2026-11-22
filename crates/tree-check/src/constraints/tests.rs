@@ -1043,19 +1043,28 @@ fn triggers_need_a_body() {
 }
 
 #[test]
-fn certificates_cannot_come_from_a_provider() {
+fn certificates_require_a_supported_source() {
     for sql in [
         "CREATE CERTIFICATE c FROM /* comment */ PROVIDER p;",
         "CREATE CERTIFICATE c FROM [PROVIDER];",
         "CREATE CERTIFICATE c FROM [provider] = 'p';",
         r#"CREATE CERTIFICATE c FROM "PROVIDER" = 'p';"#,
+        "CREATE CERTIFICATE c FROM [PROVIDER ] = 'p';",
+        "CREATE CERTIFICATE c FROM [FILE] = 'c.cer';",
+        "CREATE CERTIFICATE c FROM FILE 'c.cer';",
+        "CREATE CERTIFICATE c FROM BINARY 0x3082010A;",
+        "CREATE CERTIFICATE c FROM OTHER = 'c.cer';",
     ] {
         assert!(!parse(sql).root_node().has_error(), "{sql}");
-        assert_eq!(rules(sql), ["certificate-provider"], "{sql}");
+        assert_eq!(rules(sql), ["certificate-source"], "{sql}");
     }
 
     for sql in [
         "CREATE CERTIFICATE [provider] FROM FILE = 'c.cer';",
+        "CREATE CERTIFICATE c FROM EXECUTABLE FILE = 'c.dll';",
+        "CREATE CERTIFICATE c FROM BINARY = 0x3082010A;",
+        "CREATE CERTIFICATE c FROM ASSEMBLY [asm];",
+        "CREATE CERTIFICATE c WITH SUBJECT = 'x';",
         "CREATE ASYMMETRIC KEY k FROM PROVIDER p WITH PROVIDER_KEY_NAME = 'x', CREATION_DISPOSITION = OPEN_EXISTING;",
     ] {
         assert!(!parse(sql).root_node().has_error(), "{sql}");
@@ -1087,6 +1096,25 @@ fn tvf_return_shapes_require_matching_bodies() {
             assert!(!parse(&sql).root_node().has_error(), "{sql}");
             assert!(rules(&sql).is_empty(), "{sql}");
         }
+    }
+}
+
+#[test]
+fn scalar_functions_require_block_or_external_bodies() {
+    for sql in [
+        "CREATE FUNCTION dbo.f() RETURNS int AS RETURN SELECT 1;",
+        "CREATE OR ALTER FUNCTION dbo.f() RETURNS int WITH SCHEMABINDING RETURN (SELECT 1);",
+    ] {
+        assert!(!parse(sql).root_node().has_error(), "{sql}");
+        assert_eq!(rules(sql), ["function-return-body"], "{sql}");
+    }
+    for sql in [
+        "CREATE FUNCTION dbo.f() RETURNS int AS BEGIN RETURN 1; END;",
+        "CREATE OR ALTER FUNCTION dbo.f() RETURNS int WITH SCHEMABINDING AS BEGIN RETURN 1; END;",
+        "CREATE FUNCTION dbo.f() RETURNS int AS EXTERNAL NAME a.b.c;",
+    ] {
+        assert!(!parse(sql).root_node().has_error(), "{sql}");
+        assert!(rules(sql).is_empty(), "{sql}");
     }
 }
 
@@ -1195,6 +1223,9 @@ fn a_module_starts_its_batch_and_some_end_it() {
         "CREATE TRIGGER tr ON t AFTER INSERT AS EXTERNAL NAME a.b.c;\nGO\nSELECT 1;",
         "CREATE PROCEDURE p AS EXTERNAL NAME a.b.c;\nGO\nSELECT 1;",
         "CREATE FUNCTION f() RETURNS int AS EXTERNAL NAME a.b.c;\nGO\nSELECT 1;",
+        "CREATE TRIGGER tr ON t AFTER INSERT AS EXTERNAL NAME a.b.c;\nGO\nBEGIN SELECT 1; END;",
+        "BEGIN SELECT 1; END;\nGO\nCREATE FUNCTION f() RETURNS int AS EXTERNAL NAME a.b.c;",
+        "CREATE TRIGGER tr ON t AFTER INSERT AS BEGIN SELECT 1; END;",
         "CREATE SCHEMA x CREATE VIEW v AS SELECT 1 AS a;",
         "SELECT 1;\nCREATE TABLE t (a int);",
     ] {
@@ -1210,6 +1241,10 @@ fn a_module_starts_its_batch_and_some_end_it() {
         "CREATE PROCEDURE p AS EXTERNAL NAME a.b.c; SELECT 1;",
         "ALTER PROCEDURE p AS EXTERNAL NAME a.b.c; SELECT 1;",
         "CREATE FUNCTION f() RETURNS int AS EXTERNAL NAME a.b.c; SELECT 1;",
+        "CREATE TRIGGER tr ON t AFTER INSERT AS EXTERNAL NAME a.b.c; BEGIN SELECT 1; END;",
+        "ALTER PROC p AS EXTERNAL NAME a.b.c; BEGIN SELECT 1; END;",
+        "CREATE FUNCTION f() RETURNS int AS EXTERNAL NAME a.b.c; BEGIN SELECT 1; END;",
+        "BEGIN SELECT 1; END; CREATE FUNCTION f() RETURNS int AS EXTERNAL NAME a.b.c;",
         "IF 1 = 1 CREATE PROCEDURE p AS SELECT 1;",
         "CREATE PROCEDURE p AS CREATE VIEW v AS SELECT 1 AS a;",
         "SELECT 1;\nCREATE RULE r AS @x > 0;",

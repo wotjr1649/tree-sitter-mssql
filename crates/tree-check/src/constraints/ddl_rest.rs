@@ -203,22 +203,24 @@ pub(super) fn ddl_rest_create(node: Node, source: &[u8], out: &mut Vec<Violation
                 ));
             }
         }
-        // batch-rules/certificate-from-*provider*: Msg 102 on LocalDB 17.0.1000.7,
-        // levels 100-170 in both sessions. A delimited PROVIDER is an option name.
-        "create_certificate"
-            if has_child(node, "keyword_provider")
+        // ASSEMBLY and EXECUTABLE FILE have dedicated syntax; FILE and BINARY are options.
+        // batch-rules/certificate-from-* records accepted forms and Msg 102 for invalid
+        // source keywords and omitted = on LocalDB 17.0.1000.7, levels 100-170, both sessions.
+        "create_certificate" if has_child(node, "keyword_from") => {
+            let valid = has_child(node, "keyword_assembly")
+                || has_child(node, "keyword_executable")
                 || direct_options(node).into_iter().any(|option| {
-                    matches!(
-                        option_name(option, source).as_str(),
-                        "PROVIDER" | "[PROVIDER]" | "\"PROVIDER\""
-                    )
-                }) =>
-        {
-            out.push(violation(
-                "certificate-provider",
-                "CREATE CERTIFICATE does not support FROM PROVIDER".into(),
-                node,
-            ));
+                    matches!(option_name(option, source).as_str(), "FILE" | "BINARY")
+                        && has_child(option, "=")
+                });
+            if !valid {
+                out.push(violation(
+                    "certificate-source",
+                    "CREATE CERTIFICATE needs ASSEMBLY, [EXECUTABLE] FILE =, or BINARY = after FROM"
+                        .into(),
+                    node,
+                ));
+            }
         }
         "create_asymmetric_key" if has_child(node, "keyword_from") => {
             for option in direct_options(node) {
