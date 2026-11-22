@@ -17,8 +17,7 @@ DacFx use. It is not the engine. SQL Server's `SET PARSEONLY ON` verdicts in `or
   SQL Server and ScriptDOM reject and tree-check accepts. When refreshing a case set, verify
   `meta.cases_sha256` against the current source file and check that all case IDs are present in
   both sessions. The comparison joins by ID and skips missing observations. It does not validate
-  source hashes. The committed `batch-rules` files cover 50 of 53 cases in each session, leaving
-  three cases out of the comparison per session.
+  source hashes.
 
 Refresh both sessions after the case sets change. From the repository root:
 

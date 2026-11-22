@@ -7,7 +7,7 @@ reparse and 2026-11-22 lexer/LR sections describe their own subjects and methods
 
 Contents: [Summary](#summary) · [Method](#method) · [Accuracy](#accuracy) · [Robustness](#robustness) ·
 [Speed](#speed) · [Memory](#memory) · [Size](#size) · [2.1.0](#210) · [2.1.1](#211) ·
-[Lexer and LR analysis](#lexer-and-lr-analysis-2026-11-22) ·
+[Lexer and LR analysis](#lexer-and-lr-analysis-2026-11-22) · [CI instruction counts](#ci-instruction-counts) ·
 [Limits of these measurements](#limits-of-these-measurements)
 
 ## Summary
@@ -628,9 +628,30 @@ The measurements cover native full parses of the public fixtures. Live SQL Serve
 WASM, peak memory, fuzzing and incremental reparse timings are outside this study. Oracle replay includes
 its stored edit histories.
 
+## CI instruction counts
+
+The [Parse benchmark workflow](../.github/workflows/parse-bench.yml) builds each ref's committed `src/parser.c`
+and `src/scanner.c` with GCC `-O2` and the same tree-sitter C runtime. It verifies the SHA-256 of the archive
+for tree-sitter 0.27.2, which matches the tree-check runtime pin. Every ref uses the same inputs from the
+v2.2.0 commit `0c7d477`.
+
+| Input set | Sources | Bytes |
+| --- | ---: | ---: |
+| SQL fixtures | 156 | 120,099 |
+| Corpus test inputs | 2,562 | 224,753 |
+| Oracle kit and probe sources | 10,712 | 1,421,668 |
+
+For each source the harness counts Callgrind `Ir` (instructions executed) during a fresh parse. The incremental
+measurement prepares an initial tree, inserts one ASCII space at the start of the line containing the byte
+midpoint, then counts the tree edit and reparse. File I/O, initial parses for the incremental run, and tree
+cleanup are outside the counted region. Every input contributes, including error trees. The oracle set
+supplies SQL text once per case. Engine verdicts and tree-check's session and constraint checks are outside
+this measurement. Use counts from the same run to compare refs, because the runner image, GCC, Valgrind, and
+system libraries can change between runs. See [development](development.md#performance-and-fuzzing) for usage.
+
 ## Limits of these measurements
 
-- One machine, one operating system (Windows), one session, possibly with another CPU-heavy job running.
+- The Windows measurements used one machine and one session, possibly with another CPU-heavy job running.
 - The private corpus is one source, 6,006 scripts of which 19 are engine-rejected; it was also used while the grammar
   was developed. The oracle cases were written by this project.
 - Engine verdicts cover SQL Server 2017–2025 at compatibility levels 100–170 (2008–2016 are not verified),

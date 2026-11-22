@@ -26,6 +26,30 @@ kinds and field names are a public contract. See [consuming.md](consuming.md).
 mismatches.
 The current oracle classifications are in [`oracle/data/rejected-clean.json`](../oracle/data/rejected-clean.json).
 
+## Compatibility levels
+
+SQL Server's parser result can depend on the database compatibility level. SQL Server 2017 to 2025 all support level
+100 (the SQL Server 2008 level) as their lowest level, and SQL Server 2025 supports 100 to 170
+([ALTER DATABASE compatibility level](https://learn.microsoft.com/en-us/sql/t-sql/statements/alter-database-transact-sql-compatibility-level)).
+The oracle records every case at every level the engine supports: level 100 is present in all 174 committed verdict
+files (SQL Server 2017, 2019, 2022 and 2025 on Linux, and LocalDB 2025), 62,624 case verdicts in total
+(measured at 2.2.0).
+
+The grammar and tree-check take the union of the levels: a case is positive when any recorded engine accepts it at
+any level under the same QUOTED_IDENTIFIER setting. Neither has a compatibility-level option, so a form that only
+some levels accept parses cleanly at every level. At 2.2.0, 89 oracle cases change verdict with the level:
+
+| Accepted from | Cases | Forms |
+| --- | ---: | --- |
+| 110 | 27 | `WITHIN GROUP` ordered-set aggregates (`PERCENTILE_CONT`/`DISC`, `APPROX_PERCENTILE_*`, `STRING_AGG`, `JSON_ARRAYAGG`), `TRY_CONVERT`, graph `MATCH`/`SHORTEST_PATH` |
+| 130 | 15 | `OPENJSON`, including its `WITH` schema |
+| 160 | 12 | the `WINDOW` clause and named windows, `TRIM(LEADING \| TRAILING \| BOTH ... FROM ...)` |
+| 170 | 25 | `REGEXP_*` functions, `AI_GENERATE_*` |
+| 100–120 only | 10 | encryption keys with deprecated algorithms (`TRIPLE_DES_3KEY`, `RC2`, `RC4`; Msg 102 from level 130; one route already from 110) and `STRING_SPLIT` call shapes that SQL Server 2017 rejects from level 130 (Msg 8144) |
+
+A tool that targets one compatibility level has to check these constructs itself. The per-case verdicts are in
+`oracle/data/verdicts`.
+
 ## Origin
 
 This repository continues `alfpricot/tree-sitter-mssql` v1.0.0, which began as a fork of
