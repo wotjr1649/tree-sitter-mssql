@@ -21,8 +21,8 @@ its T-SQL parser with its own pinned tree-sitter CLI.
 
 ## What it guarantees
 
-SQL Server's own parser is the reference (`SET PARSEONLY ON`, ADR-0002). The oracle in `oracle/data` holds 10,780
-sources (21,560 QUOTED_IDENTIFIER session/case pairs), with recorded SQL Server 2017, 2019, 2022 and 2025 results at
+SQL Server's own parser is the reference (`SET PARSEONLY ON`, ADR-0002). The oracle in `oracle/data` holds 10,817
+sources (21,634 QUOTED_IDENTIFIER session/case pairs), with recorded SQL Server 2017, 2019, 2022 and 2025 results at
 supported compatibility levels 100–170. LocalDB 2025 covers the set under both settings except for one input that
 sets PARSEONLY itself and is excluded by the runner. Linux engine observations cover earlier case-set snapshots
 under ON. A case counts as accepted if at least one recorded engine and compatibility level accepts it under the
@@ -47,7 +47,8 @@ Scope and known limits:
   [`f932671a5`](https://github.com/tree-sitter/tree-sitter/commit/f932671a5) (after 0.27.2). With 0.27.2, a reparse after an
   edit can differ from a fresh parse of the same text when a reused node starts with a keyword that has to be read
   as a name there: 160 of 123,094 edit steps over the oracle did, 0 with the fix. After an edit that leaves invalid
-  text, the incremental tree may also place its `ERROR` differently from a fresh parse. A fresh parse avoids reuse-related differences.
+  text, the incremental tree may also place its `ERROR` differently from a fresh parse. The oracle records one such
+  edit, [#87](docs/accepted-gaps.md#bare-names-and-column-options-87). A fresh parse avoids reuse-related differences.
 - incremental reparsing re-reads more tokens than needed at some boundaries; the tree is unaffected. The nested block
   comment is an external-scanner token, so tree-sitter 0.27.2 re-reads a token whose lex mode changed instead of
   reusing it. Over 217,563 sampled edits of the test inputs, 314 re-read more than 4 tokens beyond the best earlier

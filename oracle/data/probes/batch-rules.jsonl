@@ -111,3 +111,40 @@
 {"id":"batch-rules/certificate-from-binary","sha256":"66066ead82189cdbee05b2ee6a29d4fcadd8b981dfead95c214359209c308563","source":"CREATE CERTIFICATE c FROM BINARY = 0x3082010A;"}
 {"id":"batch-rules/certificate-from-executable-file","sha256":"d776539b7ccd221787573901b394e69e23ff9d51a63eeec25c67d2cfaa0d09d4","source":"CREATE CERTIFICATE c FROM EXECUTABLE FILE = 'c.dll';"}
 {"id":"batch-rules/certificate-from-assembly","sha256":"2f3b7ec3b58f839a16b13c1797e3a62545a765bbb7e0b0319bf7ab6d89b118fa","source":"CREATE CERTIFICATE c AUTHORIZATION dbo FROM ASSEMBLY [asm] ACTIVE FOR BEGIN_DIALOG = ON;"}
+{"id":"batch-rules/issue-87-step-5","sha256":"2659bc0696509cc9bcc8521c36913689f88e721ba1774d786a79e3b2dd1a6aa9","source":"SELECT N'기준';\nCREATE TABLE dbo.t (id int CONSTRAINT fk REFERENCES dbo. ON DELETE CASCADE ON UPDATE SET NULL NOT FOR REPLICATION CHECK (id > 0), v int);"}
+{"id":"batch-rules/references-bare-on","sha256":"c37c13580500fde78ea983da8066ee2343bf93c03149ccd76437a063941c4085","source":"CREATE TABLE t (id int REFERENCES dbo. ON DELETE CASCADE);"}
+{"id":"batch-rules/relation-bare-on","sha256":"c916f27a244909c8226658988f5efe7532e53fedc2d1db43421f9456b6d2c233","source":"SELECT * FROM dbo. ON;"}
+{"id":"batch-rules/table-bare-select","sha256":"73fc267f780f55bd3ada963bd32502048c54a42dfb58ad78b513b26b6c2c0e1a","source":"CREATE TABLE dbo.SELECT (id int);"}
+{"id":"batch-rules/column-bare-order","sha256":"c09c56f35f6946fcd8771767aacd0ff60ce0e8bfd0cd017e9d513c0f0181aa77","source":"CREATE TABLE dbo.t (ORDER int);"}
+{"id":"batch-rules/constraint-bare-key","sha256":"2be0a2568b39b05a965f0b5ac3e2a73eb5400f488f1dd45dbed2a41292433cee","source":"CREATE TABLE dbo.t (id int CONSTRAINT KEY UNIQUE);"}
+{"id":"batch-rules/alias-bare-from","sha256":"883f8cf66cf78ce44d441275dcecbeea285f940c16cf07e2e95f96fe0a0b8884","source":"SELECT 1 AS FrOm;"}
+{"id":"batch-rules/field-bare-group","sha256":"5e54706605dffaf63b06a375b7fc79a32364e08cd3c84456f89002284e16e297","source":"SELECT t.GROUP FROM dbo.t;"}
+{"id":"batch-rules/schema-bare-select","sha256":"1c0ace737ecb34e43ec787ee09b133ec6f21f4659209632f10bfb4c82c56f4ce","source":"SELECT * FROM SELECT.t;"}
+{"id":"batch-rules/function-qualified-left","sha256":"84b45bade405a89e8371e1e101099a7f9d659f2cbe581d5a6fff46b281166155","source":"SELECT dbo.LEFT('x', 1);"}
+{"id":"batch-rules/function-builtin-left-right","sha256":"abdf4a9cf287a357e05bdb9298e03c099769a5d12a8eb175ec746762c9acdfe2","source":"SELECT LEFT('x', 1), RIGHT('x', 1);"}
+{"id":"batch-rules/column-unknown-word","sha256":"d24f04bc6ab31caa901df0495f8c60c6bd0f412a7fc1fa7376d48c3db1e170ba","source":"CREATE TABLE t (id int bogus);"}
+{"id":"batch-rules/column-unknown-delimited-word","sha256":"df5106631d888be16f8474b87abca31cb98ba6dc848c5b9bbc8e3e36ffd781b9","source":"CREATE TABLE t (id int [SPARSE]);"}
+{"id":"batch-rules/column-unknown-after-constraint","sha256":"262203550cad4e7c04ddb83b098fd760aabaaa272a0eb28a2f21c1dc1229d248","source":"CREATE TABLE t (id int CHECK (id > 0) bogus);"}
+{"id":"batch-rules/column-unknown-alter-add","sha256":"fda949c1090f7d79113d56d8d7185b78b7ce5058861eb09ca014773088abdad4","source":"ALTER TABLE t ADD id int bogus;"}
+{"id":"batch-rules/references-bracketed-on","sha256":"f6bded77ee1a8458629f80ac37cbfbf945aa929ecec3b9d4e0b8fabed7e03f3c","source":"CREATE TABLE t (id int REFERENCES dbo.[ON] ON DELETE CASCADE);"}
+{"id":"batch-rules/relation-quoted-on","sha256":"da75a0da3426615196262447399ce964c0df6b9c5cd0580c35cd1546110b13cf","source":"SELECT * FROM dbo.\"ON\";"}
+{"id":"batch-rules/nonreserved-names","sha256":"34f8875c885e1bf0599fb91a18bcbc7a95278abf38a11940b035f11b5dd1156c","source":"CREATE TABLE dbo.NAME (VALUE int, TYPE int);"}
+{"id":"batch-rules/column-rowguidcol","sha256":"171ad4ee864a39e37c75bddf6ea4b0545d812d242565d5b558d5f14199b2f45e","source":"CREATE TABLE t (id uniqueidentifier RoWgUiDcOl);"}
+{"id":"batch-rules/column-sparse","sha256":"f32cacf3ba5d35fdca9fea308ac5c82e699fe96b4af008ab65d9361e64eff090","source":"CREATE TABLE t (id int SPARSE NULL);"}
+{"id":"batch-rules/column-filestream","sha256":"91e6cc735e5cfb2d5b6947c7d79dd5d65851e557e142a6358b11812b121a50c9","source":"CREATE TABLE t (id varbinary(max) FILESTREAM NULL);"}
+{"id":"batch-rules/column-hidden","sha256":"eb8706c46135949fdbb2707ac3736fa59a7f94efd2d3a546009f41c63428c2d4","source":"CREATE TABLE t (id int, start_time datetime2 GENERATED ALWAYS AS ROW START HIDDEN, end_time datetime2 GENERATED ALWAYS AS ROW END HIDDEN, PERIOD FOR SYSTEM_TIME (start_time, end_time));"}
+{"id":"batch-rules/index-option-switches","sha256":"63fadfda667cf6ea09045eb46263c7838dd8ba82bd6df792ae476c0ff88e4500","source":"CREATE INDEX i ON dbo.t (id) WITH (PAD_INDEX = ON, SORT_IN_TEMPDB = OFF);"}
+{"id":"batch-rules/index-alias-fillfactor","sha256":"0b36bfaa5295cfd891797e205816d8233dce45a2bb879c9c68fd6f0737e61b40","source":"CREATE TABLE t (id int PRIMARY KEY WITH FILLFACTOR = 80);"}
+{"id":"batch-rules/column-index-filestream","sha256":"8196a4631afd14514be1db2f267644a20ba68d79db120165819ef0020beb26dd","source":"CREATE TABLE t (id int INDEX i FILESTREAM_ON [default]);"}
+{"id":"batch-rules/label-nonreserved","sha256":"36486a80dc1f73515baab766905bc404bcf90ad9f494345791e944477c43e890","source":"GOTO finish; finish: PRINT 1;"}
+{"id":"batch-rules/label-reserved","sha256":"f73110f8f458fcbf57e1a06d4d4f08d06bc94b9f17640ddd38627c087a55cb14","source":"GOTO oN; ON: PRINT 1;"}
+{"id":"batch-rules/label-compatibility-100","sha256":"486e4b0e12b0b3422003b1f198aec0f6b037ecd0a79768cdb8565ad0df38ba43","source":"GOTO TRY_CONVERT; TRY_CONVERT: PRINT 1;"}
+{"id":"batch-rules/name-compatibility-100","sha256":"5ee7d0dff38ac9f972d3822c49501e8eaae384f0a5b7f40cddf72841b7c19755","source":"SELECT * FROM dbo.SEMANTICKEYPHRASETABLE; SELECT * FROM dbo.SEMANTICSIMILARITYDETAILSTABLE; SELECT * FROM dbo.SEMANTICSIMILARITYTABLE; SELECT * FROM dbo.TRY_CONVERT;"}
+{"id":"batch-rules/names-listed-but-unreserved","sha256":"8ac3efcc37e0a6fba900bbe6c4d64767e8cc03e9b2c62f147a1b7f2e695b0cb2","source":"SELECT * FROM dbo.DISK AS DUMP; SELECT * FROM dbo.LOAD AS PRECISION; GOTO SECURITYAUDIT; SECURITYAUDIT: PRINT 1;"}
+{"id":"batch-rules/column-hidden-without-generated","sha256":"decc12a9f51229f7057d0f467773ccfa73b2db3f37a63764280d9fecf83535ab","source":"CREATE TABLE t (id int HIDDEN);"}
+{"id":"batch-rules/column-collation","sha256":"6a0d3eb55a1ff35f47b0dd2e415a353fbee1b9d660b1069876b61985bb7f3f50","source":"CREATE TABLE t (name varchar(50) COLLATE Latin1_General_CI_AS SPARSE);"}
+{"id":"batch-rules/column-foreign-key-list","sha256":"43dbb9f678e87b5c1a4c9e6b70a7d2faca66759efa98a8fe2185d517546130e3","source":"CREATE TABLE t (id int FOREIGN KEY (id) REFERENCES dbo.p (id) ON DELETE CASCADE);"}
+{"id":"batch-rules/scalar-keyword-qualifiers","sha256":"4ac753d5dc2a86f4209d8bfe61b7df52d6cfde71636d6f3d72aa686fd7145ebb","source":"SELECT CURRENT_DATE.id, CURRENT_TIMESTAMP.id, CURRENT_USER.id, SESSION_USER.id, SYSTEM_USER.id, USER.id FROM dbo.t;"}
+{"id":"batch-rules/column-pseudo-columns","sha256":"0cebe07eb6af91b5d3ddf7133531010106ea1d4ff3fb4fa6f9e2bf96422e177a","source":"SELECT IDENTITYCOL, ROWGUIDCOL, t.IDENTITYCOL, t.ROWGUIDCOL FROM dbo.t;"}
+{"id":"batch-rules/column-filestream-placement-without-index","sha256":"64bdb36bc7251019a85d7a9cb8cc578e589fa0b62f8cdb3137a899f6c79bffe2","source":"CREATE TABLE t (id int FILESTREAM_ON fg);"}
+{"id":"batch-rules/column-index-filestream-without-filegroup","sha256":"a3ebcffe923f3329b0e963154dbeb16a4564c9ab6e2bad0df0606d3fb82e3753","source":"CREATE TABLE t (id int INDEX ix NONCLUSTERED FILESTREAM_ON);"}

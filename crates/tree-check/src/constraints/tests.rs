@@ -33,6 +33,63 @@ fn probe_cases(probes: &str) -> impl Iterator<Item = serde_json::Value> + '_ {
 }
 
 #[test]
+fn issue_87_reports_the_reference_name_and_each_stray_column_word() {
+    let case = probe_cases(include_str!(
+        "../../../../oracle/data/probes/batch-rules.jsonl"
+    ))
+    .find(|case| case["id"] == "batch-rules/issue-87-step-5")
+    .unwrap();
+    let sql = case["source"].as_str().unwrap();
+    let tree = parse(sql);
+    assert!(!tree.root_node().has_error());
+    let violations = check(&tree, sql.as_bytes());
+    let line = sql.lines().nth(1).unwrap();
+    let words: Vec<_> = violations
+        .iter()
+        .map(|v| {
+            assert_eq!(v.row, 1);
+            (v.rule, line[v.column..].split_whitespace().next().unwrap())
+        })
+        .collect();
+    assert_eq!(
+        words,
+        [
+            ("gap-reserved-name", "ON"),
+            ("column-unknown-option", "DELETE"),
+            ("column-unknown-option", "CASCADE"),
+            ("column-unknown-option", "ON"),
+            ("column-unknown-option", "UPDATE"),
+            ("column-unknown-option", "SET"),
+        ]
+    );
+}
+
+#[test]
+fn column_word_checks_preserve_the_flattened_index_placement() {
+    for (sql, expected) in [
+        (
+            "CREATE TABLE t (id int INDEX ix NONCLUSTERED FILESTREAM_ON /* fg */ [default]);",
+            &[][..],
+        ),
+        (
+            "CREATE TABLE t (id int INDEX ix FILESTREAM_ON fg BoGuS);",
+            &["column-unknown-option"][..],
+        ),
+        (
+            "CREATE TABLE t (id int [SPARSE]);",
+            &["column-unknown-option"][..],
+        ),
+        (
+            "CREATE TABLE t (id int CONSTRAINT RoWgUiDcOl UNIQUE);",
+            &["gap-reserved-name"][..],
+        ),
+    ] {
+        assert!(!parse(sql).root_node().has_error(), "{sql}");
+        assert_eq!(rules(sql), expected, "{sql}");
+    }
+}
+
+#[test]
 fn comments_do_not_change_constraint_rules() {
     for sql in [
         "SELECT 1 FROM t WHERE a = 1 AND (\n b = 0 OR c = 1);",

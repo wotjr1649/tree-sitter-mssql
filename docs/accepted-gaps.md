@@ -2,10 +2,10 @@
 
 ## Current oracle status
 
-The replay covers 10,780 sources and 21,560 session/case pairs. All 15,642
+The replay covers 10,817 sources and 21,634 session/case pairs. All 15,679
 engine-accepted pairs pass tree-check. The [rejected-clean ledger](../oracle/data/rejected-clean.json)
 contains 445 pairs (190 ON, 255 OFF): context 111, environment 294, version 36 and runner 4.
-There are zero entries classified as `gap` and zero edit histories with incremental differences.
+There are zero entries classified as `gap`. The #87 history records one incremental difference.
 
 The four runner entries cover two sources in both sessions. The PARSEONLY guard excludes one
 source, and the runner's GO splitter accounts for the other. The committed replay and ledger
@@ -47,6 +47,29 @@ The probes in [ddl-rest.jsonl](../oracle/data/probes/ddl-rest.jsonl) and the tre
 
 For join hints, removed syntax, EXEC arguments and branch-local ORDER BY, see the
 [fixture syntax notes](../test/fixtures/README.md#syntax-notes).
+
+## Bare names and column options (#87)
+
+Tree-check rejects bare reserved words in name positions such as multipart object names,
+columns, constraints, aliases, and labels. Delimited names follow the session's
+QUOTED_IDENTIFIER setting. The rule starts from Microsoft's [SQL Server reserved word list](https://learn.microsoft.com/en-us/sql/t-sql/language-elements/reserved-keywords-transact-sql)
+and uses the engine's acceptance at any supported level. LocalDB accepts DISK, DUMP, LOAD,
+PRECISION, and SECURITYAUDIT as names at every measured level. It also accepts TRY_CONVERT and
+the three SEMANTIC table function names as names at level 100. Keyword aliases, built-ins such
+as LEFT and RIGHT, and syntax words in clauses such as index options retain their existing
+interpretation.
+
+The bare-identifier arm of `_column_constraint` leaves stray words directly under
+`column_definition`. Tree-check accepts FILESTREAM, SPARSE, and ROWGUIDCOL there, and
+preserves the inline index's FILESTREAM_ON clause and filegroup. HIDDEN belongs to GENERATED
+ALWAYS. The option forms are documented in [CREATE TABLE](https://learn.microsoft.com/en-us/sql/t-sql/statements/create-table-transact-sql).
+
+In `batch-rules/issue-87-step-5`, the fresh CST reads `ON` as the name in `REFERENCES dbo. ON`
+and treats the next five words as column options. LocalDB returns Msg 156. Tree-check emits
+`gap-reserved-name` for the name and `column-unknown-option` for each stray word. The
+[edit history](../oracle/data/kit/batch-rules-edits.jsonl) records the incremental CST difference
+at step 5, where tree-sitter 0.27.2 inserts a missing closing parenthesis and recovers with an
+error node.
 
 ## Over-acceptance resolved in tree-check
 
