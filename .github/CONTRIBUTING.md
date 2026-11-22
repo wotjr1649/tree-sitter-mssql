@@ -65,7 +65,7 @@ cargo test --manifest-path crates/tree-check/Cargo.toml
 4. **Regenerate.** Run the generate command from "Local setup" with the pinned CLI and commit `src/parser.c`, `src/grammar.json`, `src/node-types.json`, `src/tree_sitter/*.h` and `test/node-kinds.txt` with the grammar change.
 5. **Gates.** Run the checks in "Validation before a pull request". Existing corpus cases and fixtures keep passing unless the change alters them on purpose and says why.
 
-Errors that need context (conflicting hints, boolean versus scalar, names, permissions) are not grammar defects; label them `contextual` instead of bending the grammar.
+Rejections that the parse tree alone decides (conflicting hints, argument rules) belong in `crates/tree-check`. Errors that need names, types or catalog state are not grammar defects; label them `contextual` instead of bending the grammar.
 
 Issue labels:
 
