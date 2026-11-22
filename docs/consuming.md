@@ -29,8 +29,9 @@ requests, [`scripts/check-node-types.mjs`](../scripts/check-node-types.mjs) also
 the PR's merge target (the test merge's first parent). It checks for removed kinds, fields, field or child
 types and supertype subtypes, lost multiplicity, and existing entries becoming required.
 
-Removing or renaming a kind, field or supertype subtype is a major change. So is changing the CST of valid input
-that the previous release parsed cleanly. Additions that preserve those CSTs are minor changes. Call out contract
+Removing or renaming a kind, field or supertype subtype is a major change. So is changing a correct CST of valid
+input. Additions that preserve those CSTs are minor changes, and so is correcting a wrong CST of valid input, with a
+migration note. Call out contract
 changes in the pull request or commit for `CHANGELOG.md`. See [AGENTS.md](../AGENTS.md) for the release rules.
 
 ## Version-specific and deprecated constructs
