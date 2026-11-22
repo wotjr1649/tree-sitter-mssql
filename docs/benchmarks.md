@@ -628,6 +628,43 @@ The measurements cover native full parses of the public fixtures. Live SQL Serve
 WASM, peak memory, fuzzing and incremental reparse timings are outside this study. Oracle replay includes
 its stored edit histories.
 
+### 2.5.0 candidate (2026-11-22)
+
+At `45aae9c` (v2.4.0), `binary_expression` and `between_expression` occur in 1,203 distinct states.
+Their recursive operands carry different lookahead sets in SELECT lists, predicates and arguments.
+`alter_assembly` occurs in 169 states because its optional clauses expand inside one rule. The
+column and table constraint rules repeat the CHECK and REFERENCES tails. MERGE expands the
+same predicate ahead of THEN in three alternatives. Keyword tokens also widen the dense table.
+
+The change reduces the FROM, DROP FILE and ADD FILE clauses of ALTER ASSEMBLY separately,
+shares the CHECK and REFERENCES tails across the two constraint rules, and shares
+`[AND predicate] THEN` across MERGE branches. The hidden rules preserve the public CST of valid input.
+
+| Metric | v2.4.0 | Combined | Change |
+| --- | ---: | ---: | ---: |
+| Parse states | 13,726 | 13,398 | −2.39 % |
+| Large states | 4,434 | 4,328 | −2.39 % |
+| `parser.c` (B) | 27,819,304 | 27,235,153 | −2.10 % |
+| Main / keyword lexer states | 274 / 2,475 | 274 / 2,475 | unchanged |
+
+All 2,568 corpus tests pass. Full CSTs match on 156 fixtures, 10,780 oracle sources and 3,563
+engine-accepted generated ALTER ASSEMBLY, constraint and MERGE inputs. The public node kinds and fields are
+unchanged. Error-recovery trees can differ: 1,186 of 118,244 truncated or token-edited inputs, all
+engine-rejected and all in the MERGE and constraint regions, parse to a different error tree. The Windows
+DLL shrinks by 1.93 % (gcc, 13,323,529 to 13,066,505 B). Callgrind instruction counts change by −0.87 % to
++0.13 % across the CI sets (run 45027245805), so parse speed is unchanged. Factoring IN and NOT IN in a separate experiment
+left the state count unchanged, added one large state and grew `parser.c` by 23,934 B. Removing 14 rules
+from `inline` shrank `parser.c` but grew the DLL by 80,384 B, because the extra hidden symbols widen the
+large table. Sharing the `[IF EXISTS] name [, ...]` tail of eight DROP statements saved 48,128 B of DLL and
+was left out for its coupling of statements that diverge. Every one of the 28 conflicts is required.
+
+In separate v2.4.0 experiments, an ASCII case-insensitive regex produced byte-identical
+`parser.c`. Scanning `$` pseudo-identifiers externally reduced the main lexer from 274 to 236
+states, increased parse states by 9.32 % and `parser.c` by 4.65 %, and changed 18 error-recovery
+trees. On the fixtures, making `keyword_*` anonymous keeps 28,305 total nodes and reduces the
+named count by 20.7 %. Hiding `statement` and `batch` would reduce total nodes by 4.58 %.
+Both CST changes are MAJOR.
+
 ## CI instruction counts
 
 The [Parse benchmark workflow](../.github/workflows/parse-bench.yml) builds each ref's committed `src/parser.c`
