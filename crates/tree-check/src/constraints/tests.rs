@@ -33,6 +33,173 @@ fn probe_cases(probes: &str) -> impl Iterator<Item = serde_json::Value> + '_ {
 }
 
 #[test]
+fn issue_87_reports_the_reference_name_and_each_stray_column_word() {
+    let case = probe_cases(include_str!(
+        "../../../../oracle/data/probes/batch-rules.jsonl"
+    ))
+    .find(|case| case["id"] == "batch-rules/issue-87-step-5")
+    .unwrap();
+    let sql = case["source"].as_str().unwrap();
+    let tree = parse(sql);
+    assert!(!tree.root_node().has_error());
+    let violations = check(&tree, sql.as_bytes());
+    let line = sql.lines().nth(1).unwrap();
+    let words: Vec<_> = violations
+        .iter()
+        .map(|v| {
+            assert_eq!(v.row, 1);
+            (v.rule, line[v.column..].split_whitespace().next().unwrap())
+        })
+        .collect();
+    assert_eq!(
+        words,
+        [
+            ("gap-reserved-name", "ON"),
+            ("column-unknown-option", "DELETE"),
+            ("column-unknown-option", "CASCADE"),
+            ("column-unknown-option", "ON"),
+            ("column-unknown-option", "UPDATE"),
+            ("column-unknown-option", "SET"),
+        ]
+    );
+}
+
+#[test]
+fn column_word_checks_preserve_the_flattened_index_placement() {
+    for (sql, expected) in [
+        (
+            "CREATE TABLE t (id int INDEX ix NONCLUSTERED FILESTREAM_ON /* fg */ [default]);",
+            &[][..],
+        ),
+        (
+            "CREATE TABLE t (id int INDEX ix FILESTREAM_ON fg BoGuS);",
+            &["column-unknown-option"][..],
+        ),
+        (
+            "CREATE TABLE t (id int [SPARSE]);",
+            &["column-unknown-option"][..],
+        ),
+        (
+            "CREATE TABLE t (id int CONSTRAINT RoWgUiDcOl UNIQUE);",
+            &["gap-reserved-name"][..],
+        ),
+    ] {
+        assert!(!parse(sql).root_node().has_error(), "{sql}");
+        assert_eq!(rules(sql), expected, "{sql}");
+    }
+}
+
+#[test]
+fn issue_87_review_forms_pass_in_both_sessions() {
+    let cases: Vec<_> = probe_cases(include_str!(
+        "../../../../oracle/data/probes/batch-rules.jsonl"
+    ))
+    .filter(|case| {
+        case["id"]
+            .as_str()
+            .unwrap()
+            .starts_with("batch-rules/review-")
+    })
+    .collect();
+    assert_eq!(cases.len(), 12);
+    for case in cases {
+        let sql = case["source"].as_str().unwrap();
+        let tree = parse(sql);
+        for setting in [crate::QuotedIdentifier::On, crate::QuotedIdentifier::Off] {
+            let report = crate::inspect_with_quoted_identifier(&tree, sql.as_bytes(), setting);
+            assert!(report.ok(), "{sql} ({setting:?}): {report:?}");
+        }
+    }
+}
+
+#[test]
+fn issue_87_review_exceptions_are_limited_to_the_syntax_words() {
+    for (sql, rule) in [
+        ("SELECT f(DOUBLE PRECISION, 1);", "gap-reserved-name"),
+        (
+            "SELECT CONVERT(DOUBLE AS PRECISION, 1);",
+            "gap-reserved-name",
+        ),
+        ("SELECT CONVERT(int, char varying);", "gap-reserved-name"),
+        ("SELECT CONVERT(dbo.foo varying, 1);", "gap-reserved-name"),
+        ("SELECT DATABASE();", "gap-reserved-name"),
+        ("SELECT {fn CONCAT(DATABASE(), 'x')};", "gap-reserved-name"),
+        ("CREATE TABLE t (TIMESTAMP NOT);", "gap-reserved-name"),
+        (
+            "CREATE TABLE t (TIMESTAMP NOT(1) NULL);",
+            "gap-reserved-name",
+        ),
+        ("CREATE TABLE t (c int varying);", "column-unknown-option"),
+        (
+            "CREATE TABLE t (c char(10) varying);",
+            "column-unknown-option",
+        ),
+        (
+            "CREATE TABLE t (c char varying varying);",
+            "column-unknown-option",
+        ),
+    ] {
+        assert!(!parse(sql).root_node().has_error(), "{sql}");
+        assert_eq!(rules(sql), [rule], "{sql}");
+    }
+}
+
+#[test]
+fn varying_column_neighbours_pass_in_both_sessions() {
+    let cases: Vec<_> = probe_cases(include_str!(
+        "../../../../oracle/data/probes/batch-rules.jsonl"
+    ))
+    .filter(|case| {
+        let id = case["id"].as_str().unwrap();
+        id.starts_with("batch-rules/char-varying-")
+            || matches!(
+                id,
+                "batch-rules/character-varying-collate" | "batch-rules/binary-varying-collate"
+            )
+    })
+    .collect();
+    assert_eq!(cases.len(), 12);
+    for case in cases {
+        let sql = case["source"].as_str().unwrap();
+        let tree = parse(sql);
+        for setting in [crate::QuotedIdentifier::On, crate::QuotedIdentifier::Off] {
+            let report = crate::inspect_with_quoted_identifier(&tree, sql.as_bytes(), setting);
+            assert!(report.ok(), "{sql} ({setting:?}): {report:?}");
+        }
+    }
+}
+
+#[test]
+fn split_varying_collate_still_checks_the_name_and_column_tail() {
+    for (tail, expected) in [
+        ("COLLATE", &["column-unknown-option"][..]),
+        ("COLLATE [Latin1_General_CI_AS]", &["collation-name"][..]),
+        ("COLLATE \"Latin1_General_CI_AS\"", &["collation-name"][..]),
+        ("COLLATE ON", &["gap-reserved-name"][..]),
+        (
+            "COLLATE Latin1_General_CI_AS junk",
+            &["column-unknown-option"][..],
+        ),
+        (
+            "[COLLATE] Latin1_General_CI_AS",
+            &["column-unknown-option"; 2][..],
+        ),
+        (
+            "NULL COLLATE Latin1_General_CI_AS",
+            &["column-unknown-option"; 2][..],
+        ),
+        (
+            "COLLATE Latin1_General_CI_AS COLLATE Latin1_General_CI_AS",
+            &["column-unknown-option"; 2][..],
+        ),
+    ] {
+        let sql = format!("CREATE TABLE dbo.t (c char varying {tail});");
+        assert!(!parse(&sql).root_node().has_error(), "{sql}");
+        assert_eq!(rules(&sql), expected, "{sql}");
+    }
+}
+
+#[test]
 fn comments_do_not_change_constraint_rules() {
     for sql in [
         "SELECT 1 FROM t WHERE a = 1 AND (\n b = 0 OR c = 1);",

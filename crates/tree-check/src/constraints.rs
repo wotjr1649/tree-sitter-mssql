@@ -89,7 +89,7 @@ fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
                 gap_scalar(node, &context, source, &mut out);
             }
             "identifier" => {
-                gap_name(node, &context, source, &mut out);
+                identifier(node, &context, source, &mut out);
             }
             "object_reference" => {
                 gap_name(node, &context, source, &mut out);

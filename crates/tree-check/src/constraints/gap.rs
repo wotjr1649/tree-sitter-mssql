@@ -213,56 +213,532 @@ pub(super) fn gap_scalar(node: Node, context: &Context, source: &[u8], out: &mut
     }
 }
 
+// https://learn.microsoft.com/en-us/sql/t-sql/language-elements/reserved-keywords-transact-sql
+// Single words from the SQL Server list. PARSEONLY accepts DISK, DUMP, LOAD, PRECISION and
+// SECURITYAUDIT as names, and TRY_CONVERT and the three SEMANTIC* names at level 100.
+const RESERVED_NAMES: &[&str] = &[
+    "ADD",
+    "ALL",
+    "ALTER",
+    "AND",
+    "ANY",
+    "AS",
+    "ASC",
+    "AUTHORIZATION",
+    "BACKUP",
+    "BEGIN",
+    "BETWEEN",
+    "BREAK",
+    "BROWSE",
+    "BULK",
+    "BY",
+    "CASCADE",
+    "CASE",
+    "CHECK",
+    "CHECKPOINT",
+    "CLOSE",
+    "CLUSTERED",
+    "COALESCE",
+    "COLLATE",
+    "COLUMN",
+    "COMMIT",
+    "COMPUTE",
+    "CONSTRAINT",
+    "CONTAINS",
+    "CONTAINSTABLE",
+    "CONTINUE",
+    "CONVERT",
+    "CREATE",
+    "CROSS",
+    "CURRENT",
+    "CURRENT_DATE",
+    "CURRENT_TIME",
+    "CURRENT_TIMESTAMP",
+    "CURRENT_USER",
+    "CURSOR",
+    "DATABASE",
+    "DBCC",
+    "DEALLOCATE",
+    "DECLARE",
+    "DEFAULT",
+    "DELETE",
+    "DENY",
+    "DESC",
+    "DISTINCT",
+    "DISTRIBUTED",
+    "DOUBLE",
+    "DROP",
+    "ELSE",
+    "END",
+    "ERRLVL",
+    "ESCAPE",
+    "EXCEPT",
+    "EXEC",
+    "EXECUTE",
+    "EXISTS",
+    "EXIT",
+    "EXTERNAL",
+    "FETCH",
+    "FILE",
+    "FILLFACTOR",
+    "FOR",
+    "FOREIGN",
+    "FREETEXT",
+    "FREETEXTTABLE",
+    "FROM",
+    "FULL",
+    "FUNCTION",
+    "GOTO",
+    "GRANT",
+    "GROUP",
+    "HAVING",
+    "HOLDLOCK",
+    "IDENTITY",
+    "IDENTITYCOL",
+    "IDENTITY_INSERT",
+    "IF",
+    "IN",
+    "INDEX",
+    "INNER",
+    "INSERT",
+    "INTERSECT",
+    "INTO",
+    "IS",
+    "JOIN",
+    "KEY",
+    "KILL",
+    "LEFT",
+    "LIKE",
+    "LINENO",
+    "MERGE",
+    "NATIONAL",
+    "NOCHECK",
+    "NONCLUSTERED",
+    "NOT",
+    "NULL",
+    "NULLIF",
+    "OF",
+    "OFF",
+    "OFFSETS",
+    "ON",
+    "OPEN",
+    "OPENDATASOURCE",
+    "OPENQUERY",
+    "OPENROWSET",
+    "OPENXML",
+    "OPTION",
+    "OR",
+    "ORDER",
+    "OUTER",
+    "OVER",
+    "PERCENT",
+    "PIVOT",
+    "PLAN",
+    "PRIMARY",
+    "PRINT",
+    "PROC",
+    "PROCEDURE",
+    "PUBLIC",
+    "RAISERROR",
+    "READ",
+    "READTEXT",
+    "RECONFIGURE",
+    "REFERENCES",
+    "REPLICATION",
+    "RESTORE",
+    "RESTRICT",
+    "RETURN",
+    "REVERT",
+    "REVOKE",
+    "RIGHT",
+    "ROLLBACK",
+    "ROWCOUNT",
+    "ROWGUIDCOL",
+    "RULE",
+    "SAVE",
+    "SCHEMA",
+    "SELECT",
+    "SESSION_USER",
+    "SET",
+    "SETUSER",
+    "SHUTDOWN",
+    "SOME",
+    "STATISTICS",
+    "SYSTEM_USER",
+    "TABLE",
+    "TABLESAMPLE",
+    "TEXTSIZE",
+    "THEN",
+    "TO",
+    "TOP",
+    "TRAN",
+    "TRANSACTION",
+    "TRIGGER",
+    "TRUNCATE",
+    "TSEQUAL",
+    "UNION",
+    "UNIQUE",
+    "UNPIVOT",
+    "UPDATE",
+    "UPDATETEXT",
+    "USE",
+    "USER",
+    "VALUES",
+    "VARYING",
+    "VIEW",
+    "WAITFOR",
+    "WHEN",
+    "WHERE",
+    "WHILE",
+    "WITH",
+    "WRITETEXT",
+];
+
+/// batch-rules/issue-87-step-5: the first ON is read as the REFERENCES target name and
+/// the following action words fall through to _column_constraint's bare identifier arm.
+pub(super) fn identifier(node: Node, context: &Context, source: &[u8], out: &mut Vec<Violation>) {
+    // Keyword aliases and SQLCMD paths can share the public identifier kind.
+    if !matches!(
+        node.grammar_name(),
+        "identifier"
+            | "_identifier"
+            | "_alias_name"
+            | "_create_table_identifier"
+            | "_graph_identifier"
+    ) {
+        return;
+    }
+    let Some(parent) = context.parent() else {
+        return;
+    };
+    let word = node
+        .utf8_text(source)
+        .unwrap_or_default()
+        .to_ascii_uppercase();
+    if parent.kind() == "column_definition"
+        && parent.child_by_field_name("name") != Some(node)
+        // Hidden grammar rules flatten column lists, collation, constraint/index names
+        // and FILESTREAM_ON's filegroup into the same column_definition.
+        && !node.syntax_prev_sibling().is_some_and(|n| {
+            matches!(
+                n.grammar_name(),
+                "(" | "," | "keyword_collate" | "keyword_constraint" | "keyword_index"
+            ) || varying_column_collate(n, parent, source)
+                || inline_index_filestream(n, source)
+        })
+    {
+        // https://learn.microsoft.com/en-us/sql/t-sql/statements/create-table-transact-sql
+        // HIDDEN is part of generated_always; only these flags can be standalone.
+        if varying_column_collate(node, parent, source) {
+            collation_name(node, source, out);
+        } else if !matches!(word.as_str(), "FILESTREAM" | "SPARSE" | "ROWGUIDCOL")
+            && !column_varying(node, parent, source)
+            && !inline_index_filestream(node, source)
+        {
+            out.push(violation(
+                "column-unknown-option",
+                "unknown column option".into(),
+                node,
+            ));
+        }
+    } else if RESERVED_NAMES.binary_search(&word.as_str()).is_ok()
+        && !keyword_in_identifier(node, parent, context, &word, source)
+    {
+        out.push(violation(
+            "gap-reserved-name",
+            format!("{word} must be delimited when used as a name"),
+            node,
+        ));
+    }
+}
+
+fn column_varying(node: Node, column: Node, source: &[u8]) -> bool {
+    node.kind() == "identifier"
+        && node
+            .utf8_text(source)
+            .is_ok_and(|text| text.eq_ignore_ascii_case("VARYING"))
+        && node.syntax_prev_sibling().is_some_and(|ty| {
+            Some(ty) == column.child_by_field_name("type")
+                && matches!(ty.kind(), "char" | "binary")
+                && ty.child_by_field_name("size").is_none()
+        })
+}
+
+// The column flag fallback can absorb both words of COLLATE after a split VARYING type.
+fn varying_column_collate(node: Node, column: Node, source: &[u8]) -> bool {
+    node.kind() == "identifier"
+        && node
+            .utf8_text(source)
+            .is_ok_and(|text| text.eq_ignore_ascii_case("COLLATE"))
+        && node
+            .syntax_prev_sibling()
+            .is_some_and(|varying| column_varying(varying, column, source))
+        && node
+            .syntax_next_sibling()
+            .is_some_and(|name| name.kind() == "identifier")
+}
+
+fn inline_index_filestream(node: Node, source: &[u8]) -> bool {
+    if node.grammar_name() == "keyword_filestream_on" {
+        return true;
+    }
+    // The generic arm can also win lexing for FILESTREAM_ON and its filegroup.
+    node.kind() == "identifier"
+        && node
+            .utf8_text(source)
+            .is_ok_and(|text| text.eq_ignore_ascii_case("FILESTREAM_ON"))
+        && node
+            .syntax_next_sibling()
+            .is_some_and(|n| matches!(n.kind(), "identifier" | "literal"))
+        && std::iter::successors(node.syntax_prev_sibling(), SyntaxNode::syntax_prev_sibling)
+            .find(|n| {
+                !matches!(
+                    n.kind(),
+                    "keyword_clustered"
+                        | "keyword_nonclustered"
+                        | "keyword_hash"
+                        | "ordered_columns"
+                        | "with_options"
+                        | "keyword_with"
+                        | "option"
+                        | "on_filegroup"
+                )
+            })
+            .is_some_and(|name| {
+                name.kind() == "identifier"
+                    && name
+                        .syntax_prev_sibling()
+                        .is_some_and(|n| n.kind() == "keyword_index")
+            })
+}
+
+fn rowset_modifier(invocation: Node, source: &[u8]) -> bool {
+    invocation
+        .parent()
+        .filter(|n| n.kind() == "term")
+        .and_then(|n| n.parent())
+        .is_some_and(|n| {
+            n.kind() == "invocation" && invocation_name(n, source).as_deref() == Some("OPENROWSET")
+        })
+}
+
+// The expression grammar can represent a conversion type as a value and alias.
+fn conversion_type(argument: Node, source: &[u8]) -> bool {
+    let Some(call) = argument.parent().filter(|n| {
+        n.kind() == "invocation" && n.child_by_field_name("parameter") == Some(argument)
+    }) else {
+        return false;
+    };
+    matches!(
+        invocation_name(call, source).as_deref(),
+        Some("CONVERT" | "TRY_CONVERT")
+    ) && !has_child(argument, "keyword_as")
+}
+
+// Some grammar productions use the generic identifier for a fixed syntax word.
+fn keyword_in_identifier(
+    node: Node,
+    parent: Node,
+    context: &Context,
+    word: &str,
+    source: &[u8],
+) -> bool {
+    let grand = context.grandparent();
+    let previous = || node.syntax_prev_sibling().map(|n| n.kind());
+    let next = || node.syntax_next_sibling().map(|n| n.kind());
+    match (parent.kind(), word) {
+        ("object_reference", _) if parent.syntax_child(1).is_none() => {
+            match grand.map(|n| n.kind()) {
+                Some("invocation") => match word {
+                    "COALESCE" | "CONTAINS" | "CONTAINSTABLE" | "CONVERT" | "FREETEXT"
+                    | "FREETEXTTABLE" | "IDENTITY" | "LEFT" | "NULLIF" | "OPENDATASOURCE"
+                    | "OPENQUERY" | "OPENROWSET" | "OPENXML" | "RIGHT" | "TSEQUAL" | "UPDATE" => {
+                        true
+                    }
+                    "CURRENT_DATE" | "CURRENT_TIME" | "CURRENT_TIMESTAMP" | "DATABASE"
+                    | "INSERT" | "TRUNCATE" => context
+                        .ancestor_parent("invocation")
+                        .is_some_and(|n| n.kind() == "odbc_function_escape"),
+                    "BULK" | "ORDER" => grand.is_some_and(|n| rowset_modifier(n, source)),
+                    _ => false,
+                },
+                Some("set_statement") => {
+                    parent
+                        .syntax_prev_sibling()
+                        .is_some_and(|n| n.kind() == "keyword_set")
+                        && matches!(
+                            word,
+                            "IDENTITY_INSERT" | "OFFSETS" | "ROWCOUNT" | "STATISTICS" | "TEXTSIZE"
+                        )
+                }
+                // A nameless TIMESTAMP column can parse its nullability as a type.
+                Some("custom_type") if matches!(word, "NULL" | "NOT") => grand.is_some_and(|ty| {
+                    ty.syntax_child(1).is_none()
+                        && (word == "NULL"
+                            || ty
+                                .syntax_next_sibling()
+                                .is_some_and(|n| n.kind() == "keyword_null"))
+                        && ty.parent().is_some_and(|column| {
+                            column.kind() == "column_definition"
+                                && column.child_by_field_name("type") == Some(ty)
+                                && column.child_by_field_name("name").is_some_and(|name| {
+                                    matches!(
+                                        upper_text(name, source).as_str(),
+                                        "TIMESTAMP" | "[TIMESTAMP]" | "\"TIMESTAMP\""
+                                    )
+                                })
+                        })
+                }),
+                Some("field") => matches!(
+                    word,
+                    "CURRENT_DATE"
+                        | "CURRENT_TIMESTAMP"
+                        | "CURRENT_USER"
+                        | "SESSION_USER"
+                        | "SYSTEM_USER"
+                        | "USER"
+                ),
+                // The static-reference check already disallows NULL in either part.
+                Some("object_reference") => {
+                    word == "NULL" && grand.is_some_and(|n| has_child(n, "::"))
+                }
+                _ => false,
+            }
+        }
+        (
+            "field",
+            "CURRENT_DATE" | "CURRENT_TIMESTAMP" | "CURRENT_USER" | "SESSION_USER" | "SYSTEM_USER"
+            | "USER",
+        ) => parent.syntax_child(0) == Some(node) && parent.syntax_child(1).is_none(),
+        ("field", "DOUBLE" | "NATIONAL") => {
+            parent.syntax_child(0) == Some(node)
+                && parent.syntax_child(1).is_none()
+                && grand.is_some_and(|argument| {
+                    argument.kind() == "term"
+                        && argument.child_by_field_name("value") == Some(parent)
+                        && argument.child_by_field_name("alias").is_some_and(|alias| {
+                            matches!(
+                                (word, upper_text(alias, source).as_str()),
+                                ("DOUBLE", "PRECISION") | ("NATIONAL", "CHAR" | "CHARACTER")
+                            )
+                        })
+                        && conversion_type(argument, source)
+                })
+        }
+        ("field", "IDENTITYCOL" | "ROWGUIDCOL") => parent.child_by_field_name("name") == Some(node),
+        ("field", "DEFAULT") => grand.is_some_and(|n| n.kind() == "list"),
+        ("field", "DISTINCT") => grand.is_some_and(|n| {
+            n.kind() == "unary_expression"
+                && n.child_by_field_name("operator")
+                    .is_some_and(|op| op.kind() == "keyword_all")
+        }),
+        ("field", "COMPUTE" | "EXECUTE" | "PROCEDURE" | "TABLE" | "COLUMN") => {
+            grand.is_some_and(|n| match n.kind() {
+                "dbcc_statement" => word == "COMPUTE",
+                "set_statement" => n
+                    .syntax_named_child(1)
+                    .is_some_and(|option| upper_text(option, source) == "OFFSETS"),
+                "binary_expression" => {
+                    matches!(word, "TABLE" | "COLUMN")
+                        && n.child_by_field_name("left") == Some(parent)
+                        && context.ancestor("invocation").is_some_and(|a| {
+                            invocation_name(a, source).as_deref() == Some("VECTOR_SEARCH")
+                        })
+                }
+                _ => false,
+            })
+        }
+        ("field", "BULK") | ("term", "UNIQUE") => context
+            .ancestor("invocation")
+            .is_some_and(|n| invocation_name(n, source).as_deref() == Some("OPENROWSET")),
+        ("term", "VARYING") => {
+            parent.child_by_field_name("alias") == Some(node)
+                && parent
+                    .child_by_field_name("value")
+                    .filter(|value| value.kind() == "field")
+                    .and_then(|value| value.child_by_field_name("name"))
+                    .is_some_and(|name| {
+                        matches!(
+                            upper_text(name, source).as_str(),
+                            "CHAR"
+                                | "CHARACTER"
+                                | "BINARY"
+                                | "[CHAR]"
+                                | "[CHARACTER]"
+                                | "[BINARY]"
+                                | "\"CHAR\""
+                                | "\"CHARACTER\""
+                                | "\"BINARY\""
+                        )
+                    })
+                && conversion_type(parent, source)
+        }
+        ("term", "ASC" | "DESC") => grand.is_some_and(|n| {
+            n.kind() == "invocation"
+                && invocation_name(n, source).as_deref() == Some("ORDER")
+                && rowset_modifier(n, source)
+        }),
+        (
+            "option",
+            "ALL" | "CLUSTERED" | "DISTRIBUTED" | "FILE" | "FILLFACTOR" | "FUNCTION" | "GROUP"
+            | "IDENTITY" | "ORDER" | "ROWCOUNT",
+        ) => parent.child_by_field_name("name") == Some(node),
+        ("option", "PERCENT") => {
+            previous() == Some("literal") && option_name(parent, source) == "SAMPLE"
+        }
+        ("option", "BY" | "INDEX") => {
+            grand.is_some_and(|n| n.kind() == "with_options")
+                && parent.child_by_field_name("value") == Some(node)
+                && matches!(
+                    (word, option_name(parent, source).as_str()),
+                    ("BY", "CLUSTER") | ("INDEX", "CLUSTERED")
+                )
+        }
+        ("option", "ANY" | "ASC" | "CONTINUE" | "DESC" | "PRIMARY" | "SHUTDOWN" | "TABLE") => {
+            parent.child_by_field_name("value") == Some(node)
+                && grand.is_some_and(|n| {
+                    matches!(
+                        (word, n.kind()),
+                        ("ANY", "alter_broker_priority" | "create_broker_priority")
+                            | ("ASC" | "DESC", "option")
+                            | ("CONTINUE" | "SHUTDOWN", "with_options")
+                            | ("PRIMARY", "alter_database")
+                            | ("TABLE", "alter_table")
+                    )
+                })
+        }
+        ("permission", _) => true,
+        ("query_hint", "DISTRIBUTED" | "GROUP" | "JOIN" | "MERGE" | "ORDER" | "PLAN" | "UNION") => {
+            true
+        }
+        ("alter_database", "CURRENT") => previous() == Some("keyword_database"),
+        ("alter_fulltext_index", "FULL" | "UPDATE") => previous() == Some("keyword_start"),
+        ("alter_fulltext_index", "OFF") => next().is_none() || next() == Some("with_clause"),
+        ("alter_table", "ROWGUIDCOL") => matches!(previous(), Some("keyword_add" | "keyword_drop")),
+        ("fulltext_index_column", "COLUMN") => {
+            node.syntax_prev_sibling()
+                .is_some_and(|n| upper_text(n, source) == "TYPE")
+                && parent.child_by_field_name("name") != Some(node)
+        }
+        ("grant_statement", "PUBLIC") | ("audit_action", "PUBLIC") => {
+            matches!(
+                previous(),
+                Some("keyword_to" | "keyword_from" | "keyword_by" | ",")
+            )
+        }
+        ("grant_statement" | "alter_authorization" | "audit_action", "SCHEMA" | "USER") => {
+            previous() == Some("keyword_on") && next() == Some("::")
+        }
+        _ => false,
+    }
+}
+
 /// R20 name/qualification, engine 117/156: XML collections have at most schema.name,
 /// HISTORY_TABLE has exactly schema.name; XE qualified names have no empty components.
 pub(super) fn gap_name(node: Node, context: &Context, source: &[u8], out: &mut Vec<Violation>) {
     let Some(parent) = context.parent() else {
         return;
     };
-    if node.kind() == "identifier" {
-        let text = upper_text(node, source);
-        let in_name = matches!(
-            parent.kind(),
-            "field" | "object_reference" | "column_definition" | "term"
-        );
-        // TABLE on VECTOR_SEARCH's left-hand assignment is syntax, not a column name.
-        let vector_key = matches!(
-            text.as_str(),
-            "TABLE" | "ESCAPE" | "FROM" | "FILLFACTOR" | "EXTERNAL"
-        ) && context.grandparent().is_some_and(|n| {
-            n.kind() == "binary_expression"
-                && n.child_by_field_name("left") == Some(parent)
-                && context
-                    .ancestor("invocation")
-                    .is_some_and(|a| invocation_name(a, source).as_deref() == Some("VECTOR_SEARCH"))
-        });
-        if (text == "COALESCE"
-            && parent.kind() == "object_reference"
-            && parent.child_by_field_name("schema").is_some())
-            || in_name
-                && matches!(
-                    text.as_str(),
-                    "TABLE" | "ESCAPE" | "FROM" | "FILLFACTOR" | "EXTERNAL"
-                )
-                && !vector_key
-                && context.ancestor("set_statement").is_none()
-            || text == "EXTERNAL" && parent.kind() == "relation"
-            || text == "USER"
-                && (parent.kind() == "object_reference"
-                    && context.grandparent().is_none_or(|p| p.kind() != "field")
-                    || parent.kind() == "relation"
-                    || parent.kind() == "field"
-                        && parent.syntax_named_child_count() > 1
-                        && parent.syntax_named_child(0) != Some(node))
-        {
-            out.push(violation(
-                "gap-reserved-name",
-                "this reserved name must be delimited".into(),
-                node,
-            ));
-        }
-        return;
-    }
     let parts = named_children(node).len();
     let mut c = node.walk();
     let dots = node
