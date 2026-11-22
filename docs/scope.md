@@ -45,7 +45,7 @@ some levels accept parses cleanly at every level. At 2.2.0, 89 oracle cases chan
 | 130 | 15 | `OPENJSON`, including its `WITH` schema |
 | 160 | 12 | the `WINDOW` clause and named windows, `TRIM(LEADING \| TRAILING \| BOTH ... FROM ...)` |
 | 170 | 25 | `REGEXP_*` functions, `AI_GENERATE_*` |
-| 100–120 only | 10 | encryption keys with deprecated algorithms (`TRIPLE_DES_3KEY`, `RC2`, `RC4`; Msg 102 from level 130, `RC4` already at 110) and `STRING_SPLIT` call shapes that SQL Server 2017 rejects from level 130 (Msg 8144) |
+| 100–120 only | 10 | encryption keys with deprecated algorithms (`TRIPLE_DES_3KEY`, `RC2`, `RC4`; Msg 102 from level 130; one route already from 110) and `STRING_SPLIT` call shapes that SQL Server 2017 rejects from level 130 (Msg 8144) |
 
 A tool that targets one compatibility level has to check these constructs itself. The per-case verdicts are in
 `oracle/data/verdicts`.
