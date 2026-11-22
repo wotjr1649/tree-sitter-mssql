@@ -234,6 +234,21 @@ jobs:
           node scripts/generate-node-kinds.mjs
           git diff --exit-code -- test/node-kinds.txt
 
+      - name: Check node types against the pull request base
+        # The checkout is GitHub's test merge: its first parent is the base it was merged onto, which
+        # can be newer than the event's base.sha. Pushes and manual runs have no PR base and skip this.
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_EVENT_NAME" != pull_request ]]; then
+            echo "Skipping node-types compatibility for $GITHUB_EVENT_NAME (no pull request base)."
+            exit 0
+          fi
+          merged=$(git rev-parse HEAD^2)
+          [[ "$merged" == "$HEAD_SHA" ]] || { echo "::error::HEAD^2 is ${merged}, not the pull request head ${HEAD_SHA}"; exit 1; }
+          node scripts/check-node-types.mjs "$(git rev-parse HEAD^1)"
+
       - name: Fail if the identifier character classes drift from the engine-measured sets
         run: node scripts/identifier-charclass.mjs --check
 
