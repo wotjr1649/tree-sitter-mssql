@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
-- Every document was re-checked against this release: current oracle counts (10,712 sources, 21,424 session/case pairs), accepted-gap rows that tree-check now rejects or that later rounds fixed, the CLI/ABI pin locations, the WASM ABI contract, fuzzing in CI, consumer pinning by tag, and broken links. Open gaps stay listed, among them the documented `WRITETEXT BULK ...` form that still parses with an error and ScriptDOM `batch-rules` verdicts that cover 50 of 53 cases. The issue labels named in `.github/CONTRIBUTING.md` now exist.
+- Every document was re-checked against this release: current oracle counts (10,712 sources, 21,424 session/case pairs), accepted-gap rows that tree-check now rejects or that later rounds fixed, the CLI/ABI pin locations, the WASM ABI contract, fuzzing in CI, consumer pinning by tag, and broken links. At this release, the documented `WRITETEXT BULK ...` form still parsed with an error and the ScriptDOM `batch-rules` verdicts covered 50 of 53 cases. The issue labels named in `.github/CONTRIBUTING.md` now exist.
 
 ## [2.1.1] - 2026-11-18
 
