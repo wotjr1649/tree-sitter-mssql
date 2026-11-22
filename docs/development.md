@@ -104,6 +104,25 @@ parse time and peak RSS where available with the milestone in `test/runtime-cost
 metric exceeds the milestone's limit, currently 1.5× the 2.1.1 baseline. A budget change needs a recorded
 decision and a new milestone (ADR-0002 §6).
 
+Use [Parse benchmark](../.github/workflows/parse-bench.yml) to compare Callgrind instruction counts across
+Git refs on Linux. Run it from Actions with the default refs (`v2.1.1 v2.2.0 HEAD`) or list your own in
+`bench_refs`, baseline first. The run reports changes without applying a budget by default. Specify a
+nonnegative decimal percentage in `bench_max_increase_pct` to fail when any comparison exceeds that
+increase for an input set and parse mode. Benchmark workflow and script changes also run on pull requests.
+
+To run locally from the repository root on Linux, install GCC, Node.js, curl and Valgrind with its development
+headers, and make the desired refs available to Git.
+
+```sh
+bash scripts/parse-bench.sh
+BENCH_REFS='v2.2.0 HEAD' BENCH_MAX_INCREASE_PCT=5 bash scripts/parse-bench.sh
+```
+
+The job summary compares each ref with the first. The `parse-instructions` artifact includes the raw profiles
+and tallies, `results.json`, the input hashes, resolved refs and build environment. Local runs save
+the same files under `build/parse-bench/run.*/artifacts/`.
+See the [benchmark method](benchmarks.md#ci-instruction-counts).
+
 The [Fuzz parser workflow](../.github/workflows/fuzz.yml) runs on relevant pull requests, weekly and on manual
 dispatch. It fuzzes the parser and scanner with `tree-sitter/fuzz-action` and the tree-check consumer APIs with
 the Rust `tree_check` target. To run the local `parse` target on Linux or macOS, install nightly Rust, clang
