@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2026-11-22
+
+### Changed
+
+- tree-check rejects module and certificate shapes that the grammar parses cleanly but SQL Server rejects at every level from 100 to 170 in both QUOTED_IDENTIFIER sessions (LocalDB 17.0.1000.7). Trees, node kinds and fields are unchanged (#84).
+  - A `CREATE` or `ALTER TRIGGER` with nothing after `AS` (Msg 102).
+  - A function whose return declaration and body do not match (Msg 102 or 156): inline `RETURNS TABLE` needs a `RETURN` query; `RETURNS @r TABLE (…)` and scalar returns need `BEGIN … END`; a direct `RETURNS TABLE (columns)` needs `EXTERNAL NAME`. CLR bodies stay valid for every kind.
+  - A CLR trigger, procedure or function sharing its batch with another statement or a standalone `BEGIN … END` block (Msg 111 or 156).
+  - `CREATE CERTIFICATE … FROM` with anything but `ASSEMBLY`, `EXECUTABLE FILE =`, `FILE =` or `BINARY =` (Msg 102), including `FROM PROVIDER`.
+  - 60 `batch-rules` probes record LocalDB and ScriptDOM verdicts. All 15,642 engine-accepted session/case pairs still pass. `docs/accepted-gaps.md` lists no open over-acceptance.
+
+### Documentation
+
+- `docs/scope.md` counts 62,760 case verdicts at 2.4.0; the 89 level-dependent cases are unchanged.
+
 ## [2.3.0] - 2026-11-22
 
 ### Fixed
