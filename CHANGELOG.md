@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2026-11-22
+
+### Fixed
+
+- `WRITETEXT BULK`, whose data SQL Server receives as a separate TDS stream: `writetext_statement` takes `BULK`, the target, the text pointer and an optional `WITH LOG`, with a new `keyword_bulk` child. Without `WITH LOG`, 2.2.0 parsed the data-less form cleanly but read `BULK` as the `object_reference` and the target as a `field`; see the [migration note](docs/consuming.md#writetext-bulk-migration). With `WITH LOG` it parsed with an error. Inline data after `BULK` and a plain `WRITETEXT` without data are now errors, as SQL Server rejects them (Msg 185, 186). Eight oracle probes carry LocalDB and ScriptDOM verdicts. Full CSTs of the 14,986 existing inputs are unchanged; parse states rise from 13,721 to 13,726 (#80).
+
+### Tooling
+
+- An on-demand `parse-bench` workflow counts parser instructions (callgrind Ir) across refs on pinned fixture, corpus and oracle packs. 2.2.0 measured within ±0.061 % of 2.1.1 (#79).
+- The ScriptDOM `batch-rules` verdicts cover all 53 cases (#78).
+
+### Documentation
+
+- `docs/scope.md` records compatibility-level coverage. Level 100 is in every verdict file, and the grammar and tree-check take the union of levels; 89 oracle cases change verdict with the level (#81).
+- `AGENTS.md` keeps only the rules an agent needs. Correcting a wrong tree of valid input is now a minor change with a migration note, and `docs/consuming.md` says the same (#82).
+
 ## [2.2.0] - 2026-11-22
 
 ### Changed
