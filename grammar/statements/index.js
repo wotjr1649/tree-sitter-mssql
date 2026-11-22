@@ -534,7 +534,8 @@ export default {
   // The deprecated text-pointer statements, in scope because they still
   // execute and a linter has to see them to flag them:
   //   READTEXT table.column text_ptr offset size [HOLDLOCK]
-  //   WRITETEXT table.column text_ptr [WITH LOG] data      (BULK is not modeled)
+  //   WRITETEXT table.column text_ptr [WITH LOG] data
+  //   WRITETEXT BULK table.column text_ptr [WITH LOG] (data arrives via TDS)
   //   UPDATETEXT table.column dest_ptr offset delete_length [WITH LOG]
   //       [ data | table.column src_ptr ]
   // The arguments are juxtaposed with no separator, so each is a constant
@@ -555,14 +556,17 @@ export default {
       ),
     ),
 
-  writetext_statement: ($) =>
-    seq(
-      $.keyword_writetext,
+  writetext_statement: ($) => {
+    const target = [
       $.object_reference,
       $._text_argument,
       optional(seq($.keyword_with, $.keyword_log)),
-      $._text_argument,
-    ),
+    ];
+    return seq(
+      $.keyword_writetext,
+      choice(prec.right(seq($.keyword_bulk, ...target)), seq(...target, $._text_argument)),
+    );
+  },
 
   updatetext_statement: ($) =>
     prec.right(

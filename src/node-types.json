@@ -27323,6 +27323,10 @@
           "named": true
         },
         {
+          "type": "keyword_bulk",
+          "named": true
+        },
+        {
           "type": "keyword_log",
           "named": true
         },

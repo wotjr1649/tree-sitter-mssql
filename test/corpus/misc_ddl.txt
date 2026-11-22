@@ -749,6 +749,102 @@ UPDATETEXT dbo.Customer.Notes @ptrval NULL NULL dbo.Customer.Notes @src;
           (identifier))))))
 
 ================================================================================
+WRITETEXT BULK without inline data
+================================================================================
+
+WRITETEXT BULK dbo.[t].[BULK] 0x0123456789ABCDEF0123456789ABCDEF;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (writetext_statement
+        (keyword_writetext)
+        (keyword_bulk)
+        (object_reference
+          (identifier)
+          (identifier)
+          (identifier))
+        (literal)))))
+
+================================================================================
+WRITETEXT BULK WITH LOG without inline data
+================================================================================
+
+DECLARE @ptr binary(16);
+WRITETEXT BULK [dbo].[t].[c] @ptr WITH LOG;
+
+--------------------------------------------------------------------------------
+
+(program
+  (batch
+    (statement
+      (var_declarations
+        (keyword_declare)
+        (var_declaration
+          (identifier)
+          (binary
+            (keyword_binary)
+            (literal)))))
+    (statement
+      (writetext_statement
+        (keyword_writetext)
+        (keyword_bulk)
+        (object_reference
+          (identifier)
+          (identifier)
+          (identifier))
+        (field
+          (identifier))
+        (keyword_with)
+        (keyword_log)))))
+
+================================================================================
+WRITETEXT BULK after the target is invalid
+:error
+================================================================================
+
+WRITETEXT dbo.[t].[c] BULK 0x0123456789ABCDEF0123456789ABCDEF 'x';
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+WRITETEXT BULK with inline data is invalid
+:error
+================================================================================
+
+WRITETEXT BULK dbo.[t].[BULK] 0x0123456789ABCDEF0123456789ABCDEF 'x';
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+WRITETEXT BULK WITH LOG and inline data is invalid
+:error
+================================================================================
+
+WRITETEXT BULK [dbo].[t].[c] 0x0123456789ABCDEF0123456789ABCDEF WITH LOG N'x';
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+Plain WRITETEXT without inline data is invalid
+:error
+================================================================================
+
+WRITETEXT dbo.[t].[c] 0x0123456789ABCDEF0123456789ABCDEF;
+
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
 CREATE EXTERNAL DATA SOURCE, FILE FORMAT and TABLE
 ================================================================================
 

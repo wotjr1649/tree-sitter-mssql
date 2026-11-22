@@ -36,9 +36,10 @@ consumers needing the validation results must also use the constraint layer (ADR
 
 ## Under-acceptance and unmeasured syntax
 
-WRITETEXT BULK remains an open parser gap. The documented form produces a tree error when the
-source includes the table column, text pointer and data. The committed oracle has no verdict
-for this exact form.
+The [WRITETEXT BULK probes](../oracle/data/probes/quoted-identifier.jsonl) record LocalDB 17.0.1000.7
+at levels 100–170 with QUOTED_IDENTIFIER ON and OFF. The engine accepts BULK with a text pointer
+and optional WITH LOG, with the data supplied through TDS. Inline data with BULK is rejected
+(Msg 185). Plain WRITETEXT requires an inline data argument (Msg 186 when omitted).
 
 R17 added ALTER MESSAGE TYPE, KILL STATS JOB and KILL QUERY NOTIFICATION SUBSCRIPTION.
 The probes in [ddl-rest.jsonl](../oracle/data/probes/ddl-rest.jsonl) and the trees in

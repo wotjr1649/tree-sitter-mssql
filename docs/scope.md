@@ -23,7 +23,7 @@ statements in the tree. A structural linter and a code-metrics tool both parse T
 kinds and field names are a public contract. See [consuming.md](consuming.md).
 
 **Known mismatches.** [accepted-gaps.md](accepted-gaps.md) records current classifications and earlier grammar
-mismatches. [`WRITETEXT BULK`](accepted-gaps.md#under-acceptance-and-unmeasured-syntax) remains an open parser gap.
+mismatches.
 The current oracle classifications are in [`oracle/data/rejected-clean.json`](../oracle/data/rejected-clean.json).
 
 ## Compatibility levels
@@ -32,12 +32,12 @@ SQL Server's parser result can depend on the database compatibility level. SQL S
 100 (the SQL Server 2008 level) as their lowest level, and SQL Server 2025 supports 100 to 170
 ([ALTER DATABASE compatibility level](https://learn.microsoft.com/en-us/sql/t-sql/statements/alter-database-transact-sql-compatibility-level)).
 The oracle records every case at every level the engine supports: level 100 is present in all 174 committed verdict
-files (SQL Server 2017, 2019, 2022 and 2025 on Linux, and LocalDB 2025), 62,624 case verdicts in total
-(measured at 2.2.0).
+files (SQL Server 2017, 2019, 2022 and 2025 on Linux, and LocalDB 2025), 62,640 case verdicts in total
+(measured at 2.3.0).
 
 The grammar and tree-check take the union of the levels: a case is positive when any recorded engine accepts it at
 any level under the same QUOTED_IDENTIFIER setting. Neither has a compatibility-level option, so a form that only
-some levels accept parses cleanly at every level. At 2.2.0, 89 oracle cases change verdict with the level:
+some levels accept parses cleanly at every level. At 2.3.0, 89 oracle cases change verdict with the level:
 
 | Accepted from | Cases | Forms |
 | --- | ---: | --- |

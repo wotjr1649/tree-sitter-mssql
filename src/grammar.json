@@ -14545,37 +14545,89 @@
           "name": "keyword_writetext"
         },
         {
-          "type": "SYMBOL",
-          "name": "object_reference"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_text_argument"
-        },
-        {
           "type": "CHOICE",
           "members": [
+            {
+              "type": "PREC_RIGHT",
+              "value": 0,
+              "content": {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "keyword_bulk"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "object_reference"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_text_argument"
+                  },
+                  {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "SEQ",
+                        "members": [
+                          {
+                            "type": "SYMBOL",
+                            "name": "keyword_with"
+                          },
+                          {
+                            "type": "SYMBOL",
+                            "name": "keyword_log"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "BLANK"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
             {
               "type": "SEQ",
               "members": [
                 {
                   "type": "SYMBOL",
-                  "name": "keyword_with"
+                  "name": "object_reference"
                 },
                 {
                   "type": "SYMBOL",
-                  "name": "keyword_log"
+                  "name": "_text_argument"
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SEQ",
+                      "members": [
+                        {
+                          "type": "SYMBOL",
+                          "name": "keyword_with"
+                        },
+                        {
+                          "type": "SYMBOL",
+                          "name": "keyword_log"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_text_argument"
                 }
               ]
-            },
-            {
-              "type": "BLANK"
             }
           ]
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_text_argument"
         }
       ]
     },

@@ -1,7 +1,7 @@
 {
-  "parser_c_bytes": 27810059,
-  "state_count": 13721,
-  "large_state_count": 4432,
+  "parser_c_bytes": 27819304,
+  "state_count": 13726,
+  "large_state_count": 4434,
   "symbol_count": 1370,
   "token_count": 628,
   "field_count": 76,
