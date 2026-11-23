@@ -3,7 +3,7 @@ use super::expr::*;
 use super::hints::*;
 use super::statements::*;
 use super::util::*;
-use crate::tree::{has_child, named_children};
+use crate::tree::{ancestors, has_child, named_children};
 use tree_sitter::Node;
 
 /// R20 gap-forms, LocalDB 17.0.1000.7, levels 100-170: tree-local call boundaries
@@ -158,6 +158,7 @@ pub(super) fn gap_constant(node: Node, source: &[u8]) -> bool {
 /// R20 comparison/* and static/*: a comparison's operands and a select-list value
 /// are scalars, not search conditions (102); EXEC accepts -1 but not +1.
 /// A CLR member applies to a scalar, and its name is not a variable or `$` pseudo-column (102).
+/// A value list (102, 4145 as an argument) and a rowset function (156/195) are not scalars.
 pub(super) fn gap_scalar(node: Node, context: &Context, source: &[u8], out: &mut Vec<Violation>) {
     let invalid = match node.kind() {
         "exec_argument" => node
@@ -203,12 +204,77 @@ pub(super) fn gap_scalar(node: Node, context: &Context, source: &[u8], out: &mut
                     .is_some_and(|n| is_condition(n, source))
             })
         }
+        // https://learn.microsoft.com/en-us/sql/t-sql/language-elements/expressions-transact-sql
+        "list" => context.parent().is_some_and(|p| match p.kind() {
+            "parenthesized_expression"
+            | "assignment"
+            | "cast"
+            | "unary_expression"
+            | "var_declaration"
+            | "return_statement" => true,
+            // GROUP BY () is the grand total; GROUP BY (a, b) is not a grouping element.
+            "group_by" => node.syntax_named_child_count() > 0,
+            "term" => !column_list_argument(p, context.grandparent(), source),
+            "binary_expression" => {
+                p.child_by_field_name("right") != Some(node)
+                    || !p
+                        .child_by_field_name("operator")
+                        .is_some_and(|o| matches!(o.kind(), "keyword_in" | "not_in"))
+            }
+            // A VALUES row or IN list item that is itself a list.
+            "list" => context.grandparent().is_some_and(|g| {
+                // ... or a column inside a full-text or ROLLUP column list.
+                matches!(
+                    g.kind(),
+                    "insert" | "values" | "merge_when_clause" | "binary_expression" | "term"
+                )
+            }),
+            // CHANGETABLE(VERSION t, (columns), (values)); CHANGES takes a version, not a list.
+            "changetable" => !has_child(p, "keyword_version"),
+            _ => false,
+        }),
+        // https://learn.microsoft.com/en-us/sql/t-sql/queries/from-transact-sql
+        "invocation" => {
+            let callee = node
+                .syntax_named_child(0)
+                .filter(|n| n.kind() == "object_reference");
+            let rowset = callee
+                .filter(|n| n.syntax_named_child_count() == 1)
+                .is_some_and(|n| {
+                    matches!(
+                        undelimited(&upper_text(n, source)),
+                        "OPENJSON" | "OPENROWSET" | "OPENQUERY" | "OPENDATASOURCE" | "OPENXML"
+                    )
+                });
+            // A rowset is a table source or a DML target, before UPDATE's SET.
+            rowset
+                && !context.parent().is_some_and(|p| match p.kind() {
+                    "relation" | "apply_join" | "insert" | "delete" | "merge" => true,
+                    "update" => !std::iter::successors(
+                        node.syntax_prev_sibling(),
+                        SyntaxNode::syntax_prev_sibling,
+                    )
+                    .any(|n| n.kind() == "keyword_set"),
+                    _ => false,
+                })
+                || callee.is_some_and(|n| member_names(&named_children(n), false, true, source))
+        }
+        // `@g.@p`; `$` names are graph pseudo-columns of tables, not members of variables.
+        "field" => node
+            .syntax_named_child(0)
+            .filter(|q| q.kind() == "object_reference")
+            .zip(node.child_by_field_name("name"))
+            .is_some_and(|(q, name)| {
+                let mut parts = named_children(q);
+                parts.push(name);
+                member_names(&parts, has_child(node, "("), false, source)
+            }),
         "property_access" | "method_call" => {
             let mut target = node.syntax_named_child(0);
             while let Some(t) = target.filter(|t| t.kind() == "parenthesized_expression") {
                 target = t.syntax_named_child(0);
             }
-            target.is_some_and(|t| t.kind() == "list" || is_condition(t, source))
+            target.is_some_and(|t| is_condition(t, source))
                 || node
                     .child_by_field_name(if node.kind() == "method_call" {
                         "method"
@@ -409,9 +475,75 @@ const RESERVED_NAMES: &[&str] = &[
     "WRITETEXT",
 ];
 
+/// ROLLUP and CUBE in GROUP BY, and the column-list argument of the full-text and semantic functions.
+fn column_list_argument(term: Node, call: Option<Node>, source: &[u8]) -> bool {
+    let Some(call) = call.filter(|c| c.kind() == "invocation") else {
+        return false;
+    };
+    let mut c = call.walk();
+    let position = call
+        .children_by_field_name("parameter", &mut c)
+        .position(|p| p == term);
+    match invocation_name(call, source).as_deref() {
+        // Directly or inside a parenthesized GROUPING SETS item.
+        Some("ROLLUP" | "CUBE") => ancestors(call)
+            .take_while(|a| !matches!(a.kind(), "subquery" | "query_specification"))
+            .any(|a| a.kind() == "group_by"),
+        Some("CONTAINS" | "FREETEXT") => position == Some(0),
+        Some(
+            "CONTAINSTABLE"
+            | "FREETEXTTABLE"
+            | "SEMANTICKEYPHRASETABLE"
+            | "SEMANTICSIMILARITYTABLE",
+        ) => position == Some(1),
+        _ => false,
+    }
+}
+
+/// A member after the first part is not a variable; a `$` member is a graph pseudo-column of a
+/// table, so it is invalid after a variable or parenthesized receiver, or as a method name.
+fn member_names(parts: &[Node], parenthesized: bool, method: bool, source: &[u8]) -> bool {
+    let first = |p: &Node| source.get(p.start_byte()).copied();
+    let receiver_variable = parts.first().is_some_and(|p| first(p) == Some(b'@'));
+    parts.iter().enumerate().skip(1).any(|(i, p)| {
+        p.kind() == "identifier"
+            && match first(p) {
+                Some(b'@') => true,
+                Some(b'$') => {
+                    receiver_variable
+                        || parenthesized
+                        || method
+                            && (i + 1 == parts.len() || !upper_text(*p, source).eq("$PARTITION"))
+                }
+                _ => false,
+            }
+    })
+}
+
 /// batch-rules/issue-87-step-5: the first ON is read as the REFERENCES target name and
 /// the following action words fall through to _column_constraint's bare identifier arm.
 pub(super) fn identifier(node: Node, context: &Context, source: &[u8], out: &mut Vec<Violation>) {
+    if node.grammar_name() == "keyword_filestream" {
+        let parent = context.parent();
+        // ALTER COLUMN ... ADD | DROP takes ROWGUIDCOL, PERSISTED, NOT FOR REPLICATION, SPARSE, MASKED, HIDDEN.
+        let altered = parent.is_some_and(|p| p.kind() == "alter_table");
+        let filegroup = node
+            .syntax_prev_sibling()
+            .is_some_and(|n| inline_index_filestream(n, source));
+        if altered
+            || !filegroup
+                && parent
+                    .filter(|p| p.kind() == "column_definition")
+                    .is_some_and(|column| !filestream_column(node, column, context, source))
+        {
+            out.push(violation(
+                "column-filestream",
+                "FILESTREAM needs a varbinary(max) table column, before NULL, ROWGUIDCOL, DEFAULT and constraints".into(),
+                node,
+            ));
+        }
+        return;
+    }
     // Keyword aliases and SQLCMD paths can share the public identifier kind.
     if !matches!(
         node.grammar_name(),
@@ -452,6 +584,22 @@ pub(super) fn identifier(node: Node, context: &Context, source: &[u8], out: &mut
                 node,
             ));
         }
+    } else if parent.kind() == "alter_table"
+        && word == "FILESTREAM"
+        // ALTER COLUMN x ADD | DROP; ALTER TABLE t DROP FILESTREAM drops a constraint of that name.
+        && node
+            .syntax_prev_sibling()
+            .filter(|n| matches!(n.kind(), "keyword_add" | "keyword_drop"))
+            .and_then(|n| n.syntax_prev_sibling())
+            .and_then(|n| n.syntax_prev_sibling())
+            .is_some_and(|n| n.kind() == "keyword_column")
+    {
+        // ALTER COLUMN ... ADD | DROP has no FILESTREAM property (102).
+        out.push(violation(
+            "column-filestream",
+            "FILESTREAM cannot be added to or dropped from an existing column".into(),
+            node,
+        ));
     } else if RESERVED_NAMES.binary_search(&word.as_str()).is_ok()
         && !keyword_in_identifier(node, parent, context, &word, source)
     {
@@ -461,6 +609,53 @@ pub(super) fn identifier(node: Node, context: &Context, source: &[u8], out: &mut
             node,
         ));
     }
+}
+
+// https://learn.microsoft.com/en-us/sql/t-sql/statements/create-table-transact-sql
+// batch-rules/column-filestream-*: Msg 102 (5508 for other MAX types); table types and variables reject it.
+fn filestream_column(node: Node, column: Node, context: &Context, source: &[u8]) -> bool {
+    let table =
+        context.ancestor("create_table").is_some() || context.ancestor("alter_table").is_some();
+    // SPARSE also lets other MAX types take FILESTREAM (column-filestream-review-*).
+    let sparse = named_children(column)
+        .into_iter()
+        .any(|n| n.kind() == "identifier" && upper_text(n, source) == "SPARSE");
+    let max = |ty: Node| {
+        ty.child_by_field_name("size")
+            .is_some_and(|s| s.kind() == "keyword_max")
+    };
+    let typed = column
+        .child_by_field_name("type")
+        .is_some_and(|ty| match ty.kind() {
+            "varbinary" => max(ty),
+            // A bracketed name: at most schema.name, MAX and nothing after it (102, 117).
+            "custom_type" => {
+                max(ty)
+                    && ty.child_by_field_name("scale").is_none()
+                    && ty.child_by_field_name("base_type").is_none()
+                    && ty.syntax_named_child(0).is_some_and(|r| {
+                        r.syntax_named_child_count() <= 2
+                            && r.child_by_field_name("database").is_none()
+                            && r.child_by_field_name("name").is_some_and(|n| {
+                                sparse || undelimited(&upper_text(n, source)) == "VARBINARY"
+                            })
+                    })
+            }
+            _ => sparse && max(ty),
+        });
+    // Only SPARSE and COLLATE name may come between the type and FILESTREAM.
+    let leading =
+        std::iter::successors(node.syntax_prev_sibling(), SyntaxNode::syntax_prev_sibling)
+            .take_while(|n| column.child_by_field_name("type") != Some(*n))
+            .all(|n| {
+                n.is_extra()
+                    || n.kind() == "keyword_collate"
+                    || n.kind() == "identifier"
+                        && (upper_text(n, source) == "SPARSE"
+                            || n.syntax_prev_sibling()
+                                .is_some_and(|p| p.kind() == "keyword_collate"))
+            });
+    table && typed && leading
 }
 
 fn inline_index_filestream(node: Node, source: &[u8]) -> bool {
@@ -490,10 +685,12 @@ fn inline_index_filestream(node: Node, source: &[u8]) -> bool {
                 )
             })
             .is_some_and(|name| {
-                name.kind() == "identifier"
-                    && name
-                        .syntax_prev_sibling()
-                        .is_some_and(|n| n.kind() == "keyword_index")
+                // A column UNIQUE or PRIMARY KEY constraint, or a named inline index.
+                matches!(name.kind(), "keyword_unique" | "keyword_key")
+                    || name.kind() == "identifier"
+                        && name
+                            .syntax_prev_sibling()
+                            .is_some_and(|n| n.kind() == "keyword_index")
             })
 }
 

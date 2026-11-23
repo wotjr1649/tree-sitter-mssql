@@ -1,5 +1,5 @@
 use super::Violation;
-use crate::tree::{ancestors, named_children, preorder};
+use crate::tree::{ancestors, has_child, named_children, preorder};
 use tree_sitter::{Node, TreeCursor};
 
 /// Constraints inspect syntax; comments are named extras, never positional children or siblings.
@@ -120,6 +120,35 @@ pub(super) fn quoted_strings(node: Node, source: &[u8]) -> bool {
         }
     }
     strings
+}
+
+/// A name without one pair of brackets or double quotes: `[INT]` and `"INT"` are `INT`.
+pub(super) fn undelimited(text: &str) -> &str {
+    text.strip_prefix('[')
+        .and_then(|t| t.strip_suffix(']'))
+        .or_else(|| text.strip_prefix('"').and_then(|t| t.strip_suffix('"')))
+        .unwrap_or(text)
+}
+
+/// The upper-case base name of a type node, None for a qualified or parameterized-name type.
+pub(super) fn base_type(ty: Node, source: &[u8]) -> Option<String> {
+    let name = match ty.kind() {
+        "custom_type" => {
+            let reference = ty.syntax_named_child(0)?;
+            if reference.syntax_named_child_count() != 1 {
+                return None;
+            }
+            undelimited(&upper_text(reference, source)).to_string()
+        }
+        "double" if has_child(ty, "keyword_real") => "REAL".into(),
+        "double" => "FLOAT".into(),
+        kind => kind.trim_start_matches("keyword_").to_ascii_uppercase(),
+    };
+    Some(match name.as_str() {
+        "INTEGER" => "INT".into(),
+        "DEC" => "DECIMAL".into(),
+        _ => name,
+    })
 }
 
 pub(super) fn upper_text(node: Node, source: &[u8]) -> String {

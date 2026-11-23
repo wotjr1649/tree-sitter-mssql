@@ -76,6 +76,7 @@ fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
             }
             "invocation" => {
                 gap_invocation(node, &context, source, &mut out);
+                gap_scalar(node, &context, source, &mut out);
                 builtin_arity(node, source, &mut out);
                 expression_language(node, source, &mut out);
                 expression_provider(node, source, &mut out);
@@ -85,8 +86,14 @@ fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
                 gap_scalar(node, &context, source, &mut out);
                 like_escape(node, source, &mut out);
             }
-            "term" | "exec_argument" | "property_access" | "method_call" => {
+            "term" | "exec_argument" | "property_access" | "method_call" | "list" => {
                 gap_scalar(node, &context, source, &mut out);
+            }
+            "subquery" => {
+                output_subquery(node, &context, &mut out);
+            }
+            "returning_clause" => {
+                returning_type(node, source, &mut out);
             }
             "identifier" => {
                 identifier(node, &context, source, &mut out);
@@ -183,7 +190,7 @@ fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
                 query_parameter(node, &mut out);
             }
             "cast" => {
-                query_cast(node, &mut out);
+                query_cast(node, source, &mut out);
             }
             "openjson_schema" | "openxml_table_schema" => {
                 query_rowset_schema(node, source, &mut out);
@@ -240,6 +247,7 @@ fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
             }
             "field" => {
                 static_reference(node, source, &mut out);
+                gap_scalar(node, &context, source, &mut out);
             }
             "window_specification" => {
                 window_frame_order(node, &mut out);

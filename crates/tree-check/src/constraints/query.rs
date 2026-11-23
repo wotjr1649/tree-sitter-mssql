@@ -1,4 +1,5 @@
 use super::Violation;
+use super::expr::invocation_name;
 use super::util::*;
 use crate::tree::{ancestors, has_child, named_children, preorder};
 use tree_sitter::Node;
@@ -258,8 +259,47 @@ pub(super) fn query_parameter(node: Node, out: &mut Vec<Violation>) {
     }
 }
 
-pub(super) fn query_cast(node: Node, out: &mut Vec<Violation>) {
+pub(super) fn query_cast(node: Node, source: &[u8], out: &mut Vec<Violation>) {
     let parts: Vec<Node> = named_children(node);
+    // https://learn.microsoft.com/en-us/sql/t-sql/functions/parse-transact-sql
+    // batch-rules/parse-target-*: Msg 10761 for any other target, with or without USING.
+    if parts
+        .iter()
+        .any(|n| matches!(n.kind(), "keyword_parse" | "keyword_try_parse"))
+        && parts
+            .iter()
+            .skip_while(|n| n.kind() != "keyword_as")
+            .nth(1)
+            .is_some_and(|ty| {
+                !base_type(*ty, source).is_some_and(|name| {
+                    matches!(
+                        name.as_str(),
+                        "TINYINT"
+                            | "SMALLINT"
+                            | "INT"
+                            | "BIGINT"
+                            | "DECIMAL"
+                            | "NUMERIC"
+                            | "FLOAT"
+                            | "REAL"
+                            | "MONEY"
+                            | "SMALLMONEY"
+                            | "DATE"
+                            | "TIME"
+                            | "DATETIME"
+                            | "SMALLDATETIME"
+                            | "DATETIME2"
+                            | "DATETIMEOFFSET"
+                    )
+                })
+            })
+    {
+        out.push(violation(
+            "query-parse-type",
+            "PARSE and TRY_PARSE return a number or a date/time type".into(),
+            node,
+        ));
+    }
     // cast-using/try-cast-using: 102. PARSE and TRY_PARSE accept USING.
     if parts.iter().any(|n| n.kind() == "keyword_using")
         && !parts
@@ -269,6 +309,70 @@ pub(super) fn query_cast(node: Node, out: &mut Vec<Violation>) {
         out.push(violation(
             "query-cast-using",
             "USING belongs to PARSE or TRY_PARSE".into(),
+            node,
+        ));
+    }
+}
+
+/// https://learn.microsoft.com/en-us/sql/t-sql/queries/output-clause-transact-sql
+/// batch-rules/output-subquery-*: Msg 10705 at any depth of the OUTPUT list.
+pub(super) fn output_subquery(node: Node, context: &Context, out: &mut Vec<Violation>) {
+    if context.ancestor("output_clause").is_some() {
+        out.push(violation(
+            "query-output-subquery",
+            "subqueries are not allowed in an OUTPUT clause".into(),
+            node,
+        ));
+    }
+}
+
+/// A JSON type: `json`, or `[json]` / `"json"` with any parameters.
+pub(super) fn json_type(ty: Node, source: &[u8]) -> bool {
+    base_type(ty, source).as_deref() == Some("JSON")
+}
+
+/// batch-rules/json-returning-*: Msg 102. The JSON constructors and aggregates return json;
+/// JSON_VALUE returns the measured scalar types; no other call takes RETURNING.
+pub(super) fn returning_type(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let (Some(parent), Some(ty)) = (node.parent(), named_children(node).into_iter().nth(1)) else {
+        return;
+    };
+    let valid = match parent.kind() {
+        "json_array" | "json_object" => json_type(ty, source),
+        "invocation" => match invocation_name(parent, source).as_deref() {
+            // expression-json-aggregate owns these.
+            Some("JSON_ARRAYAGG" | "JSON_OBJECTAGG") => true,
+            // https://learn.microsoft.com/en-us/sql/t-sql/functions/json-value-transact-sql
+            Some("JSON_VALUE") => base_type(ty, source).is_some_and(|name| {
+                matches!(
+                    name.as_str(),
+                    "BIT"
+                        | "TINYINT"
+                        | "SMALLINT"
+                        | "INT"
+                        | "BIGINT"
+                        | "DECIMAL"
+                        | "NUMERIC"
+                        | "FLOAT"
+                        | "REAL"
+                        | "CHAR"
+                        | "VARCHAR"
+                        | "NCHAR"
+                        | "NVARCHAR"
+                        | "DATE"
+                        | "TIME"
+                        | "DATETIME2"
+                        | "DATETIMEOFFSET"
+                )
+            }),
+            _ => false,
+        },
+        _ => true,
+    };
+    if !valid {
+        out.push(violation(
+            "expression-returning-type",
+            "RETURNING type not accepted by this function".into(),
             node,
         ));
     }

@@ -195,3 +195,144 @@
 {"id":"batch-rules/property-trailing-dot","sha256":"0731febbbbcf06a46e2a807ff6d4647eeb15dc7635620b4d3bcaa9fd31e80198","source":"SELECT geometry::Point(1, 2, 0).;"}
 {"id":"batch-rules/property-double-dot","sha256":"5c016f615ec8981d532ab5b2b059c5926667ea6b7056adc973cd3bf30c2e54d8","source":"SELECT geometry::Point(1, 2, 0)..STX;"}
 {"id":"batch-rules/property-number","sha256":"064cb9f2b5ba9cd86856ad9f98bdc5e3a349beebcd9992088a8099a9864fc58d","source":"SELECT geometry::Point(1, 2, 0).1;"}
+{"id":"batch-rules/output-subquery-delete-direct","sha256":"aef9673b7ca369a0100735de360ec0fe3e7d7b5daf5f0b982fa1f3e1e9d11265","source":"DELETE dbo.t OUTPUT (SELECT 1);"}
+{"id":"batch-rules/output-subquery-insert-case-into","sha256":"96ade54e816bb393ff2092cc00ddd05c964ade733076e93bdc475b1fe17e1522","source":"INSERT dbo.t(a) OUTPUT CASE WHEN inserted.a = 1 THEN (SELECT 1) ELSE 0 END INTO @out(a) VALUES (1);"}
+{"id":"batch-rules/output-subquery-update-arithmetic","sha256":"9f16948a5ee48c19c836c2a1f030ae7ab1a3e69050d54024d544383ac88b0c1b","source":"UPDATE dbo.t SET a = 1 OUTPUT deleted.a + (SELECT 1);"}
+{"id":"batch-rules/output-subquery-merge-function","sha256":"ddeaf0c932d5386717d80c44beb1cdd512f6ba1b19338399a0ca1ead7471adab","source":"MERGE dbo.t AS t USING dbo.s AS s ON t.a = s.a WHEN MATCHED THEN DELETE OUTPUT ABS((SELECT 1));"}
+{"id":"batch-rules/output-subquery-delete-exists","sha256":"adb5cfa2a5939853123784050d1c947e99061728358daa2911a7c9dd6e4ad130","source":"DELETE dbo.t OUTPUT CASE WHEN EXISTS (SELECT 1) THEN 1 ELSE 0 END;"}
+{"id":"batch-rules/output-subquery-update-second-into","sha256":"0294c5822f168e126a7d3d862f7b66706fa3a46bf357f9b2b0c995954c630522","source":"DECLARE @out TABLE(a int); UPDATE dbo.t SET a = 1 OUTPUT inserted.a INTO @out(a) OUTPUT (SELECT 1);"}
+{"id":"batch-rules/output-subquery-delete-where-ok","sha256":"fb95b146007aadd8a5cc854a14f1180ba7ead067d47d77e47132f701777fcafe","source":"DELETE dbo.t OUTPUT deleted.a, ABS(deleted.a) WHERE a IN (SELECT a FROM dbo.s);"}
+{"id":"batch-rules/output-subquery-insert-source-ok","sha256":"55cad28d3f1edef291ac15f8116ed4647c3325bc8bce361624b7213222586d2b","source":"INSERT dbo.t(a) OUTPUT inserted.* SELECT (SELECT 1);"}
+{"id":"batch-rules/output-subquery-merge-output-action-ok","sha256":"97ad4777582c0d32f542e7ce5d459fd1f16b9ddde790c67c49963797dc4ea781","source":"MERGE dbo.t AS t USING (SELECT 1 AS a) AS s ON t.a = s.a WHEN MATCHED THEN DELETE OUTPUT $action, deleted.a INTO dbo.out_t(action_name,a);"}
+{"id":"batch-rules/output-subquery-dual-output-ok","sha256":"37ec8e8abfeddf22b227cdf3488aa1d3dc604ca5da56dce5c7a9d3cdc08ca7dc","source":"DECLARE @out TABLE(a int); UPDATE dbo.t SET a = (SELECT 1) OUTPUT inserted.a INTO @out(a) OUTPUT deleted.a;"}
+{"id":"batch-rules/scalar-list-select-nested","sha256":"2b099a05b6ae4f0c587ae05c0de129f003b82266c4c7fd6d119aee88f1b38b25","source":"SELECT ((1, 2));"}
+{"id":"batch-rules/scalar-list-select-direct","sha256":"72080c8f04448868a08bc244188651aadd404da6d6e4d31323baacd676698747","source":"SELECT (1, 2);"}
+{"id":"batch-rules/scalar-list-select-empty","sha256":"b2f6a6fe3cde0f13038c29adaea5b8e90f8710b505ca3b37877a28a433925aa2","source":"SELECT ();"}
+{"id":"batch-rules/scalar-list-function-argument","sha256":"7ee1b79f52f1cc65934ba2c1dcc11ead946d2a428ec5d9c33b19ffb04889795a","source":"SELECT ABS((1, 2));"}
+{"id":"batch-rules/scalar-list-insert-value","sha256":"b7c8ad597ff9e9c9a5143de7f709316e2b395290dd5b7051f1f692fe85c66418","source":"INSERT dbo.t(a) VALUES ((1, 2));"}
+{"id":"batch-rules/scalar-list-nested-in","sha256":"b3eaa73a36f5127d88614a81c01ad2ac0ba4051bdab05074e83bc0a08c306bf4","source":"SELECT 1 WHERE 1 IN ((1, 2), 3);"}
+{"id":"batch-rules/scalar-list-in-ok","sha256":"aed749ae0d6fd3cf94f54f825e865813e9f61092e72679bfa54086a89a91a9c4","source":"SELECT 1 WHERE 1 IN (1, 2) AND 3 NOT IN ((1), 2);"}
+{"id":"batch-rules/scalar-list-insert-rows-ok","sha256":"117f63928767ea94979b15f689d38b76bfa022f7fa7ae73d5080823a3cef3ea7","source":"INSERT dbo.t(a,b) VALUES ((1), 2), (3, 4);"}
+{"id":"batch-rules/scalar-list-constructors-ok","sha256":"f35e609569d09e2d8b655e1bd73905aedbba6f14068bf42cdae311ad3827f324","source":"SELECT * FROM (VALUES (1, 2), (3, 4)) AS s(a,b);\nMERGE dbo.t AS t USING (VALUES (1, 2)) AS s(a,b) ON t.a = s.a WHEN NOT MATCHED THEN INSERT (a,b) VALUES (s.a,s.b);"}
+{"id":"batch-rules/scalar-list-scalar-other-args-ok","sha256":"cfe8c8090d6d23ebccb5962ab463e7f5e582a5a8ddf95e330949dd444f39b772","source":"SELECT ((1)), COALESCE((1), 2), dbo.f((1), 2);"}
+{"id":"batch-rules/scalar-list-changetable-ok","sha256":"2ed8b42447968ebe44eef387d0b050c85a048c9bf4d7a824f4eafa63b08e852c","source":"SELECT * FROM CHANGETABLE(VERSION dbo.t, (a,b), (1,2)) AS c;"}
+{"id":"batch-rules/scalar-list-permission-ok","sha256":"2478ea76fb0f64b311b3b60f9d9f4ad09d99cfd47e6324f84d5a2029d291eb08","source":"GRANT SELECT (a,b) ON OBJECT::dbo.t TO u;"}
+{"id":"batch-rules/scalar-rowset-openjson","sha256":"5053fa7d83665e426bf58488b57309998f3e325f029a897913ec82397ae36614","source":"SELECT OPENJSON('[]');"}
+{"id":"batch-rules/scalar-rowset-openrowset","sha256":"176409a9ce99827c596282775b9dbaa97df8ff2cbda82da59c6a339631fb1ee1","source":"SELECT OPENROWSET('p','s','q');"}
+{"id":"batch-rules/scalar-rowset-openquery","sha256":"3f3a774326db57b1a4c8375ef99fce01a27839f03db834e55845d507cf53d162","source":"SELECT OPENQUERY(s,'q');"}
+{"id":"batch-rules/scalar-rowset-opendatasource","sha256":"0e69a279226621a34fa3f1ac85175354ab63bd1d80e8fb4fdff5331cf34ad3fe","source":"SELECT OPENDATASOURCE('p','s');"}
+{"id":"batch-rules/scalar-rowset-openxml-declared","sha256":"806d27dd81b70cb175b7655cf879c81fb6fa06f15b499f195010dd1d95101037","source":"DECLARE @h int; SELECT OPENXML(@h, '/r');"}
+{"id":"batch-rules/scalar-rowset-nested-in-table-source","sha256":"492be2562b4789f5ccdd149d54e22b848bfe4dc73b358a1b91a65a97c58303bc","source":"SELECT * FROM dbo.fn(OpEnJsOn('[]')) AS a;"}
+{"id":"batch-rules/scalar-rowset-bracket-openjson","sha256":"c8d262b914685a4d75103a91a320e11f59ef502955e913d5eefb7233b4c219db","source":"SELECT [OPENJSON]('[]');"}
+{"id":"batch-rules/scalar-rowset-qualified-functions-ok","sha256":"1024a5166c65158bdcdbc2d48cf51cb14f26762c99a83f2f030e1a96d19ebc92","source":"SELECT dbo.OPENJSON('[]');\nSELECT dbo.[OPENJSON]('[]'), dbo.[OPENROWSET]('p','s','q'), dbo.[OPENQUERY](1,'q'), dbo.[OPENDATASOURCE]('p','s'), dbo.[OPENXML](1,'/r');\nSELECT dbo.t::OPENJSON('[]');"}
+{"id":"batch-rules/scalar-rowset-schema-quoted","sha256":"a3a164bbc4644422fc5dc2f3820e8576c60760b665b4afcbbc63c6819a6755ea","source":"SELECT dbo.\"OPENJSON\"('[]'), dbo.\"OPENROWSET\"('p','s','q');"}
+{"id":"batch-rules/scalar-rowset-from-join-apply-ok","sha256":"872460e7632e219eefefde171b1f980159b506c576b656c1aa73f9cc1f162a83","source":"DECLARE @h int; SELECT * FROM OPENROWSET('p','s','q') AS r JOIN OPENQUERY(s,'q') AS q ON r.a = q.a CROSS APPLY OPENXML(@h, '/r') AS x CROSS APPLY OPENJSON('[]') AS j;"}
+{"id":"batch-rules/scalar-rowset-four-part-ok","sha256":"6b98cf315c015d3f413d1eca3554d32e31c2883875c5fd9172017251fdef47b5","source":"SELECT * FROM OPENDATASOURCE('p','s').db.dbo.t;\nUPDATE OPENDATASOURCE('p','s').db.dbo.t SET a = 1;"}
+{"id":"batch-rules/scalar-rowset-dml-rowsets-ok","sha256":"627f24e3850f351375fb24d73700d4f163d25ee9d5fd4be6487c24640ae70188","source":"INSERT OPENQUERY(s,'q') VALUES (1); UPDATE OPENROWSET('p','s','q') SET a = 1; DELETE OPENQUERY(s,'q'); MERGE dbo.t AS t USING OPENJSON('[]') AS s ON t.a = s.value WHEN MATCHED THEN DELETE;"}
+{"id":"batch-rules/clr-member-declared-variable-property","sha256":"8b7dacabe05db28560d848c1cd4e1cfcb5332dbaa537ad158e61fd33ec3a7462","source":"DECLARE @g geometry; SELECT @g.@p;"}
+{"id":"batch-rules/clr-member-declared-paren-variable-property","sha256":"6ed84c8a9af8bc0e4105f07050687bf98e3e56590b7eb0c37dd923be363e6ce9","source":"DECLARE @g geometry; SELECT (@g).@p;"}
+{"id":"batch-rules/clr-member-declared-variable-graph-method","sha256":"98d086b8eaf25cdbb345e4007fa3c98959fc3d211cf10da251aac836bae37cf0","source":"DECLARE @g geometry; SELECT @g.$node_id();"}
+{"id":"batch-rules/clr-member-declared-variable-graph-property","sha256":"ecced7680eb0bc88c3ee36f34ac591a377c5629ddf4caacae47d8fd26cd299ec","source":"DECLARE @g geometry; SELECT @g.$node_id;"}
+{"id":"batch-rules/clr-member-column-variable-property","sha256":"3d0106ba57a1a47043751ad167d4832c8ef0ac3c93db2ac42f88e8eb696a658e","source":"SELECT t.g.@p FROM dbo.t AS t;"}
+{"id":"batch-rules/clr-member-column-graph-method","sha256":"f931e7aa358623b01dfba67309dec43f3ff5c15c72a0edecf60b50aa0e51a146","source":"SELECT t.g.$edge_id() FROM dbo.t AS t;"}
+{"id":"batch-rules/clr-member-paren-column-graph-property","sha256":"bcdbf4fedde39c43763782b7a60938491d6df3b1188e0c9ec271ab3803778574","source":"SELECT (t.g).$edge_id FROM dbo.t AS t;"}
+{"id":"batch-rules/clr-member-bracketed-members-ok","sha256":"9d1c8e4d0d709df0655b8a8c69cc7b964f038a3fe0f9a6d2fb1c0579044961c9","source":"DECLARE @g geometry;\nSELECT @g.[@p], (@g).[@p], @g.[@p](), (@g).[@p](),\n       @g.[$node_id], @g.[$node_id](), (@g).[$node_id](), t.g.[$node_id]\nFROM dbo.t AS t;"}
+{"id":"batch-rules/clr-member-declared-quoted-member","sha256":"b157fcd3786845c3ceb9ca8f8f75807eb218dc18f0bf8e15b10d980ab7c773f0","source":"DECLARE @g geometry; SELECT @g.\"@p\", @g.\"$node_id\"();"}
+{"id":"batch-rules/clr-member-regular-methods-ok","sha256":"421f527ae7536af60ae83541ccf61630a98a1652686fe2a8d9d4cbd3799d08c4","source":"DECLARE @g geometry; SELECT @g.STX, @g.STAsText(), (@g).STAsText(), geometry::Point(1, 2, 0).STX;\nSELECT $PARTITION.p(1), dboDb.$PARTITION.p(1);"}
+{"id":"batch-rules/clr-member-pseudo-columns-ok","sha256":"3fa8d738e10d994521b4308aa034639c5577a522907389fa5ad951181a6d88a9","source":"SELECT t.$node_id, $node_id, dbo.node_t.$node_id FROM dbo.node_t AS t; SELECT e.$edge_id, e.$from_id, e.$to_id FROM dbo.edge_t AS e; SELECT t.$IDENTITY, t.$ROWGUID FROM dbo.t AS t;\nSELECT t.g.$edge_id FROM dbo.t AS t;\nSELECT t.$action FROM dbo.t AS t;"}
+{"id":"batch-rules/parse-target-varchar","sha256":"9011f8f0cf75db74654440a722aba5cc723252b1000450ec517d13cdc2dea7f1","source":"SELECT PARSE('1' AS varchar(5));"}
+{"id":"batch-rules/parse-target-try-bit-culture","sha256":"9f92c0e09c44d61803302bd5b60b0cfbc00569edd6b3c559d078a890856ef958","source":"SELECT TRY_PARSE('1' AS bit USING 'en-US');"}
+{"id":"batch-rules/parse-target-dbo-type","sha256":"fe5fcc5724b6e34a29ad723bbd390b8ee90c75dc02309098fa4ed1262ec32d1d","source":"SELECT PARSE('1' AS dbo.t);"}
+{"id":"batch-rules/parse-target-sys-int","sha256":"29843209e6c23eb81065e39a87bd65a171e72c69bf2533dbc819ee60ea83a07d","source":"SELECT PARSE('1' AS sys.int);"}
+{"id":"batch-rules/parse-target-int-trailing-space","sha256":"58b6680088c0402eb5bcda9f91eeeb6074d689f1ad9dfdf40c49c86ade116229","source":"SELECT PARSE('1' AS [int ]);"}
+{"id":"batch-rules/parse-target-char-varying","sha256":"539fb47b0cf0c401c958680420879bb2e9314079d6964f219ddc7e064da677cc","source":"SELECT PARSE('1' AS char varying(5));"}
+{"id":"batch-rules/parse-target-bracket-int-culture","sha256":"3b59f253b71c0b2726d34fc8c173c91c9d4f78da0310386fd695df01c8cd456e","source":"SELECT PARSE('1' AS [int] USING 'en-US');"}
+{"id":"batch-rules/parse-target-quoted-int","sha256":"02b55881ca95ca2adbc11ff02494a20f3665a35b6cb34752b87a503e6b355cca","source":"SELECT PARSE('1' AS \"int\");"}
+{"id":"batch-rules/parse-target-numeric-neighbours","sha256":"01a840c22979dad8ecb69f75853d7ee7c115fa06f82165bd1d5147fa94e859e1","source":"SELECT PARSE('1' AS integer), PARSE('1' AS dec(10,2)), PARSE('1' AS double precision), TRY_PARSE('1' AS smallmoney USING 'en-US');"}
+{"id":"batch-rules/parse-target-datetime-neighbours","sha256":"1ec42e7057dde493b2dea3402eb3abaa32db1e77b6d9e83a4b30649ee57a5c75","source":"SELECT PARSE('2026-11-23' AS datetime), TRY_PARSE('2026-11-23' AS smalldatetime), PARSE('01:02' AS time(3)), TRY_PARSE('2026-11-23' AS datetime2(3) USING 'en-US');"}
+{"id":"batch-rules/parse-target-float-max","sha256":"662c529002ac4c2007d95e81c9cd3d8cd35f67b5ab2285888a9379c40393b3d1","source":"SELECT PARSE('1' AS float(max));"}
+{"id":"batch-rules/parse-target-cast-varchar","sha256":"972c0864650b5e724e519f048f8aff10f3c761a603406a5066256d5601899b8d","source":"SELECT CAST('1' AS varchar(5));"}
+{"id":"batch-rules/column-filestream-sized","sha256":"98b0cf87ace19479fd38a2723e75c17324bd8c1dfdfdd8bd739e836488f70654","source":"CREATE TABLE dbo.t (x varbinary(5) FILESTREAM NULL);"}
+{"id":"batch-rules/column-filestream-bare","sha256":"2d1f6e6f359fa894d971a02848c40b2a0ba5c52521f8f3a88213e2858ff37fda","source":"CREATE TABLE dbo.t (x varbinary FILESTREAM);"}
+{"id":"batch-rules/column-filestream-binary-max","sha256":"44bb5ad120325230f08100b600a1471a91660070434e5ab7eab7bc368ea08df6","source":"CREATE TABLE dbo.t (x binary(max) FILESTREAM);"}
+{"id":"batch-rules/column-filestream-after-null","sha256":"817b6bb3cf61e960137d734cbc18857d4ece9e81e03be10066821f7cf77ea7f8","source":"CREATE TABLE dbo.t (x varbinary(max) NULL FILESTREAM);"}
+{"id":"batch-rules/column-filestream-after-rowguidcol","sha256":"6c5762cbccc125b9e683ba8dfaa7be7f4fb71e61c018bbb4c015041cb317d514","source":"CREATE TABLE dbo.t (x varbinary(max) ROWGUIDCOL FILESTREAM NOT NULL);"}
+{"id":"batch-rules/column-filestream-after-default","sha256":"70e306424dd76321e9e8edc5df99e36990a2140273ec7e847bd0a3735944c3b4","source":"CREATE TABLE dbo.t (x varbinary(max) DEFAULT (0x01) FILESTREAM);"}
+{"id":"batch-rules/column-filestream-alter-add-sized","sha256":"926933263b5326d5502acd278c34df4d87ff2b2d981f534ada34570be592cb74","source":"ALTER TABLE dbo.t ADD x varbinary(5) FILESTREAM NULL;"}
+{"id":"batch-rules/column-filestream-alter-add-max","sha256":"c8f3dabf523b38063e30a391102bacfe5981c7d667eae017c825823c5f47cbb0","source":"ALTER TABLE dbo.t ADD x varbinary(max) FILESTREAM NULL;"}
+{"id":"batch-rules/column-filestream-table-type-max","sha256":"8b1122351300d27acf099ede27ac2cd217cd528aef1e0cbfd1cad764645b352d","source":"CREATE TYPE dbo.t AS TABLE (x varbinary(max) FILESTREAM NULL);"}
+{"id":"batch-rules/column-filestream-table-variable-max","sha256":"d3f2daf8fc0ca60b7bc16f40beb52785e87255c26bd31aaa88ce6b5bdc85eeb7","source":"DECLARE @t TABLE (x varbinary(max) FILESTREAM NULL);"}
+{"id":"batch-rules/column-filestream-named-filegroup","sha256":"4dd25785e02bc72e3574ed4d0cb85c347e47280a32c0606a17e9d0b50ce41995","source":"CREATE TABLE dbo.t (x int INDEX ix NONCLUSTERED FILESTREAM_ON FILESTREAM);"}
+{"id":"batch-rules/column-filestream-table-placement-comment","sha256":"fbc4dc5af90fcca32ed4d56f652c377fec5058c10b841eefb09f6d58f72c4daa","source":"CREATE TABLE dbo.t (x int) FILESTREAM_ON /* probe */ FILESTREAM;"}
+{"id":"batch-rules/column-filestream-qualified-bracket-max","sha256":"7ddaaaf0ba2da66065755546d5f4e3e3049a712c4e022343f9893f43586d6e22","source":"CREATE TABLE dbo.t (x [arbitrary].[varbinary](max) FILESTREAM);"}
+{"id":"batch-rules/column-filestream-quoted-varbinary-max","sha256":"54b76be84235cf9303f427341ced4daabeb7d92c5cc8c705e73826ace1bcefef","source":"CREATE TABLE dbo.t (x \"varbinary\"(max) FILESTREAM);"}
+{"id":"batch-rules/column-filestream-varying-split","sha256":"253f481928185d937e4f38868e920c1c521a7fcea3a1575fdfae6851b5e47f32","source":"CREATE TABLE dbo.t (x binary /* probe */ varying(max) FILESTREAM NULL);"}
+{"id":"batch-rules/column-filestream-after-sparse","sha256":"1c6859b9bc3e07853b7a9a37882671a70428dbc7e2f69d27165c7283b94d49e8","source":"CREATE TABLE dbo.t (x varbinary(max) SPARSE FILESTREAM);"}
+{"id":"batch-rules/json-returning-array-varchar","sha256":"564493eb145be63f5d1814b8d478edb23bb561e3061d23b7b1e8e2b0864571c2","source":"SELECT JSON_ARRAY(1 RETURNING varchar(5));"}
+{"id":"batch-rules/json-returning-object-varchar","sha256":"9ae5bc69370cecd01f344e1fa2b944455fc21a38aec28334867a26d3cacd13ca","source":"SELECT JSON_OBJECT('a':1 RETURNING varchar(5));"}
+{"id":"batch-rules/json-returning-array-bracket-json-5","sha256":"2f09b5387322370c148a85e7bbe407ecfab979e86369c7743ecb0ce7f7c0b092","source":"SELECT JSON_ARRAY(1 RETURNING [json](5));"}
+{"id":"batch-rules/json-returning-object-null-json","sha256":"0c9f2544ce1e471c097ead9095a88755c96b67dcf3463a4a4e0ec034d1793237","source":"SELECT JSON_OBJECT('a':1 ABSENT ON NULL RETURNING json);"}
+{"id":"batch-rules/json-returning-arrayagg-nvarchar-max","sha256":"d5beec46727ff80d9ffdce839f8d3792fad7e37565061203659de335498f7758","source":"SELECT JSON_ARRAYAGG(1 RETURNING nvarchar(max));"}
+{"id":"batch-rules/json-returning-arrayagg-bracket-json-max","sha256":"ba5632fc0a1984cfa348ea35213cafdb039e2bd83d28cd2e8fa409cc0ed85b32","source":"SELECT JSON_ARRAYAGG(1 RETURNING [json](max));"}
+{"id":"batch-rules/json-returning-objectagg-varchar-max","sha256":"70dee2a4d87b46ada2a965419ff6fd807892b5e75d95b51d36d56fd67d6b0782","source":"SELECT JSON_OBJECTAGG('a':1 RETURNING varchar(max));"}
+{"id":"batch-rules/json-returning-objectagg-bracket-json-5","sha256":"d179f0ee947686f0ec9e79bb83c78fa73ac0e3c710e0f6ce09113f75a2ae01ec","source":"SELECT JSON_OBJECTAGG('a':1 RETURNING [json](5));"}
+{"id":"batch-rules/json-returning-value-varbinary","sha256":"dcbe47d897803359ef916451a465fc7c89bb089644ce2149c6d2ef8d4272706d","source":"SELECT JSON_VALUE(CAST(N'{\"x\":1}' AS json), '$.x' RETURNING varbinary(5));"}
+{"id":"batch-rules/json-returning-value-money","sha256":"b19bcc90062f30de425af2852ea54beff529d58b154542c211c5b9e169306426","source":"SELECT JSON_VALUE(CAST(N'{\"x\":1}' AS json), '$.x' RETURNING money);"}
+{"id":"batch-rules/json-returning-value-char-neighbours","sha256":"e1259b8748890a31c07a393c13f84b047c5ae1b877cce0f972c7d1e5e1cd6252","source":"SELECT JSON_VALUE(N'{\"x\":1}', '$.x' RETURNING varchar(max)), JSON_VALUE(N'{\"x\":1}', '$.x' RETURNING nvarchar(max)), JSON_VALUE(N'{\"x\":1}', '$.x' RETURNING national char varying(5));"}
+{"id":"batch-rules/json-returning-value-numeric-neighbours","sha256":"cd93262be8e4868fc15465941b3bb26305443cc809202d580e5790de7443a4f4","source":"SELECT JSON_VALUE(N'{\"x\":1}', '$.x' RETURNING [int]), JSON_VALUE(N'{\"x\":1}', '$.x' RETURNING bit), JSON_VALUE(N'{\"x\":1}', '$.x' RETURNING double precision);"}
+{"id":"batch-rules/json-returning-value-text-datetime2","sha256":"a566305cf2182416d396143f10831566b3167476a82748608b366eea858c2610","source":"SELECT JSON_VALUE(N'{\"x\":1}', '$.x' RETURNING datetime2(3));"}
+{"id":"batch-rules/json-returning-query-json","sha256":"b0bae7b59f2f1e677c6e29a4fa86c1f625c47de1763b92d21f8e81a77f88067b","source":"SELECT JSON_QUERY(CAST(N'{\"x\":[1]}' AS json), '$.x' RETURNING json);"}
+{"id":"batch-rules/json-returning-query-array-wrapper","sha256":"0f5f29643ca52f068a48dbd2be5135546713c597dc9a5ce66f0f1384dc93753e","source":"SELECT JSON_QUERY(CAST(N'{\"x\":[1]}' AS json), '$.x[*]' WITH ARRAY WRAPPER);"}
+{"id":"batch-rules/json-returning-ordinary-dbo-json","sha256":"d9a16c99ec975a2bc4df25d6a34091dd8cd1aa6f7a9feb2ea363f87a4ff3a25a","source":"SELECT dbo.f(1 RETURNING json);"}
+{"id":"batch-rules/json-returning-bracket-value-int","sha256":"202132821495555790196333b7db77fefe8b33c0feaa9d9854f42e6ad2c2d2a1","source":"SELECT [JSON_VALUE](N'{\"x\":1}', '$.x' RETURNING int);"}
+{"id":"batch-rules/scalar-list-review-plus","sha256":"70dcd41e378873bedd248ec6569cc1c1a535169cb7187459f42604370ed394d9","source":"SELECT 3 + (1,2);"}
+{"id":"batch-rules/scalar-list-review-set","sha256":"6d0df5881c0027daadac303a7339ebc0d866bc63b6b8c2a9ce068593f66ca563","source":"UPDATE dbo.t SET a = (1,2);"}
+{"id":"batch-rules/scalar-list-review-gb","sha256":"e0d4b80d6e8f3a45eed4e028a288a00d9c7fe3a92da4ca62d7745c0e64149e23","source":"SELECT COUNT(*) FROM dbo.t GROUP BY (a,b);"}
+{"id":"batch-rules/scalar-list-review-ch","sha256":"dc03f46952fd9c7cd85b42b4bbaad942193cd86b9f4941c48e5ba3356d9efef8","source":"SELECT * FROM CHANGETABLE(CHANGES dbo.t,(1,2)) AS c;"}
+{"id":"batch-rules/scalar-list-review-rollup-sel","sha256":"cca73a454f934dd08495d88057997c2a22a7b8402224251fe6c723404d3ca343","source":"SELECT ROLLUP((a,b)) FROM dbo.t;"}
+{"id":"batch-rules/scalar-list-review-contains2","sha256":"fb5786af8b98facb85e8315d774a0df75e324c6be4e8c4b6cee40b8a3cce6550","source":"SELECT 1 FROM dbo.t WHERE CONTAINS(a, ('x','y'));"}
+{"id":"batch-rules/scalar-list-review-semdet","sha256":"8e09552ec30f0b48cfc812506f004c7743888a959f64b25304bb169677caaad0","source":"SELECT * FROM SEMANTICSIMILARITYDETAILSTABLE(dbo.t,(a,b),1,b,2);"}
+{"id":"batch-rules/scalar-list-review-rollup-ok","sha256":"5e8151df82d30906ccf25caebd80ef844784aefaa9e873e66820788f6cf8ebb6","source":"SELECT a FROM dbo.t GROUP BY ROLLUP ((a, b), c);"}
+{"id":"batch-rules/scalar-list-review-gs-ok","sha256":"4a3574a62d2c774684d536d31396c4d330f715295e7a1a13fb23da0fc0f276ec","source":"SELECT a FROM dbo.t GROUP BY GROUPING SETS ((a, b), (a), ());"}
+{"id":"batch-rules/scalar-list-review-ct-ok","sha256":"2685c5e31ca8dbd11f9cc93a69c261927ab1cf94215d23f2092e6f7ba9f87abd","source":"SELECT * FROM CONTAINSTABLE(dbo.t, (a, b), N'x') AS c;"}
+{"id":"batch-rules/scalar-list-review-ver-ok","sha256":"2ed8b42447968ebe44eef387d0b050c85a048c9bf4d7a824f4eafa63b08e852c","source":"SELECT * FROM CHANGETABLE(VERSION dbo.t, (a,b), (1,2)) AS c;"}
+{"id":"batch-rules/scalar-rowset-review-plus","sha256":"b8581dcdff2a571df0aa58e8ce33a85b7cf17edffca95aabfe023a1f42e3279e","source":"SELECT 1 + OPENJSON('[]');"}
+{"id":"batch-rules/scalar-rowset-review-cast","sha256":"45f846740c7c8be00e5037b97b5a836b70ff57635a90f78d7b7d7abf5259aeb3","source":"SELECT CAST(OPENROWSET('p','s','q') AS int);"}
+{"id":"batch-rules/scalar-rowset-review-values","sha256":"c4cd41caba0d56295ee0950297cbd7d5a797417fa01f3ab2ce8143681ccc68fb","source":"DECLARE @h int; INSERT dbo.t(a) VALUES (OPENXML(@h,'/r'));"}
+{"id":"batch-rules/scalar-rowset-review-updset","sha256":"76b7f805506fde1a157fcbaa7936e2a1f175d9d00e19f60593d8907cbe203862","source":"UPDATE dbo.t SET OPENJSON('[]');"}
+{"id":"batch-rules/scalar-rowset-review-ok","sha256":"ccd2ad2c6a0a37f1ed3e1d9105ba552cdd9bcc5ef5afac0561fe7cd5674856fb","source":"SELECT * FROM OPENJSON('[]') AS j CROSS APPLY OPENJSON(j.value) AS k; UPDATE OPENQUERY(s,'q') SET a = 1; DELETE OPENQUERY(s,'q'); INSERT OPENQUERY(s,'q') VALUES (1);"}
+{"id":"batch-rules/clr-member-review-mid","sha256":"ec37d1d1d5994303cc256fd79817c49ee285d1ca3fc4c10f7ef51cd09319477e","source":"DECLARE @g geometry; SELECT @g.$node_id.STX;"}
+{"id":"batch-rules/clr-member-review-mid2","sha256":"c70c82d464120045fdbacea273a62248a884a9cb5bd21f52201dcd2c7f447748","source":"SELECT t.g.@p.ToString() FROM dbo.t AS t;"}
+{"id":"batch-rules/clr-member-review-part-ok","sha256":"c0b4fad2415fc98d49470b1646204143ca6c8d35c52afeebee03306dab124afd","source":"SELECT db.$PARTITION.f(1);"}
+{"id":"batch-rules/clr-member-review-static","sha256":"34eff45acd4d7e345f2f4efd0f90fc811ccd8d2aecd56d78b1afff9d38c180bd","source":"SELECT geometry::$node_id;"}
+{"id":"batch-rules/clr-member-review-static2","sha256":"8070eeaffc693605d643dfbbe2bcd2eb37466a383fdeb5f2b1baf5d384045084","source":"SELECT geometry::$node_id();"}
+{"id":"batch-rules/column-filestream-review-uq-ok","sha256":"06059ff5fa0d67f6c76986a624196d2ea1656b56d0e1a72dff72fd38c8196057","source":"CREATE TABLE dbo.t (x int UNIQUE FILESTREAM_ON FILESTREAM);"}
+{"id":"batch-rules/column-filestream-review-pk-ok","sha256":"e0922a1957342196f15ec53f5d0f89565c3f30a6c73ea86c46bf1451c848b40e","source":"CREATE TABLE dbo.t (x int PRIMARY KEY NONCLUSTERED FILESTREAM_ON fg);"}
+{"id":"batch-rules/column-filestream-review-scale","sha256":"30cd9b65373f4e6e95ce5c141cfc83a49368c00cbb55df8a167e5a23f2dac735","source":"CREATE TABLE dbo.t (x [varbinary](max,2) FILESTREAM);"}
+{"id":"batch-rules/column-filestream-review-3part","sha256":"90d82e640a17d24564f6e29614fd0164d80c09487ff408189957fc14009e1707","source":"ALTER TABLE dbo.t ADD x [db].dbo.[varbinary](max) FILESTREAM;"}
+{"id":"batch-rules/column-filestream-review-ac","sha256":"59457ff989d7f4d37064a3e44539c72fbe9809cb7fb1f88d00cf663d81244add","source":"ALTER TABLE dbo.t ALTER COLUMN x ADD FILESTREAM;"}
+{"id":"batch-rules/column-filestream-review-acd","sha256":"25a3101a36bda1c532b5f071f858c0ccd8588979190db156d3049ca13e7e2e99","source":"ALTER TABLE dbo.t ALTER COLUMN x DROP FILESTREAM;"}
+{"id":"batch-rules/column-filestream-review-2part-ok","sha256":"7ddaaaf0ba2da66065755546d5f4e3e3049a712c4e022343f9893f43586d6e22","source":"CREATE TABLE dbo.t (x [arbitrary].[varbinary](max) FILESTREAM);"}
+{"id":"batch-rules/json-returning-review-value-order-ok","sha256":"6c5eda5cedc54067d2c762aa1e810b07eb3b426197cef7909dbfd3bc8a3b53e8","source":"SELECT JSON_VALUE(N'{}', '$.x' ORDER BY 1 RETURNING int);"}
+{"id":"batch-rules/json-returning-review-value-order","sha256":"3a337edbe5aa98c548de13d0ffdff013a3776fa72ce282cc5b320d35749a4f98","source":"SELECT JSON_VALUE(N'{}', '$.x' ORDER BY 1);"}
+{"id":"batch-rules/json-returning-review-agg-over-ok","sha256":"ff1fa9e19fafc207112ecc6021dbee3d0614419398ca10aca938545850948630","source":"SELECT JSON_ARRAYAGG(1 ORDER BY 1 RETURNING json) OVER ();"}
+{"id":"batch-rules/json-returning-review-agg-over","sha256":"47b013925e5818ef88514213cf02ba7027ca422371a8a655560bcac7cf4a0142","source":"SELECT JSON_ARRAYAGG(1 ORDER BY 1) OVER ();"}
+{"id":"batch-rules/scalar-list-review2-gs-rollup-ok","sha256":"ccd70ac4979252fb126af51476304eba08647f049aff933b55b2cc02ce594b3c","source":"SELECT COUNT(*) FROM dbo.t GROUP BY GROUPING SETS ((ROLLUP((a,b)), c));"}
+{"id":"batch-rules/scalar-list-review2-gs-cube-ok","sha256":"f070153f760005204af6314db6d0cba0837475cd0cad1a3b5c6c9e4690a0bbed","source":"SELECT COUNT(*) FROM dbo.t GROUP BY GROUPING SETS ((CUBE((a,b))));"}
+{"id":"batch-rules/scalar-list-review2-cast","sha256":"f6f29a00ca06cea50fbde3bff8df6aefdd78d2f2256d6e432957b796db35b1d8","source":"SELECT CAST((1,2) AS int);"}
+{"id":"batch-rules/scalar-list-review2-unary","sha256":"8e552dd4a2204121c93fa6cc16bcf4f8b44519bb7151b9f4c9eb436019953a16","source":"SELECT -(1,2);"}
+{"id":"batch-rules/scalar-list-review2-declare","sha256":"c8712cff18768062c0d21d8ae201c6f50975c70fbdf7527a0f7992d729e7a1d5","source":"DECLARE @a int = (1,2);"}
+{"id":"batch-rules/scalar-list-review2-return","sha256":"2b60010aada2b8a221c994d45b4297e85c313655e8f6df492bd949a6799ef762","source":"CREATE FUNCTION dbo.f() RETURNS int AS BEGIN RETURN (1,2) END;"}
+{"id":"batch-rules/scalar-list-review2-contains-nested","sha256":"dfd36eab2884b4d475821ae6d76dadbaa07653d7f2d376f018fba121404f9010","source":"SELECT 1 FROM dbo.t WHERE CONTAINS((a,(b,c)), 'x');"}
+{"id":"batch-rules/clr-member-review2-method-mid-dollar","sha256":"3da147f5f5f68d34f51991126426763c5a70e50e5a7861aac46445af7e4258f5","source":"SELECT t.g.$node_id.ToString() FROM dbo.t AS t;"}
+{"id":"batch-rules/clr-member-review2-partition-ok","sha256":"96db0ccd49ee76459d40360d849e15253db5f2f0da626ceab7552e214f982087","source":"SELECT db.$PARTITION.f(1); SELECT $PARTITION.f(1);"}
+{"id":"batch-rules/column-filestream-review2-drop-constraint-ok","sha256":"410a6dd4bc3e0bb3e3af441ed5eef0bdacdc322140a8d99586ad460636801872","source":"ALTER TABLE dbo.t DROP FILESTREAM;"}
+{"id":"batch-rules/column-filestream-review2-drop-constraint-list-ok","sha256":"01baf9b1cb288deada9e7833e302551ccce56d8f7b28fea5e1acae074d9a5c56","source":"ALTER TABLE dbo.t DROP CONSTRAINT c, FILESTREAM;"}
+{"id":"batch-rules/column-filestream-review2-nvarchar-sparse-ok","sha256":"4032a61940c03138c62006606d77f8ec26f487939d948334fea49380b0ac4b7d","source":"CREATE TABLE dbo.t (x nvarchar(max) SPARSE FILESTREAM);"}
+{"id":"batch-rules/column-filestream-review2-nvarchar-sparse-after-ok","sha256":"2e23d85ec8b019fe646cc08af6abfbfe0827598ab4d22859923a65a1585bf6c0","source":"CREATE TABLE dbo.t (x nvarchar(max) FILESTREAM SPARSE);"}
+{"id":"batch-rules/column-filestream-review2-varchar-sparse","sha256":"63264cd644ed7567c73337b197375e88bc81d65feffc2e2c6e1bc1834bf87922","source":"CREATE TABLE dbo.t (x varchar(10) SPARSE FILESTREAM NULL);"}
+{"id":"batch-rules/column-filestream-review2-int-sparse","sha256":"498b0d3463a1a9e17facc07b540e40f331dcdd8b13625601e6820e278feb41d2","source":"CREATE TABLE dbo.t (x int SPARSE FILESTREAM);"}
+{"id":"batch-rules/column-filestream-review2-xml-sparse","sha256":"4a9b9ea944f2c6340eddc8aa5b6fbd2e817e3d7da2b24942af5eb430011272fc","source":"CREATE TABLE dbo.t (x xml SPARSE FILESTREAM);"}
+{"id":"batch-rules/column-filestream-review2-db-dot","sha256":"ffac723a5ef9ed30e2052fa127a39358bae262c665ba72f767826c50481ff055","source":"CREATE TABLE dbo.t (x [db]..[varbinary](max) FILESTREAM);"}
+{"id":"batch-rules/column-filestream-review2-base-type","sha256":"40a2523a190b25ecb1592d8d72d11af440a12694d708fd36cecb4d05227a35b9","source":"CREATE TABLE dbo.t (x dbo.[varbinary](max,float16) FILESTREAM);"}
+{"id":"batch-rules/column-filestream-review2-ac-add","sha256":"59457ff989d7f4d37064a3e44539c72fbe9809cb7fb1f88d00cf663d81244add","source":"ALTER TABLE dbo.t ALTER COLUMN x ADD FILESTREAM;"}
