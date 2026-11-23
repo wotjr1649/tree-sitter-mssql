@@ -107,7 +107,11 @@ export default {
   nvarchar: ($) =>
     parametric_type(
       $,
-      choice($.keyword_nvarchar, seq($.keyword_national, $.keyword_char, $.keyword_varying)),
+      choice(
+        $.keyword_nvarchar,
+        seq($.keyword_nchar, $.keyword_varying),
+        seq($.keyword_national, $.keyword_char, $.keyword_varying),
+      ),
     ),
 
   binary: ($) => parametric_type($, $.keyword_binary),

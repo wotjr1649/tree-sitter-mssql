@@ -157,6 +157,7 @@ pub(super) fn gap_constant(node: Node, source: &[u8]) -> bool {
 
 /// R20 comparison/* and static/*: a comparison's operands and a select-list value
 /// are scalars, not search conditions (102); EXEC accepts -1 but not +1.
+/// A CLR member applies to a scalar, and its name is not a variable or `$` pseudo-column (102).
 pub(super) fn gap_scalar(node: Node, context: &Context, source: &[u8], out: &mut Vec<Violation>) {
     let invalid = match node.kind() {
         "exec_argument" => node
@@ -201,6 +202,20 @@ pub(super) fn gap_scalar(node: Node, context: &Context, source: &[u8], out: &mut
                 node.child_by_field_name(f)
                     .is_some_and(|n| is_condition(n, source))
             })
+        }
+        "property_access" | "method_call" => {
+            let mut target = node.syntax_named_child(0);
+            while let Some(t) = target.filter(|t| t.kind() == "parenthesized_expression") {
+                target = t.syntax_named_child(0);
+            }
+            target.is_some_and(|t| t.kind() == "list" || is_condition(t, source))
+                || node
+                    .child_by_field_name(if node.kind() == "method_call" {
+                        "method"
+                    } else {
+                        "property"
+                    })
+                    .is_some_and(|n| matches!(source.get(n.start_byte()), Some(b'@' | b'$')))
         }
         _ => false,
     };
@@ -423,16 +438,12 @@ pub(super) fn identifier(node: Node, context: &Context, source: &[u8], out: &mut
             matches!(
                 n.grammar_name(),
                 "(" | "," | "keyword_collate" | "keyword_constraint" | "keyword_index"
-            ) || varying_column_collate(n, parent, source)
-                || inline_index_filestream(n, source)
+            ) || inline_index_filestream(n, source)
         })
     {
         // https://learn.microsoft.com/en-us/sql/t-sql/statements/create-table-transact-sql
         // HIDDEN is part of generated_always; only these flags can be standalone.
-        if varying_column_collate(node, parent, source) {
-            collation_name(node, source, out);
-        } else if !matches!(word.as_str(), "FILESTREAM" | "SPARSE" | "ROWGUIDCOL")
-            && !column_varying(node, parent, source)
+        if !matches!(word.as_str(), "FILESTREAM" | "SPARSE" | "ROWGUIDCOL")
             && !inline_index_filestream(node, source)
         {
             out.push(violation(
@@ -450,32 +461,6 @@ pub(super) fn identifier(node: Node, context: &Context, source: &[u8], out: &mut
             node,
         ));
     }
-}
-
-fn column_varying(node: Node, column: Node, source: &[u8]) -> bool {
-    node.kind() == "identifier"
-        && node
-            .utf8_text(source)
-            .is_ok_and(|text| text.eq_ignore_ascii_case("VARYING"))
-        && node.syntax_prev_sibling().is_some_and(|ty| {
-            Some(ty) == column.child_by_field_name("type")
-                && matches!(ty.kind(), "char" | "binary")
-                && ty.child_by_field_name("size").is_none()
-        })
-}
-
-// The column flag fallback can absorb both words of COLLATE after a split VARYING type.
-fn varying_column_collate(node: Node, column: Node, source: &[u8]) -> bool {
-    node.kind() == "identifier"
-        && node
-            .utf8_text(source)
-            .is_ok_and(|text| text.eq_ignore_ascii_case("COLLATE"))
-        && node
-            .syntax_prev_sibling()
-            .is_some_and(|varying| column_varying(varying, column, source))
-        && node
-            .syntax_next_sibling()
-            .is_some_and(|name| name.kind() == "identifier")
 }
 
 fn inline_index_filestream(node: Node, source: &[u8]) -> bool {
@@ -529,10 +514,16 @@ fn conversion_type(argument: Node, source: &[u8]) -> bool {
     }) else {
         return false;
     };
+    let mut c = call.walk();
+    let parameters: Vec<_> = call.children_by_field_name("parameter", &mut c).collect();
+    // CONVERT(type, expression [, style]); DISTINCT and DEFAULT are not arguments here (102/156).
     matches!(
         invocation_name(call, source).as_deref(),
         Some("CONVERT" | "TRY_CONVERT")
     ) && !has_child(argument, "keyword_as")
+        && matches!(parameters.len(), 2 | 3)
+        && !has_child(call, "keyword_distinct")
+        && !parameters.iter().any(|p| p.kind() == "keyword_default")
 }
 
 // Some grammar productions use the generic identifier for a fixed syntax word.
@@ -655,7 +646,13 @@ fn keyword_in_identifier(
             parent.child_by_field_name("alias") == Some(node)
                 && parent
                     .child_by_field_name("value")
-                    .filter(|value| value.kind() == "field")
+                    .filter(|value| {
+                        value.kind() == "field"
+                            && value
+                                .syntax_named_child(0)
+                                .filter(|n| n.kind() == "object_reference")
+                                .is_none_or(|n| n.syntax_named_child_count() == 1)
+                    })
                     .and_then(|value| value.child_by_field_name("name"))
                     .is_some_and(|name| {
                         matches!(
@@ -663,12 +660,15 @@ fn keyword_in_identifier(
                             "CHAR"
                                 | "CHARACTER"
                                 | "BINARY"
+                                | "NCHAR"
                                 | "[CHAR]"
                                 | "[CHARACTER]"
                                 | "[BINARY]"
+                                | "[NCHAR]"
                                 | "\"CHAR\""
                                 | "\"CHARACTER\""
                                 | "\"BINARY\""
+                                | "\"NCHAR\""
                         )
                     })
                 && conversion_type(parent, source)

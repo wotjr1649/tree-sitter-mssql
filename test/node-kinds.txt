@@ -820,6 +820,7 @@ procedure_body
 procedure_option
 procedure_options
 program
+property_access{property}
 query_hint
 query_specification
 raiserror_statement

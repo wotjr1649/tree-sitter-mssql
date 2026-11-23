@@ -2,7 +2,7 @@
 
 ## Current oracle status
 
-The replay covers 10,841 sources and 21,682 session/case pairs. All 15,727
+The replay covers 10,864 sources and 21,728 session/case pairs. All 15,759
 engine-accepted pairs pass tree-check. The [rejected-clean ledger](../oracle/data/rejected-clean.json)
 contains 445 pairs (190 ON, 255 OFF): context 111, environment 294, version 36 and runner 4.
 There are zero entries classified as `gap`. The #87 history records one incremental difference.
@@ -36,9 +36,117 @@ consumers needing the validation results must also use the constraint layer (ADR
 
 ## Under-acceptance and unmeasured syntax
 
-`CREATE TABLE dbo.t (c char varying(5));` passes LocalDB 17.0.1000.7 PARSEONLY at
-levels 100–170 with QUOTED_IDENTIFIER ON and OFF. The existing grammar produces an
-error tree at the parenthesized length after `VARYING`.
+The forms below pass LocalDB 17.0.1000.7 PARSEONLY at levels 100–170 with QUOTED_IDENTIFIER ON
+and OFF (`TRY_CONVERT` from level 110) and still parse to an error tree. The replay refuses an
+engine-accepted case with an error tree, so they are not oracle cases. Execution results are from
+LocalDB against a temporary table; ScriptDOM is the 170 parser.
+
+- A multi-word type as the first argument of `CONVERT` or `TRY_CONVERT`, with a length
+  (`CONVERT(char varying(5), 1)`, `CONVERT(national char varying(5), 1)`) or as
+  `CONVERT(national char varying, 1)`. The same types parse in declarations and `CAST`. They run,
+  and ScriptDOM accepts them.
+- A column name with an empty qualifier. `INSERT #t (.id) VALUES (1)` runs and inserts the row.
+  `UPDATE #t SET .id = 1` and `SELECT .p.id FROM #t AS p` fail with Msg 4104 (the multi-part
+  identifier could not be bound) and ScriptDOM accepts them. `SELECT .id`, `SELECT ALL.id`,
+  `SELECT DISTINCT.id`, `WHERE .id = 1`, `GROUP BY .id` and `ORDER BY .id` fail with Msg 4104,
+  and ScriptDOM rejects them (46016).
+- A property or method on a literal: `SELECT NULL.id`, `SELECT 1 .id`, `SELECT 'a'.id`,
+  `SELECT NULL.ToString()`. They fail with Msg 258 (cannot call methods on the type), and
+  ScriptDOM accepts them.
+- A property after a window function, `CASE`, an ODBC `{fn …}` escape, `JSON_OBJECT`,
+  `JSON_ARRAY`, `TRIM` or `AI_GENERATE_EMBEDDINGS`, such as
+  `SELECT FIRST_VALUE(g) OVER (ORDER BY i).STX FROM dbo.t`.
+
+The ISO synonyms `char varying`, `binary varying`, `nchar varying` and `national text`, and
+CLR property reads after a call, method, `CAST`, parenthesized call or subquery
+(`geometry::Point(1, 2, 0).STX`, `@g.STCentroid().STX`, `(geometry::Point(1, 2, 0)).STX`), parse
+since 2.6.0. A property of a parenthesized column or variable, `(@g).STX`, keeps its earlier `field` tree. The
+`batch-rules/type-*` and `batch-rules/property-*` probes record them with rejected neighbours.
+Tree-check rejects a member of a search condition or a value list (`(1=1).STX`) and a member named
+by a variable or an undelimited `# Accepted gaps
+
+## Current oracle status
+
+The replay covers 10,864 sources and 21,728 session/case pairs. All 15,759
+engine-accepted pairs pass tree-check. The [rejected-clean ledger](../oracle/data/rejected-clean.json)
+contains 445 pairs (190 ON, 255 OFF): context 111, environment 294, version 36 and runner 4.
+There are zero entries classified as `gap`. The #87 history records one incremental difference.
+
+The four runner entries cover two sources in both sessions. The PARSEONLY guard excludes one
+source, and the runner's GO splitter accounts for the other. The committed replay and ledger
+define the status of the recorded oracle cases. The sections below record historical measurements
+and follow-up checks, including gaps outside the recorded oracle.
+
+## R20: historical rejected-but-clean ledger
+
+The historical measurements below are superseded by `oracle/data/rejected-clean.json` for current status.
+R20 closes 125 of its original 127 `gap` entries through tree-local constraints, without changing
+any grammar, scanner, node kind, field or concrete tree. `gap-forms.jsonl` remeasures all 127 originals
+and adjacent accepted/rejected forms at LocalDB 17.0.1000.7 compatibility levels 100-170;
+`test/corpus/gap-forms.txt` pins representative trees, including trees whose rejection belongs to
+the constraint layer. Empty CATCH, qualified user functions, documented contextual names and
+engine-accepted option orders remain accepted.
+
+The two original entries left at R20 were subsequently classified (neither is now a `gap`):
+
+- `ddl-rest/commit-off` (`context`): declaring the transaction variable makes the identical COMMIT WITH clause
+  accepted. Rejecting its shape would reject valid programs; resolving the variable needs batch context.
+- `kit-routes/alt-tsql-V22-r018` (`environment`): VECTOR_SEARCH needs a preview-enabled engine/database to separate syntax
+  from feature availability. The documented source alias is optional; no alias requirement is inferred.
+
+Those final classifications record why the tree cannot decide the rejection: COMMIT requires batch
+declarations, and VECTOR_SEARCH requires preview-enabled engine configuration. Other context/environment
+observations are classified separately with their measured reason. The grammar still builds the same trees;
+consumers needing the validation results must also use the constraint layer (ADR-0003).
+
+## Under-acceptance and unmeasured syntax
+
+The forms below pass LocalDB 17.0.1000.7 PARSEONLY at levels 100–170 with QUOTED_IDENTIFIER ON
+and OFF (`TRY_CONVERT` from level 110) and still parse to an error tree. The replay refuses an
+engine-accepted case with an error tree, so they are not oracle cases. Execution results are from
+LocalDB against a temporary table; ScriptDOM is the 170 parser.
+
+- A multi-word type as the first argument of `CONVERT` or `TRY_CONVERT`, with a length
+  (`CONVERT(char varying(5), 1)`, `CONVERT(national char varying(5), 1)`) or as
+  `CONVERT(national char varying, 1)`. The same types parse in declarations and `CAST`. They run,
+  and ScriptDOM accepts them.
+- A column name with an empty qualifier. `INSERT #t (.id) VALUES (1)` runs and inserts the row.
+  `UPDATE #t SET .id = 1` and `SELECT .p.id FROM #t AS p` fail with Msg 4104 (the multi-part
+  identifier could not be bound) and ScriptDOM accepts them. `SELECT .id`, `SELECT ALL.id`,
+  `SELECT DISTINCT.id`, `WHERE .id = 1`, `GROUP BY .id` and `ORDER BY .id` fail with Msg 4104,
+  and ScriptDOM rejects them (46016).
+- A property or method on a literal: `SELECT NULL.id`, `SELECT 1 .id`, `SELECT 'a'.id`,
+  `SELECT NULL.ToString()`. They fail with Msg 258 (cannot call methods on the type), and
+  ScriptDOM accepts them.
+- A property after a window function, `CASE`, an ODBC `{fn …}` escape, `JSON_OBJECT`,
+  `JSON_ARRAY`, `TRIM` or `AI_GENERATE_EMBEDDINGS`, such as
+  `SELECT FIRST_VALUE(g) OVER (ORDER BY i).STX FROM dbo.t`.
+
+The ISO synonyms `char varying`, `binary varying`, `nchar varying` and `national text`, and
+CLR property reads after a call, method, `CAST`, parenthesized call or subquery
+(`geometry::Point(1, 2, 0).STX`, `@g.STCentroid().STX`, `(geometry::Point(1, 2, 0)).STX`), parse
+since 2.6.0. A property of a parenthesized column or variable, `(@g).STX`, keeps its earlier `field` tree. The
+`batch-rules/type-*` and `batch-rules/property-*` probes record them with rejected neighbours.
+Tree-check rejects a member of a search condition or a value list (`(1=1).STX`) and a member named
+ pseudo-column (`geometry::Point(1, 2, 0).@p`, `.$node_id()`)
+with `gap-scalar-shape` (Msg 102). The check reads `property_access` and `method_call` nodes only:
+a member of a variable or column parses as a `field` or an `invocation`, so `@g.@p`, `(@g).@p` and
+`@g.$node_id()` (Msg 102) are still accepted.
+
+### Over-acceptance found in the 2.6.0 review
+
+SQL Server rejects these at every level in both sessions, and tree-check accepts them. Each base
+form was already accepted before 2.6.0; the new types and property reads accept the same shapes.
+
+| Form | Msg |
+| --- | ---: |
+| A subquery in an `OUTPUT` list: `DELETE dbo.t OUTPUT (SELECT 1)` | 10705 |
+| A parenthesized value list as a scalar: `SELECT ((1, 2))` | 102 |
+| `OPENJSON` as a scalar: `SELECT OPENJSON('[]')` | 195 |
+| `OPENROWSET` or `OPENQUERY` as a scalar | 156 |
+| `PARSE` or `TRY_PARSE` to a string type: `PARSE('1' AS varchar(5))` | 10761 |
+| `FILESTREAM` on a sized binary column: `varbinary(5) FILESTREAM` | 102 |
+| `RETURNING` a non-JSON type in `JSON_ARRAY` or `JSON_OBJECT`, or a binary type in `JSON_VALUE` | 102 |
 
 The [WRITETEXT BULK probes](../oracle/data/probes/quoted-identifier.jsonl) record LocalDB 17.0.1000.7
 at levels 100–170 with QUOTED_IDENTIFIER ON and OFF. The engine accepts BULK with a text pointer

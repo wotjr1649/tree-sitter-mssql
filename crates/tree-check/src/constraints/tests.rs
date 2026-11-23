@@ -145,6 +145,44 @@ fn issue_87_review_exceptions_are_limited_to_the_syntax_words() {
 }
 
 #[test]
+fn clr_members_need_a_scalar_target_and_a_plain_name() {
+    for sql in [
+        "SELECT geometry::Point(1, 2, 0).STX;",
+        "SELECT geometry::Point(1, 2, 0).[$node_id];",
+        "DECLARE @g geometry; SELECT @g.STCentroid().[STX];",
+        "SELECT (SELECT TOP (1) g FROM dbo.t).STX;",
+        "SELECT CONVERT(nchar varying, 1);",
+        "SELECT CONVERT([nchar] varying, 1);",
+        "SELECT CONVERT(dbo.NCHAR VARYING, 1);",
+        "SELECT TRY_CONVERT(char varying, 1, 0);",
+    ] {
+        assert!(!parse(sql).root_node().has_error(), "{sql}");
+        assert!(rules(sql).is_empty(), "{sql}");
+    }
+    // https://learn.microsoft.com/en-us/sql/t-sql/functions/cast-and-convert-transact-sql
+    for sql in [
+        "SELECT CONVERT(nchar varying);",
+        "SELECT CONVERT(nchar varying, 1, 0, 0);",
+        "SELECT CONVERT(db.dbo.NCHAR VARYING, 1);",
+        "SELECT CONVERT(DISTINCT NCHAR VARYING, 1);",
+        "SELECT CONVERT(nchar varying, DEFAULT);",
+        "SELECT CONVERT(char varying);",
+    ] {
+        assert!(!rules(sql).is_empty(), "{sql}");
+    }
+    for sql in [
+        "SELECT (1=1).STX;",
+        "SELECT (1=1).ToString();",
+        "SELECT ((1,2)).STX;",
+        "DECLARE @p int; SELECT geometry::Point(1, 2, 0).@p;",
+        "SELECT geometry::Point(1, 2, 0).STX.$node_id();",
+    ] {
+        assert!(!parse(sql).root_node().has_error(), "{sql}");
+        assert_eq!(rules(sql), ["gap-scalar-shape"], "{sql}");
+    }
+}
+
+#[test]
 fn varying_column_neighbours_pass_in_both_sessions() {
     let cases: Vec<_> = probe_cases(include_str!(
         "../../../../oracle/data/probes/batch-rules.jsonl"
@@ -170,9 +208,8 @@ fn varying_column_neighbours_pass_in_both_sessions() {
 }
 
 #[test]
-fn split_varying_collate_still_checks_the_name_and_column_tail() {
+fn varying_column_collate_checks_the_name_and_column_tail() {
     for (tail, expected) in [
-        ("COLLATE", &["column-unknown-option"][..]),
         ("COLLATE [Latin1_General_CI_AS]", &["collation-name"][..]),
         ("COLLATE \"Latin1_General_CI_AS\"", &["collation-name"][..]),
         ("COLLATE ON", &["gap-reserved-name"][..]),

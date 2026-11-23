@@ -85,7 +85,7 @@ fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
                 gap_scalar(node, &context, source, &mut out);
                 like_escape(node, source, &mut out);
             }
-            "term" | "exec_argument" => {
+            "term" | "exec_argument" | "property_access" | "method_call" => {
                 gap_scalar(node, &context, source, &mut out);
             }
             "identifier" => {

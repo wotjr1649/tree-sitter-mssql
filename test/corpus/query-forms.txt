@@ -300,7 +300,7 @@ DECLARE @n national;
 
 ---
 
-(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (nchar (keyword_national) (keyword_char (MISSING "keyword_char_token1"))))))))
+(program (batch (statement (var_declarations (keyword_declare) (var_declaration (identifier) (keyword_ntext (MISSING keyword_text)))))))
 
 ==================
 query-forms/cursor-variable - LocalDB 17.0.1000.7 levels 100-170 - engine accepts

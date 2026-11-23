@@ -1,5 +1,5 @@
 {
-"meta": {"mode":"PARSEONLY","engine":{"product_version":"17.0.1000.7","product_level":"RTM","edition":"Express Edition (64-bit)","platform":"Windows","collation":"SQL_Latin1_General_CP1_CI_AS"},"session_set":{"quoted_identifier":1,"ansi_nulls":1,"ansi_padding":1,"ansi_warnings":1,"arithabort":0,"concat_null_yields_null":1},"levels":[100,110,120,130,140,150,160,170],"cases_sha256":"a768d378b8573b415570c23c3039f8a325d9fce6fd63dcdbb87ae599e4ad90e2","runner":"oracle/runners/ParseOnly (C#, Microsoft.Data.SqlClient)","runner_sha256":"9c73f0dade20221ac4ef5cbae58ca2f0007afeeabd896548c21ea7cf0232f180","observed_utc":"2026-11-22"},
+"meta": {"mode":"PARSEONLY","engine":{"product_version":"17.0.1000.7","product_level":"RTM","edition":"Express Edition (64-bit)","platform":"Windows","collation":"SQL_Latin1_General_CP1_CI_AS"},"session_set":{"quoted_identifier":1,"ansi_nulls":1,"ansi_padding":1,"ansi_warnings":1,"arithabort":0,"concat_null_yields_null":1},"levels":[100,110,120,130,140,150,160,170],"cases_sha256":"4c217c2a411aea144a778245fc411371ff95b115b2a0ce58b8e711ba6eb1a73e","runner":"oracle/runners/ParseOnly (C#, Microsoft.Data.SqlClient)","runner_sha256":"9c73f0dade20221ac4ef5cbae58ca2f0007afeeabd896548c21ea7cf0232f180","observed_utc":"2026-11-23"},
 "verdicts": {
   "batch-rules/proc-first": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
   "batch-rules/proc-after-select": {"100":[111],"110":[111],"120":[111],"130":[111],"140":[111],"150":[111],"160":[111],"170":[111]},
@@ -174,6 +174,29 @@
   "batch-rules/char-varying-collate-default": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
   "batch-rules/char-varying-constraint": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
   "batch-rules/char-varying-collate-constraint": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
-  "batch-rules/char-varying-collate-database-default": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]}
+  "batch-rules/char-varying-collate-database-default": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/type-char-varying-size": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/type-char-varying-max": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/type-char-varying-collate-size": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/type-char-varying-param": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/type-binary-varying": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/type-binary-varying-cast": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/type-nchar-varying": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/type-national-text": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/type-national-varying": {"100":[156],"110":[156],"120":[156],"130":[156],"140":[156],"150":[156],"160":[156],"170":[156]},
+  "batch-rules/type-char-varying-twice": {"100":[156],"110":[156],"120":[156],"130":[156],"140":[156],"150":[156],"160":[156],"170":[156]},
+  "batch-rules/type-national-ntext": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]},
+  "batch-rules/type-varchar-varying": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]},
+  "batch-rules/property-static-call": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/property-variable-method": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/property-column-method": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/property-then-method": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/property-subquery": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/property-cast": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/property-function": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/property-where": {"100":[],"110":[],"120":[],"130":[],"140":[],"150":[],"160":[],"170":[]},
+  "batch-rules/property-trailing-dot": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]},
+  "batch-rules/property-double-dot": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]},
+  "batch-rules/property-number": {"100":[102],"110":[102],"120":[102],"130":[102],"140":[102],"150":[102],"160":[102],"170":[102]}
 }
 }
