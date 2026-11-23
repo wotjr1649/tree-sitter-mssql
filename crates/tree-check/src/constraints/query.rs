@@ -326,6 +326,233 @@ pub(super) fn output_subquery(node: Node, context: &Context, out: &mut Vec<Viola
     }
 }
 
+#[derive(Clone, Copy, PartialEq)]
+enum TypeArg {
+    Num(u64),
+    Max,
+    // Not a type argument: 1.0, 1e2, 12+ digits, -1, 1+0 (102, 1080).
+    Bad,
+    Other,
+}
+
+fn type_arg(node: Option<Node>, source: &[u8]) -> Option<TypeArg> {
+    let node = node?;
+    let text = upper_text(node, source);
+    Some(match node.kind() {
+        "keyword_max" => TypeArg::Max,
+        "field" if undelimited(&text).trim_end_matches(' ') == "MAX" => TypeArg::Max,
+        "literal" if text.len() <= 11 && text.bytes().all(|b| b.is_ascii_digit()) => {
+            TypeArg::Num(text.parse().unwrap_or(u64::MAX))
+        }
+        "literal" | "unary_expression" | "binary_expression" => TypeArg::Bad,
+        _ => TypeArg::Other,
+    })
+}
+
+/// Whether type arguments are out of the range PARSEONLY accepts (batch-rules/type-argument-*):
+/// one number 1-8000 (1001, 131); MAX not on fixed-length types (156) or a second argument
+/// (102); fractional-second scale 0-7 (1002); two numbers p <= 38 (8000 in columns) and
+/// s <= p (2717, 131, 192, 183); decimal(max) only in columns; VECTOR 1-1998 dimensions with
+/// an optional float32/float16 base type (2717, 102, 195).
+fn type_args_invalid(
+    family: &str,
+    first: TypeArg,
+    second: Option<TypeArg>,
+    base: Option<&str>,
+    column: bool,
+) -> bool {
+    use TypeArg::*;
+    if first == Bad || second == Some(Bad) {
+        return true;
+    }
+    if first == Other || second == Some(Other) {
+        return false;
+    }
+    let dimensions = |n: u64| n == 0 || n > 1998;
+    // The base type name itself depends on preview settings (195, rejected-clean environment).
+    if let Some(base) = base {
+        return family != "VECTOR"
+            || first == Max
+            || base.starts_with(['[', '"'])
+            || base == "FLOAT32" && matches!(first, Num(n) if dimensions(n))
+            || base == "FLOAT16" && matches!(first, Num(n) if n == 0 || n > 3996);
+    }
+    match (family, first, second) {
+        (_, _, Some(Max)) | (_, Max, Some(_)) => true,
+        (_, Num(p), Some(Num(s))) => p == 0 || p > if column { 8000 } else { 38 } || s > p,
+        ("TIME", Num(n), None) => n > 7,
+        ("VECTOR", Num(n), None) => dimensions(n),
+        ("FIXED", Max, None) => true,
+        ("DECIMAL", Max, None) => !column,
+        (_, Num(n), None) => n == 0 || n > 8000,
+        _ => false,
+    }
+}
+
+fn type_family(name: &str) -> Option<&'static str> {
+    let family = |n: &str| {
+        Some(match n {
+            "CHAR" | "CHARACTER" | "NCHAR" | "BINARY" => "FIXED",
+            "DECIMAL" | "NUMERIC" | "DEC" => "DECIMAL",
+            "DATETIME2" | "DATETIMEOFFSET" | "TIME" => "TIME",
+            "VECTOR" => "VECTOR",
+            _ => return None,
+        })
+    };
+    let name = undelimited(name);
+    // [char ], [decimal ] and [vector ] resolve like the trimmed name; [character ], [dec ] and
+    // [time ] do not (type-argument-review-*).
+    family(name).or_else(|| {
+        let trimmed = name.trim_end_matches(' ');
+        matches!(trimmed, "CHAR" | "DECIMAL" | "VECTOR")
+            .then(|| family(trimmed))
+            .flatten()
+    })
+}
+
+fn column_type(context: &Context) -> bool {
+    context.parent().is_some_and(|p| {
+        matches!(
+            p.kind(),
+            "column_definition" | "alter_table" | "openjson_column" | "exec_result_column"
+        )
+    })
+}
+
+/// https://learn.microsoft.com/en-us/sql/t-sql/data-types/data-types-transact-sql
+pub(super) fn type_arguments(
+    node: Node,
+    context: &Context,
+    source: &[u8],
+    out: &mut Vec<Violation>,
+) {
+    let first = node
+        .child_by_field_name("size")
+        .or_else(|| node.child_by_field_name("precision"));
+    let Some(first) = type_arg(first, source) else {
+        return;
+    };
+    let second = type_arg(node.child_by_field_name("scale"), source);
+    let base = node
+        .child_by_field_name("base_type")
+        .map(|b| upper_text(b, source));
+    let family = match node.kind() {
+        "char" | "nchar" | "binary" => "FIXED",
+        "decimal" | "numeric" => "DECIMAL",
+        "datetime2" | "datetimeoffset" | "time" => "TIME",
+        "custom_type" => node
+            .syntax_named_child(0)
+            .and_then(|r| r.child_by_field_name("name"))
+            .and_then(|n| type_family(&upper_text(n, source)))
+            .unwrap_or("OTHER"),
+        _ => "OTHER",
+    };
+    if type_args_invalid(family, first, second, base.as_deref(), column_type(context)) {
+        out.push(violation(
+            "type-arguments",
+            "type length, precision or scale out of range".into(),
+            node,
+        ));
+    }
+}
+
+/// xml(n) keeps its argument beside keyword_xml: one number 1-8000 (1001, 131).
+pub(super) fn xml_type_arguments(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let argument = node
+        .syntax_next_sibling()
+        .filter(|n| n.kind() == "(")
+        .and_then(|n| n.syntax_next_sibling())
+        .filter(|n| n.kind() == "literal");
+    if let Some(first) = type_arg(argument, source)
+        && type_args_invalid("OTHER", first, None, None, false)
+    {
+        out.push(violation(
+            "type-arguments",
+            "type length, precision or scale out of range".into(),
+            node,
+        ));
+    }
+}
+
+/// CONVERT and TRY_CONVERT parse their target type as a call: CONVERT(varchar(8001), x).
+pub(super) fn convert_type_arguments(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+    if !matches!(
+        invocation_name(node, source).as_deref(),
+        Some("CONVERT" | "TRY_CONVERT")
+    ) || node
+        .parent()
+        .is_some_and(|p| p.kind() == "odbc_function_escape")
+    {
+        return;
+    }
+    let Some(target) = node
+        .child_by_field_name("parameter")
+        .and_then(|t| t.child_by_field_name("value"))
+        .filter(|v| v.kind() == "invocation")
+    else {
+        return;
+    };
+    let Some(name) = target
+        .syntax_named_child(0)
+        .filter(|r| r.kind() == "object_reference")
+        .and_then(|r| r.child_by_field_name("name"))
+        .filter(|n| n.kind() == "identifier")
+        .map(|n| upper_text(n, source))
+    else {
+        return;
+    };
+    let family = type_family(&name).unwrap_or("OTHER");
+    let mut c = target.walk();
+    let parameters: Vec<_> = target.children_by_field_name("parameter", &mut c).collect();
+    let value = |i: usize| {
+        parameters
+            .get(i)
+            .and_then(|p| p.child_by_field_name("value"))
+    };
+    // VECTOR(n, float32): the base type reads as a column name.
+    let base = value(1)
+        .filter(|v| family == "VECTOR" && v.kind() == "field")
+        .map(|v| upper_text(v, source))
+        .filter(|b| undelimited(b).trim_end_matches(' ') != "MAX");
+    let ranged = type_arg(value(0), source).is_some_and(|first| {
+        let second = if base.is_some() {
+            None
+        } else {
+            type_arg(value(1), source)
+        };
+        type_args_invalid(family, first, second, base.as_deref(), false)
+    });
+    // A type argument is a number or MAX; VECTOR also takes a base type second.
+    let shaped = |i: usize| {
+        value(i).is_some_and(|v| match v.kind() {
+            "literal" => true,
+            "field" => {
+                undelimited(&upper_text(v, source)).trim_end_matches(' ') == "MAX"
+                    || family == "VECTOR" && i == 1
+            }
+            _ => false,
+        })
+    };
+    // xml(n) is checked for its number only; xml(CONTENT schema) has its own shape.
+    let invalid = if undelimited(&name).trim_end_matches(' ') == "XML" {
+        parameters.len() == 1 && value(0).is_some_and(|v| v.kind() == "literal") && ranged
+    } else {
+        parameters.is_empty()
+            || parameters.len() > 2
+            || parameters.iter().enumerate().any(|(i, p)| {
+                p.kind() != "term" || p.child_by_field_name("alias").is_some() || !shaped(i)
+            })
+            || ranged
+    };
+    if invalid {
+        out.push(violation(
+            "type-arguments",
+            "type length, precision or scale out of range".into(),
+            target,
+        ));
+    }
+}
+
 /// A JSON type: `json`, or `[json]` / `"json"` with any parameters.
 pub(super) fn json_type(ty: Node, source: &[u8]) -> bool {
     base_type(ty, source).as_deref() == Some("JSON")
