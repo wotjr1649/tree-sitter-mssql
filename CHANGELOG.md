@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.8.0] - 2026-11-23
+
+### Changed
+
+- tree-check rejects shapes SQL Server rejects at every level in both QUOTED_IDENTIFIER sessions (LocalDB 17.0.1000.7). The grammar and trees are unchanged (#100).
+  - `type-arguments`: a type argument out of range in any type position, `CONVERT`/`TRY_CONVERT` targets and `xml(n)`. It covers lengths and one-number precisions outside 1–8000, `MAX` on fixed-length types, fractional seconds above 7, precision above 38 (8000 in column positions) or scale above precision, `decimal(max)` outside columns, VECTOR `float32` dimensions above 1998, 12-digit or non-integer numbers, and malformed `CONVERT` targets (Msg 1001, 131, 156, 1002, 2717, 192, 183, 102). VECTOR base-type names are not judged, because Msg 195 for them depends on preview settings.
+  - `expression-json-arguments` rejects these `ALL` forms:
+    - in `JSON_ARRAYAGG` together with `RETURNING`, a NULL clause, `ORDER BY`, `DISTINCT` or `WITHIN GROUP`;
+    - in `JSON_OBJECTAGG`;
+    - inside these arguments.
+
+    It also rejects `JSON_VALUE` with anything but two plain arguments, with `ARRAY WRAPPER`, with `WITHIN GROUP (ORDER BY …)` or with `OVER` but no `RETURNING`. An empty `JSON_ARRAY` or `JSON_OBJECT` with `RETURNING` or a NULL clause is rejected too (Msg 102, 156, 174, 4113, 10757).
+  - `column-option`: `SPARSE` used twice, or once in a table type or returned table on a type without a number argument. `NOT FOR REPLICATION` anywhere but after `IDENTITY`, `CHECK` or a `REFERENCES` clause, and in table types, table variables and returned tables (Msg 102).
+
+### Documentation
+
+- `docs/accepted-gaps.md` lists the forms resolved in 2.8.0 with their Msg numbers, rules and probes. 221 `batch-rules` probes record LocalDB and ScriptDOM verdicts in both sessions. Forms SQL Server accepts that still parse to error trees are tracked in #94–#99 and #101 (#100).
+- `docs/scope.md` counts 63,652 case verdicts at 2.8.0, with 95 level-dependent cases.
+
 ## [2.7.0] - 2026-11-23
 
 ### Changed
