@@ -77,6 +77,8 @@ fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
             "invocation" => {
                 gap_invocation(node, &context, source, &mut out);
                 gap_scalar(node, &context, source, &mut out);
+                convert_type_arguments(node, source, &mut out);
+                json_arguments(node, source, &mut out);
                 builtin_arity(node, source, &mut out);
                 expression_language(node, source, &mut out);
                 expression_provider(node, source, &mut out);
@@ -88,6 +90,16 @@ fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
             }
             "term" | "exec_argument" | "property_access" | "method_call" | "list" => {
                 gap_scalar(node, &context, source, &mut out);
+            }
+            "char" | "nchar" | "binary" | "varchar" | "nvarchar" | "varbinary" | "float"
+            | "decimal" | "numeric" | "datetime2" | "datetimeoffset" | "time" | "custom_type" => {
+                type_arguments(node, &context, source, &mut out);
+            }
+            "json_array" | "json_object" => {
+                json_arguments(node, source, &mut out);
+            }
+            "column_definition" => {
+                column_options(node, &context, source, &mut out);
             }
             "subquery" => {
                 output_subquery(node, &context, &mut out);
@@ -106,8 +118,15 @@ fn check_syntax(tree: &Tree, source: &[u8]) -> Vec<Violation> {
                 option_gaps(node, source, &mut out);
                 nested_database_options(node, source, &mut out);
             }
-            "with_options" | "constraint" => {
+            "with_options" => {
                 option_gaps(node, source, &mut out);
+            }
+            "constraint" => {
+                option_gaps(node, source, &mut out);
+                constraint_replication(node, &context, &mut out);
+            }
+            "keyword_xml" => {
+                xml_type_arguments(node, source, &mut out);
             }
             "query_hint" | "table_hint" => {
                 option_gaps(node, source, &mut out);

@@ -658,6 +658,131 @@ fn filestream_column(node: Node, column: Node, context: &Context, source: &[u8])
     table && typed && leading
 }
 
+/// Table types and the return table of a table-valued function (CLR or multi-statement).
+fn returned_or_type_table(node: Node, context: &Context) -> bool {
+    context.ancestor("create_type").is_some()
+        || ancestors(node)
+            .find(|a| matches!(a.kind(), "table_var_declaration" | "column_definitions"))
+            .and_then(|t| {
+                if t.kind() == "column_definitions" {
+                    t.parent()
+                        .filter(|p| p.kind() == "table_var_declaration")
+                        .or(Some(t))
+                } else {
+                    Some(t)
+                }
+            })
+            .and_then(|t| t.parent())
+            .is_some_and(|p| matches!(p.kind(), "create_function" | "alter_function"))
+}
+
+fn declared_table(context: &Context) -> bool {
+    context
+        .ancestor("table_var_declaration")
+        .is_some_and(|t| t.parent().is_some_and(|p| p.kind() == "var_declarations"))
+}
+
+/// NOT FOR REPLICATION directly after IDENTITY [(seed, increment)], CHECK, or at the end of a
+/// REFERENCES clause with its columns and referential actions.
+fn replication_placed(column: Node, not: Node, source: &[u8]) -> bool {
+    let Some(before) = not.syntax_prev_sibling() else {
+        return false;
+    };
+    let mut c = column.walk();
+    // IDENTITY(seed, increment): skip the closing parenthesis.
+    let increment = Some(before)
+        .filter(|b| b.kind() == ")")
+        .and_then(|b| b.syntax_prev_sibling());
+    if matches!(before.kind(), "keyword_identity" | "keyword_check")
+        || column
+            .children_by_field_name("increment", &mut c)
+            .any(|n| Some(n) == increment)
+    {
+        return true;
+    }
+    // Referenced columns and actions; a standalone NULL or column flag ends the clause. The NULL
+    // of SET NULL is inside referential_action, or after a bare SET in error recovery.
+    std::iter::successors(Some(before), SyntaxNode::syntax_prev_sibling)
+        .find(|n| match n.kind() {
+            "object_reference" | "referential_action" | "(" | "," | ")" => false,
+            "identifier" => matches!(
+                upper_text(*n, source).as_str(),
+                "SPARSE" | "ROWGUIDCOL" | "FILESTREAM" | "PERSISTED" | "HIDDEN"
+            ),
+            "keyword_null" => !n
+                .syntax_prev_sibling()
+                .is_some_and(|s| upper_text(s, source) == "SET"),
+            _ => true,
+        })
+        .is_some_and(|n| n.kind() == "keyword_references")
+}
+
+/// batch-rules/column-sparse-* and column-replication-*: SPARSE occurs once and not in a table
+/// type or returned table; NOT FOR REPLICATION follows IDENTITY, CHECK or a REFERENCES clause and
+/// is not allowed in table types, table variables or returned tables (102).
+pub(super) fn column_options(
+    node: Node,
+    context: &Context,
+    source: &[u8],
+    out: &mut Vec<Violation>,
+) {
+    let restricted = returned_or_type_table(node, context);
+    let children = named_children(node);
+    // A flag, not the column, index, constraint, collation or referenced-column name.
+    let sparse = children
+        .iter()
+        .filter(|n| {
+            n.kind() == "identifier"
+                && upper_text(**n, source) == "SPARSE"
+                && node.child_by_field_name("name") != Some(**n)
+                && !n.syntax_prev_sibling().is_some_and(|p| {
+                    matches!(
+                        p.grammar_name(),
+                        "(" | "," | "keyword_index" | "keyword_constraint" | "keyword_collate"
+                    ) || inline_index_filestream(p, source)
+                })
+        })
+        .count();
+    let misplaced_replication = children.iter().any(|n| {
+        n.kind() == "keyword_replication"
+            && (restricted
+                || declared_table(context)
+                || n.syntax_prev_sibling()
+                    .and_then(|f| f.syntax_prev_sibling())
+                    .is_none_or(|not| !replication_placed(node, not, source)))
+    });
+    // In table types and returned tables one SPARSE is measured valid only on a type with a
+    // number argument: varchar(40), decimal(10,2), xml(1) (column-option-review-*).
+    let numbered = node.child_by_field_name("type").is_some_and(|ty| {
+        ty.child_by_field_name("size")
+            .or_else(|| ty.child_by_field_name("precision"))
+            .is_some_and(|a| a.kind() == "literal")
+            || ty.kind() == "keyword_xml"
+                && ty.syntax_next_sibling().is_some_and(|n| n.kind() == "(")
+    });
+    if sparse > 1 || sparse == 1 && restricted && !numbered || misplaced_replication {
+        out.push(violation(
+            "column-option",
+            "SPARSE once outside table types; NOT FOR REPLICATION once after IDENTITY, CHECK or REFERENCES".into(),
+            node,
+        ));
+    }
+}
+
+/// A table-level CHECK ... NOT FOR REPLICATION in a table type, table variable or returned table (102).
+pub(super) fn constraint_replication(node: Node, context: &Context, out: &mut Vec<Violation>) {
+    if has_child(node, "keyword_replication")
+        && (returned_or_type_table(node, context) || declared_table(context))
+    {
+        out.push(violation(
+            "column-option",
+            "NOT FOR REPLICATION is not allowed in table types, table variables or returned tables"
+                .into(),
+            node,
+        ));
+    }
+}
+
 fn inline_index_filestream(node: Node, source: &[u8]) -> bool {
     if node.grammar_name() == "keyword_filestream_on" {
         return true;

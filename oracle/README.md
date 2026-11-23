@@ -7,7 +7,7 @@ The reference for valid T-SQL is SQL Server's own parser under `SET PARSEONLY ON
 | `data/kit/cases.jsonl` | 726 grammar-kit cases with `id`, `sha256` and `source`. See [NOTICE](data/kit/NOTICE). |
 | `data/kit/edits.jsonl`, `data/kit/route-edits.jsonl` | 353 gap histories (939 edits) and 19 route histories (40 edits) for comparing incremental and fresh parses. |
 | `data/kit/batch-rules-edits.jsonl` | The five-edit #87 history, with a recorded incremental difference at step 5. |
-| `data/probes/*.jsonl` | Engine-checked defect and surface cases, with IDs prefixed by set. The replay discovers every probe file automatically. The 32 probe sets plus the kit contribute 11,005 sources (22,010 session/case pairs). |
+| `data/probes/*.jsonl` | Engine-checked defect and surface cases, with IDs prefixed by set. The replay discovers every probe file automatically. The 32 probe sets plus the kit contribute 11,226 sources (22,452 session/case pairs). |
 | `data/verdicts/*.json` | Per-engine, per-session and per-level observations. An empty error array means acceptance. `UNSUPPORTED_CONTROL` marks source skipped by the PARSEONLY guard. Metadata records the engine, levels, session setting and case and runner hashes. LocalDB has committed ON and OFF verdicts for every set. The four Linux engines have committed ON verdicts for every set except batch-rules, column-constraints, if-nesting, korean, metamorphic-whitespace and quoted-identifier. The engine workflow measures both settings for every set. |
 | `runners/ParseOnly/` | The .NET 10 runner, with Microsoft.Data.SqlClient pinned by `packages.lock.json`. |
 | `data/expected.json` | The current tree-check verdict per session/case pair and edit histories whose incremental parse differs from a fresh parse. |
@@ -26,10 +26,11 @@ LocalDB 17.0.1000.7, levels 100–170 (108 accepted, 66 rejected). Every case is
 parser-cost budget. The deferred cases now pass tree-check after R17 and R18. Matching rules live
 under [constraints/](../crates/tree-check/src/constraints/), with evidence in the corresponding probes.
 
-The `batch-rules` set has 338 cases, including trigger, certificate and function body
-constraints, reserved names, standalone column options, ISO type synonyms, CLR property reads and
-the scalar, OUTPUT, PARSE, FILESTREAM and RETURNING shapes of 2.7.0. LocalDB 17.0.1000.7 accepts
-159 cases with QUOTED_IDENTIFIER ON and 154 with OFF at one or more of levels 100–170.
+The `batch-rules` set has 559 cases, including trigger, certificate and function body
+constraints, reserved names, standalone column options, ISO type synonyms, CLR property reads,
+the scalar, OUTPUT, PARSE, FILESTREAM and RETURNING shapes of 2.7.0, and the type arguments, JSON
+argument shapes and column options of 2.8.0. LocalDB 17.0.1000.7 accepts 250 cases with
+QUOTED_IDENTIFIER ON and 244 with OFF at one or more of levels 100–170.
 The set has ScriptDOM observations at the same levels in both sessions.
 
 ## Reading the verdicts

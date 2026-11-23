@@ -106,6 +106,134 @@ pub(super) fn json_aggregate(
     }
 }
 
+/// The unary ALL at the start of an expression: `ALL v + 1`.
+fn leading_all(mut n: Node) -> Option<Node> {
+    loop {
+        match n.kind() {
+            "term" => n = n.child_by_field_name("value")?,
+            "binary_expression" => n = n.child_by_field_name("left")?,
+            "unary_expression" => {
+                return n
+                    .child_by_field_name("operator")
+                    .is_some_and(|o| o.kind() == "keyword_all")
+                    .then_some(n);
+            }
+            _ => return None,
+        }
+    }
+}
+
+/// A scalar ALL elsewhere in the argument: `(ALL 1)`, `1 + ALL 2` (156). Nested calls,
+/// subqueries and CASE keep their own scope, as does `> ALL (SELECT ...)`.
+fn inner_all(argument: Node, leading: Option<Node>) -> bool {
+    let mut pending = vec![argument];
+    while let Some(n) = pending.pop() {
+        match n.kind() {
+            "subquery" | "invocation" | "case" | "exists" | "window_function" => {}
+            "unary_expression"
+                if Some(n) != leading
+                    && n.child_by_field_name("operator")
+                        .is_some_and(|o| o.kind() == "keyword_all")
+                    && !n
+                        .child_by_field_name("operand")
+                        .is_some_and(|o| o.kind() == "subquery") =>
+            {
+                return true;
+            }
+            _ => pending.extend(named_children(n)),
+        }
+    }
+    false
+}
+
+fn stray_all(argument: Node<'_>) -> (Option<Node<'_>>, bool) {
+    let lead = leading_all(argument);
+    (lead, inner_all(argument, lead))
+}
+
+/// batch-rules/json-*: JSON_ARRAYAGG(ALL x) takes no RETURNING, NULL clause, ORDER BY,
+/// DISTINCT or WITHIN GROUP (102/156); JSON_OBJECTAGG takes no ALL (102/156); JSON_VALUE takes
+/// exactly two plain arguments, no ARRAY WRAPPER, no WITHIN GROUP (ORDER BY) and OVER only with
+/// RETURNING (174/102/156/4113/10757); empty JSON_ARRAY/JSON_OBJECT take no RETURNING or NULL
+/// clause (102/156); WITHIN GROUP (GRAPH PATH) is not a JSON aggregate clause (102/174).
+pub(super) fn json_arguments(node: Node, source: &[u8], out: &mut Vec<Violation>) {
+    let invalid = match node.kind() {
+        "json_array" | "json_object" => {
+            named_children(node).into_iter().all(|n| {
+                matches!(
+                    n.kind(),
+                    "keyword_json_array"
+                        | "keyword_json_object"
+                        | "returning_clause"
+                        | "json_null_clause"
+                )
+            }) && (has_child(node, "returning_clause") || has_child(node, "json_null_clause"))
+        }
+        "invocation" => {
+            let mut c = node.walk();
+            let args: Vec<_> = node.children_by_field_name("parameter", &mut c).collect();
+            let returning = has_child(node, "returning_clause");
+            let within = has_child(node, "keyword_within");
+            let graph = has_child(node, "keyword_graph");
+
+            match invocation_name(node, source).as_deref() {
+                Some("JSON_ARRAYAGG") => {
+                    args.first().is_some_and(|a| {
+                        let (lead, inner) = stray_all(*a);
+                        inner
+                            || lead.is_some()
+                                && (has_child(node, "keyword_distinct")
+                                    || named_children(node).into_iter().any(|n| {
+                                        matches!(
+                                            n.kind(),
+                                            "returning_clause"
+                                                | "json_null_clause"
+                                                | "order_by"
+                                                | "keyword_within"
+                                        )
+                                    }))
+                    }) || within && graph
+                }
+                Some("JSON_OBJECTAGG") => args.iter().any(|a| {
+                    a.kind() == "json_key_value"
+                        && ["key", "value"].iter().any(|f| {
+                            a.child_by_field_name(f).is_some_and(|v| {
+                                let (lead, inner) = stray_all(v);
+                                lead.is_some() || inner
+                            })
+                        })
+                }),
+                Some("JSON_VALUE") => {
+                    args.len() != 2
+                        || has_child(node, "keyword_distinct")
+                        || has_child(node, "json_wrapper_clause")
+                        || within && (!graph || returning)
+                        || !returning
+                            && node.parent().is_some_and(|p| p.kind() == "window_function")
+                        || args.iter().any(|a| {
+                            let (lead, inner) = stray_all(*a);
+                            a.kind() != "term"
+                                || a.child_by_field_name("alias").is_some()
+                                || a.child_by_field_name("value")
+                                    .is_none_or(|v| v.kind() == "all_fields")
+                                || lead.is_some()
+                                || inner
+                        })
+                }
+                _ => false,
+            }
+        }
+        _ => false,
+    };
+    if invalid {
+        out.push(violation(
+            "expression-json-arguments",
+            "JSON function arguments and clauses in a shape SQL Server rejects".into(),
+            node,
+        ));
+    }
+}
+
 /// R18 last-forms/into: any set branch may have INTO, even several branches; a nested
 /// query, INSERT source or view body cannot (LocalDB 17.0.1000.7, levels 100-170, 156).
 pub(super) fn select_into_scope(node: Node, out: &mut Vec<Violation>) {

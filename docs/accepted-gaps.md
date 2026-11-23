@@ -2,7 +2,7 @@
 
 ## Current oracle status
 
-The replay covers 11,005 sources and 22,010 session/case pairs. All 15,871
+The replay covers 11,226 sources and 22,452 session/case pairs. All 16,052
 engine-accepted pairs pass tree-check. The [rejected-clean ledger](../oracle/data/rejected-clean.json)
 contains 445 pairs (190 ON, 255 OFF): context 111, environment 294, version 36 and runner 4.
 There are zero entries classified as `gap`. The #87 history records one incremental difference.
@@ -95,23 +95,37 @@ Tree-check also stops rejecting four forms SQL Server accepts:
 `JSON_ARRAYAGG` with `NULL ON NULL`, `RETURNING` and `OVER` stays rejected (Msg 156), as do the same
 `JSON_VALUE` and `JSON_ARRAYAGG … OVER` forms without `RETURNING` (Msg 102 and 156).
 
-### Remaining after the 2.7.0 review
+### Over-acceptance resolved in 2.8.0
 
-SQL Server rejects these and tree-check accepts them:
+SQL Server rejects these at every level in both sessions, and tree-check accepted them before
+2.8.0. The `batch-rules` probes in the last column record the rejected shapes and their accepted
+neighbours, with LocalDB 17.0.1000.7 and ScriptDOM 170 verdicts in both sessions.
 
-- `JSON_ARRAYAGG(ALL 1 RETURNING json)` (Msg 102).
-- `JSON_VALUE` argument shapes with `RETURNING`: `JSON_VALUE(RETURNING int)` and `… RETURNING int
-  WITH ARRAY WRAPPER` (102), three arguments (174). `JSON_ARRAY(RETURNING json)` (102).
-- Out-of-range type arguments: `[json](0)` (1001), `[json](8001)` (131), `[json](5,6)` (192),
-  `[json](max,2)` (102), `PARSE('1' AS decimal(max))` (156), `PARSE('1' AS datetime2(8))` (1002).
-- A repeated column flag: `varbinary(max) SPARSE FILESTREAM SPARSE` (102).
+| Form | Msg | Rule | Probes |
+| --- | ---: | --- | --- |
+| A type argument out of range in any type position, including `CONVERT` and `TRY_CONVERT` targets and `xml(n)`: a length or one-number precision outside 1–8000, `MAX` on `char`, `nchar` or `binary`, fractional seconds above 7, two numbers with precision above 38 (8000 in column positions) or scale above precision, `decimal(max)` outside columns, a VECTOR dimension above 1998 (`float32`), a 12-digit or non-integer number, or a target with no, three or non-numeric arguments | 1001, 131, 156, 1002, 2717, 192, 183, 102 | `type-arguments` | `type-argument-*` |
+| JSON argument shapes: `ALL` in `JSON_ARRAYAGG` with `RETURNING`, a NULL clause, `ORDER BY`, `DISTINCT` or `WITHIN GROUP`; `ALL` in `JSON_OBJECTAGG` or inside any of these arguments; `JSON_VALUE` with other than two plain arguments, `ARRAY WRAPPER`, `WITHIN GROUP (ORDER BY …)` or `OVER` without `RETURNING`; an empty `JSON_ARRAY` or `JSON_OBJECT` with `RETURNING` or a NULL clause; `WITHIN GROUP (GRAPH PATH)` on `JSON_ARRAYAGG` | 102, 156, 174, 4113, 10757 | `expression-json-arguments` | `json-*` |
+| `SPARSE` twice, or once in a table type or returned table on a type without a number argument; `NOT FOR REPLICATION` anywhere but after `IDENTITY`, `CHECK` or a `REFERENCES` clause, and in table types, table variables and returned tables | 102 | `column-option` | `column-sparse-*`, `column-replication-*`, `column-option-review*` |
 
-SQL Server accepts these and the grammar gives an error tree:
+Delimited type names follow the engine's resolution: `[char ]`, `[decimal ]` and `[vector ]` resolve
+with trailing spaces, `[character ]`, `[dec ]` and `[time ]` do not. VECTOR base-type names are not
+judged: `float64` and `int` give Msg 195 in the default configuration and depend on preview
+settings, like the `environment` entries of the rejected-clean ledger.
 
-- `ALTER TABLE dbo.t ALTER COLUMN x varbinary(max) FILESTREAM NOT NULL`
-- `PARSE(N'1' AS int(5))`
-- `JSON_ARRAY(1 RETURNING json(5))`
-- `PARSE('1' AS int USING "en-US")` under QUOTED_IDENTIFIER ON
+### Remaining after the 2.8.0 review
+
+SQL Server accepts these and the grammar gives an error tree. Each has an issue with the engine,
+execution and ScriptDOM evidence:
+
+- [#94](https://github.com/wotjr1649/tree-sitter-mssql/issues/94): `INSERT #t (.id) VALUES (1)`.
+- [#95](https://github.com/wotjr1649/tree-sitter-mssql/issues/95): multi-word types in `CONVERT` and `TRY_CONVERT`.
+- [#96](https://github.com/wotjr1649/tree-sitter-mssql/issues/96): a CLR property after `CASE`, a window call or an ODBC escape.
+- [#97](https://github.com/wotjr1649/tree-sitter-mssql/issues/97): `ALTER COLUMN x varbinary(max) FILESTREAM NOT NULL`.
+- [#98](https://github.com/wotjr1649/tree-sitter-mssql/issues/98): `FILESTREAM_ON` on table-level keys and in `ALTER TABLE … ADD`.
+- [#99](https://github.com/wotjr1649/tree-sitter-mssql/issues/99): `RETURNING json(5)`, `PARSE(… AS int(5))` and `PARSE(… USING "en-US")` under QUOTED_IDENTIFIER ON.
+
+One `SPARSE` on a type with a number argument in a table type (`CREATE TYPE … AS TABLE (c varchar(40)
+SPARSE)`) is accepted without a measurement.
 
 The [WRITETEXT BULK probes](../oracle/data/probes/quoted-identifier.jsonl) record LocalDB 17.0.1000.7
 at levels 100–170 with QUOTED_IDENTIFIER ON and OFF. The engine accepts BULK with a text pointer
