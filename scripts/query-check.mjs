@@ -4,7 +4,7 @@
 //
 // Usage: node scripts/query-check.mjs --tree-sitter <cli> [--update]
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { applyEdit, isMain, readCases, readJsonl } from './common.mjs';
@@ -45,29 +45,33 @@ function main() {
   );
   const dir = mkdtempSync(join(tmpdir(), 'query-check-'));
   let failed = 0;
-  for (const c of cases) {
-    const source = applySteps(sources[c.source_case], edits[c.source_case] ?? [], c.step);
-    const file = join(dir, 'in.sql');
-    writeFileSync(file, source);
-    const r = spawnSync(
-      cli,
-      ['query', '--captures', join('test/queries/kit', `${c.query}.scm`), file],
-      {
-        encoding: 'utf8',
-        maxBuffer: 1 << 26,
-      },
-    );
-    if (r.status !== 0)
-      throw new Error(`${c.id} step ${c.step}: tree-sitter query failed: ${r.stderr}`);
-    const captures = parseCaptures(r.stdout);
-    if (update) {
-      c.captures = captures;
-    } else if (JSON.stringify(captures) !== JSON.stringify(c.captures)) {
-      failed++;
-      console.error(
-        `${c.id} step ${c.step} (${c.query}): captures differ\n  expected ${JSON.stringify(c.captures)}\n  actual   ${JSON.stringify(captures)}`,
+  try {
+    for (const c of cases) {
+      const source = applySteps(sources[c.source_case], edits[c.source_case] ?? [], c.step);
+      const file = join(dir, 'in.sql');
+      writeFileSync(file, source);
+      const r = spawnSync(
+        cli,
+        ['query', '--captures', join('test/queries/kit', `${c.query}.scm`), file],
+        {
+          encoding: 'utf8',
+          maxBuffer: 1 << 26,
+        },
       );
+      if (r.status !== 0)
+        throw new Error(`${c.id} step ${c.step}: tree-sitter query failed: ${r.stderr}`);
+      const captures = parseCaptures(r.stdout);
+      if (update) {
+        c.captures = captures;
+      } else if (JSON.stringify(captures) !== JSON.stringify(c.captures)) {
+        failed++;
+        console.error(
+          `${c.id} step ${c.step} (${c.query}): captures differ\n  expected ${JSON.stringify(c.captures)}\n  actual   ${JSON.stringify(captures)}`,
+        );
+      }
     }
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
   }
   if (update) writeFileSync(CASES, `${JSON.stringify(cases, null, 2)}\n`);
   console.log(

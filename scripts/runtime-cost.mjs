@@ -14,6 +14,7 @@ import {
   mkdtempSync,
   readdirSync,
   readFileSync,
+  rmSync,
   statSync,
   writeFileSync,
 } from 'node:fs';
@@ -118,6 +119,14 @@ function main() {
     throw new Error('usage: runtime-cost.mjs --tree-sitter <cli> [--runs N]');
   const milestone = JSON.parse(readFileSync(MILESTONE, 'utf8'));
   const dir = mkdtempSync(join(tmpdir(), 'runtime-cost-'));
+  try {
+    measure(cli, runs, milestone, dir);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+function measure(cli, runs, milestone, dir) {
   const ext = process.platform === 'win32' ? 'dll' : 'so';
   milestoneSources(milestone.commit, join(dir, 'base'));
   const baseLib = join(dir, `base.${ext}`);
