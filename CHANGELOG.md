@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.7.0] - 2026-11-23
+
+### Changed
+
+- tree-check rejects shapes SQL Server rejects at every level in both QUOTED_IDENTIFIER sessions (LocalDB 17.0.1000.7). The grammar and trees are unchanged (#92).
+  - `query-output-subquery`: a subquery anywhere in an `OUTPUT` list (Msg 10705).
+  - `gap-scalar-shape`: a value list in a scalar position, such as `SELECT ((1, 2))`, `CAST((1, 2) AS int)` or `GROUP BY (a, b)` (102, 4145); `OPENJSON`, `OPENROWSET`, `OPENQUERY`, `OPENDATASOURCE` or `OPENXML` outside a table source or DML target (195, 156); a member named by a variable, and a `$` member of a variable, a parenthesized receiver or a method call (102). `expression-static-reference` also rejects `geometry::$node_id`.
+  - `query-parse-type`: `PARSE` or `TRY_PARSE` to a type other than the integer, decimal, float, money and date/time types (10761).
+  - `column-filestream`: `FILESTREAM` off `varbinary(max)` (other `MAX` types only with `SPARSE`), after `NULL`, `ROWGUIDCOL`, `DEFAULT` or a constraint, in table types and table variables, and in `ALTER COLUMN … ADD` or `DROP` (102, 117, 5508).
+  - `expression-returning-type`: `RETURNING` other than `json` in `JSON_ARRAY` and `JSON_OBJECT`, a type outside the measured set in `JSON_VALUE`, and `RETURNING` in `JSON_QUERY` or any other call (102).
+- tree-check stops rejecting forms SQL Server accepts: `[json](n)` in the JSON aggregates, `JSON_VALUE(… ORDER BY … RETURNING type)`, `JSON_ARRAYAGG(… ORDER BY … RETURNING json) OVER (…)` and `FILESTREAM_ON` after a column `UNIQUE` or `PRIMARY KEY` constraint (#92).
+
+### Documentation
+
+- `docs/accepted-gaps.md` lists the forms resolved in 2.7.0, with Msg numbers, rules and probes, and the ones that remain. 141 `batch-rules` probes record LocalDB and ScriptDOM verdicts in both sessions. The page repairs a paragraph that 2.6.0 garbled with a copy of the page's opening sections. `docs/scope.md` counts 63,210 case verdicts at 2.7.0, with 92 level-dependent cases (#92).
+
 ## [2.6.0] - 2026-11-23
 
 ### Added
