@@ -129,7 +129,7 @@ what was measured.
 | Incremental editing | Meets, with limits | An incremental tree equals a fresh parse on all 8,063 measured edits (an earlier candidate differed on 24 edits of one file; fixed by a grammar change). Reparse time per edit matches 1.0.0 in 2.1.1 (median per-edit ratio 0.986 on 528 edits of 24 real files; 2.0.0 took about 1.4–1.9 times as long); summed over edits, files of 100 KB–1 MB still take 10 % longer. The edits are four simple kinds, and tree-sitter 0.27.2 has known runtime defects in incremental parsing that 0.27.3 (not released) addresses; 0.27.3 was not tested. Per edit, the reuse repairs cut re-lexed tokens by 8.7 %; 52 edits that leave the text invalid re-lex more than before (by more than 4 tokens, at most +28). |
 | API stability | Meets | 2.0.0 removed or renamed no node kinds or fields and added 244 named or anonymous node kinds. 40 of the 5,379 distinct inputs that 1.0.0 parsed cleanly got a different tree, so this was a SemVer major. The [migration guide](docs/migrating-from-1.0.md#trees-that-change-for-valid-input) shows representative changes. |
 | Verification in CI | Meets (read from the workflow files) | Full Verify runs on ready pull requests and pushes to `main`. It includes oracle replay, corpus, fixtures, comment/case/whitespace mutation and WASM parity. Oracle engine runs against SQL Server 2017, 2019, 2022 and 2025 on relevant pull requests and weekly. Fuzz covers the parser, scanner and tree-check on relevant pull requests and weekly. |
-| Maintenance | Meets, with limits | One maintainer. See the [release history](CHANGELOG.md) through 2.6.0. |
+| Maintenance | Meets, with limits | One maintainer. See the [release history](CHANGELOG.md) through 2.7.0. |
 
 **Known limits.** Errors that need context (undeclared variables, conflicting hints, boolean versus scalar, names,
 permissions) are outside a grammar and are not flagged. Some Azure Synapse syntax kept from 1.0.0 is accepted by the
@@ -142,12 +142,12 @@ Nothing is published to crates.io, npm or any other registry. Pin a tag or commi
 The generated parser (`src/parser.c`, `src/grammar.json`, `src/node-types.json`) is committed, and
 `src/scanner.c` must be compiled alongside `src/parser.c`.
 
-For Rust, pin a release tag in `Cargo.toml`. To pin a commit, replace `tag = "v2.6.0"` with `rev = "<commit>"`.
+For Rust, pin a release tag in `Cargo.toml`. To pin a commit, replace `tag = "v2.7.0"` with `rev = "<commit>"`.
 
 ```toml
 [dependencies]
 tree-sitter = "0.27"
-tree-sitter-mssql = { git = "https://github.com/wotjr1649/tree-sitter-mssql", tag = "v2.6.0" }
+tree-sitter-mssql = { git = "https://github.com/wotjr1649/tree-sitter-mssql", tag = "v2.7.0" }
 ```
 
 ### Requirements
