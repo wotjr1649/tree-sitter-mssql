@@ -145,6 +145,72 @@ fn issue_87_review_exceptions_are_limited_to_the_syntax_words() {
 }
 
 #[test]
+fn scalar_output_parse_filestream_and_returning_shapes() {
+    // batch-rules/{output-subquery,scalar-list,scalar-rowset,clr-member,parse-target,
+    // column-filestream,json-returning}-*: LocalDB 17.0.1000.7, levels 100-170, both sessions.
+    for (sql, rule) in [
+        ("DELETE dbo.t OUTPUT (SELECT 1);", "query-output-subquery"),
+        (
+            "DELETE dbo.t OUTPUT CASE WHEN EXISTS (SELECT 1) THEN 1 END;",
+            "query-output-subquery",
+        ),
+        ("SELECT ((1, 2));", "gap-scalar-shape"),
+        ("INSERT dbo.t(a) VALUES ((1, 2));", "gap-scalar-shape"),
+        ("SELECT OPENJSON('[]');", "gap-scalar-shape"),
+        ("DECLARE @g geometry; SELECT @g.@p;", "gap-scalar-shape"),
+        (
+            "DECLARE @g geometry; SELECT @g.$node_id();",
+            "gap-scalar-shape",
+        ),
+        ("SELECT PARSE('1' AS varchar(5));", "query-parse-type"),
+        (
+            "CREATE TABLE dbo.t (x varbinary(5) FILESTREAM);",
+            "column-filestream",
+        ),
+        (
+            "CREATE TABLE dbo.t (x varbinary(max) NULL FILESTREAM);",
+            "column-filestream",
+        ),
+        (
+            "DECLARE @t TABLE (x varbinary(max) FILESTREAM);",
+            "column-filestream",
+        ),
+        (
+            "SELECT JSON_ARRAY(1 RETURNING varchar(5));",
+            "expression-returning-type",
+        ),
+        (
+            "SELECT JSON_VALUE(N'{}', '$.x' RETURNING money);",
+            "expression-returning-type",
+        ),
+        (
+            "SELECT JSON_QUERY(N'{}', '$.x' RETURNING json);",
+            "expression-returning-type",
+        ),
+    ] {
+        assert!(!parse(sql).root_node().has_error(), "{sql}");
+        assert_eq!(rules(sql), [rule], "{sql}");
+    }
+    for sql in [
+        "DELETE dbo.t OUTPUT deleted.a WHERE a IN (SELECT a FROM dbo.s);",
+        "SELECT 1 WHERE 1 IN (1, 2); INSERT dbo.t(a, b) VALUES ((1), 2);",
+        "SELECT a FROM dbo.t GROUP BY ROLLUP ((a, b), c);",
+        "SELECT 1 FROM dbo.t WHERE CONTAINS((a, b), N'x');",
+        "SELECT * FROM OPENJSON('[]') AS j; SELECT dbo.OPENJSON('[]');",
+        "SELECT t.$node_id, $node_id FROM dbo.node_t AS t;",
+        "DECLARE @g geometry; SELECT @g.[@p], @g.STX;",
+        "SELECT PARSE('1' AS [int] USING 'en-US'), TRY_PARSE('1' AS double precision);",
+        "CREATE TABLE dbo.t (x varbinary(max) SPARSE FILESTREAM NULL);",
+        "CREATE TABLE dbo.t (x [varbinary](max) FILESTREAM);",
+        "SELECT JSON_ARRAY(1 RETURNING [json](5)), JSON_ARRAYAGG(1 RETURNING [json](max));",
+        "SELECT JSON_VALUE(N'{}', '$.x' RETURNING varchar(max));",
+    ] {
+        assert!(!parse(sql).root_node().has_error(), "{sql}");
+        assert!(rules(sql).is_empty(), "{sql}: {:?}", rules(sql));
+    }
+}
+
+#[test]
 fn clr_members_need_a_scalar_target_and_a_plain_name() {
     for sql in [
         "SELECT geometry::Point(1, 2, 0).STX;",

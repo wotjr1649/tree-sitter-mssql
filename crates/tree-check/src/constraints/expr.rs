@@ -1,4 +1,5 @@
 use super::Violation;
+use super::query::json_type;
 use super::util::*;
 use crate::tree::{ancestors, has_child, named_children};
 use tree_sitter::Node;
@@ -54,8 +55,13 @@ pub(super) fn json_aggregate(
         .into_iter()
         .any(|n| n.kind() == "order_by" && n.start_byte() < argument_end);
     let nulls = has_child(node, "json_null_clause");
+    let returning = named_children(node)
+        .into_iter()
+        .find(|n| n.kind() == "returning_clause");
     if !array && !object {
-        if pair || order || nulls {
+        // JSON_VALUE(json, path ORDER BY ... RETURNING type) passes PARSEONLY; without RETURNING it is 102.
+        let value_order = name == "JSON_VALUE" && returning.is_some();
+        if pair || nulls || order && !value_order {
             out.push(violation(
                 "expression-json-aggregate",
                 "JSON pairs, NULL handling and argument ORDER BY require a JSON aggregate".into(),
@@ -69,14 +75,11 @@ pub(super) fn json_aggregate(
     let window = context
         .parent()
         .is_some_and(|p| p.kind() == "window_function");
-    let returning = named_children(node)
-        .into_iter()
-        .find(|n| n.kind() == "returning_clause");
     let wrong_return = returning.is_some_and(|n| {
         named_children(n)
             .into_iter()
             .nth(1)
-            .is_none_or(|ty| upper_text(ty, source).trim_matches(['[', ']', '"']) != "JSON")
+            .is_none_or(|ty| !json_type(ty, source))
     });
     let wrong_arg = args.len() != 1
         || args.iter().any(|arg| {
@@ -95,7 +98,8 @@ pub(super) fn json_aggregate(
         || has_child(node, "json_wrapper_clause")
         || (object && (order || distinct || within))
         || (array && distinct && (order || nulls || returning.is_some() || window))
-        || (array && order && window)
+        // With OVER, argument ORDER BY needs RETURNING, and NULL handling cannot have it (156).
+        || (array && window && (order && returning.is_none() || nulls && returning.is_some()))
         || (array && within && (order || nulls || returning.is_some() || distinct))
     {
         out.push(violation("expression-json-aggregate", "JSON aggregates require one value or key:value, measured NULL/ORDER/RETURNING clauses and window form".into(), node));
@@ -264,6 +268,10 @@ pub(super) fn static_reference(node: Node, source: &[u8], out: &mut Vec<Violatio
             .into_iter()
             .any(|n| source[n.byte_range()].starts_with(b"@") || upper_text(n, source) == "NULL");
     }
+    // `geometry::$node_id`: graph pseudo-columns are not type members (102).
+    invalid |= named_children(member)
+        .into_iter()
+        .any(|n| source[n.byte_range()].starts_with(b"$"));
     if invalid {
         out.push(violation(
             "expression-static-reference",
