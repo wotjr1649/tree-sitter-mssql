@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0] - 2026-11-23
+
+### Added
+
+- `property_access`: a CLR property read after a call, method, `CAST`, parenthesized call or subquery, such as `geometry::Point(1, 2, 0).STX` and `@g.STCentroid().STX`; a `method_call` can follow it. A property of a parenthesized column or variable, `(@g).STX`, keeps its `field` tree (#90).
+
+### Changed
+
+- The ISO type synonyms `char varying`, `binary varying`, `nchar varying` and `national text` parse in declarations, columns, parameters and `CAST` (they had error trees). A `char varying` or `binary varying` column without a length used to parse as `char` or `binary` followed by a stray `varying` identifier; it is now `varchar` or `varbinary`, the tree `character varying` already had. See [the migration note](docs/consuming.md#char-varying-and-binary-varying-migration) (#90).
+- tree-check rejects a CLR member of a search condition or value list (`(1=1).STX`) and a member named by a variable or an undelimited `$` pseudo-column (Msg 102). `CONVERT(nchar varying, 1)` is accepted, and the `CONVERT` multi-word type exception now needs two or three arguments without `DISTINCT`, `DEFAULT` or a second qualifier (#90).
+- Parse states rise from 13,398 to 13,442 (+0.33 %), `parser.c` by 0.85 % and the Windows DLL by 1.50 %. One rejected input's error tree changes (#90).
+
+### Documentation
+
+- `docs/accepted-gaps.md` lists the remaining under-acceptance (multi-word types with a length in `CONVERT`, empty-qualifier names such as `INSERT #t (.id)`, members of literals and of `CASE`, window, ODBC and JSON results) and seven over-acceptances that predate 2.6.0. 23 `batch-rules` probes record LocalDB and ScriptDOM verdicts. `docs/scope.md` counts 62,928 case verdicts at 2.6.0, with 92 level-dependent cases (#90).
+
 ## [2.5.0] - 2026-11-23
 
 ### Changed
