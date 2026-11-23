@@ -1625,3 +1625,13 @@ SELECT 1 ^ 2 * 3;
                 (binary_expression
                   (literal)
                   (literal))))))))))
+
+================================================================================
+CLR property after a call, method or subquery (batch-rules/property-*)
+================================================================================
+
+SELECT geometry::Point(1, 2, 0).STX, @g.STCentroid().STY, x.g.STCentroid().STX.ToString(), (SELECT TOP (1) g FROM dbo.t).STX FROM dbo.t AS x;
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (query_specification (select (keyword_select) (select_expression (term (property_access (invocation (object_reference (object_reference (identifier)) (object_reference (identifier))) (term (literal)) (term (literal)) (term (literal))) (identifier))) (term (property_access (invocation (object_reference (identifier) (identifier))) (identifier))) (term (method_call (property_access (invocation (object_reference (identifier) (identifier) (identifier))) (identifier)) (identifier))) (term (property_access (subquery (query_specification (select (keyword_select) (top_clause (keyword_top) (literal)) (select_expression (term (field (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)))))) (identifier))))) (from (keyword_from) (relation (object_reference (identifier) (identifier)) (keyword_as) (identifier)))))))

@@ -22,6 +22,15 @@ In v2.2.0, a data-less `WRITETEXT BULK` without `WITH LOG` could parse with `BUL
 can now match its `keyword_bulk` child and read the target from `object_reference`. In that
 form, the text pointer is the only argument after the target, and the payload comes through TDS.
 
+## CHAR VARYING and BINARY VARYING migration
+
+Before v2.6.0, a column declared `char varying` or `binary varying` without a length parsed as a
+`char` or `binary` type followed by a stray `identifier` (`varying`) in the `column_definition`,
+and any `COLLATE` after it as two more identifiers. The type is now `varchar` or `varbinary` with a
+`keyword_varying` child inside `keyword_varchar` or `keyword_varbinary`, the tree `character varying`
+already had, and `COLLATE` is `keyword_collate` with its name. With a length, these types, `nchar
+varying` and `national text` had error trees and now parse.
+
 ## Node-kind stability
 
 `test/node-kinds.txt` lists named node kinds and their field names. Verify checks the snapshot for drift. On pull

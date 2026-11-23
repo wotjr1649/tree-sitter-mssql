@@ -496,14 +496,19 @@ export default {
   keyword_smallmoney: (_) => make_keyword('smallmoney'),
   keyword_char: (_) => choice(make_keyword('char'), make_keyword('character')),
   keyword_varchar: ($) =>
-    choice(make_keyword('varchar'), seq(make_keyword('character'), $.keyword_varying)),
+    choice(
+      make_keyword('varchar'),
+      seq(choice(make_keyword('char'), make_keyword('character')), $.keyword_varying),
+    ),
   keyword_varying: (_) => make_keyword('varying'),
   keyword_nchar: (_) => make_keyword('nchar'),
   keyword_nvarchar: (_) => make_keyword('nvarchar'),
   keyword_text: (_) => make_keyword('text'),
-  keyword_ntext: (_) => make_keyword('ntext'),
+  keyword_ntext: ($) =>
+    choice(make_keyword('ntext'), seq(make_keyword('national'), $.keyword_text)),
   keyword_binary: (_) => make_keyword('binary'),
-  keyword_varbinary: (_) => make_keyword('varbinary'),
+  keyword_varbinary: ($) =>
+    choice(make_keyword('varbinary'), seq(make_keyword('binary'), $.keyword_varying)),
   keyword_image: (_) => make_keyword('image'),
   keyword_date: (_) => make_keyword('date'),
   keyword_datetime: (_) => make_keyword('datetime'),

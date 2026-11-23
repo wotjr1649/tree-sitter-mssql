@@ -51,6 +51,7 @@ export default {
         $.next_value_for,
         $.odbc_function_escape,
         $.method_call,
+        $.property_access,
         $.trim,
         $.json_object,
         $.json_array,
@@ -135,11 +136,27 @@ export default {
     prec(
       1,
       seq(
-        choice($.subquery, $.parenthesized_expression, $.invocation, $.cast, $.method_call),
+        $._member_target,
         '.',
         field('method', $.identifier),
         paren_list(field('parameter', $.term)),
       ),
+    ),
+
+  // A CLR property read on the same targets: geometry::Point(1, 2, 0).STX,
+  // @g.STCentroid().STX. A property on a variable or column is a `field`, also
+  // when parenthesized: `(@g).STX` keeps its field tree through the lower dynamic precedence.
+  property_access: ($) =>
+    prec.dynamic(-1, prec.right(1, seq($._member_target, '.', field('property', $.identifier)))),
+
+  _member_target: ($) =>
+    choice(
+      $.subquery,
+      $.parenthesized_expression,
+      $.invocation,
+      $.cast,
+      $.method_call,
+      $.property_access,
     ),
 
   // ODBC scalar-function escape sequence, e.g. {fn OCTET_LENGTH(@x)}.

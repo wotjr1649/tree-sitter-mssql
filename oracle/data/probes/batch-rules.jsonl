@@ -172,3 +172,26 @@
 {"id":"batch-rules/char-varying-constraint","sha256":"78f1da7af123ec08c6b35c775c7617070749db8318aa89c8e2f44d17242d3e35","source":"CREATE TABLE dbo.t (c char varying CONSTRAINT ck CHECK (c <> ''));"}
 {"id":"batch-rules/char-varying-collate-constraint","sha256":"c6b6ee5170a172bb8cd0904eb9465e4fa8f39e2642eb213cb57eae454fa05c89","source":"CREATE TABLE dbo.t (c char varying COLLATE Latin1_General_CI_AS CONSTRAINT ck CHECK (c <> ''));"}
 {"id":"batch-rules/char-varying-collate-database-default","sha256":"c927f93538407a52c0ed1a3c6250d6ad37003f22b43625e4f40898af1ec986db","source":"CREATE TABLE dbo.t (c char varying COLLATE DATABASE_DEFAULT);"}
+{"id":"batch-rules/type-char-varying-size","sha256":"df95af9ff2f32e7e6277a0f138b0541eaa16b895d84fbbe09fd2a9dcadcbbe41","source":"CREATE TABLE dbo.t (c char varying(5));"}
+{"id":"batch-rules/type-char-varying-max","sha256":"d054a78e88331feec1b8ddd3587e6981eeb08066fd8fd1e7dae76fe7537876af","source":"DECLARE @x char varying(max);"}
+{"id":"batch-rules/type-char-varying-collate-size","sha256":"2d7491bca7da8f0268bbb59eecffadb38844aced9dd11f0208f2686944d48045","source":"CREATE TABLE dbo.t (c char varying(5) COLLATE Latin1_General_CI_AS NOT NULL);"}
+{"id":"batch-rules/type-char-varying-param","sha256":"778aeeba09ccc6111c4b0e7dff4f4a876ce43a2e11b9129d8dcaa746db881b87","source":"CREATE PROCEDURE dbo.p @a char varying(5) AS SELECT @a;"}
+{"id":"batch-rules/type-binary-varying","sha256":"01900151b497b9aa0339002c63b6cfd43c83fb63353a58359ef29d513e308f27","source":"CREATE TABLE dbo.t (c binary varying(16));"}
+{"id":"batch-rules/type-binary-varying-cast","sha256":"875a65099844a73be6dcc10520465a90d0b605ea0956064ee7805fb1516ba0a6","source":"SELECT CAST(0x01 AS binary varying(max));"}
+{"id":"batch-rules/type-nchar-varying","sha256":"47faa9d3605bc628297d26d1b3d928e3db399d959c07b9cd357e017239164860","source":"DECLARE @x nchar varying(5);"}
+{"id":"batch-rules/type-national-text","sha256":"d8c0eb71b70c5a000ec8237ea7938d5b47c350813db69c93de6f1614587f333b","source":"CREATE TABLE dbo.t (c national text);"}
+{"id":"batch-rules/type-national-varying","sha256":"78ac2289abef56cb85c81c34e891ac679b667d4b806ef818e45709011782af98","source":"DECLARE @x national varying(5);"}
+{"id":"batch-rules/type-char-varying-twice","sha256":"8c8975ec8096a7daa0c662d8a61b808ab7de6362afacd0d131f0a91b1d09a9da","source":"DECLARE @x char varying varying(5);"}
+{"id":"batch-rules/type-national-ntext","sha256":"c34c457cf179a7c97b0acfbbb5f14ecebe17498585e00bf36f53c7a14f03a48f","source":"DECLARE @x national ntext;"}
+{"id":"batch-rules/type-varchar-varying","sha256":"66e1527a191b02662193fa9365ab680e869d7e49646f84121da5fdc3565f68b4","source":"DECLARE @x varchar varying(5);"}
+{"id":"batch-rules/property-static-call","sha256":"2891ff1d0ce99c89c4b04f33f629a50b7a97931862707b644dee3e53ff7bd202","source":"SELECT geometry::Point(1, 2, 0).STX;"}
+{"id":"batch-rules/property-variable-method","sha256":"5d897e081fcb553d396ce40cb93958906ad2af18341ec20da677f00af9a96546","source":"DECLARE @g geometry = 'POINT(1 2)'; SELECT @g.STCentroid().STX;"}
+{"id":"batch-rules/property-column-method","sha256":"ba9e69430152fefc063e949fb401fafd40d45fe93509fb8c2a2f4e69d882f860","source":"SELECT x.g.STCentroid().STY FROM dbo.t AS x;"}
+{"id":"batch-rules/property-then-method","sha256":"d17e6a38c601ffb198d597097d71266067f24eddfbe171e7a2012e2adec48e3a","source":"SELECT geography::Point(1, 2, 4326).Lat.ToString();"}
+{"id":"batch-rules/property-subquery","sha256":"3ccbd0729ba60fbb07999e39f571fa51f4b9f3acd03c649ddf0b4f9c0644ec1f","source":"SELECT (SELECT TOP (1) g FROM dbo.t).STX;"}
+{"id":"batch-rules/property-cast","sha256":"7ce2f66753785005fd52d73b7578d359273eb06114d1e7ba2166d31bc11b93ad","source":"SELECT CAST(g AS geometry).STX + 1 FROM dbo.t;"}
+{"id":"batch-rules/property-function","sha256":"18ad7b3e877e4095420ea5b1d5ff7bacb5ff95eae64835d0a8ef7c9b92ec1c6b","source":"SELECT dbo.f(1).X;"}
+{"id":"batch-rules/property-where","sha256":"7cfe83e0093b3ee87f996f8c2387f84aa65e313854ef9c3910db531b5685237f","source":"SELECT 1 FROM dbo.t WHERE geometry::Point(1, 2, 0).STX > 0;"}
+{"id":"batch-rules/property-trailing-dot","sha256":"0731febbbbcf06a46e2a807ff6d4647eeb15dc7635620b4d3bcaa9fd31e80198","source":"SELECT geometry::Point(1, 2, 0).;"}
+{"id":"batch-rules/property-double-dot","sha256":"5c016f615ec8981d532ab5b2b059c5926667ea6b7056adc973cd3bf30c2e54d8","source":"SELECT geometry::Point(1, 2, 0)..STX;"}
+{"id":"batch-rules/property-number","sha256":"064cb9f2b5ba9cd86856ad9f98bdc5e3a349beebcd9992088a8099a9864fc58d","source":"SELECT geometry::Point(1, 2, 0).1;"}

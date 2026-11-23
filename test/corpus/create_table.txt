@@ -1320,3 +1320,18 @@ CREATE TABLE t (
             (object_reference
               name: (identifier))
             (identifier)))))))
+
+================================================================================
+ISO type synonyms CHAR VARYING, BINARY VARYING, NCHAR VARYING and NATIONAL TEXT (batch-rules/type-*)
+================================================================================
+
+CREATE TABLE dbo.t (
+  a char varying(5) COLLATE Latin1_General_CI_AS NOT NULL,
+  b binary varying(max),
+  c nchar varying(5),
+  d national text
+);
+
+--------------------------------------------------------------------------------
+
+(program (batch (statement (create_table (keyword_create) (keyword_table) (object_reference (identifier) (identifier)) (column_definitions (column_definition (identifier) (varchar (keyword_varchar (keyword_varying)) (literal)) (keyword_collate) (identifier) (keyword_not) (keyword_null)) (column_definition (identifier) (varbinary (keyword_varbinary (keyword_varying)) (keyword_max))) (column_definition (identifier) (nvarchar (keyword_nchar) (keyword_varying) (literal))) (column_definition (identifier) (keyword_ntext (keyword_text))))))))

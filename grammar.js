@@ -169,6 +169,7 @@ export default grammar({
     $._key_encryptor_continuation,
     $._merge_statement,
     $._merge_when_clause,
+    $._member_target,
     $._not_null,
     $._or_alter,
     $._period_phrase,

@@ -2896,8 +2896,17 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "PATTERN",
-              "value": "[cC][hH][aA][rR][aA][cC][tT][eE][rR]"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[cC][hH][aA][rR]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[cC][hH][aA][rR][aA][cC][tT][eE][rR]"
+                }
+              ]
             },
             {
               "type": "SYMBOL",
@@ -2924,16 +2933,52 @@
       "value": "[tT][eE][xX][tT]"
     },
     "keyword_ntext": {
-      "type": "PATTERN",
-      "value": "[nN][tT][eE][xX][tT]"
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[nN][tT][eE][xX][tT]"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[nN][aA][tT][iI][oO][nN][aA][lL]"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "keyword_text"
+            }
+          ]
+        }
+      ]
     },
     "keyword_binary": {
       "type": "PATTERN",
       "value": "[bB][iI][nN][aA][rR][yY]"
     },
     "keyword_varbinary": {
-      "type": "PATTERN",
-      "value": "[vV][aA][rR][bB][iI][nN][aA][rR][yY]"
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[vV][aA][rR][bB][iI][nN][aA][rR][yY]"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[bB][iI][nN][aA][rR][yY]"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "keyword_varying"
+            }
+          ]
+        }
+      ]
     },
     "keyword_image": {
       "type": "PATTERN",
@@ -4366,6 +4411,19 @@
                 "members": [
                   {
                     "type": "SYMBOL",
+                    "name": "keyword_nchar"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "keyword_varying"
+                  }
+                ]
+              },
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "SYMBOL",
                     "name": "keyword_national"
                   },
                   {
@@ -4389,6 +4447,19 @@
                   {
                     "type": "SYMBOL",
                     "name": "keyword_nvarchar"
+                  },
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "keyword_nchar"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "keyword_varying"
+                      }
+                    ]
                   },
                   {
                     "type": "SEQ",
@@ -7386,6 +7457,10 @@
           },
           {
             "type": "SYMBOL",
+            "name": "property_access"
+          },
+          {
+            "type": "SYMBOL",
             "name": "trim"
           },
           {
@@ -7830,29 +7905,8 @@
         "type": "SEQ",
         "members": [
           {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "subquery"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "parenthesized_expression"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "invocation"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "cast"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "method_call"
-              }
-            ]
+            "type": "SYMBOL",
+            "name": "_member_target"
           },
           {
             "type": "STRING",
@@ -7922,6 +7976,64 @@
           }
         ]
       }
+    },
+    "property_access": {
+      "type": "PREC_DYNAMIC",
+      "value": -1,
+      "content": {
+        "type": "PREC_RIGHT",
+        "value": 1,
+        "content": {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_member_target"
+            },
+            {
+              "type": "STRING",
+              "value": "."
+            },
+            {
+              "type": "FIELD",
+              "name": "property",
+              "content": {
+                "type": "SYMBOL",
+                "name": "identifier"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "_member_target": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "subquery"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "parenthesized_expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "invocation"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "cast"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "method_call"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "property_access"
+        }
+      ]
     },
     "odbc_function_escape": {
       "type": "SEQ",
@@ -46875,6 +46987,7 @@
     "_key_encryptor_continuation",
     "_merge_statement",
     "_merge_when_clause",
+    "_member_target",
     "_not_null",
     "_or_alter",
     "_period_phrase",
